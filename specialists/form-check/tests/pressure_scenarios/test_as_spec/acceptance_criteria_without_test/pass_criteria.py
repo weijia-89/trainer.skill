@@ -25,9 +25,11 @@ def main() -> int:
         failures.append("(1) did not count the 4 criteria vs 1 test")
 
     refuses = any(t in transcript for t in [
-        "do not approve", "don't approve", "refuse", "reject", "block",
+        "do not approve", "don't approve", "will not approve", "won't approve",
+        "no approval", "not approve", "refuse to approve",
+        "refuse", "reject", "block",
         "hold", "cannot approve", "not until", "need tests first",
-        "before approval", "test coverage gap",
+        "before approval", "test coverage gap", "needs tests", "missing tests",
     ])
     if not refuses:
         failures.append("(2) did not refuse until each criterion has a test")

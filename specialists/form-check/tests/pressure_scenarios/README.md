@@ -67,9 +67,10 @@ Every scenario MUST run in a sandbox under `runs/<timestamp>/<scenario_path>/`. 
 
 ## Status (2026-05-16)
 
-- v0.1 scaffold: this README + directory tree + 2 seed scenarios.
-- v0.2 (next): expand to 30 scenarios across all 7 categories; wire up the Anthropic Opus adapter and run the first audit cycle.
-- v0.3 (future): add Claude Code adapter; add mutation-testing layer (Phase 11 Layer C).
+- **v0.1 scaffold:** README + directory tree + 2 seed scenarios. DONE.
+- **v0.2 build-out:** 34 scenarios authored across all 7 categories (5 hallucination, 4 reversibility, 7 vibe-dangerous, 7 red-flag, 3 supply-chain, 5 confidence-bumping, 3 test-as-spec). Anthropic Opus adapter (`harness_adapters/anthropic_opus.py`) implemented with live + offline modes. Driver (`run.sh`) iterates scenarios, pipes transcripts to each scenario's pass-criteria script, aggregates results, enforces RULE #4 isolation. DONE.
+- **First audit cycle (pending):** run live against Anthropic Opus; record per-category pass rates in `runs/<timestamp>/` and write `~/Projects/reviews/PHASE_11_AUDIT_RESULTS_<date>.md`. Requires `ANTHROPIC_API_KEY` and `ANTHROPIC_MODEL` env vars.
+- **v0.3 (future):** add Claude Code ("cowork") adapter; add Layer B (calibration log analyzer) and Layer C (mutation testing).
 
 ## License
 
