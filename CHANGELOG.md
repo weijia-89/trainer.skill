@@ -10,6 +10,44 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - **MINOR**: new sync target added; a specialist gym-skill's invocation pattern is updated; new section added without changing existing semantics.
 - **PATCH**: typo fix; clarification without semantic change; sync-mechanic improvement.
 
+## [0.4.0] (2026-05-16): Apply audit-doc patches; tighten coaching-stance operational definitions
+
+**MINOR per SemVer rules.** Routing decision flow and specialist list unchanged; coaching-stance section gains explicit operational definitions for previously-implicit guidance. Driven by `~/Projects/reviews/TRAINER_SKILL_AUDIT_2026-05-16.md` (4 operationalization gaps + 1 minor schema gap).
+
+### Added
+
+- **Iron Law banner** at the top of the Coaching stance section: `Iron Law of the trainer: coach, do not do. Push back when warranted. Defer when the user has demonstrated understanding. Log coached overrides.` Compresses the entire skill into a single load-bearing directive that survives token pressure.
+- **Coached-override log entry shape** documented inline. Schema: `{ts, event, subject, trainer_position, user_decision, user_rationale, residual_concern, rounds}`. Closes Gap 5 from the audit doc (override log was prescribed in v0.2.0 but schema-undefined).
+- **Adversarial-review deference** added to "What the trainer is NOT". During `form-check adversarial-review`, the trainer steps back; the review is the pushback. Trainer re-engages on routing decisions but not review content. Closes Gap 3.
+- **Opt-out semantics** added as a new section. User can suspend coaching for a session ("no coaching this session"); routing questions still answered, pushback paused. Persistent opt-outs are a signal logged in the calibration log. Closes Gap 4.
+
+### Changed
+
+- **"Demonstrated understanding" clause tightened.** Previously: `User has demonstrated understanding of the tradeoff and has a reasoned position.` Now: `User has articulated the specific consequence the trainer named AND the specific reason it does not apply or is acceptable. Vague approval ("yes I know", "I've got this", "trust me") does not count as demonstrated understanding.` Closes Gap 2 (operational definition was missing; was the most exploitable clause in v0.3.0).
+- **Soft line cap** bumped from 100 to 140 in `scripts/verify_trainer_sync.sh`. Canonical SKILL.md is now 127 lines.
+
+### Why MINOR not MAJOR
+
+- 8 specialists unchanged.
+- Routing flow byte-identical.
+- Push-back triggers unchanged.
+- New operational definitions are clarifications, not new behaviors. Any v0.3.0-compliant trainer is already v0.4.0-compliant; the difference is the v0.4.0 version is harder to game.
+
+### Hard-rule compliance
+
+- Zero em-dashes across `SKILL.md`, all three mirrors, this CHANGELOG entry, and the audit doc.
+- `verify_trainer_sync.sh` passes all 7 invariants (canonical ≡ Claude mirror; Cursor and Windsurf triggers reference canonical path; all four files agree on version 0.4.0; zero em-dashes; `alwaysApply: true`; `trigger: always_on`).
+
+### Files touched
+
+- `~/Projects/trainer.skill/SKILL.md` (version bump 0.3.0 → 0.4.0; +39 lines for the five patches; total 127 lines)
+- `~/.claude/skills/trainer/SKILL.md` (byte-identical mirror, re-synced)
+- `~/Projects/.cursor/rules/trainer.mdc` (heading bumped to v0.4, canonical-path note bumped to v0.4.0)
+- `~/Projects/.windsurf/rules/trainer.md` (same)
+- `~/Projects/trainer.skill/scripts/verify_trainer_sync.sh` (line cap 100 → 140; comment updated)
+- `~/Projects/trainer.skill/CHANGELOG.md` (this entry)
+- `~/Projects/reviews/TRAINER_SKILL_AUDIT_2026-05-16.md` (source audit doc; not in the skill repo)
+
 ## [0.3.0] (2026-05-16): Bundle the 8 specialists into the repo; rewrite README for portfolio distribution
 
 **MINOR per SemVer rules.** Routing flow and coaching stance unchanged; new packaging mechanic added so the repo distributes the full 8-skill ecosystem rather than only the trainer entrypoint.

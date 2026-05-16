@@ -82,10 +82,10 @@ if [[ "$FAIL" -eq 0 ]]; then
   echo "PASS  all four sync targets agree on version $CANONICAL_VERSION"
 fi
 
-# Invariant 5: SKILL.md (canonical) is ≤100 lines (bootstrap-skill cap; bumped in v0.2.0 to fit coaching stance)
+# Invariant 5: SKILL.md (canonical) is ≤140 lines (bootstrap-skill cap; bumped in v0.4.0 for Iron Law banner, override schema, opt-out semantics, adversarial-review deference)
 CANONICAL_LINES=$(wc -l < "$CANONICAL" | tr -d ' ')
-if [[ "$CANONICAL_LINES" -gt 100 ]]; then
-  echo "WARN  canonical SKILL.md is $CANONICAL_LINES lines (soft cap 100)"
+if [[ "$CANONICAL_LINES" -gt 140 ]]; then
+  echo "WARN  canonical SKILL.md is $CANONICAL_LINES lines (soft cap 140)"
 fi
 
 # Invariant 6: zero em-dashes (Wei's writing-style hard rule, 2026-05-15)
