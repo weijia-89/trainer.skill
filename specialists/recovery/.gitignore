@@ -1,0 +1,31 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Node
+node_modules/
+
+# Build artifacts (skills are source-only; no zips/bundles in tree)
+*.skill
+dist/
+build/
+*.tgz
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Local skill state (calibration logs are per-project, not per-skill)
+.code-fixer/
+.agent/

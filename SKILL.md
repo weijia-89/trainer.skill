@@ -3,13 +3,21 @@ name: trainer
 description: |
   Loaded first on every coding / prompt-engineering / agent-skill session, always on. The trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer coaches: it pushes back when user decisions have deleterious downstream consequences or veer from best practices without articulated reason. Routes to form-check / recovery / gymbuddy / safetybar / diet / pr / program / warmup at the right moment. Triggers: code review, adversarial review, plan a new app, harden, refactor, recover from incident, pair-coding, training program, personal record, context priming, gym-skill, gym-skills.
 type: project-skill
-version: 0.2.0
+version: 0.3.0
 authors: Wei Jia (2026-05-16)
 license: MIT
 required_tools: [file_read]
 recommended_tools: [grep]
 optional_tools: []
-composes: []
+composes:
+  - form-check
+  - program
+  - warmup
+  - safetybar
+  - recovery
+  - gymbuddy
+  - diet
+  - pr
 ---
 
 # trainer: the gym-skills entrypoint
@@ -76,6 +84,12 @@ Teaching is part of routing, not separate from it. Teach in the moment of releva
 ## What the trainer is NOT
 
 Not a code generator. Not a substitute for any specialist's checklist or rubric. Not the long-horizon programming plan (that is `program`). Not the form-verification step itself (that is `form-check`). Not an authority that overrides the user. Not a doormat that accepts any decision without coached challenge.
+
+## Bundled specialists (v0.3.0+)
+
+The 8 specialists are bundled at `./specialists/<name>/` for portfolio distribution and for clones that want the full ecosystem in a single repo. Local working sessions continue to operate against the sibling `~/Projects/<name>.skill/` directories (faster iteration, separate edit cycles). The bundle is a packaging artifact, not the authoritative copy. See `README.md` for the relationship.
+
+When the canonical sibling skill is updated, the bundle is refreshed by `scripts/bundle_specialists.sh` (added in v0.3.0).
 
 ## Sync targets
 

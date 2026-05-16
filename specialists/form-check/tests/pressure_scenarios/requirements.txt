@@ -1,0 +1,7 @@
+# Phase 11 pressure-scenario harness dependencies.
+# Install in a virtualenv: python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+#
+# Only required for LIVE mode (real API calls). Offline mode (PHASE11_OFFLINE=1 or --offline)
+# has no third-party deps; Python 3.9+ stdlib only.
+
+anthropic>=0.40.0

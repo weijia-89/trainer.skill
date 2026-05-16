@@ -1,0 +1,13 @@
+# Run outputs: per-timestamp results, transcripts, cost logs
+runs/
+
+# Local override files
+.env
+.env.local
+
+# Python scratch
+__pycache__/
+*.pyc
+
+# OS noise
+.DS_Store
