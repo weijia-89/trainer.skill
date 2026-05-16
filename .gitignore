@@ -1,0 +1,21 @@
+# Operating system noise
+.DS_Store
+Thumbs.db
+
+# Editor backups
+*~
+*.swp
+*.bak
+.idea/
+.vscode/
+
+# Verify-script scratch (none currently; reserved for future tests)
+/tmp-test/
+
+# AI assistant / IDE state (this skill is a *target* of skill-sync, not a consumer)
+.claude/
+.cursor/
+.windsurf/
+
+# Calibration logs (per-user runtime artifacts; not committed)
+.recovery/
