@@ -3,7 +3,7 @@ name: trainer
 description: |
   Loaded first on every coding / prompt-engineering / agent-skill session, always on. The trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer coaches: it pushes back when user decisions have deleterious downstream consequences or veer from best practices without articulated reason. Routes to form-check / recovery / gymbuddy / safetybar / diet / pr / program / warmup at the right moment. Triggers: code review, adversarial review, plan a new app, harden, refactor, recover from incident, pair-coding, training program, personal record, context priming, gym-skill, gym-skills.
 type: project-skill
-version: 0.6.0
+version: 0.6.1
 authors: Wei Jia (2026-05-16)
 license: LicenseRef-IronLaw-NC-1.0
 required_tools: [file_read]
@@ -93,7 +93,35 @@ Get the full lay of the land before any implementation journey. High-level plann
 
 **Plans can be revised mid-journey. Implementations should not be.**
 
-**Worked example (2026-05-17, lodestar (formerly agentic-voc-bench)):** Cascade nearly began ingest-pipeline coding as "Day 1-2 = ingest + schema + dedup + moderation + ranker" without per-component contract design. Wei caught the breach: *"no, we need to work on the architecture now, not create it adhoc. let's think through every single piece of logic upfront."* Route corrected to epistemic-planning 5-pass + TDD/BDD overlay + writing-plans output. This iron law codifies the correction so the breach doesn't recur.
+### Mechanical pre-action gate (added 2026-05-17 round-2, post-self-breach)
+
+Before any **destructive or wide-scope** action, state these three facts **in one sentence** (Cascade in chat; user in their own head):
+
+1. **Canonical source of truth.** Which directory / file / artifact is canonical; which is derived.
+2. **Rollback path.** Concrete command sequence to undo if this goes wrong.
+3. **Verification command.** What single command confirms the state is right after the action.
+
+If unable to state all three in one sentence, **STOP and verify first**. No exceptions.
+
+**"Destructive or wide-scope" triggers (mechanical, not vibes):**
+
+- Any `rsync --delete`, `rm -rf`, `git reset --hard`, `git push --force`, or `find ... -exec rm`.
+- Any sweep / mass edit touching **>5 files**. Count the file paths; if the count exceeds 5, the gate fires.
+- Any bundle / sync / mirror operation between two trees (e.g., `bundle_specialists.sh`, `cp canonical mirror`).
+- Any `git push` (the gate is: did the local pre-push hook run on this exact commit graph).
+
+**Pre-push verification subrule:** before any `git push`, run the pre-push hook locally (`bash scripts/<verify>.sh` or whatever the repo defines). If the hook is not run, the discipline is theater. The point of the hook is to fail locally, not to fail at the remote.
+
+### Worked examples
+
+**Example 1 (2026-05-17, lodestar / agentic-voc-bench):** Cascade nearly began ingest-pipeline coding as "Day 1-2 = ingest + schema + dedup + moderation + ranker" without per-component contract design. Wei caught the breach. Route corrected to epistemic-planning 5-pass + TDD/BDD overlay + writing-plans output. This iron law codifies the correction so the breach doesn't recur.
+
+**Example 2 (2026-05-17, same day, gym-skills self-breach):** Within the same session that committed this iron law, Cascade breached the pre-action gate **twice**:
+
+- *Em-dash sweep on 8 specialist standalones* (`rsync` between standalone and bundle) was started without first verifying which side was canonical. Outcome: round-1 sweep edited the bundle, re-bundle then regressed it; rsync-back-then-rebundle workflow needed mid-session to recover. Would have been prevented by: "Standalone is canonical per `scripts/bundle_specialists.sh` docstring; rollback = `git checkout specialists/`; verify with `bash scripts/verify_bundle_sync.sh`." (One sentence; gate-pass.)
+- *Pushing PHASE11_ANALYSIS.md* without running the pre-push hook locally. Outcome: private-path leak escaped to commit; pre-push hook caught it; amend + re-push required. Would have been prevented by: "Pre-push hook = `bash scripts/verify_trainer_sync.sh`; rollback = `git commit --amend`; verify = re-run hook." (One sentence; gate-pass.)
+
+Both breaches were recoverable; both occurred because the gate did not fire. Promotion to mechanical-gate status (above) is the response.
 
 ## Red Flags, STOP and re-route
 
