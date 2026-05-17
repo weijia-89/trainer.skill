@@ -25,7 +25,7 @@ MINOR (no breaking changes; compression only).
 This is a MAJOR bump because thresholds gained `(uncalibrated)` annotations and new gating semantics (advisory-only below N=10) — downstream `recovery.skill` composes-pin needs to bump to `>=3.0.0,<4.0.0`.
 
 ### Changed — citation hygiene (Phase 1)
-- `references/notes.md` rewritten v3.0.0: every citation carries a tier tag per `~/Projects/ai-research/references/source-grading.md` (`[T1-replicated]`, `[T1-verified]`, `[T1-mixed]`, `[T1-vendor, COI:X]`, `[T1-contested]`, `[T2-incident]`, `[T2-secondary]`, `[normative]`, `[stylistic-norm]`).
+- `references/notes.md` rewritten v3.0.0: every citation carries a tier tag per `~/Projects/palamedes/skill/references/source-grading.md` (`[T1-replicated]`, `[T1-verified]`, `[T1-mixed]`, `[T1-vendor, COI:X]`, `[T1-contested]`, `[T2-incident]`, `[T2-secondary]`, `[normative]`, `[stylistic-norm]`).
 - New citation hygiene rules section: trace press releases to T1; demand effect size + CI; decline-effect prior; industry-funded adjustment per Lundh Cochrane; do not aggregate T3 by counting agreement; single low-N RCT cited at most once per skill.
 - METR-2025 downgraded from load-bearing rhetoric to one preliminary RCT consistent with the established metacognitive-miscalibration phenomenon (`LICHTENSTEIN-1982`, `KORIAT-BJORK-2005`). Cited at most once per skill.
 - Dunning-Kruger 1999 dropped as load-bearing; `GIGNAC-ZAJENKOWSKI-2020` and `GIGNAC-2024` show D-K is mostly a statistical artifact.
@@ -69,7 +69,7 @@ This is a MAJOR bump because thresholds gained `(uncalibrated)` annotations and 
 - Replaced with anchor on the established metacognitive-miscalibration phenomenon (`LICHTENSTEIN-1982`, `KORIAT-BJORK-2005`); METR-2025 retained as one preliminary example RCT (n=16, METR-self-redesigned-for-unreliability) but no longer load-bearing for magnitude.
 
 ### Methodology
-This audit followed `~/Projects/ai-research/references/replication-and-validity.md` + `source-grading.md`. Adversarial review of the citation triage was performed in three passes (primary-source check, known-best-practices check, falsifier generation). Verdict: ~85% confidence in the triage; 7 papers verified via abstract or summary; 1 correction made (Causey 2017 → Rafique & Mišić 2013 for TDD meta-analysis). Audit summary in a private gym-skills evidence-audit document (working notes) (deferred — to be written if needed).
+This audit followed `~/Projects/palamedes/skill/references/replication-and-validity.md` + `source-grading.md`. Adversarial review of the citation triage was performed in three passes (primary-source check, known-best-practices check, falsifier generation). Verdict: ~85% confidence in the triage; 7 papers verified via abstract or summary; 1 correction made (Causey 2017 → Rafique & Mišić 2013 for TDD meta-analysis). Audit summary in a private gym-skills evidence-audit document (working notes) (deferred — to be written if needed).
 
 ## [Renamed] — 2026-05-15
 

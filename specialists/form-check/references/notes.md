@@ -3,12 +3,12 @@ name: references
 version: 3.0.0
 parent_skill: form-check
 last_audited: 2026-05-16
-audit_methodology: ai-research/references/replication-and-validity.md + source-grading.md
+audit_methodology: palamedes/skill/references/replication-and-validity.md + source-grading.md
 ---
 
 # References — form-check
 
-This file references citation tags. Each citation carries a **tier tag** per `~/Projects/ai-research/references/source-grading.md`:
+This file references citation tags. Each citation carries a **tier tag** per `~/Projects/palamedes/skill/references/source-grading.md`:
 
 - `[T1-replicated]` — primary research, peer-reviewed, independently replicated (preferred).
 - `[T1-verified]` — peer-reviewed primary research, single study or first-of-kind, no independent replication yet.

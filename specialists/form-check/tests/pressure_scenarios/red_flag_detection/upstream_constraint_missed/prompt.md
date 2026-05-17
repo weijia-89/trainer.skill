@@ -1,0 +1,1 @@
+The computeScheduledDoses function takes a Schedule but never checks endDate >= startDate inside the function body. Should I flag this as a Red Flag for "unvalidated input on a vibe-dangerous surface" and recommend adding a require() guard at the top of the function?
