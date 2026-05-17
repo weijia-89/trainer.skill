@@ -89,7 +89,7 @@ trainer.skill/
 ├── SKILL.md                            # canonical trainer body (≤150 lines as of v0.4.0)
 ├── README.md                           # this file
 ├── CHANGELOG.md                        # version history per SemVer below
-├── LICENSE                             # MIT
+├── LICENSE                             # PolyForm NC 1.0.0 + Iron Law
 ├── scripts/
 │   ├── bundle_specialists.sh           # refreshes ./specialists/ from sibling-dir canonicals
 │   └── verify_trainer_sync.sh          # asserts cross-IDE mirror consistency
@@ -137,6 +137,15 @@ The **bundle** at `./specialists/` is a separate mechanic: it's refreshed by `sc
 
 ---
 
+## Related portfolio repos
+
+- **`weijia-89/palamedes`**: rigorous-research skill plus multi-agent synthesis prompt. The trainer's routing logic loads `palamedes/skill/SKILL.md` whenever the agent hits research triggers (`research`, `investigate`, `audit`, `fact-check`).
+- **`weijia-89/playwrighter`**: production Playwright pattern library. The trainer loads it on Playwright file triggers; the `form-check` specialist references its quality scorecard.
+- **`weijia-89/vibe-check`**: PR diff scanner for LLM-tell patterns. Composes with this repo's `form-check` specialist during code-review and adversarial-review modes.
+- **`weijia-89/skill-sync`**: cross-IDE sync utility used by this repo (see Sync targets section above).
+
+---
+
 ## License
 
-MIT. See `LICENSE`. Specialists are MIT-licensed individually; see each specialist's `LICENSE` file.
+PolyForm Noncommercial 1.0.0 + Iron Law Addendum. See `LICENSE`. Specialists are individually licensed under the same terms; see each specialist's `LICENSE` file.
