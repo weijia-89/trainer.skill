@@ -8,7 +8,7 @@ content is stable; the validation tooling is the active surface.
 
 | layer | what it measures | tool | state |
 |---|---|---|---|
-| A | per-scenario pass/fail under adversarial prompts | `tests/pressure_scenarios/run.sh` + per-scenario `pass_criteria.py` | green; 32 of 34 scenarios PASS on the self-test baseline |
+| A | per-scenario pass/fail under adversarial prompts | `tests/pressure_scenarios/run.sh` + per-scenario pass_criteria.py | green; 32 of 34 scenarios PASS on the self-test baseline |
 | B | calibration log honesty (N-honesty rules) | `scripts/calibration_analyze.py` | green; smoke-tested |
 | C | section-level load-bearing-ness of the skill text | `scripts/mutation_test_skill.py` | green; offline plumbing verified |
 | combined | one-view dashboard across A+B+C | `scripts/phase11_report.py` | green |

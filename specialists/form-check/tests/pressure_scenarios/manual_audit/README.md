@@ -14,7 +14,7 @@ Pass/fail per scenario per model per condition. That is it. Specifically:
 
 - **MEASURES:** whether a given model, in a given condition (baseline =
   no form-check; treatment = form-check loaded via IDE-simulating preamble),
-  produced a response that matches the scenario's `pass_criteria.py`.
+  produced a response that matches the scenario's pass_criteria.py.
 - **DOES NOT MEASURE:** statistical pass-rate over many samples (web UI is
   single-shot, no temperature control). Numeric per-component subscores. The
   effect of any system prompt the web UI is injecting that you cannot see.
@@ -76,7 +76,7 @@ The wrapper appends one line to `runs/results.jsonl` with `ts`, `scenario`,
 
 ## What "PASS" means
 
-Each scenario's `pass_criteria.py` looks for specific marker phrases that
+Each scenario's pass_criteria.py looks for specific marker phrases that
 the reference response demonstrates. PASS does NOT mean the model gave the
 ideal response, only that the response contained the load-bearing markers.
 FAIL means the response missed at least one marker; read the response and

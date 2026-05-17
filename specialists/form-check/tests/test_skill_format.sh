@@ -28,16 +28,18 @@ if [[ "${lines}" -gt 240 ]]; then
     fail=1
 fi
 
-# Required H2 sections (in any order)
-required_h2=(
-    "Section 1 — Vibe-coding guardrails"
-    "Section 2 — Stack decision rule"
-    "Section 5 — Confidence-score rule"
-    "Section 7 — Workflow for adversarial code reviews"
+# Required H2 sections (in any order). The "Section N <separator> Title" form
+# accepts either em-dash or period as the separator, so the em-dash discipline
+# sweep (2026-05-17) does not break this contract.
+required_h2_re=(
+    "^## Section 1[.—] Vibe-coding guardrails"
+    "^## Section 2[.—] Stack decision rule"
+    "^## Section 5[.—] Confidence-score rule"
+    "^## Section 7[.—] Workflow for adversarial code reviews"
 )
-for section in "${required_h2[@]}"; do
-    if ! grep -qF "## ${section}" "${SKILL_FILE}"; then
-        echo "FAIL: missing required H2 section: ${section}" >&2
+for re in "${required_h2_re[@]}"; do
+    if ! grep -qE "${re}" "${SKILL_FILE}"; then
+        echo "FAIL: missing required H2 section matching: ${re}" >&2
         fail=1
     fi
 done

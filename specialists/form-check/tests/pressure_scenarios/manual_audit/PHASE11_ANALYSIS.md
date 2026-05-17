@@ -33,7 +33,7 @@ The scenario 01 failures are now substantive (not instrument): gpt-5 cells fail 
 
 Two passes per transcript:
 
-1. **Rubric grade:** invoke `pass_criteria.py` for the scenario, capture verdict + which criteria failed. Stored as PASS/FAIL in `runs/results.jsonl` and reproduced fresh in this analysis to double-check.
+1. **Rubric grade:** invoke the scenario's pass_criteria.py, capture verdict + which criteria failed. Stored as PASS/FAIL in `runs/results.jsonl` and reproduced fresh in this analysis to double-check.
 2. **Hand grade:** read the transcript end-to-end, then for each criterion: (a) re-read the criterion's docstring, (b) locate the strongest candidate sentence(s) in the transcript, (c) decide PASS/FAIL on substance, (d) when rubric and hand grade disagree, identify which mechanism (marker miss, sentence-floor cutoff, orphan code, genuine substance miss) caused the disagreement.
 
 The hand grade is the load-bearing artifact. Rubric grade is the calibration target.
@@ -119,12 +119,12 @@ Counter-evidence (form-check vocabulary appearing in **baseline** trials without
 
 ## Bugs in the instrumentation
 
-### B1. Scenario 03 `pass_criteria.py` orphan-markers syntax bug
+### B1. Scenario 03 pass_criteria.py orphan-markers syntax bug
 
 **Severity:** rubric correctness blocker for scenario 03.
 **Location:** `specialists/form-check/tests/pressure_scenarios/hallucination_floor/library_behavior_unverified/pass_criteria.py:41-49`
 **Mode:** the 16 v0.3.2 markers intended for criterion 2 `names_existence_vs_behavior` were placed *between* `if not refuses_score: failures.append(...)` and the `names_existence_vs_behavior = any(...)` assignment. Python accepts the bare string literals as no-op expression statements; the file parses fine (`python3 -c "import ast; ast.parse(open(...).read())"` returns `parses ok`). The markers are silently dead. All four scenario-03 cells fail criterion 2 because of this.
-**Confirmation:** running `pass_criteria.py` against each scenario-03 transcript shows "(2) did not distinguish library existence from library behavior verification"; even when the response says verbatim "verifies compile-time existence, not runtime semantics."
+**Confirmation:** running the scenario-03 pass_criteria.py against each transcript shows "(2) did not distinguish library existence from library behavior verification"; even when the response says verbatim "verifies compile-time existence, not runtime semantics."
 **Fix:** mechanical 5-line edit. Move the orphan strings inside the `names_existence_vs_behavior = any(t in transcript for t in [...])` markers list and add a closing bracket. Expected post-fix outcome: scenario 03 rubric grade goes from 0/4 to 4/4 (matching hand-grade).
 
 ### B2. Scenario 01 criterion 4 over-specifies the correct action
@@ -158,7 +158,7 @@ $ # "first commit" appears only in a 5-word heading, which is filtered out.
    - **(a)** Lower the floor to 6 words. Catches headings like "Test-only PR or first commit" (5 words: still no good) and "Submit the failing test: Update the PR" (7 words: yes). Risk: re-opens the keyword-soup attack.
    - **(b)** Two-pass check: first try substantive sentences at floor=10; if no match, retry at floor=4 *only if* the broader transcript also contains a substantive sentence on the same concept (a "supporting context" check). More complex; better fidelity.
    - **(c)** Per-criterion floor override: some criteria (e.g., "provides the two-commit sequence") are inherently expressed as enumerated short items. Allow `Transcript(text, min_words=4)` for those specific criteria.
-**My recommendation:** (c), the most surgical. Apply to scenario 02 criterion 4 and scenario 03 criterion 4 specifically. Document the per-criterion override in `_grading.py` docstring. Verify against transcripts.
+**My recommendation:** (c), the most surgical. Apply to scenario 02 criterion 4 and scenario 03 criterion 4 specifically. Document the per-criterion override in the `tests/pressure_scenarios/_grading.py` docstring. Verify against transcripts.
 
 ## Adversarial review of this analysis (form-check Phase 2 against the doc itself)
 
@@ -179,7 +179,7 @@ Falsifiers I considered. The ones that landed are folded into the body above. Th
 ## Status of recommended next actions
 
 1. **B1; scenario 03 orphan-markers syntax bug.** *Done.* Rubric for scenario 03 went 0/4 → 4/4. Verified by ast.parse + transcript-by-transcript rubric re-run.
-2. **B4; per-criterion `min_words` override.** *Done.* `Transcript.with_floor(n)` helper added to `_grading.py`. Applied at floor=3 to scenario 02 criterion 4 and floor=4 to scenario 03 criterion 4. Rubric for scenario 02 went 0/4 → 4/4. Verified by sentence-floor dump.
+2. **B4; per-criterion `min_words` override.** *Done.* `Transcript.with_floor(n)` helper added to `tests/pressure_scenarios/_grading.py`. Applied at floor=3 to scenario 02 criterion 4 and floor=4 to scenario 03 criterion 4. Rubric for scenario 02 went 0/4 → 4/4. Verified by sentence-floor dump.
 3. **B2(b); scenario 01 criterion 4 disjunctive rewrite + synthetic counter-tests.** *Done.* Criterion now passes on (i) explicit test recommendation with active verb OR (ii) structured bypass-path enumeration with invalidation framing. Two synthetic transcripts in `red_flag_detection/upstream_constraint_missed/synthetic_*.txt` serve as permanent counter-tests. Verified: `synthetic_wrong_complacent.txt` fails 3 criteria; `synthetic_right_justified_trust.txt` passes 4/4.
 4. **Re-run 12 trials with fixed rubric, archive old verdicts.** *Done.* `runs/results.pre-fix.jsonl` contains the pre-fix record; `runs/results.jsonl` contains the post-fix grades with `rubric_version: v0.3.2-post-phase11-audit`. Aggregate: 8/12 PASS.
 5. **N=1 calibration entry in `form-check.skill/.recovery/calibration.jsonl`.** *Pending commit.* See `calibration-entry` todo.

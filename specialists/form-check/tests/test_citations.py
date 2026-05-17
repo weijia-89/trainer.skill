@@ -43,6 +43,13 @@ ALLOWLIST = {
     "PR-184",
     # Domain English used in SHOUTY Iron-Law text and CHANGELOG echo — not citations.
     "TIER-FLOOR", "PER-COMPONENT",
+    # Frontier-model identifiers used as operational labels in audit prose
+    # (Phase 11 manual audit, 2026-05-17). Not academic citations; the regex
+    # is correct to flag them, the audit prose is correct to name them.
+    "GPT-3", "GPT-4", "GPT-5", "GPT-4o", "GPT-4O",
+    "CLAUDE-3", "CLAUDE-4", "OPUS-4",
+    "GEMINI-1", "GEMINI-2",
+    "LLAMA-3", "LLAMA-4",
 }
 
 
