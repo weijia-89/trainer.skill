@@ -36,6 +36,8 @@ for s in "${SPECIALISTS[@]}"; do
     --exclude='tests/__results__' \
     --exclude='*.pyc' \
     --exclude='.cache' \
+    --exclude='phase11_report.md' \
+    --exclude='.gitignore' \
     "$src" "$dst"
   # Post-rsync cleanup: strip timestamped test-run output directories
   # that should never be distributed in the bundled artifact.

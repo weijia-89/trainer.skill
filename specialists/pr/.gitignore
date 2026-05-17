@@ -1,0 +1,23 @@
+# Build / scratch / OS / IDE
+.DS_Store
+**/.DS_Store
+.idea/
+.vscode/
+.venv/
+__pycache__/
+*.pyc
+*.swp
+*~
+
+# Test-run state (calibration log and pressure-scenario run dirs)
+.recovery/
+tests/pressure_scenarios/runs/
+
+# Generated Phase 11 reports
+tests/pressure_scenarios/phase11_report.md
+
+# Secrets
+.env
+.env.*
+*.pem
+*.key
