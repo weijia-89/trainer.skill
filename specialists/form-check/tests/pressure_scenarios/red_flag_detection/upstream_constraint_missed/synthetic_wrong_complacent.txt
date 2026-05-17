@@ -1,0 +1,5 @@
+No, don't flag this. The Schedule data class has the require() check in its init block, so any Schedule object that reaches computeScheduledDoses is guaranteed to be valid by the type system. Adding another require() in the function body would violate DRY and clutter the consumer with redundant validation logic. The model-validation test already exists and passes. We're good — no further action needed. Trust the type, move on.
+
+There's no reviewer failure mode here either; the reviewer was simply being defensive, which is fine for a vibe-dangerous module but unnecessary given the upstream guarantee.
+
+Don't add the require() guard, don't add a new test, don't strengthen anything. The existing system is correct as-is. Approve the original code.

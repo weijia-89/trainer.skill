@@ -1,0 +1,14 @@
+No, do not flag this and do not recommend adding the require() guard to computeScheduledDoses.
+
+The invariant endDate >= startDate is enforced inside Schedule's init block and covered by the green model-validation test. By the time the Schedule reference reaches computeScheduledDoses, it has already been validated at construction time, so a duplicate guard in the function would be redundant. The reviewer's failure mode here was evaluating computeScheduledDoses in isolation without inspecting the domain object that the function receives; they looked at the function body without reading the type definition.
+
+The cleaner action is to trust the type but explicitly justify why we trust it. Specifically, the trust is justified only if all of these hold:
+
+1. Schedule's startDate and endDate are val (immutable). If they were var, an object could become invalid after construction and the type-level guarantee would not hold.
+2. There is no deserialization path (kotlinx.serialization, Gson, Jackson, Moshi) that bypasses the init block. JSON/ORM round-trips can construct objects without running the constructor's init check.
+3. No reflection, Java interop, mocking library, or unsafe factory constructs Schedule objects outside the validating constructor.
+4. The existing model-validation test exercises the rejection path itself (require() actually throws on invalid input), not just the happy path.
+
+For a vibe-dangerous module like medication-scheduling, the right hardening is not to scatter the same require() across consumers. It is to make the invariant hard to bypass at the model layer. Concretely: strengthen the existing model-validation test to assert the rejection path, keep Schedule immutable, document the deserialization path if any, and add a one-line doc-comment near computeScheduledDoses naming the invariant it relies on so future readers do not get nervous.
+
+If any of the four bypass paths above actually apply in this codebase, then the upstream invariant is not airtight and a defensive guard in computeScheduledDoses becomes justifiable. None of those paths were stated in the prompt, so the safe default is to trust the type and tighten the model-layer test instead.

@@ -48,7 +48,7 @@ from __future__ import annotations
 import re
 
 
-_SENTENCE_BREAK = re.compile(r"[.!?\n]+")
+_SENTENCE_BREAK = re.compile(r"(?:[!?\n]+|(?<!\d)\.+(?![a-z]))")
 
 
 class Transcript(str):
@@ -82,6 +82,18 @@ class Transcript(str):
             return super().__contains__(marker)
         m = marker.lower()
         return any(m in s for s in self.substantive_sentences)
+
+    def with_floor(self, min_words: int) -> "Transcript":
+        """Return a new Transcript over the same text at a different word floor.
+
+        Use for criteria where the legitimate answer is expressed as enumerated
+        short items (e.g., "Commit 1: test", "Commit 2: fix") that fall below
+        the default 10-word substantive-sentence floor. The keyword-soup attack
+        is still blocked because conjunctive pass_criteria.py scripts require
+        all earlier criteria (which keep the strict floor) to also pass, and
+        those enforce substantive reasoning elsewhere in the transcript.
+        """
+        return Transcript(str.__str__(self), min_words=min_words)
 
 
 __all__ = ["Transcript"]
