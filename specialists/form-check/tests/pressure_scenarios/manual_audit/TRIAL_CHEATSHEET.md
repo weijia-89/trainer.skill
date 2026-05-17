@@ -86,24 +86,13 @@ Gemini:
 
 ## When you are done
 
-Aggregate the JSONL:
+Aggregate the JSONL with the bundled script:
 
 ```bash
-python3 -c '
-import json, collections, pathlib
-results = pathlib.Path("runs/results.jsonl").read_text().splitlines()
-by_model_condition = collections.Counter()
-totals = collections.Counter()
-for line in results:
-    if not line.strip(): continue
-    r = json.loads(line)
-    key = (r["model"], r["condition"])
-    totals[key] += 1
-    if r["verdict"] == "PASS": by_model_condition[key] += 1
-for key in sorted(totals):
-    print(f"{key[0]:20s} {key[1]:10s} {by_model_condition[key]}/{totals[key]}")
-'
+python3 aggregate.py
 ```
+
+(Reads `runs/results.jsonl` by default. Pass an explicit path as the first arg to aggregate a different file.)
 
 This gives you a 4-row table: each model x condition, pass-rate. Read it qualitatively only (n=3 per cell). Look for:
 
