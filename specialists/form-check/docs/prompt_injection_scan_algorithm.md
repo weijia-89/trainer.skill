@@ -56,6 +56,6 @@ A markdown post-mortem of a prompt-injection attack will legitimately contain pa
 
 ## Cross-references
 
-- `agent-runtime/prompt_injection.md` — defense in depth beyond pattern scanning.
-- `agent-runtime/harness_contract.md` — capability allowlist that defends even if injection succeeds.
-- OWASP-LLM01 (Prompt Injection) — the original threat.
+- `agent-runtime/prompt_injection.md`, defense in depth beyond pattern scanning.
+- `agent-runtime/harness_contract.md`, capability allowlist that defends even if injection succeeds.
+- OWASP-LLM01 (Prompt Injection), the original threat.

@@ -1,4 +1,4 @@
-# warmup — front desk; tell me what's broken and I'll route you
+# warmup, front desk; tell me what's broken and I'll route you
 
 A front-desk skill that routes you to the right downstream code skill when you do not yet know which one to invoke.
 
@@ -29,27 +29,27 @@ Three things it does not do: score code, plan architecture, run engagements. Tho
 
 The skill routes to and references seven downstream skills:
 
-- `program` — vague idea to scoped spec
-- `form-check` — single-change review and planning
-- `recovery` — multi-day full-project quality engagement
-- `pr` — deploy mechanics
-- `diet` — operate and incident response
-- `safetybar` — git recovery
-- `gymbuddy` — AI-assisted-development workflow
+- `program`, vague idea to scoped spec
+- `form-check`, single-change review and planning
+- `recovery`, multi-day full-project quality engagement
+- `pr`, deploy mechanics
+- `diet`, operate and incident response
+- `safetybar`, git recovery
+- `gymbuddy`. AI-assisted-development workflow
 
 And references one cross-cutting checklist: `form-check/checklists/codebase_scan.md`.
 
 ## Outgrowing the skill
 
-`warmup` is designed to be temporary. You should outgrow it within 5–10 invocations. The graduation signal is operationalized in `graduation_checklist.md` — a six-item self-assessment with concrete pass criteria. Run it once a month while you are still using the skill.
+`warmup` is designed to be temporary. You should outgrow it within 5–10 invocations. The graduation signal is operationalized in `graduation_checklist.md`, a six-item self-assessment with concrete pass criteria. Run it once a month while you are still using the skill.
 
 When you can answer all six items correctly on two consecutive monthly reviews, stop invoking `warmup` and route directly to downstream skills. You can leave the skill installed; the next person in your shared environment may not have graduated yet.
 
 ## Files
 
-- `SKILL.md` — the routing table and the harness contract
-- `graduation_checklist.md` — operationalized outgrow signal
-- `CHANGELOG.md` — version history
+- `SKILL.md`, the routing table and the harness contract
+- `graduation_checklist.md`, operationalized outgrow signal
+- `CHANGELOG.md`, version history
 - This file
 
 ## License

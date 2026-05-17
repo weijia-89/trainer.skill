@@ -1,11 +1,11 @@
-# recovery — vibe-coded → shippable; the conditioning back to form
+# recovery, vibe-coded → shippable; the conditioning back to form
 
 End-to-end "vibe-coded to shippable" engagement skill. Composes [`form-check.skill`](../form-check.skill) with a deAI sweep under a single DAG workflow.
 
 ## What this is (and isn't)
 
 - **Is**: an opinionated workflow that takes a project from "needs hardening" to shippable. Discovers, reviews, scores, doc-passes, voice-cleans, declares launch-ready (or escalates a gap report).
-- **Is**: a composition skill — pins `form-check@>=2.0.0,<3.0.0` and adds workflow on top.
+- **Is**: a composition skill, pins `form-check@>=2.0.0,<3.0.0` and adds workflow on top.
 - **Is not**: a code generator. Does not write feature code.
 - **Is not**: a substitute for security audit on vibe-dangerous surfaces.
 
@@ -79,4 +79,4 @@ See `CONTRIBUTING.md`.
 
 ## License
 
-MIT — see `LICENSE`.
+MIT, see `LICENSE`.

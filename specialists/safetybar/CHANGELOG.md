@@ -1,4 +1,4 @@
-# Changelog — safetybar
+# Changelog, safetybar
 
 Format: Keep a Changelog with SemVer.
 
@@ -8,7 +8,7 @@ Format: Keep a Changelog with SemVer.
 - MINOR: new commands documented in §2, new conflict-resolution patterns in §3, new branch-surgery patterns in §5.
 - PATCH: wording, example refinements, clarifications.
 
-## [1.1.0] — 2026-05-16 — Iron Law layering
+## [1.1.0], 2026-05-16. Iron Law layering
 
 MINOR (no breaking changes; added discipline content).
 
@@ -18,7 +18,7 @@ MINOR (no breaking changes; added discipline content).
 
 Full audit: a private gym-skills evidence-audit document (working notes).
 
-## [Renamed] — 2026-05-15
+## [Renamed], 2026-05-15
 
 This skill was renamed from `git-recovery` to `safetybar` as part of the gym-metaphor
 migration. The 8-skill ecosystem moved from bureaucratic category labels
@@ -35,7 +35,7 @@ The H1 of this CHANGELOG and earlier version entries retain the old name
 deliberately, for historical clarity. The rename plan and full rationale
 are in a private rename-plan document (working notes).
 
-## [1.0.0] — 2026-05-15
+## [1.0.0], 2026-05-15
 
 ### Added
 

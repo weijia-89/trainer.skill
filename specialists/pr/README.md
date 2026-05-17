@@ -1,4 +1,4 @@
-# PR — max-effort day; passes-tests → in-production
+# PR, max-effort day; passes-tests → in-production
 
 A skill for going from "passes tests on my machine" to "running in production."
 
@@ -32,9 +32,9 @@ The pre-deploy checklist and post-deploy verification are the load-bearing parts
 
 ## Composes with
 
-- `form-check` — the reversibility and blast-radius rubric components inform deploy decisions.
-- `diet` — handoff after a successful deploy (steady state) or during an incident (rollback).
-- `safetybar` — code-level rollback uses `git revert` per `safetybar §2.2`.
+- `form-check`, the reversibility and blast-radius rubric components inform deploy decisions.
+- `diet`, handoff after a successful deploy (steady state) or during an incident (rollback).
+- `safetybar`, code-level rollback uses `git revert` per `safetybar §2.2`.
 
 ## What this skill protects against
 
@@ -44,8 +44,8 @@ The Friday-afternoon deploy failure mode. The skill makes the underlying rule ex
 
 ## Files
 
-- `SKILL.md` — the seven sections
-- `CHANGELOG.md` — version history
+- `SKILL.md`, the seven sections
+- `CHANGELOG.md`, version history
 - This file
 
 ## License

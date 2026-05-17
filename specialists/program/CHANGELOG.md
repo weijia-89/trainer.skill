@@ -1,4 +1,4 @@
-# Changelog — program
+# Changelog, program
 
 Format: Keep a Changelog with SemVer.
 
@@ -8,7 +8,7 @@ Format: Keep a Changelog with SemVer.
 - MINOR: additional intake questions, new spec sections, new anti-patterns documented.
 - PATCH: wording, examples, citation fixes.
 
-## [2.0.0] — 2026-05-16 — Iron Law layering + composes-pin bump
+## [2.0.0], 2026-05-16. Iron Law layering + composes-pin bump
 
 MAJOR because composes pin to form-check changed from `>=2.0.0,<3.0.0` to `>=3.0.0,<4.0.0`.
 
@@ -18,7 +18,7 @@ MAJOR because composes pin to form-check changed from `>=2.0.0,<3.0.0` to `>=3.0
 
 Full audit: a private gym-skills evidence-audit document (working notes).
 
-## [Renamed] — 2026-05-15
+## [Renamed], 2026-05-15
 
 This skill was renamed from `code-planner` to `program` as part of the gym-metaphor
 migration. The 8-skill ecosystem moved from bureaucratic category labels
@@ -35,7 +35,7 @@ The H1 of this CHANGELOG and earlier version entries retain the old name
 deliberately, for historical clarity. The rename plan and full rationale
 are in a private rename-plan document (working notes).
 
-## [1.0.0] — 2026-05-15
+## [1.0.0], 2026-05-15
 
 ### Added
 
@@ -45,6 +45,6 @@ are in a private rename-plan document (working notes).
 
 ### Rationale
 
-The May 2026 SDLC-gap analysis (`code-inspector/CHANGELOG.md` 2.1.x) identified pre-build ideation as a real gap for beginners. Symptom: developers spend weeks building the wrong thing because they never wrote down what "right" was. The forcing function this skill provides is the one-page spec artifact — a beginner cannot complete the skill without producing it.
+The May 2026 SDLC-gap analysis (`code-inspector/CHANGELOG.md` 2.1.x) identified pre-build ideation as a real gap for beginners. Symptom: developers spend weeks building the wrong thing because they never wrote down what "right" was. The forcing function this skill provides is the one-page spec artifact, a beginner cannot complete the skill without producing it.
 
 The four questions are deliberately spec-shaped rather than ideation-shaped. Brainstorming has its own tools (a notes app, a conversation, a walk). This skill begins after brainstorming and ends with handoff to `code-inspector`.

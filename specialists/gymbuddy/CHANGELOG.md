@@ -1,4 +1,4 @@
-# Changelog — gymbuddy
+# Changelog, gymbuddy
 
 Format: Keep a Changelog with SemVer.
 
@@ -8,7 +8,7 @@ Format: Keep a Changelog with SemVer.
 - MINOR: new prompt-hygiene patterns (§3), new drift signs (§7), new composition entries (§8).
 - PATCH: wording, citation updates, example refinements.
 
-## [2.0.0] — 2026-05-16 — Iron Law layering + composes-pin bump
+## [2.0.0], 2026-05-16. Iron Law layering + composes-pin bump
 
 MAJOR because composes pin to form-check changed from `>=2.0.0,<3.0.0` to `>=3.0.0,<4.0.0`.
 
@@ -21,7 +21,7 @@ MAJOR because composes pin to form-check changed from `>=2.0.0,<3.0.0` to `>=3.0
 
 Full audit: a private gym-skills evidence-audit document (working notes).
 
-## [Renamed] — 2026-05-15
+## [Renamed], 2026-05-15
 
 This skill was renamed from `ai-helper` to `gymbuddy` as part of the gym-metaphor
 migration. The 8-skill ecosystem moved from bureaucratic category labels
@@ -38,7 +38,7 @@ The H1 of this CHANGELOG and earlier version entries retain the old name
 deliberately, for historical clarity. The rename plan and full rationale
 are in a private rename-plan document (working notes).
 
-## [1.0.0] — 2026-05-15
+## [1.0.0], 2026-05-15
 
 ### Added
 
@@ -49,6 +49,6 @@ are in a private rename-plan document (working notes).
 
 ### Rationale
 
-AI assistants are now the dominant tool for the beginner persona, and the failure modes are well-documented but were not assembled in one place. METR-2025, USENIX 2025 slopsquatting, the Lovable BOLA incidents, the Replit/Lemkin destructive-action case — each maps to a specific point in the workflow this skill describes. The skill exists to make those connections explicit rather than asking beginners to derive them from scattered cautionary tales.
+AI assistants are now the dominant tool for the beginner persona, and the failure modes are well-documented but were not assembled in one place. METR-2025, USENIX 2025 slopsquatting, the Lovable BOLA incidents, the Replit/Lemkin destructive-action case, each maps to a specific point in the workflow this skill describes. The skill exists to make those connections explicit rather than asking beginners to derive them from scattered cautionary tales.
 
 The drift framing (§7) treats cognitive offloading as a real and reversible pattern rather than a moral failing. The corrective is structural: maintain underlying skill through deliberate non-AI practice. The literature on cognitive offloading (Risko & Gilbert 2016; Sparrow et al. 2011 on the "Google effect") supports this framing.

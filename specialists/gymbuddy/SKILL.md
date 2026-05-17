@@ -15,7 +15,7 @@ composes:
     role: AI-generated code goes through the same rubric as human-generated; this skill is the lens, form-check is the verifier
 ---
 
-# gymbuddy — AI trains alongside you; you still do the reps
+# gymbuddy. AI trains alongside you; you still do the reps
 
 ```
 IRON LAW: NO AI-GENERATED CODE MERGED WITHOUT FRESH VERIFICATION EVIDENCE IN THIS SESSION.
@@ -23,7 +23,7 @@ IRON LAW: NO AI-GENERATED CODE MERGED WITHOUT FRESH VERIFICATION EVIDENCE IN THI
 
 Violating the letter of this rule is violating the spirit of this rule. "I verified something *like* this last week" does not satisfy the rule; the verification must be on *this* diff in *this* session. The slopsquatting evidence (`SLOP-arXiv` `[T1-replicated]`, cross-replicated by Snyk/Aikido/Mend; commercial models hallucinate package names ~5%, OSS models ~22%) means **every new import in every AI-generated diff** is a potential supply-chain attack until verified.
 
-## Red Flags — STOP and verify before merging
+## Red Flags. STOP and verify before merging
 
 If any of these thoughts is in your head:
 
@@ -39,7 +39,7 @@ If any of these thoughts is in your head:
 
 Each red flag means: stop. Open the diff. Walk `learner/lessons/03_hallucination_check.md` (30-second hallucination check) for every new import. Then run the form-check tier-floor check before merge.
 
-## Rationalizations — what you'll tell yourself, what's actually true
+## Rationalizations, what you'll tell yourself, what's actually true
 
 | Excuse | Reality |
 |---|---|
@@ -59,19 +59,19 @@ You use an AI to write code. The question this skill answers is *how to do that 
 
 **Scope.** Workflow patterns for AI-assisted development, prompting hygiene, the calibration discipline applied to AI suggestions, when *not* to delegate to AI.
 
-**Not for.** Replacing thinking. AI assistants are leverage on your existing judgment, not a substitute for it. If this skill becomes a way to outsource the parts you don't want to learn, it's not working — see `form-check/learner/study_protocol.md` "The pedagogy paradox."
+**Not for.** Replacing thinking. AI assistants are leverage on your existing judgment, not a substitute for it. If this skill becomes a way to outsource the parts you don't want to learn, it's not working, see `form-check/learner/study_protocol.md` "The pedagogy paradox."
 
-## §1 — The core insight: AI shifts work from *writing* to *verifying*
+## §1. The core insight: AI shifts work from *writing* to *verifying*
 
 Pre-AI software work was roughly: 30% thinking, 60% writing, 10% reviewing.
 
 AI-assisted work is roughly: 50% thinking-and-prompting, 10% writing-AI-prompts, **40% reviewing AI output**.
 
-The total time isn't necessarily lower. **Self-assessed productivity is systematically miscalibrated** (`LICHTENSTEIN-1982`, `KORIAT-BJORK-2005`, both `[T1-replicated]`); the METR-2025 RCT (n=16, preliminary, METR's follow-up redesigned for unreliability) is one example consistent with this — experienced devs felt +20% faster while measurably −19% slower on familiar repos. The specific magnitude is preliminary; the perception-vs-measurement gap is the actionable signal. The *shape* of the work shifts: the skill is not "write code" but "form clear intent, prompt for it, and verify the result."
+The total time isn't necessarily lower. **Self-assessed productivity is systematically miscalibrated** (`LICHTENSTEIN-1982`, `KORIAT-BJORK-2005`, both `[T1-replicated]`); the METR-2025 RCT (n=16, preliminary, METR's follow-up redesigned for unreliability) is one example consistent with this, experienced devs felt +20% faster while measurably −19% slower on familiar repos. The specific magnitude is preliminary; the perception-vs-measurement gap is the actionable signal. The *shape* of the work shifts: the skill is not "write code" but "form clear intent, prompt for it, and verify the result."
 
 A lot of beginner AI-assisted disasters come from doing the *prompting* but skipping the *verifying*. Verifying isn't optional. It's where the work moved.
 
-## §2 — When to use AI (and when not)
+## §2. When to use AI (and when not)
 
 ### 2.1 Strong fit (use AI confidently)
 
@@ -85,8 +85,8 @@ A lot of beginner AI-assisted disasters come from doing the *prompting* but skip
 ### 2.2 Caution fit (use AI but require explicit verification)
 
 - **Code that calls external libraries.** Hallucinated imports (`form-check/learner/lessons/03_hallucination_check.md`) are the highest-incidence failure mode. Verify every new import on the registry before installing.
-- **Code that touches authentication / authorization.** Lovable BOLA — AI generates auth (which is easy) but skips authz (which it conflates with auth). Verify with a test that calls the endpoint as a *different* user and asserts 403.
-- **Code that does destructive operations.** Deletes, drops, truncates, force-pushes, migrations. Treat AI-generated destructive code as *advisory only* — read it line by line; never execute it directly.
+- **Code that touches authentication / authorization.** Lovable BOLA. AI generates auth (which is easy) but skips authz (which it conflates with auth). Verify with a test that calls the endpoint as a *different* user and asserts 403.
+- **Code that does destructive operations.** Deletes, drops, truncates, force-pushes, migrations. Treat AI-generated destructive code as *advisory only*, read it line by line; never execute it directly.
 - **Anything in production at 2am.** Hallucination + sleep deprivation + AI confidence = Replit/Lemkin cautionary tale (`form-check/learner/cautionary_tales.md` Tale 1). The AI doesn't know it's an incident; you do; act accordingly.
 
 ### 2.3 Bad fit (AI is the wrong tool)
@@ -96,14 +96,14 @@ A lot of beginner AI-assisted disasters come from doing the *prompting* but skip
 - **Anything where you can't verify the output.** If you can't tell whether the AI was right, the AI was not helpful. Find a way to verify *or* don't delegate.
 - **Learning a new domain.** The AI's explanation might be wrong in ways you can't detect because you don't know the domain yet. Read a textbook / docs / talk to a person.
 
-## §3 — Prompting hygiene
+## §3. Prompting hygiene
 
 ### 3.1 The three-part prompt shape
 
 A prompt that gets useful AI output usually has three parts:
 
 1. **Context.** What's the codebase, what's the situation, what's been tried.
-2. **Goal.** Specifically what you want — output format included.
+2. **Goal.** Specifically what you want, output format included.
 3. **Constraints.** What to avoid, what to assume, what the rubric is.
 
 Example (bad): "Write a function that parses CSV."
@@ -132,7 +132,7 @@ If you've stopped reading the AI's diffs because they're "fine," you've stopped 
 
 When you hit any of those: **stop the AI session, walk away for 10 minutes, come back and review the last 5 changes from scratch.** The AI's outputs feel uniformly competent; that's the illusion to fight.
 
-## §4 — Calibration applied to AI output
+## §4. Calibration applied to AI output
 
 Per `form-check/learner/study_protocol.md` Habit 7: predict, measure, observe the gap.
 
@@ -144,9 +144,9 @@ Three concrete calibrations:
 | "Will this AI-suggested package install cleanly?" | `npm install` / `pip install` and check for errors / verify it's the right package | Note the gap |
 | "Will the AI's proposed refactor actually compile / pass tests on the first try?" | Run it | Note the gap |
 
-The calibration on AI output is *harder* than on human output because AI's surface confidence is uniformly high. The gap you're training against is: "feels confident" vs. "is correct." Senior engineers carry a healthy "this seems too clean" instinct that beginners haven't developed yet — this is how you develop it.
+The calibration on AI output is *harder* than on human output because AI's surface confidence is uniformly high. The gap you're training against is: "feels confident" vs. "is correct." Senior engineers carry a healthy "this seems too clean" instinct that beginners haven't developed yet, this is how you develop it.
 
-## §5 — The "AI suggested I do something destructive" protocol
+## §5. The "AI suggested I do something destructive" protocol
 
 When the AI suggests:
 
@@ -161,15 +161,15 @@ When the AI suggests:
 
 The asymmetric failure mode: AI is confidently wrong faster than you can verify. Your only defense is the protocol: read, pause, verify, *then* execute.
 
-## §6 — The AI session as an artifact
+## §6. The AI session as an artifact
 
 For non-trivial AI sessions (anything beyond a single isolated PR), keep the prompt history. Most tools do this automatically.
 
-Why: when something breaks two weeks later, "what did I tell the AI to do?" is a useful question. The session log is the answer. Treat it like git history — version it, refer back to it, write commit messages that reference what was prompted.
+Why: when something breaks two weeks later, "what did I tell the AI to do?" is a useful question. The session log is the answer. Treat it like git history, version it, refer back to it, write commit messages that reference what was prompted.
 
 Anti-pattern: deleting AI sessions to "tidy up." You're deleting the evidence trail.
 
-## §7 — Drift signs (you're becoming dependent)
+## §7. Drift signs (you're becoming dependent)
 
 Self-check every 30 days. If you can answer "yes" to two or more, recalibrate:
 
@@ -182,7 +182,7 @@ Self-check every 30 days. If you can answer "yes" to two or more, recalibrate:
 
 Drift is not a moral failing; it's a real cognitive pattern (the literature calls it *cognitive offloading*). The corrective is: do one substantial task per week *without* AI assistance. Maintain the underlying skill.
 
-## §8 — Composition with the rest of the ecosystem
+## §8. Composition with the rest of the ecosystem
 
 | Situation | Skill |
 |---|---|
@@ -192,18 +192,18 @@ Drift is not a moral failing; it's a real cognitive pattern (the literature call
 | AI-generated destructive command → wait | This skill §5 |
 | AI session for a whole project (multi-day) | `recovery` engagement, with this skill governing the *use* |
 | AI session in production / incident | `diet §3` overrides; do not let AI drive incident response |
-| AI-generated git commands | `safetybar` — read every git command with `--force`, `--hard`, `-D`, or `clean -f` before running |
+| AI-generated git commands | `safetybar`, read every git command with `--force`, `--hard`, `-D`, or `clean -f` before running |
 
-## §9 — Anti-patterns
+## §9. Anti-patterns
 
 - ❌ **Accepting an AI diff because it's small.** Hallucinated imports are small. BOLA bugs are small. Smallness is not a safety signal.
 - ❌ **Asking the AI "is this code correct?"** The AI will say yes. AI self-evaluation of code correctness is unreliable (this is documented; not contested). Run the tests instead.
 - ❌ **Using the AI to write code in a domain you don't understand at all.** You will not be able to detect the hallucinations because you have nothing to compare them against.
 - ❌ **Using AI for git operations during an incident.** AI confidently generates `--force` commands. Read every git command in incident mode.
-- ❌ **Letting the AI choose the library / framework.** Use `form-check/rubrics/stack_decision.md` for that — it encodes the boring-technology and forcing-constraint posture, which the AI does not.
+- ❌ **Letting the AI choose the library / framework.** Use `form-check/rubrics/stack_decision.md` for that, it encodes the boring-technology and forcing-constraint posture, which the AI does not.
 
 ## Provenance
 
-This skill exists because AI assistants are now the dominant tool for the beginner persona, and the failure modes are well-documented but not assembled in one place. METR-2025 (the perception–reality gap, n=16, awaiting replication), USENIX 2025 slopsquatting, the Lovable BOLA incidents, the Replit/Lemkin destructive-action case — all map to specific points in the workflow this skill describes. Treat the named studies as illustrative of mechanisms rather than as load-bearing evidence; the mechanisms hold whether or not any individual study replicates.
+This skill exists because AI assistants are now the dominant tool for the beginner persona, and the failure modes are well-documented but not assembled in one place. METR-2025 (the perception–reality gap, n=16, awaiting replication), USENIX 2025 slopsquatting, the Lovable BOLA incidents, the Replit/Lemkin destructive-action case, all map to specific points in the workflow this skill describes. Treat the named studies as illustrative of mechanisms rather than as load-bearing evidence; the mechanisms hold whether or not any individual study replicates.
 
-The structural insight (§1 — AI shifts work from writing to verifying) is the thesis; everything else is the application. If you take only one section, take §1.
+The structural insight (§1. AI shifts work from writing to verifying) is the thesis; everything else is the application. If you take only one section, take §1.

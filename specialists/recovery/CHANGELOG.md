@@ -1,4 +1,4 @@
-# Changelog — recovery
+# Changelog, recovery
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adheres to [Semantic Versioning](https://semver.org/) with the rules below.
 
@@ -8,7 +8,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - **MINOR**: new phase added; new adversarial question; new launch-ready DoD section; new template.
 - **PATCH**: citation, typo, doc-voice tweak, prompt-text refinement.
 
-## [3.0.0] — 2026-05-16 — Iron Law layering + composes-pin bump to form-check@>=3
+## [3.0.0], 2026-05-16. Iron Law layering + composes-pin bump to form-check@>=3
 
 MAJOR because composes pin to form-check changed from `>=2.0.0,<3.0.0` to `>=3.0.0,<4.0.0`.
 
@@ -16,11 +16,11 @@ MAJOR because composes pin to form-check changed from `>=2.0.0,<3.0.0` to `>=3.0
 - Added "Violating the letter is violating the spirit" framing; Red Flags list; Rationalizations table.
 - Description hygiene: triggers-only frontmatter; keyword block relocated to `## Keywords for discovery` body section.
 - Composes-pin: form-check `>=3.0.0,<4.0.0`; `references/notes.md@3.0.0` added to pinned components.
-- Below `form-check`'s calibration N=10, recovery renders `advisory` only — not launch-ready.
+- Below `form-check`'s calibration N=10, recovery renders `advisory` only, not launch-ready.
 
 Full audit: a private gym-skills evidence-audit document (working notes).
 
-## [Renamed] — 2026-05-15
+## [Renamed], 2026-05-15
 
 This skill was renamed from `code-fixer` to `recovery` as part of the gym-metaphor
 migration. The 8-skill ecosystem moved from bureaucratic category labels
@@ -37,7 +37,7 @@ The H1 of this CHANGELOG and earlier version entries retain the old name
 deliberately, for historical clarity. The rename plan and full rationale
 are in a private rename-plan document (working notes).
 
-## [2.0.0] — 2026-05-14
+## [2.0.0], 2026-05-14
 
 ### Changed (BREAKING)
 - Composes `code-inspector@>=2.0.0,<3.0.0` (was unpinned in v1).
@@ -77,7 +77,7 @@ Two fresh adversarial-review loops surfaced these fixes; all skill self-tests st
 - **Bare-filename refs**: expanded bare *workflow_dag.md* → `workflow/workflow_dag.md` in `CONTRIBUTING.md`; bare *confidence_score.md* → `code-inspector.skill/rubrics/confidence_score.md` in `rubrics/code_fixer_confidence.md`.
 - **Frontmatter coverage**: added minimal frontmatter to `examples/full-engagement-trace.md`.
 
-## [1.0.0] — 2026-04-30
+## [1.0.0], 2026-04-30
 
 ### Initial release
 - 7-phase waterfall workflow.

@@ -6,26 +6,26 @@ last_audited: 2026-05-16
 audit_methodology: palamedes/skill/references/replication-and-validity.md + source-grading.md
 ---
 
-# References — form-check
+# References, form-check
 
 This file references citation tags. Each citation carries a **tier tag** per `~/Projects/palamedes/skill/references/source-grading.md`:
 
-- `[T1-replicated]` — primary research, peer-reviewed, independently replicated (preferred).
-- `[T1-verified]` — peer-reviewed primary research, single study or first-of-kind, no independent replication yet.
-- `[T1-mixed]` — primary research with mixed or contested evidence base; treat as discipline-shaping default, not proven lever.
-- `[T1-vendor, COI:X]` — empirical claim from vendor with product incentive; adjust effect size toward null.
-- `[T2-secondary]` — credible journalism, expert blog, or vendor blog with linked primaries.
-- `[T2-incident]` — documented event, not statistical claim.
-- `[T1-contested]` — peer-reviewed but with significant peer-reviewed critique.
-- `[normative]` — operator wisdom, not evidence-derived.
-- `[stylistic-norm]` — gym voice/style choice; no evidence claim.
+- `[T1-replicated]`, primary research, peer-reviewed, independently replicated (preferred).
+- `[T1-verified]`, peer-reviewed primary research, single study or first-of-kind, no independent replication yet.
+- `[T1-mixed]`, primary research with mixed or contested evidence base; treat as discipline-shaping default, not proven lever.
+- `[T1-vendor, COI:X]`, empirical claim from vendor with product incentive; adjust effect size toward null.
+- `[T2-secondary]`, credible journalism, expert blog, or vendor blog with linked primaries.
+- `[T2-incident]`, documented event, not statistical claim.
+- `[T1-contested]`, peer-reviewed but with significant peer-reviewed critique.
+- `[normative]`, operator wisdom, not evidence-derived.
+- `[stylistic-norm]`, gym voice/style choice; no evidence claim.
 
 The test suite (`tests/test_citations.py`) verifies tags are not orphans against this local file. New test (v3.0.0): every citation must carry a tier tag.
 
 ## Citation hygiene rules (apply to every empirical claim in any gym skill)
 
 1. Trace press releases / blogs upward to T1 source. Cite the T1.
-2. Demand effect size + CI when citing — never significance-only.
+2. Demand effect size + CI when citing, never significance-only.
 3. Decline-effect prior for recent giant single-lab effects.
 4. Industry-funded research adjusted toward null per Lundh et al. Cochrane methodology review.
 5. Do not aggregate T3 sources into a `[T1-verified]` claim by counting agreement.
@@ -33,143 +33,143 @@ The test suite (`tests/test_citations.py`) verifies tags are not orphans against
 
 ## Productivity / AI evidence
 
-- `METR-2025` `[T1-verified, n=16, replication=METR-self-failed]` — Early-2025 RCT; experienced OSS devs on own large repos; n=16; AI-allowed condition was −19% slower (CI +2% to +37%). Devs perceived ~+20% AI speedup. **METR themselves redesigned their follow-up experiment in Feb 2026 due to unreliable data (`METR-2026-update`).** Use sparingly: cite at most once per skill with "preliminary signal, awaiting replication" framing. Do NOT generalize to junior devs / novel domains / well-defined tasks. The *phenomenon* of metacognitive miscalibration in software work is established (`LICHTENSTEIN-1982`, `KORIAT-BJORK-2005`); the specific magnitude in the METR study is not.
-- `METR-2025-paper` — arXiv:2507.09089.
-- `METR-2026-update` — `metr.org/blog/2026-02-24-uplift-update/` — METR's redesign note.
-- `LICHTENSTEIN-1982` `[T1-replicated]` — Lichtenstein, Fischhoff & Phillips, "Calibration of probabilities: The state of the art to 1980." Foundational metacognition / calibration evidence base.
-- `KORIAT-BJORK-2005` `[T1-replicated]` — Koriat & Bjork, "Illusions of competence in monitoring one's knowledge during study." Foresight bias in self-assessment.
-- `DORA-2024` `[T1-verified, survey-not-RCT]` — Accelerate State of DevOps 2024.
-- `DORA-2025` `[T1-verified, survey-not-RCT]` — State of AI-Assisted Software Development 2025; ~5,000 respondents; "AI as amplifier" claim is plausible but **not causally established** — survey self-report on productivity is the least reliable measurement modality. The DORA-metrics evidence base (deployment frequency, lead time, MTTR, change failure rate) is solid; the AI-amplifier claim is the new and weaker portion. Cite the DORA-metrics basis separately from the AI-amplifier claim.
-- `GITCLEAR-2025` `[T2-vendor, COI:GitClear, unreplicated]` — vendor self-published study; vendor sells code analytics. Cite as illustrative trend, not as evidence. Independent replication absent in 2024–2026 academic literature.
-- `ACM-COPILOT-CORRECT` `[T1-verified]` — Assessing the Correctness of GitHub Copilot's Code Generation (TOSEM).
-- `ACM-COPILOT-SEC` `[T1-replicated]` — Security Weaknesses of Copilot-Generated Code (TSE/arXiv 2310.02059); replicated by Majdinasab et al. 2024 (`MAJDINASAB-2024`).
-- `MAJDINASAB-2024` `[T1-verified]` — "Assessing the Security of GitHub Copilot's Generated Code — A Targeted Replication Study" (IEEE).
-- `PEARCE-2022` `[T1-verified]` — Pearce et al., "Asleep at the Keyboard? Assessing the Security of GitHub Copilot's Code Contributions" (IEEE S&P).
-- `KHOURY-2023` `[T1-verified]` — Khoury et al., "How Secure is Code Generated by ChatGPT?" (USENIX).
+- `METR-2025` `[T1-verified, n=16, replication=METR-self-failed]`. Early-2025 RCT; experienced OSS devs on own large repos; n=16; AI-allowed condition was −19% slower (CI +2% to +37%). Devs perceived ~+20% AI speedup. **METR themselves redesigned their follow-up experiment in Feb 2026 due to unreliable data (`METR-2026-update`).** Use sparingly: cite at most once per skill with "preliminary signal, awaiting replication" framing. Do NOT generalize to junior devs / novel domains / well-defined tasks. The *phenomenon* of metacognitive miscalibration in software work is established (`LICHTENSTEIN-1982`, `KORIAT-BJORK-2005`); the specific magnitude in the METR study is not.
+- `METR-2025-paper`, arXiv:2507.09089.
+- `METR-2026-update`: `metr.org/blog/2026-02-24-uplift-update/`. METR's redesign note.
+- `LICHTENSTEIN-1982` `[T1-replicated]`. Lichtenstein, Fischhoff & Phillips, "Calibration of probabilities: The state of the art to 1980." Foundational metacognition / calibration evidence base.
+- `KORIAT-BJORK-2005` `[T1-replicated]`. Koriat & Bjork, "Illusions of competence in monitoring one's knowledge during study." Foresight bias in self-assessment.
+- `DORA-2024` `[T1-verified, survey-not-RCT]`. Accelerate State of DevOps 2024.
+- `DORA-2025` `[T1-verified, survey-not-RCT]`. State of AI-Assisted Software Development 2025; ~5,000 respondents; "AI as amplifier" claim is plausible but **not causally established**, survey self-report on productivity is the least reliable measurement modality. The DORA-metrics evidence base (deployment frequency, lead time, MTTR, change failure rate) is solid; the AI-amplifier claim is the new and weaker portion. Cite the DORA-metrics basis separately from the AI-amplifier claim.
+- `GITCLEAR-2025` `[T2-vendor, COI:GitClear, unreplicated]`, vendor self-published study; vendor sells code analytics. Cite as illustrative trend, not as evidence. Independent replication absent in 2024–2026 academic literature.
+- `ACM-COPILOT-CORRECT` `[T1-verified]`. Assessing the Correctness of GitHub Copilot's Code Generation (TOSEM).
+- `ACM-COPILOT-SEC` `[T1-replicated]`. Security Weaknesses of Copilot-Generated Code (TSE/arXiv 2310.02059); replicated by Majdinasab et al. 2024 (`MAJDINASAB-2024`).
+- `MAJDINASAB-2024` `[T1-verified]`, "Assessing the Security of GitHub Copilot's Generated Code. A Targeted Replication Study" (IEEE).
+- `PEARCE-2022` `[T1-verified]`. Pearce et al., "Asleep at the Keyboard? Assessing the Security of GitHub Copilot's Code Contributions" (IEEE S&P).
+- `KHOURY-2023` `[T1-verified]`. Khoury et al., "How Secure is Code Generated by ChatGPT?" (USENIX).
 
 ## Supply-chain / slopsquatting
 
-- `SLOP-arXiv` `[T1-replicated]` — Spracklen et al., "We Have a Package for You! A Comprehensive Analysis of Package Hallucinations by Code Generating LLMs," arXiv:2406.10279v3 / USENIX Security 2025. 16 LLMs tested, 576,000 code samples, 2 languages. Average hallucinated-package rate: ≥5.2% commercial / 21.7% OSS models. Pattern: 38% conflations, 13% typos, 51% pure fabrications. **Cross-replicated**: independent measurements by Snyk (`SNYK-SLOP-2025`, ~19.7% across LLMs tested), Aikido (`AIKIDO-SLOP-2025`), and Mend (`MEND-SLOP-2025`) confirm the rate range. The 2025 follow-up `IMPORTING-PHANTOMS` (arXiv:2501.19012) extends measurement.
-- `SLOP-USENIX` — USENIX Security 2025 paper of `SLOP-arXiv`.
-- `IMPORTING-PHANTOMS` `[T1-verified]` — arXiv:2501.19012, 2025 follow-up extending Spracklen methodology.
-- `SNYK-SLOP-2025` `[T2-vendor, COI:Snyk]` — Snyk independent measurement.
-- `AIKIDO-SLOP-2025` `[T2-vendor, COI:Aikido]` — Aikido independent measurement.
-- `MEND-SLOP-2025` `[T2-vendor, COI:Mend]` — Mend independent measurement.
-- `WIZ-SHAIHULUD-1` `[T2-incident]` — Wiz, Shai-Hulud npm Supply Chain Attack (Sept 2025).
-- `WIZ-SHAIHULUD-2` `[T2-incident]` — Wiz, Shai-Hulud 2.0 (Nov 2025).
-- `MS-SHAIHULUD-3` `[T2-incident]` — Microsoft Security, Shai-Hulud 2.0 / Mini Shai-Hulud guidance (May 2026; first cross-ecosystem npm + PyPI).
-- `UNIT42-SHAIHULUD` `[T2-incident]` — Unit 42, Shai-Hulud npm worm.
-- `CISA-NPM-2025` `[T1-verified]` — CISA alert on npm ecosystem compromise (Sept 23, 2025); standards/government body.
+- `SLOP-arXiv` `[T1-replicated]`. Spracklen et al., "We Have a Package for You! A Comprehensive Analysis of Package Hallucinations by Code Generating LLMs," arXiv:2406.10279v3 / USENIX Security 2025. 16 LLMs tested, 576,000 code samples, 2 languages. Average hallucinated-package rate: ≥5.2% commercial / 21.7% OSS models. Pattern: 38% conflations, 13% typos, 51% pure fabrications. **Cross-replicated**: independent measurements by Snyk (`SNYK-SLOP-2025`, ~19.7% across LLMs tested), Aikido (`AIKIDO-SLOP-2025`), and Mend (`MEND-SLOP-2025`) confirm the rate range. The 2025 follow-up `IMPORTING-PHANTOMS` (arXiv:2501.19012) extends measurement.
+- `SLOP-USENIX`. USENIX Security 2025 paper of `SLOP-arXiv`.
+- `IMPORTING-PHANTOMS` `[T1-verified]`, arXiv:2501.19012, 2025 follow-up extending Spracklen methodology.
+- `SNYK-SLOP-2025` `[T2-vendor, COI:Snyk]`. Snyk independent measurement.
+- `AIKIDO-SLOP-2025` `[T2-vendor, COI:Aikido]`. Aikido independent measurement.
+- `MEND-SLOP-2025` `[T2-vendor, COI:Mend]`. Mend independent measurement.
+- `WIZ-SHAIHULUD-1` `[T2-incident]`. Wiz, Shai-Hulud npm Supply Chain Attack (Sept 2025).
+- `WIZ-SHAIHULUD-2` `[T2-incident]`. Wiz, Shai-Hulud 2.0 (Nov 2025).
+- `MS-SHAIHULUD-3` `[T2-incident]`. Microsoft Security, Shai-Hulud 2.0 / Mini Shai-Hulud guidance (May 2026; first cross-ecosystem npm + PyPI).
+- `UNIT42-SHAIHULUD` `[T2-incident]`. Unit 42, Shai-Hulud npm worm.
+- `CISA-NPM-2025` `[T1-verified]`. CISA alert on npm ecosystem compromise (Sept 23, 2025); standards/government body.
 
-## Standards / canon (all `[T1-verified]` — standards body)
+## Standards / canon (all `[T1-verified]`, standards body)
 
-- `OWASP-LLM-2025` — OWASP Top 10 for LLM Applications v2.0 (2025).
-- `OWASP-API-2023` — OWASP API Security Top 10 (2023).
-- `OWASP-WEB-2025` — OWASP Top 10:2025 (web).
-- `CWE-25-2025` — MITRE CWE Top 25 (2025).
-- `WCAG-2.2` — W3C WCAG 2.2 Recommendation (Oct 2023).
-- `WCAG-22-NEW` — "What's New in WCAG 2.2."
-- `INP-CWV` — INP becomes Core Web Vital (March 12, 2024).
-- `FID-EOL` — Chrome ends FID support.
-- `SLSA-v1.0` — SLSA Security Levels v1.0.
-- `RFC-8594` — RFC 8594 — The Sunset HTTP Header Field.
-- `STRIDE-WIKI` — STRIDE model (Garg & Kohnfelder, 1999).
-- `LINDDUN` — LINDDUN privacy threat modeling framework.
-- `LINDDUN-NIST` — NIST Privacy Framework: LINDDUN.
+- `OWASP-LLM-2025`. OWASP Top 10 for LLM Applications v2.0 (2025).
+- `OWASP-API-2023`. OWASP API Security Top 10 (2023).
+- `OWASP-WEB-2025`. OWASP Top 10:2025 (web).
+- `CWE-25-2025`. MITRE CWE Top 25 (2025).
+- `WCAG-2.2`. W3C WCAG 2.2 Recommendation (Oct 2023).
+- `WCAG-22-NEW`, "What's New in WCAG 2.2."
+- `INP-CWV`. INP becomes Core Web Vital (March 12, 2024).
+- `FID-EOL`. Chrome ends FID support.
+- `SLSA-v1.0`. SLSA Security Levels v1.0.
+- `RFC-8594`. RFC 8594. The Sunset HTTP Header Field.
+- `STRIDE-WIKI`. STRIDE model (Garg & Kohnfelder, 1999).
+- `LINDDUN`. LINDDUN privacy threat modeling framework.
+- `LINDDUN-NIST`. NIST Privacy Framework: LINDDUN.
 
 ## CS fundamentals
 
-- `PARNAS-1972` `[T1-replicated]` — Parnas, "On the Criteria To Be Used in Decomposing Systems into Modules," CACM 15(12). Foundational, widely course-adopted.
-- `MADR` `[T1-verified]` — Markdown Architectural Decision Records standard.
-- `FORD-EVOL-ARCH` `[T2-secondary]` — Ford/Parsons/Kua/Sadalage, Building Evolutionary Architectures (2nd ed.); textbook.
-- `FF-OREILLY` `[T2-secondary]` — "Fitness Functions" chapter, BEA.
+- `PARNAS-1972` `[T1-replicated]`. Parnas, "On the Criteria To Be Used in Decomposing Systems into Modules," CACM 15(12). Foundational, widely course-adopted.
+- `MADR` `[T1-verified]`. Markdown Architectural Decision Records standard.
+- `FORD-EVOL-ARCH` `[T2-secondary]`. Ford/Parsons/Kua/Sadalage, Building Evolutionary Architectures (2nd ed.); textbook.
+- `FF-OREILLY` `[T2-secondary]`, "Fitness Functions" chapter, BEA.
 
 ## Software-engineering empirical evidence
 
-- `RAFIQUE-MISIC-2013` `[T1-mixed]` — Rafique & Mišić, "The Effects of Test-Driven Development on External Quality and Productivity: A Meta-Analysis," IEEE Transactions on Software Engineering. k=27 studies. Found small-to-moderate quality effect, **with high variability across studies**. **TDD evidence is mixed**, not conclusive. Treat TDD as discipline-shaping default, not proven productivity lever.
-- `KOLLANUS-2010` `[T1-mixed]` — Kollanus, "Test-Driven Development — Still a Promising Approach?" Mixed-evidence review of TDD.
-- `TDD-SLR-2025` `[T1-verified]` — "Reliability of systematic literature reviews on test-driven development," Information and Software Technology 2025; methodological commentary on prior TDD SLRs.
-- `HANNAY-2009` `[T1-replicated]` — Hannay, Dybå, Arisholm, Sjøberg, "The effectiveness of pair programming: A meta-analysis," Information and Software Technology. **Small positive effect on quality, medium positive on duration, large negative on effort** — pair programming costs roughly double the person-hours for modest quality gain. Qualifies any "always pair" claim.
-- `BACCHELLI-BIRD-2013` `[T1-replicated]` — Bacchelli & Bird, "Expectations, Outcomes, and Challenges of Modern Code Review" (ICSE). Strong defect-detection evidence for lightweight modern code review.
-- `COHEN-2010` `[T1-replicated]` — Cohen et al., "Modern Code Review: A Case Study at Google."
-- `PETROVIC-2018` `[T1-verified]` — Petrović & Ivanković, "State of Mutation Testing at Google," ICSE-SEIP 2018. Real-world evidence that mutation testing catches real bugs at module level when applied with arid-mutant filtering.
-- `BELLER-2016` `[T1-replicated]` — Beller et al., "Analyzing the State of Static Analysis: A Large-Scale Evaluation in Open Source Software." Strong evidence lightweight static analysis catches bugs in practice.
-- `KITCHENHAM-EFFECT-SIZE` `[T1-replicated]` — Kampenes, Dybå, Hannay, Sjøberg, "A systematic review of effect size in software engineering experiments." Methodological foundation: demand effect size, not just significance.
+- `RAFIQUE-MISIC-2013` `[T1-mixed]`. Rafique & Mišić, "The Effects of Test-Driven Development on External Quality and Productivity: A Meta-Analysis," IEEE Transactions on Software Engineering. k=27 studies. Found small-to-moderate quality effect, **with high variability across studies**. **TDD evidence is mixed**, not conclusive. Treat TDD as discipline-shaping default, not proven productivity lever.
+- `KOLLANUS-2010` `[T1-mixed]`. Kollanus, "Test-Driven Development. Still a Promising Approach?" Mixed-evidence review of TDD.
+- `TDD-SLR-2025` `[T1-verified]`, "Reliability of systematic literature reviews on test-driven development," Information and Software Technology 2025; methodological commentary on prior TDD SLRs.
+- `HANNAY-2009` `[T1-replicated]`. Hannay, Dybå, Arisholm, Sjøberg, "The effectiveness of pair programming: A meta-analysis," Information and Software Technology. **Small positive effect on quality, medium positive on duration, large negative on effort**, pair programming costs roughly double the person-hours for modest quality gain. Qualifies any "always pair" claim.
+- `BACCHELLI-BIRD-2013` `[T1-replicated]`. Bacchelli & Bird, "Expectations, Outcomes, and Challenges of Modern Code Review" (ICSE). Strong defect-detection evidence for lightweight modern code review.
+- `COHEN-2010` `[T1-replicated]`. Cohen et al., "Modern Code Review: A Case Study at Google."
+- `PETROVIC-2018` `[T1-verified]`. Petrović & Ivanković, "State of Mutation Testing at Google," ICSE-SEIP 2018. Real-world evidence that mutation testing catches real bugs at module level when applied with arid-mutant filtering.
+- `BELLER-2016` `[T1-replicated]`. Beller et al., "Analyzing the State of Static Analysis: A Large-Scale Evaluation in Open Source Software." Strong evidence lightweight static analysis catches bugs in practice.
+- `KITCHENHAM-EFFECT-SIZE` `[T1-replicated]`. Kampenes, Dybå, Hannay, Sjøberg, "A systematic review of effect size in software engineering experiments." Methodological foundation: demand effect size, not just significance.
 
 ## Pedagogy / cognitive science
 
-- `OSC-2015` `[T1-verified]` — Open Science Collaboration, "Estimating the reproducibility of psychological science" (Science 2015). ~36% of psych studies replicated at original effect size; mean replicated effect was half original. Foundational replication-crisis evidence.
-- `IOANNIDIS-2005` `[T1-replicated]` — Ioannidis, "Why Most Published Research Findings Are False" (PLoS Medicine).
-- `CAMERER-2018` `[T1-verified]` — Camerer et al., "Evaluating the replicability of social science experiments in Nature and Science" (Nature Human Behaviour). 13 of 21 findings replicated.
-- `ROEDIGER-KARPICKE-2006` `[T1-replicated]` — Roediger & Karpicke, "Test-Enhanced Learning" (Psychological Science). Testing effect.
-- `KARPICKE-BLUNT-2011` `[T1-replicated]` — Karpicke & Blunt, "Retrieval Practice Produces More Learning than Elaborative Studying" (Science).
-- `ADESOPE-2017` `[T1-replicated]` — Adesope, Trevisan & Sundararajan, "Rethinking the use of tests: A meta-analysis of practice testing" (Review of Educational Research). k=118 studies, g=0.61. Strong testing-effect evidence base.
-- `CEPEDA-2006` `[T1-replicated]` — Cepeda et al., "Distributed practice in verbal recall tasks: A review and quantitative synthesis" (Psychological Bulletin). k=839; foundational spacing-effect meta.
-- `BAHRICK-PHELPS-1987` `[T1-verified]` — Bahrick & Phelps, 50-year Spanish vocabulary retention. **Single study, extreme retention interval; replicated indirectly via Cepeda meta. Use as illustration only; load-bearing claims must rest on `CEPEDA-2006`.**
-- `SWELLER-COOPER-1985` `[T1-replicated]` — Sweller & Cooper, "The Use of Worked Examples as a Substitute for Problem Solving in Learning Algebra" (Cognition and Instruction). Cognitive load theory foundation.
-- `ATKINSON-RENKL-MERRILL-2000` `[T1-replicated]` — Atkinson, Renkl & Merrill, "Learning from Examples: Instructional Principles from the Worked Examples Research" (Review of Educational Research). Meta-analysis.
-- `KIRSCHNER-SWELLER-CLARK-2006` `[T1-replicated]` — Kirschner, Sweller & Clark, "Why Minimal Guidance During Instruction Does Not Work: An Analysis of the Failure of Constructivist, Discovery, Problem-Based, Experiential, and Inquiry-Based Teaching" (Educational Psychologist 41(2)). 4,000+ citations. **Anchor for: novices need explicit instruction + worked examples, not unguided exploration.**
-- `CHI-1994` `[T1-replicated]` — Chi, de Leeuw, Chiu & LaVancher, "Eliciting Self-Explanations Improves Understanding" (Cognitive Science).
-- `BISRA-2018` `[T1-replicated]` — Bisra, Liu, Nesbit, Salimi & Winne, "Inducing Self-Explanation: a Meta-Analysis" (Educational Psychology Review 30(3)). g=0.55, 20 moderator variables coded. **Replaces Wylie & Chi 2014 chapter as load-bearing self-explanation citation.**
-- `KAPUR-2008` `[T1-verified]` — Kapur, "Productive Failure" (Cognitive Science).
-- `SINHA-KAPUR-2021` `[T1-replicated]` — Sinha & Kapur, "When Problem Solving Followed by Instruction Works: Evidence for Productive Failure" (Review of Educational Research 91(5)). Meta-analysis. **Identifies boundary conditions**: PF requires (a) prior knowledge floor, (b) problem affordances surfacing the to-be-learned concept, (c) consolidating instructional follow-up. Cite for the boundary conditions, not just the effect.
-- `LOIBL-ROLL-RUMMEL-2017` `[T1-replicated]` — Loibl, Roll & Rummel, "Towards a Theory of When and How Problem Solving Followed by Instruction Supports Learning" (Educational Psychology Review).
-- `GICK-HOLYOAK-1983` `[T1-replicated]` — Gick & Holyoak, "Schema Induction and Analogical Transfer" (Cognitive Psychology). Schema acquisition via varied examples.
-- `GOLDWATER-SCHALK-2016` `[T1-replicated]` — Goldwater & Schalk, STEM-transfer review (Psychological Bulletin).
-- `PASHLER-2008` `[T1-replicated]` — Pashler, McDaniel, Rohrer & Bjork, "Learning Styles: Concepts and Evidence" (Psychological Science in the Public Interest). **Anti-claim: no evidence for learning-styles matching.** Well-established negative finding.
-- `BJORK-BJORK-2011` `[T1-verified]` — Bjork & Bjork, "Making things hard on yourself, but in a good way: Creating desirable difficulties to enhance learning." Names the principle behind interleaving + spacing + retrieval.
-- `ROHRER-2012` `[T1-verified]` — Rohrer, "Interleaving Helps Students Distinguish among Similar Concepts." **Boundary condition**: interleaving works for related-but-distinct concepts; not a generic "always mix topics" recommendation.
-- `CARVALHO-GOLDSTONE-2015` `[T1-verified]` — Carvalho & Goldstone, "What you learn is more than what you see: what can sequencing effects tell us about inductive category learning?" Boundary conditions for interleaving.
-- `MARGULIEUX-CATRAMBONE-2016` `[T1-verified]` — Margulieux & Catrambone, "Improving problem solving with subgoal labels in expository text and worked examples" (Learning and Instruction). Subgoal labeling for programming education.
-- `MARGULIEUX-2012` `[T1-verified]` — Margulieux, Guzdial & Catrambone, "Subgoal-labeled instructional material improves performance and transfer in learning to develop mobile applications" (ICER).
-- `JOENTAUSTA-HELLAS-2022` `[T1-verified]` — Joentausta & Hellas, replication of subgoal labeling effect for online programming worked examples (Frontiers in Education). Independent-lab replication.
-- `MARGULIEUX-2025` `[T1-verified]` — "An Experimental Evaluation of Worked Example Strategies for Efficient Programming Education" (Technology, Knowledge and Learning, Springer). Recent extension.
-- `GIGNAC-ZAJENKOWSKI-2020` `[T1-replicated]` — "The Dunning-Kruger effect is (mostly) a statistical artefact: Valid approaches to testing the hypothesis with individual differences data" (Intelligence). **Critique of D-K**: effect is mostly regression-to-mean + better-than-average artifact.
-- `GIGNAC-2024` `[T1-verified]` — "Rethinking the Dunning-Kruger effect: Negligible influence on a limited segment of the population" (Intelligence). Confirms artifact interpretation.
-- `HATTIE-2023` `[T2-secondary, meta-meta-analysis]` — Hattie, *Visible Learning: The Sequel* (2023). 2,100+ meta-analyses synthesized. Use as effect-size lookup, not as primary; tier as T2 because methodology has been critiqued. **Self-acknowledged CLE error**: Hattie acknowledges in *The Sequel* that the Common Language Effect (CLE) values in the original *Visible Learning* (2009) were mathematically incorrect — some values were >100% or negative when CLE is bounded [0,1]. The Sequel partly responds (warns against treating effect-sizes as quality-measures, emphasizes context and implementation fidelity) but the core meta-meta-analysis methodology is unchanged. Cite for ballpark effect-size ordering only; do not use specific CLE figures from the 2009 work.
-- `GUSKEY-2010` `[T1-replicated]` — Guskey, "Lessons of Mastery Learning" (Educational Leadership / Journal of Advanced Academics). Empirical basis for tier-floor / mastery-before-advance concept.
-- `HATTIE-TIMPERLEY-2007` `[T1-replicated]` — Hattie & Timperley, "The Power of Feedback" (Review of Educational Research). Feedback timing and granularity.
-- `SLAMECKA-GRAF-1978` `[T1-replicated]` — Slamecka & Graf, "The generation effect: Delineation of a phenomenon" (Journal of Experimental Psychology). Generation effect; adjacent to self-explanation.
-- `BERTSCH-2007` `[T1-verified]` — Bertsch et al., generation effect meta-analysis.
-- `LUNDH-COCHRANE` `[T1-replicated]` — Lundh et al., Cochrane methodological review of industry-funded research bias. Foundational COI evidence.
-- `SIMMONS-2011` `[T1-replicated]` — Simmons, Nelson & Simonsohn, "False-Positive Psychology" (Psychological Science). Forking-paths / researcher-degrees-of-freedom.
-- `GELMAN-LOKEN-2013` `[T1-verified]` — Gelman & Loken, "The garden of forking paths."
+- `OSC-2015` `[T1-verified]`. Open Science Collaboration, "Estimating the reproducibility of psychological science" (Science 2015). ~36% of psych studies replicated at original effect size; mean replicated effect was half original. Foundational replication-crisis evidence.
+- `IOANNIDIS-2005` `[T1-replicated]`. Ioannidis, "Why Most Published Research Findings Are False" (PLoS Medicine).
+- `CAMERER-2018` `[T1-verified]`. Camerer et al., "Evaluating the replicability of social science experiments in Nature and Science" (Nature Human Behaviour). 13 of 21 findings replicated.
+- `ROEDIGER-KARPICKE-2006` `[T1-replicated]`. Roediger & Karpicke, "Test-Enhanced Learning" (Psychological Science). Testing effect.
+- `KARPICKE-BLUNT-2011` `[T1-replicated]`. Karpicke & Blunt, "Retrieval Practice Produces More Learning than Elaborative Studying" (Science).
+- `ADESOPE-2017` `[T1-replicated]`. Adesope, Trevisan & Sundararajan, "Rethinking the use of tests: A meta-analysis of practice testing" (Review of Educational Research). k=118 studies, g=0.61. Strong testing-effect evidence base.
+- `CEPEDA-2006` `[T1-replicated]`. Cepeda et al., "Distributed practice in verbal recall tasks: A review and quantitative synthesis" (Psychological Bulletin). k=839; foundational spacing-effect meta.
+- `BAHRICK-PHELPS-1987` `[T1-verified]`. Bahrick & Phelps, 50-year Spanish vocabulary retention. **Single study, extreme retention interval; replicated indirectly via Cepeda meta. Use as illustration only; load-bearing claims must rest on `CEPEDA-2006`.**
+- `SWELLER-COOPER-1985` `[T1-replicated]`. Sweller & Cooper, "The Use of Worked Examples as a Substitute for Problem Solving in Learning Algebra" (Cognition and Instruction). Cognitive load theory foundation.
+- `ATKINSON-RENKL-MERRILL-2000` `[T1-replicated]`. Atkinson, Renkl & Merrill, "Learning from Examples: Instructional Principles from the Worked Examples Research" (Review of Educational Research). Meta-analysis.
+- `KIRSCHNER-SWELLER-CLARK-2006` `[T1-replicated]`. Kirschner, Sweller & Clark, "Why Minimal Guidance During Instruction Does Not Work: An Analysis of the Failure of Constructivist, Discovery, Problem-Based, Experiential, and Inquiry-Based Teaching" (Educational Psychologist 41(2)). 4,000+ citations. **Anchor for: novices need explicit instruction + worked examples, not unguided exploration.**
+- `CHI-1994` `[T1-replicated]`. Chi, de Leeuw, Chiu & LaVancher, "Eliciting Self-Explanations Improves Understanding" (Cognitive Science).
+- `BISRA-2018` `[T1-replicated]`. Bisra, Liu, Nesbit, Salimi & Winne, "Inducing Self-Explanation: a Meta-Analysis" (Educational Psychology Review 30(3)). g=0.55, 20 moderator variables coded. **Replaces Wylie & Chi 2014 chapter as load-bearing self-explanation citation.**
+- `KAPUR-2008` `[T1-verified]`. Kapur, "Productive Failure" (Cognitive Science).
+- `SINHA-KAPUR-2021` `[T1-replicated]`. Sinha & Kapur, "When Problem Solving Followed by Instruction Works: Evidence for Productive Failure" (Review of Educational Research 91(5)). Meta-analysis. **Identifies boundary conditions**: PF requires (a) prior knowledge floor, (b) problem affordances surfacing the to-be-learned concept, (c) consolidating instructional follow-up. Cite for the boundary conditions, not just the effect.
+- `LOIBL-ROLL-RUMMEL-2017` `[T1-replicated]`. Loibl, Roll & Rummel, "Towards a Theory of When and How Problem Solving Followed by Instruction Supports Learning" (Educational Psychology Review).
+- `GICK-HOLYOAK-1983` `[T1-replicated]`. Gick & Holyoak, "Schema Induction and Analogical Transfer" (Cognitive Psychology). Schema acquisition via varied examples.
+- `GOLDWATER-SCHALK-2016` `[T1-replicated]`. Goldwater & Schalk, STEM-transfer review (Psychological Bulletin).
+- `PASHLER-2008` `[T1-replicated]`. Pashler, McDaniel, Rohrer & Bjork, "Learning Styles: Concepts and Evidence" (Psychological Science in the Public Interest). **Anti-claim: no evidence for learning-styles matching.** Well-established negative finding.
+- `BJORK-BJORK-2011` `[T1-verified]`. Bjork & Bjork, "Making things hard on yourself, but in a good way: Creating desirable difficulties to enhance learning." Names the principle behind interleaving + spacing + retrieval.
+- `ROHRER-2012` `[T1-verified]`. Rohrer, "Interleaving Helps Students Distinguish among Similar Concepts." **Boundary condition**: interleaving works for related-but-distinct concepts; not a generic "always mix topics" recommendation.
+- `CARVALHO-GOLDSTONE-2015` `[T1-verified]`. Carvalho & Goldstone, "What you learn is more than what you see: what can sequencing effects tell us about inductive category learning?" Boundary conditions for interleaving.
+- `MARGULIEUX-CATRAMBONE-2016` `[T1-verified]`. Margulieux & Catrambone, "Improving problem solving with subgoal labels in expository text and worked examples" (Learning and Instruction). Subgoal labeling for programming education.
+- `MARGULIEUX-2012` `[T1-verified]`. Margulieux, Guzdial & Catrambone, "Subgoal-labeled instructional material improves performance and transfer in learning to develop mobile applications" (ICER).
+- `JOENTAUSTA-HELLAS-2022` `[T1-verified]`. Joentausta & Hellas, replication of subgoal labeling effect for online programming worked examples (Frontiers in Education). Independent-lab replication.
+- `MARGULIEUX-2025` `[T1-verified]`, "An Experimental Evaluation of Worked Example Strategies for Efficient Programming Education" (Technology, Knowledge and Learning, Springer). Recent extension.
+- `GIGNAC-ZAJENKOWSKI-2020` `[T1-replicated]`, "The Dunning-Kruger effect is (mostly) a statistical artefact: Valid approaches to testing the hypothesis with individual differences data" (Intelligence). **Critique of D-K**: effect is mostly regression-to-mean + better-than-average artifact.
+- `GIGNAC-2024` `[T1-verified]`, "Rethinking the Dunning-Kruger effect: Negligible influence on a limited segment of the population" (Intelligence). Confirms artifact interpretation.
+- `HATTIE-2023` `[T2-secondary, meta-meta-analysis]`. Hattie, *Visible Learning: The Sequel* (2023). 2,100+ meta-analyses synthesized. Use as effect-size lookup, not as primary; tier as T2 because methodology has been critiqued. **Self-acknowledged CLE error**: Hattie acknowledges in *The Sequel* that the Common Language Effect (CLE) values in the original *Visible Learning* (2009) were mathematically incorrect, some values were >100% or negative when CLE is bounded [0,1]. The Sequel partly responds (warns against treating effect-sizes as quality-measures, emphasizes context and implementation fidelity) but the core meta-meta-analysis methodology is unchanged. Cite for ballpark effect-size ordering only; do not use specific CLE figures from the 2009 work.
+- `GUSKEY-2010` `[T1-replicated]`. Guskey, "Lessons of Mastery Learning" (Educational Leadership / Journal of Advanced Academics). Empirical basis for tier-floor / mastery-before-advance concept.
+- `HATTIE-TIMPERLEY-2007` `[T1-replicated]`. Hattie & Timperley, "The Power of Feedback" (Review of Educational Research). Feedback timing and granularity.
+- `SLAMECKA-GRAF-1978` `[T1-replicated]`. Slamecka & Graf, "The generation effect: Delineation of a phenomenon" (Journal of Experimental Psychology). Generation effect; adjacent to self-explanation.
+- `BERTSCH-2007` `[T1-verified]`. Bertsch et al., generation effect meta-analysis.
+- `LUNDH-COCHRANE` `[T1-replicated]`. Lundh et al., Cochrane methodological review of industry-funded research bias. Foundational COI evidence.
+- `SIMMONS-2011` `[T1-replicated]`. Simmons, Nelson & Simonsohn, "False-Positive Psychology" (Psychological Science). Forking-paths / researcher-degrees-of-freedom.
+- `GELMAN-LOKEN-2013` `[T1-verified]`. Gelman & Loken, "The garden of forking paths."
 
 ## Tooling primaries
 
-- `HYPOTHESIS` — Python property-based testing.
-- `TRIO-CORE` — Trio core functionality (structured concurrency).
-- `GO-HARMFUL` — Smith, "Notes on structured concurrency, or: Go statement considered harmful."
-- `STRIPE-IDEMP` — Stripe Engineering, "Designing robust and predictable APIs with idempotency."
-- `BRANDUR-IDEMP` — Brandur, "Implementing Stripe-like Idempotency Keys in Postgres."
-- `EXPAND-CONTRACT` — Prisma Data Guide, expand-contract pattern.
-- `PGROLL` — Xata, "Schema changes and the power of expand-contract with pgroll."
-- `STRYKER` — Stryker Mutator (JS/TS).
+- `HYPOTHESIS`. Python property-based testing.
+- `TRIO-CORE`. Trio core functionality (structured concurrency).
+- `GO-HARMFUL`. Smith, "Notes on structured concurrency, or: Go statement considered harmful."
+- `STRIPE-IDEMP`. Stripe Engineering, "Designing robust and predictable APIs with idempotency."
+- `BRANDUR-IDEMP`. Brandur, "Implementing Stripe-like Idempotency Keys in Postgres."
+- `EXPAND-CONTRACT`. Prisma Data Guide, expand-contract pattern.
+- `PGROLL`. Xata, "Schema changes and the power of expand-contract with pgroll."
+- `STRYKER`. Stryker Mutator (JS/TS).
 
 ## Real-world incidents
 
-- `REPLIT-FORTUNE` `[T2-incident]` — Fortune coverage of the Lemkin/SaaStr incident (July 2025).
-- `AIID-1152` `[T2-incident]` — AI Incident Database #1152.
-- `LOVABLE-REGISTER` `[T2-incident]` — The Register, "AI-built app on Lovable exposed 18K users" (Feb 2026).
-- `LOVABLE-CRISIS` `[T2-incident]` — TNW, "Lovable security crisis: 48 days of exposed projects."
-- `CVE-2025-48757` `[T1-verified]` — BOLA-class CVE on AI-generated code; standards body (CVE database).
-- `WIRED-VIBE` `[T2-incident]` — Wired, "Thousands of Vibe-Coded Apps Expose Corporate and Personal Data."
-- `POWERPAGES-APPOMNI-2023` `[T2-incident]` — AppOmni research on Microsoft Power Pages default-public OData exposure.
-- `LEFT-PAD-2016` `[T2-incident]` — The Register, "How one programmer broke the internet by deleting a tiny piece of code" (March 2016); foundational supply-chain dependency-trust incident.
+- `REPLIT-FORTUNE` `[T2-incident]`. Fortune coverage of the Lemkin/SaaStr incident (July 2025).
+- `AIID-1152` `[T2-incident]`. AI Incident Database #1152.
+- `LOVABLE-REGISTER` `[T2-incident]`. The Register, "AI-built app on Lovable exposed 18K users" (Feb 2026).
+- `LOVABLE-CRISIS` `[T2-incident]`. TNW, "Lovable security crisis: 48 days of exposed projects."
+- `CVE-2025-48757` `[T1-verified]`. BOLA-class CVE on AI-generated code; standards body (CVE database).
+- `WIRED-VIBE` `[T2-incident]`. Wired, "Thousands of Vibe-Coded Apps Expose Corporate and Personal Data."
+- `POWERPAGES-APPOMNI-2023` `[T2-incident]`. AppOmni research on Microsoft Power Pages default-public OData exposure.
+- `LEFT-PAD-2016` `[T2-incident]`. The Register, "How one programmer broke the internet by deleting a tiny piece of code" (March 2016); foundational supply-chain dependency-trust incident.
 
 ## Operating practice
 
-- `12FACTOR` `[T2-secondary]` — The Twelve-Factor App.
-- `GUARDRAILS-GG` `[T2-vendor, COI:GitGuardian]` — GitGuardian, "Automated Guardrails for Vibe Coding."
+- `12FACTOR` `[T2-secondary]`. The Twelve-Factor App.
+- `GUARDRAILS-GG` `[T2-vendor, COI:GitGuardian]`. GitGuardian, "Automated Guardrails for Vibe Coding."
 
 ## Posture summary
 
 - AI is good at: scaffolding, transforms, parsers, tests for spec'd behavior. `[normative]`
 - AI is risky at: integration boundaries, irreversible ops, anything you can't unit-test. `[normative]`
-- **Metacognitive miscalibration in self-assessed productivity is established** (`LICHTENSTEIN-1982`, `KORIAT-BJORK-2005`). The METR-2025 RCT (n=16, AI-allowed −19% slower while devs perceived +20% speedup) is one preliminary RCT consistent with this; **METR's own follow-up (2026-02-24) was redesigned for unreliability** — do not treat the specific magnitude as load-bearing. The general phenomenon (perception ≠ measurement) holds; use the calibrated score (`rubrics/confidence_score.md`), not perception.
-- Supply-chain attacks (Shai-Hulud Sept 2025 / Nov 2025 / May 2026) prove shared CI tokens are a single point of failure — rotate, federate (OIDC), pin (lockfiles + hashes), audit. `[T2-incident, well-documented]`
+- **Metacognitive miscalibration in self-assessed productivity is established** (`LICHTENSTEIN-1982`, `KORIAT-BJORK-2005`). The METR-2025 RCT (n=16, AI-allowed −19% slower while devs perceived +20% speedup) is one preliminary RCT consistent with this; **METR's own follow-up (2026-02-24) was redesigned for unreliability**, do not treat the specific magnitude as load-bearing. The general phenomenon (perception ≠ measurement) holds; use the calibrated score (`rubrics/confidence_score.md`), not perception.
+- Supply-chain attacks (Shai-Hulud Sept 2025 / Nov 2025 / May 2026) prove shared CI tokens are a single point of failure, rotate, federate (OIDC), pin (lockfiles + hashes), audit. `[T2-incident, well-documented]`
 - AI-generated code carries elevated security-defect rates **cross-replicated across multiple research groups** (`PEARCE-2022`, `KHOURY-2023`, `ACM-COPILOT-SEC`, `MAJDINASAB-2024`).
-- LLM package-name hallucination is **cross-replicated** (`SLOP-arXiv` + Snyk + Aikido + Mend; range 5–22%). **Verify every new import** — this is the single highest-evidence AI-specific risk in the corpus.
+- LLM package-name hallucination is **cross-replicated** (`SLOP-arXiv` + Snyk + Aikido + Mend; range 5–22%). **Verify every new import**, this is the single highest-evidence AI-specific risk in the corpus.
 - AI-PR maintainability decline (copy-paste rise, refactoring decline, churn-within-2-weeks rise) is reported by `GITCLEAR-2025` `[T2-vendor, COI]`; treat as illustrative of a trend, not as established quantitative evidence; corroborate with `ACM-COPILOT-CORRECT` for academic basis.
 - TDD evidence is **mixed** (`RAFIQUE-MISIC-2013`, `KOLLANUS-2010`); pair programming is **net effort-cost positive for modest quality gain** (`HANNAY-2009`); modern code review has **strong defect-detection evidence** (`BACCHELLI-BIRD-2013`, `COHEN-2010`); mutation testing **catches real bugs** at scale with proper filtering (`PETROVIC-2018`).
 - Pedagogy: **discipline-shaping defaults** in this skill are anchored in cognitive science with replication (testing effect `ADESOPE-2017`, spacing `CEPEDA-2006`, worked examples + minimal-guidance-fails `KIRSCHNER-SWELLER-CLARK-2006`, self-explanation `BISRA-2018`, productive failure with boundary conditions `SINHA-KAPUR-2021`, schema acquisition `GICK-HOLYOAK-1983`, calibration `LICHTENSTEIN-1982`). Dunning-Kruger is **not** load-bearing here (`GIGNAC-ZAJENKOWSKI-2020`, `GIGNAC-2024`).

@@ -1,4 +1,4 @@
-# Contributing — form-check.skill
+# Contributing, form-check.skill
 
 This skill is a knowledge artifact, not a binary. Contributions extend it via well-shaped additions.
 
@@ -39,7 +39,7 @@ This skill is a knowledge artifact, not a binary. Contributions extend it via we
 ### Adding a scale-up annex chapter
 
 1. Confirm the chapter addresses a *forcing-constraint-class* problem (not a general best practice).
-2. Create `scale-up/<chapter>.md` opening with the `[GATED — informational only]` watermark.
+2. Create `scale-up/<chapter>.md` opening with the `[GATED, informational only]` watermark.
 3. Document: when-to-activate criteria, default-mode alternative considered, the pattern, the cost dimensions, the sunset condition.
 4. Update `scale-up/when_to_activate.md` TOC.
 5. CHANGELOG entry in MINOR.
@@ -63,7 +63,7 @@ Before opening a PR:
 - [ ] `tests/test_rubric_arithmetic.py` passes if you touched a rubric
 - [ ] CHANGELOG entry per SemVer rules
 - [ ] No banned vocabulary outside `references/` / `examples/`
-- [ ] All new claims have citation tags or `[normative — operator wisdom]`
+- [ ] All new claims have citation tags or `[normative, operator wisdom]`
 
 ## Posture preservation
 
@@ -75,11 +75,11 @@ Contributions that increase the count of files agents must read at startup beyon
 
 ## Anti-contribution patterns
 
-- "I think we should also include X" without a citation, ADR, or operator-wisdom tag — be explicit about which.
+- "I think we should also include X" without a citation, ADR, or operator-wisdom tag, be explicit about which.
 - Adding examples specific to one project (these belong in `examples/`, not in the canonical text).
 - Drive-by additions of "trendy" technology without forcing-constraint analysis (rejected).
 - Removing existing citations because "the URL changed" (instead, update the URL in references/notes.md and verify the tag still resolves).
-- Reflexive substitution of one banned word with a synonym ("robust" → "powerful") — defeats the rule. Replace with a concrete property.
+- Reflexive substitution of one banned word with a synonym ("robust" → "powerful"), defeats the rule. Replace with a concrete property.
 
 ## Review process
 

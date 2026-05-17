@@ -33,15 +33,15 @@ composes:
     role: routed-to for AI-assisted-development workflow patterns
 ---
 
-# warmup — front desk; tell me what's broken and I'll route you
+# warmup, front desk; tell me what's broken and I'll route you
 
 ```
-IRON LAW: NO DIRECT ACTION FROM WARMUP — ROUTE FIRST, THEN ACT IN THE DOWNSTREAM SKILL.
+IRON LAW: NO DIRECT ACTION FROM WARMUP. ROUTE FIRST, THEN ACT IN THE DOWNSTREAM SKILL.
 ```
 
-Violating the letter of this rule is violating the spirit of this rule. "I'll just answer this here" is the rationalization that turns a triage skill into a generalist — generalists give worse advice than specialists. This skill routes; it does not score, plan, fix, deploy, recover, or coach.
+Violating the letter of this rule is violating the spirit of this rule. "I'll just answer this here" is the rationalization that turns a triage skill into a generalist, generalists give worse advice than specialists. This skill routes; it does not score, plan, fix, deploy, recover, or coach.
 
-## Red Flags — STOP and route
+## Red Flags. STOP and route
 
 - "This is a quick one, no need to route."
 - "I'll route AND give a partial answer."
@@ -65,13 +65,13 @@ For trigger-keyword indexing: is my code okay, should I ship this, what should I
 
 ## Scope
 
-You walked into a community health clinic. The volunteer at the front desk doesn't treat you — they triage and route you to the right specialist. This skill is that front desk.
+You walked into a community health clinic. The volunteer at the front desk doesn't treat you, they triage and route you to the right specialist. This skill is that front desk.
 
 It does not score code, plan architecture, run engagements, deploy, operate, recover git, or coach AI workflow. **Its only job is to route you to the right downstream skill.**
 
-If you already know which skill you need, skip this one — invoke the downstream skill directly. If you don't know, or you're learning the ecosystem, start here.
+If you already know which skill you need, skip this one, invoke the downstream skill directly. If you don't know, or you're learning the ecosystem, start here.
 
-## The intake — pick the row that matches what you're doing
+## The intake, pick the row that matches what you're doing
 
 | Your situation | Skill to use |
 |---|---|
@@ -83,9 +83,9 @@ If you already know which skill you need, skip this one — invoke the downstrea
 | My app is running and I want to know it's healthy / it's broken now | **`diet`** (steady-state §1–2 or incident §3) |
 | I think I broke git / lost work / scared of `--force` | **`safetybar`** |
 | I'm working with an AI assistant and want to use it well | **`gymbuddy`** |
-| I need to understand an unfamiliar codebase before acting on it | (not a skill — use `form-check/checklists/codebase_scan.md` as part of whatever skill you're in) |
+| I need to understand an unfamiliar codebase before acting on it | (not a skill, use `form-check/checklists/codebase_scan.md` as part of whatever skill you're in) |
 
-**If your situation spans two rows** (most do — you're often planning + reviewing, or deploying + operating), invoke the *earlier* row first. The earlier skill hands off to the later one when its work is done.
+**If your situation spans two rows** (most do, you're often planning + reviewing, or deploying + operating), invoke the *earlier* row first. The earlier skill hands off to the later one when its work is done.
 
 **If you're not sure**, default to **`form-check`** with the smallest piece of work you're worried about. You can always escalate. *Smaller-scope-first* is the right move for learners: it builds the habit of applying the rubric to something specific.
 
@@ -99,7 +99,7 @@ Read `form-check/learner/QUICKSTART.md` Part 2 to classify your change as vibe-s
 - Vibe-careful → **Floor 2** (Floor 1 + worst-case scenarios + checklist walk, ~30 min)
 - Vibe-dangerous → **Floor 3** (Floor 2 + threat model + human reviewer + feature flag + rollback runbook, ≥2 hr)
 
-If you're new to coding, **always start at Floor 1** even for trivial changes. The five-minute cost is the *encoding* (per `form-check/learner/study_protocol.md` — retrieval practice + spaced repetition). Skipping it because "this change is small" is the perception–reality gap that METR-2025 documented in senior engineers.
+If you're new to coding, **always start at Floor 1** even for trivial changes. The five-minute cost is the *encoding* (per `form-check/learner/study_protocol.md`, retrieval practice + spaced repetition). Skipping it because "this change is small" is the perception–reality gap that METR-2025 documented in senior engineers.
 
 ## The full ecosystem at a glance
 
@@ -118,7 +118,7 @@ If you're new to coding, **always start at Floor 1** even for trivial changes. T
 
 ## When to come back to this skill
 
-You should outgrow `warmup` within 5–10 invocations. The graduation signal is operationalized in `graduation_checklist.md` — a six-item self-assessment with concrete pass criteria for each item. Run it once a month while you are actively using `warmup`.
+You should outgrow `warmup` within 5–10 invocations. The graduation signal is operationalized in `graduation_checklist.md`, a six-item self-assessment with concrete pass criteria for each item. Run it once a month while you are actively using `warmup`.
 
 You have graduated when you can answer all six items correctly on two consecutive monthly reviews. At that point, stop invoking `warmup` and route directly. You do not need to uninstall the skill; it costs nothing to keep loaded, and you may regress on the cross-cutting items (especially the AI-workflow item) and want to re-check.
 
@@ -134,7 +134,7 @@ For agent harness implementers: `graduation_checklist.md` also documents an opti
 - It does not recover broken git states. (`safetybar` does.)
 - It does not teach AI workflow. (`gymbuddy` does.)
 - It does not teach the rubric. (`form-check/learner/` does.)
-- It does not classify changes for you. (You read QUICKSTART Part 2 and classify them yourself — that's the encoding step.)
+- It does not classify changes for you. (You read QUICKSTART Part 2 and classify them yourself, that's the encoding step.)
 
 If you find yourself trying to do any of those with this skill, you're using the wrong skill. Go to the one above that handles it.
 

@@ -15,7 +15,7 @@ composes:
     role: handoff target after spec is scoped (form-check handles plan-new-app)
 ---
 
-# program — vague idea → scoped spec; the plan before the work
+# program, vague idea → scoped spec; the plan before the work
 
 ```
 IRON LAW: NO IMPLEMENTATION SKILL INVOKED UNTIL THE ONE-PAGE SPEC HAS KILL CRITERIA AND THREE NON-GOALS.
@@ -23,7 +23,7 @@ IRON LAW: NO IMPLEMENTATION SKILL INVOKED UNTIL THE ONE-PAGE SPEC HAS KILL CRITE
 
 Violating the letter of this rule is violating the spirit of this rule. "I'll add the kill criteria after I start building" is the rationalization that produces 100-hour projects that should have been killed at hour 10. The kill criteria + non-goals are not optional decorations; they are the calibration that makes the build phase finite.
 
-## Red Flags — STOP and finish the spec
+## Red Flags. STOP and finish the spec
 
 - "I have the idea, I'll figure out kill criteria as I go."
 - "Non-goals are too restrictive, I want to keep options open."
@@ -34,14 +34,14 @@ Violating the letter of this rule is violating the spirit of this rule. "I'll ad
 
 Each red flag means: stop. Re-walk the four-question intake. Spec on one page. Then hand off to `form-check/plan-new-app`.
 
-## Rationalizations — what you'll tell yourself, what's actually true
+## Rationalizations, what you'll tell yourself, what's actually true
 
 | Excuse | Reality |
 |---|---|
-| "Kill criteria sound pessimistic" | Kill criteria are *calibration training* — predict what done looks like, then measure. Without them, you can't tell if you're making progress. |
-| "Non-goals limit creativity" | They focus it. "Phase 2" features are usually never re-justified — meaning they were never needed. |
+| "Kill criteria sound pessimistic" | Kill criteria are *calibration training*, predict what done looks like, then measure. Without them, you can't tell if you're making progress. |
+| "Non-goals limit creativity" | They focus it. "Phase 2" features are usually never re-justified, meaning they were never needed. |
 | "I'll know the first user when I build the MVP" | Reverse it: name the user *first*, then build for them. Aspirational users produce unbuildable specs. |
-| "My one sentence is a paragraph" | If you can't compress to one sentence, you don't have a project — you have a topic. Topics aren't scopable. |
+| "My one sentence is a paragraph" | If you can't compress to one sentence, you don't have a project, you have a topic. Topics aren't scopable. |
 
 ## Keywords for discovery
 
@@ -59,7 +59,7 @@ You have an idea. It is too big, too vague, or too vague-and-too-big. This skill
 
 - "I want to build a thing that tracks my reading."
 - "I have a side project but I keep adding features and never shipping."
-- "Should I rebuild this in Rust?" (No — `program` says no, then sends you to `form-check/refactor-prep` if a real refactor case exists.)
+- "Should I rebuild this in Rust?" (No: `program` says no, then sends you to `form-check/refactor-prep` if a real refactor case exists.)
 - "I'm three months in and not sure what I'm building anymore."
 - Your idea has more than **5 sentences** of description but no acceptance criteria.
 
@@ -69,16 +69,16 @@ You have an idea. It is too big, too vague, or too vague-and-too-big. This skill
 
 Write the project in one sentence, in this shape: **"A [thing] that helps [who] do [action] without [pain point]."**
 
-If you can't write the one sentence, you don't have a project yet — you have a topic. Topics aren't scopable. Examples:
+If you can't write the one sentence, you don't have a project yet, you have a topic. Topics aren't scopable. Examples:
 
-- ❌ "Something with AI and books" — topic.
-- ✅ "A CLI that summarizes my Kindle highlights into a weekly digest without me having to copy/paste." — project.
+- ❌ "Something with AI and books", topic.
+- ✅ "A CLI that summarizes my Kindle highlights into a weekly digest without me having to copy/paste.", project.
 
 If you produced the one-sentence version, continue. If you produced a topic, the answer to "what should I build?" is "more thinking; don't open an editor yet."
 
 ### 2. Who is the *first* user?
 
-Not "everyone." Not "people who like books." A specific person — ideally you, ideally identified by a behavior you've already exhibited within the last 30 days.
+Not "everyone." Not "people who like books." A specific person, ideally you, ideally identified by a behavior you've already exhibited within the last 30 days.
 
 Examples:
 
@@ -89,25 +89,25 @@ If you can't name the first user, your kill-criteria will be wrong. Stop and ide
 
 ### 3. What is the kill criterion?
 
-Most beginner projects die slowly because nothing tells the builder "this isn't working — stop." A *kill criterion* is the observable signal that says: ship something else, or shelve this entirely.
+Most beginner projects die slowly because nothing tells the builder "this isn't working, stop." A *kill criterion* is the observable signal that says: ship something else, or shelve this entirely.
 
 Examples:
 
 - "If I've spent 10 hours and don't have a working v0 of the digest, I kill it."
 - "If after 5 weekly digests I haven't opened the resulting page, I kill it."
-- "If I cannot get a free Kindle highlights export within 2 hours of research, I kill it." (Real one — Amazon makes this hard; the project may not be feasible without paid tooling.)
+- "If I cannot get a free Kindle highlights export within 2 hours of research, I kill it." (Real one. Amazon makes this hard; the project may not be feasible without paid tooling.)
 
-Write at least two kill criteria. If you can't write any, you're probably not committed to actually shipping — you want a *hobby*, which is fine but doesn't need this skill.
+Write at least two kill criteria. If you can't write any, you're probably not committed to actually shipping, you want a *hobby*, which is fine but doesn't need this skill.
 
 ### 4. What are the three deliberate non-goals?
 
-Things you will **not** build, even if tempting. The non-goals are more important than the goals for beginners — without them, scope creep kills the project before it ships once.
+Things you will **not** build, even if tempting. The non-goals are more important than the goals for beginners, without them, scope creep kills the project before it ships once.
 
 Examples (for the Kindle-digest project):
 
-- ❌ "Multi-user support" — not until I'm the user successfully.
-- ❌ "Web UI" — the CLI digest works for the persona (me).
-- ❌ "Authentication / accounts" — single user, local-only.
+- ❌ "Multi-user support", not until I'm the user successfully.
+- ❌ "Web UI", the CLI digest works for the persona (me).
+- ❌ "Authentication / accounts", single user, local-only.
 
 A useful heuristic: **for every "yes" feature, name two "no" features.** Beginners are systematically biased toward yes.
 
@@ -138,7 +138,7 @@ After answering the four questions, write a one-page spec with exactly these sec
 - ...
 - ...
 
-**First three concrete tasks.** (Not "build the parser" — "spend 30 min researching kindle-export libraries, take notes in `research.md`.")
+**First three concrete tasks.** (Not "build the parser", "spend 30 min researching kindle-export libraries, take notes in `research.md`.")
 1. ...
 2. ...
 3. ...
@@ -156,7 +156,7 @@ This spec is the **handoff** to `form-check/plan-new-app`. Take the spec, invoke
 
 **The hypothetical-user.** Describing what "users would want" without a real first user produces unbuildable specs. Either name a real user (often yourself, recently) or stop.
 
-**Greenfield-vs-rebuild confusion.** If the urge is "rewrite this thing I have in a different language/framework," the answer is almost always "no" — invoke `form-check/refactor-prep` instead. program is for genuinely new projects.
+**Greenfield-vs-rebuild confusion.** If the urge is "rewrite this thing I have in a different language/framework," the answer is almost always "no", invoke `form-check/refactor-prep` instead. program is for genuinely new projects.
 
 **Skipping kill criteria.** This is the most common failure. Without kill criteria, you'll spend 100 hours instead of 10 on a project that wasn't going to work. The kill criteria are not pessimism; they're calibration.
 
@@ -177,4 +177,4 @@ This spec is the **handoff** to `form-check/plan-new-app`. Take the spec, invoke
 
 This skill exists because the May 2026 SDLC-gap analysis (see `form-check/CHANGELOG.md` 2.1.x notes) identified pre-build ideation as the gap that costs beginners the most time. Symptom: builders spend weeks on the wrong project because they never wrote down what "right" was. Forcing-function: this skill produces a one-page artifact a beginner cannot avoid producing.
 
-The cognitive-science basis is `form-check/learner/study_protocol.md` Habit 7 (calibration): the kill-criteria + timebox + acceptance-criteria triple is calibration training for project scope — predict what done looks like, then measure against it.
+The cognitive-science basis is `form-check/learner/study_protocol.md` Habit 7 (calibration): the kill-criteria + timebox + acceptance-criteria triple is calibration training for project scope, predict what done looks like, then measure against it.

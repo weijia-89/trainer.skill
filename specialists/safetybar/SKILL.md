@@ -12,7 +12,7 @@ optional_tools: []
 composes: []
 ---
 
-# safetybar — git catches you when the lift fails
+# safetybar, git catches you when the lift fails
 
 ```
 IRON LAW: NO DESTRUCTIVE GIT COMMAND BEFORE READING ITS RECOVERY PATH IN THIS FILE.
@@ -20,7 +20,7 @@ IRON LAW: NO DESTRUCTIVE GIT COMMAND BEFORE READING ITS RECOVERY PATH IN THIS FI
 
 Violating the letter of this rule is violating the spirit of this rule. "I'll just check the recovery after I run it" is the rationalization that produces lost work. The recovery is the first read; the command is the second action.
 
-## Red Flags — STOP and re-read this section
+## Red Flags. STOP and re-read this section
 
 If any of these thoughts is in your head right now, you are about to make a recoverable situation unrecoverable:
 
@@ -31,11 +31,11 @@ If any of these thoughts is in your head right now, you are about to make a reco
 - "I've done this before, I don't need to check the recovery path."
 - "I just need to undo, why is this so complicated."
 - "If I run `git reset --hard` once more it'll work."
-- "Let me clear the working tree first and start fresh." (Especially in a panic — see §1.)
+- "Let me clear the working tree first and start fresh." (Especially in a panic, see §1.)
 
 Each red flag means: stop. Run **`git reflog > /tmp/reflog-$(date +%Y%m%d-%H%M%S).txt`** before anything else. Then read §1.
 
-## Rationalizations — what you'll tell yourself, what's actually true
+## Rationalizations, what you'll tell yourself, what's actually true
 
 | Excuse | Reality |
 |---|---|
@@ -53,11 +53,11 @@ For trigger-keyword indexing: I broke git, lost my commits, git reset hard, forc
 
 You did something with git. You're not sure what happened. You're worried you lost work. This skill walks the recovery in the right order.
 
-**Scope.** Recovery, undo, conflict resolution, lost-commit recovery, branch surgery. Not git basics — assume you can `git add`, `git commit`, `git push`. Not GitHub/GitLab workflow — that's platform-specific.
+**Scope.** Recovery, undo, conflict resolution, lost-commit recovery, branch surgery. Not git basics, assume you can `git add`, `git commit`, `git push`. Not GitHub/GitLab workflow, that's platform-specific.
 
 **The first thing to know.** Almost nothing is actually lost in git. **Reflog stores almost every state for 90 days by default.** If you panicked and ran something destructive, you probably still have your work. Read §1 before doing anything else.
 
-## §1 — The "I think I lost my work" protocol
+## §1. The "I think I lost my work" protocol
 
 Before anything:
 
@@ -68,11 +68,11 @@ Before anything:
 5. **Verify** the files look right (`git log`, `ls`, `git status`).
 6. **Then** decide whether to merge / rebase / cherry-pick the recovery branch back where you wanted it.
 
-If `git reflog` shows the SHA but `git checkout <sha>` says "unknown revision," try `git fsck --lost-found` — orphaned commits land in `.git/lost-found/`.
+If `git reflog` shows the SHA but `git checkout <sha>` says "unknown revision," try `git fsck --lost-found`, orphaned commits land in `.git/lost-found/`.
 
-If even that doesn't work and the work was committed at any point in the last 90 days, file system tools (`find`, search for distinctive file content) often recover it from `.git/objects/`. Beyond that, restore from your editor's undo history, your IDE's local history, or your last backup. (Yes — keep backups.)
+If even that doesn't work and the work was committed at any point in the last 90 days, file system tools (`find`, search for distinctive file content) often recover it from `.git/objects/`. Beyond that, restore from your editor's undo history, your IDE's local history, or your last backup. (Yes, keep backups.)
 
-## §2 — Undo paths for the seven scariest commands
+## §2. Undo paths for the seven scariest commands
 
 For each scary command, this section gives the *recovery* path. Read the recovery before running the command, not after.
 
@@ -81,7 +81,7 @@ For each scary command, this section gives the *recovery* path. Read the recover
 **What it does.** Discards uncommitted changes AND moves your branch pointer back N commits.
 
 **Recovery.**
-- The commits aren't gone — they're orphaned. `git reflog` shows them.
+- The commits aren't gone, they're orphaned. `git reflog` shows them.
 - `git reset --hard <sha-from-reflog>` puts you back where you were.
 - Uncommitted changes you had at the time, however, are gone unless they were saved by an IDE.
 
@@ -93,9 +93,9 @@ For each scary command, this section gives the *recovery* path. Read the recover
 
 **Recovery.**
 - *Your* recovery is easy: `git reflog` → reset to pre-force SHA → `git push --force` again (back to the original state).
-- *Co-workers' recovery* requires them to reset their local branches to the new remote — coordinate in chat before doing it.
+- *Co-workers' recovery* requires them to reset their local branches to the new remote, coordinate in chat before doing it.
 
-**Safer alternative.** Always use `git push --force-with-lease`. It refuses to push if the remote has changed since you last fetched — i.e. if someone else has pushed in the interim, you'll be told to investigate before overwriting their work. This catches the most common force-push mistake.
+**Safer alternative.** Always use `git push --force-with-lease`. It refuses to push if the remote has changed since you last fetched, i.e. if someone else has pushed in the interim, you'll be told to investigate before overwriting their work. This catches the most common force-push mistake.
 
 **On a shared branch (main/master/release).** **Don't force-push at all.** Use `git revert` to create a new commit that undoes the unwanted change. The history grows by one commit; nothing is lost; nobody's clone breaks.
 
@@ -103,9 +103,9 @@ For each scary command, this section gives the *recovery* path. Read the recover
 
 **What it does.** Deletes untracked files (and with `-x`, also gitignored files like `.env`).
 
-**Recovery.** **There is no git-side recovery** — these files were never in git. If you ran this on `.env` files containing secrets, those are gone unless your IDE / editor / file-system trash retained them.
+**Recovery.** **There is no git-side recovery**, these files were never in git. If you ran this on `.env` files containing secrets, those are gone unless your IDE / editor / file-system trash retained them.
 
-**Safer alternative.** `git clean -nfd` (note the `-n`) is a *dry run* — it lists what would be deleted without doing it. Always dry-run before `git clean -fd`. Beginners conflate `git clean` with `git reset` because both "clean things up." They're different. `git clean` is destructive in a way `git reset` isn't.
+**Safer alternative.** `git clean -nfd` (note the `-n`) is a *dry run*, it lists what would be deleted without doing it. Always dry-run before `git clean -fd`. Beginners conflate `git clean` with `git reset` because both "clean things up." They're different. `git clean` is destructive in a way `git reset` isn't.
 
 ### 2.4 `git branch -D <name>` (deleting a branch with `-D`)
 
@@ -119,7 +119,7 @@ For each scary command, this section gives the *recovery* path. Read the recover
 
 **What it does.** Overwrites the file in your working directory with the last committed version. Discards uncommitted changes to that file.
 
-**Recovery.** **There is no git-side recovery** — uncommitted changes were never in git. IDE local history (VS Code, JetBrains) often saves you here.
+**Recovery.** **There is no git-side recovery**, uncommitted changes were never in git. IDE local history (VS Code, JetBrains) often saves you here.
 
 **Safer alternative.** Stash before restoring: `git stash push -- <file>` saves the file's current state with the option to recover via `git stash pop`.
 
@@ -131,7 +131,7 @@ For each scary command, this section gives the *recovery* path. Read the recover
 
 **Hazards specific to rebase.**
 - Conflicts during rebase pause the operation; finish or `git rebase --abort`.
-- Rebasing commits that have been pushed to a shared branch requires force-push to update remote — see §2.2 hazards.
+- Rebasing commits that have been pushed to a shared branch requires force-push to update remote, see §2.2 hazards.
 - Squash-merges in the rebase plan permanently lose intermediate commit boundaries (the squashed commits become one). If you might want them separate later, don't squash.
 
 **Safer alternative.** For learning, use `git rebase -i` only on *local-only* branches you haven't pushed. Once you've pushed, prefer `git merge` (creates merge commit, preserves history). Or push the rebased branch to a *new* branch name so the original is intact.
@@ -144,9 +144,9 @@ For each scary command, this section gives the *recovery* path. Read the recover
 
 **Safer alternative.** Convert important stashes to branches before dropping: `git stash branch <name> <stash-id>`. Then they become reachable through the branch and protected by normal reflog rules.
 
-## §3 — Conflict resolution
+## §3. Conflict resolution
 
-A merge or rebase conflict is *not* an error — it's git saying "two changes touched the same lines and I don't know which to keep."
+A merge or rebase conflict is *not* an error, it's git saying "two changes touched the same lines and I don't know which to keep."
 
 ### 3.1 Anatomy of a conflict marker
 
@@ -160,7 +160,7 @@ their version of the code
 
 You resolve by:
 1. Deleting the markers (`<<<<<<<`, `=======`, `>>>>>>>`).
-2. Editing the section so the resulting code is what you want — which may be yours, theirs, both, neither, or a synthesis.
+2. Editing the section so the resulting code is what you want, which may be yours, theirs, both, neither, or a synthesis.
 3. `git add <file>` to mark it resolved.
 4. Continue: `git commit` (for merge) or `git rebase --continue` (for rebase).
 
@@ -180,9 +180,9 @@ If you can't tell, *don't merge yet*. Get the conflicting authors (often: you + 
 - `git rebase --abort` cancels an in-progress rebase.
 - `git cherry-pick --abort` cancels an in-progress cherry-pick.
 
-These return you to the pre-operation state. Use them when you realize you're in over your head — better to back out and approach differently than to commit a half-resolved mess.
+These return you to the pre-operation state. Use them when you realize you're in over your head, better to back out and approach differently than to commit a half-resolved mess.
 
-## §4 — Detached HEAD
+## §4. Detached HEAD
 
 **What it is.** HEAD points to a commit SHA instead of a branch. Common after `git checkout <sha>` or after some interactive-rebase states.
 
@@ -191,9 +191,9 @@ These return you to the pre-operation state. Use them when you realize you're in
 **What to do.**
 - If you don't intend to commit anything: just `git checkout <branch-name>` to reattach.
 - If you've made commits while detached and want to keep them: `git checkout -b <new-branch-name>` makes the current detached state a branch.
-- If you've made commits while detached and forgot to branch before checking out a real branch: see §1 — they're in the reflog.
+- If you've made commits while detached and forgot to branch before checking out a real branch: see §1, they're in the reflog.
 
-## §5 — Branch surgery patterns
+## §5. Branch surgery patterns
 
 ### 5.1 "I committed to the wrong branch"
 
@@ -222,15 +222,15 @@ git cherry-pick <sha>
 
 Cherry-pick is the right tool for "I want this specific change, not the whole branch." Conflicts can happen; resolve as in §3.
 
-## §6 — Anti-patterns for beginners
+## §6. Anti-patterns for beginners
 
 - ❌ **Force-pushing to shared branches** to "clean up history." History on shared branches is contract, not aesthetic. Use revert.
 - ❌ **Running `git reset --hard` to "fix" an unfamiliar git state.** It almost certainly makes things worse. Always read `git status` and `git log --oneline -10` first.
 - ❌ **Following an AI-generated git command without reading it.** AI assistants confidently generate `--force` commands. Read every git command with `--force`, `--hard`, `-D`, or `clean -f` in it before running. *Especially* if the AI offered the command after you said "this is broken."
-- ❌ **Resolving conflicts by accepting one side blindly** (`git checkout --theirs` / `--ours` without thinking). The conflict means git noticed a real problem — accept-blindly silences git, not the problem.
+- ❌ **Resolving conflicts by accepting one side blindly** (`git checkout --theirs` / `--ours` without thinking). The conflict means git noticed a real problem, accept-blindly silences git, not the problem.
 - ❌ **`rm -rf .git` to start over.** Almost never the right move and never the right move on a repository with un-pushed work. If you genuinely want to start over: clone again to a new directory, copy current files in, commit. Don't delete the repo metadata.
 
-## §7 — Prevention habits
+## §7. Prevention habits
 
 - **Set `merge.ff = false`** in your global config. Forces merge commits to be explicit, which preserves history readability.
 - **Always `git status` before any destructive command.** Knowing the state stops 90% of "oh no" moments.
@@ -243,7 +243,7 @@ Cherry-pick is the right tool for "I want this specific change, not the whole br
 
 - `form-check/learner/token_handling_primer.md` covers the *credential* aspect of git mistakes (force-push exposing secrets). safetybar covers the *state* aspect.
 - `diet §3` covers in-incident rollback decisions. The rollback *mechanic* (revert vs reset vs force) lives here.
-- `recovery` engagements that touch many commits should rebase on a *new* branch and review before merging back — safetybar's "branch surgery" patterns apply.
+- `recovery` engagements that touch many commits should rebase on a *new* branch and review before merging back, safetybar's "branch surgery" patterns apply.
 
 ## Provenance
 

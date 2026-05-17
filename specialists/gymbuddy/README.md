@@ -1,6 +1,6 @@
-# gymbuddy — AI trains alongside you; you still do the reps
+# gymbuddy. AI trains alongside you; you still do the reps
 
-A skill for using AI coding assistants well — when to ask, how to prompt, when not to delegate, and the calibration discipline applied to AI output.
+A skill for using AI coding assistants well, when to ask, how to prompt, when not to delegate, and the calibration discipline applied to AI output.
 
 ## What it does
 
@@ -34,10 +34,10 @@ Nine sections:
 
 ## Composes with
 
-- `form-check` — AI-generated code goes through the same rubric as human-generated code. This skill is the lens; `form-check` is the verifier.
-- `form-check/learner/lessons/03_hallucination_check.md` — the canonical check for hallucinated package names.
-- `diet §3` — overrides this skill during incidents.
-- `safetybar` — every AI-suggested git command with `--force`, `--hard`, `-D`, or `clean -f` gets read here before execution.
+- `form-check`. AI-generated code goes through the same rubric as human-generated code. This skill is the lens; `form-check` is the verifier.
+- `form-check/learner/lessons/03_hallucination_check.md`, the canonical check for hallucinated package names.
+- `diet §3`, overrides this skill during incidents.
+- `safetybar`, every AI-suggested git command with `--force`, `--hard`, `-D`, or `clean -f` gets read here before execution.
 
 ## What this skill protects against
 
@@ -50,8 +50,8 @@ Four documented failure modes the literature has converged on:
 
 ## Files
 
-- `SKILL.md` — the nine sections
-- `CHANGELOG.md` — version history
+- `SKILL.md`, the nine sections
+- `CHANGELOG.md`, version history
 - This file
 
 ## License

@@ -1,4 +1,4 @@
-# safetybar — git catches you when the lift fails
+# safetybar, git catches you when the lift fails
 
 A skill for when git looks broken, when you think you lost work, and for the seven scariest git commands.
 
@@ -47,8 +47,8 @@ The two most common beginner git disasters:
 
 ## Files
 
-- `SKILL.md` — the seven sections
-- `CHANGELOG.md` — version history
+- `SKILL.md`, the seven sections
+- `CHANGELOG.md`, version history
 - This file
 
 ## License

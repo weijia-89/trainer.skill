@@ -21,7 +21,7 @@ composes:
     role: routed-to when a deploy needs a code-level rollback (revert vs reset)
 ---
 
-# PR — max-effort day; passes-tests → in-production
+# PR, max-effort day; passes-tests → in-production
 
 ```
 IRON LAW: NO DEPLOY WITHOUT A ROLLBACK COMMAND YOU CAN STATE IN ONE LINE.
@@ -29,7 +29,7 @@ IRON LAW: NO DEPLOY WITHOUT A ROLLBACK COMMAND YOU CAN STATE IN ONE LINE.
 
 Violating the letter of this rule is violating the spirit of this rule. "I'll figure out the rollback if I need it" is the rationalization that turns a 5-minute incident into a 5-hour outage. Before pressing deploy: write the rollback command in the PR description. If you can't, you are not ready.
 
-## Red Flags — STOP before deploying
+## Red Flags. STOP before deploying
 
 - "I'll write the rollback note after the deploy."
 - "Rollback is just `git revert HEAD`, no need to document."
@@ -42,7 +42,7 @@ Violating the letter of this rule is violating the spirit of this rule. "I'll fi
 
 Each red flag means: stop. Walk §1 pre-deploy checklist. Then §3.
 
-## Rationalizations — what you'll tell yourself, what's actually true
+## Rationalizations, what you'll tell yourself, what's actually true
 
 | Excuse | Reality |
 |---|---|
@@ -58,7 +58,7 @@ For trigger-keyword indexing: how do I deploy, deploy this, ship to prod, deploy
 
 ## Scope
 
-You have working code locally. You need it running somewhere users can reach it. This skill covers the *deploy* phase — the gap between `recovery/launch-ready` and `diet/steady-state`.
+You have working code locally. You need it running somewhere users can reach it. This skill covers the *deploy* phase, the gap between `recovery/launch-ready` and `diet/steady-state`.
 
 **Scope.** First-deploy mechanics, env-var and secrets handling at deploy time, the pre-deploy checklist, rollback procedure, deploy-related incident response.
 
@@ -71,7 +71,7 @@ You have working code locally. You need it running somewhere users can reach it.
 - **Rollback** (a deploy made things worse): §5.
 - **The deploy is failing** (won't build / won't start / health check failing): §6.
 
-## §1 — Pre-deploy checklist
+## §1. Pre-deploy checklist
 
 Run through this **before** the first deploy. Skipping it is how beginners ship something that "works on my machine" but doesn't work anywhere else.
 
@@ -79,7 +79,7 @@ Run through this **before** the first deploy. Skipping it is how beginners ship 
 
 `README.md` (or `.env.example`) lists every env var the app reads, with: name, what it's for, what shape (URL? secret string? boolean? integer?), and which environments need it (local / staging / prod).
 
-If you don't have this list, your deploy will fail on the first missing variable — and you won't know which one.
+If you don't have this list, your deploy will fail on the first missing variable, and you won't know which one.
 
 ### 1.2 Secrets are not in the repo
 
@@ -89,7 +89,7 @@ Run a quick scan:
 git log --all -p | grep -E "(api[_-]?key|secret|password|token)\s*[=:]" | head
 ```
 
-If anything matches a real-looking value, **stop and read `form-check/learner/token_handling_primer.md` §5** before doing anything else. Rotate any exposed credentials *before* deploying — the deploy is a forcing event for rotation.
+If anything matches a real-looking value, **stop and read `form-check/learner/token_handling_primer.md` §5** before doing anything else. Rotate any exposed credentials *before* deploying, the deploy is a forcing event for rotation.
 
 ### 1.3 Dependency lockfile committed
 
@@ -119,7 +119,7 @@ Your app exposes an HTTP endpoint (typically `/health` or `/_health`) that retur
 
 Whatever platform you deploy to, confirm you can read its logs *before* you depend on them. The middle of an incident is the wrong time to discover you've never configured log access.
 
-## §2 — Platform-specific patterns
+## §2. Platform-specific patterns
 
 This skill assumes you've already chosen a platform per `form-check/rubrics/stack_decision.md`. Patterns below are for the most common beginner-friendly choices.
 
@@ -156,9 +156,9 @@ This skill assumes you've already chosen a platform per `form-check/rubrics/stac
 - **Kubernetes** unless your `form-check/scale-up/` annex says you actually need it (very rarely true for the persona).
 - **Custom CI/CD** when the platform's built-in deploy-from-git suffices.
 - **Multi-region active-active** until single-region is provably insufficient.
-- **Service meshes, sidecars, ingress controllers** — these are scale-up tools; using them at the persona's scale is `form-check/forcing-constraint-ADR-required` territory.
+- **Service meshes, sidecars, ingress controllers**, these are scale-up tools; using them at the persona's scale is `form-check/forcing-constraint-ADR-required` territory.
 
-## §3 — The deploy itself
+## §3. The deploy itself
 
 Default deploy flow for any platform:
 
@@ -168,9 +168,9 @@ Default deploy flow for any platform:
 4. **Smoke test from outside.** `curl https://yourdomain.com/health` and one real user-facing endpoint. From a different network than your dev machine.
 5. **Glance at error tracking / logs** (per `diet` §1) for the next ~5 minutes. New error groups in error tracking? Spike in 5xx? Roll back; investigate.
 
-If your deploys take more than ~10 minutes, that's a separate problem — it slows your incident response and pushes you toward `--force` shortcuts. Address it.
+If your deploys take more than ~10 minutes, that's a separate problem, it slows your incident response and pushes you toward `--force` shortcuts. Address it.
 
-## §4 — Post-deploy verification
+## §4. Post-deploy verification
 
 Within the first 30 minutes of any production deploy:
 
@@ -181,13 +181,13 @@ Within the first 30 minutes of any production deploy:
 - [ ] If the deploy changed a database schema: spot-check that the migration ran and the data is intact.
 - [ ] If the deploy changed an env-handling code path: spot-check that the env var is being read correctly (often: log a sanity line that shows config got loaded, but **never log the secret values themselves**).
 
-## §5 — Rollback procedure
+## §5. Rollback procedure
 
 Two kinds of rollback:
 
 ### 5.1 Platform rollback (preferred when available)
 
-Vercel, Netlify, Render, Railway, Fly, Heroku, and most cloud platforms keep the last N deploys and let you promote a previous one to "current" with one click. This is the rollback path you want — it does not change the code, it changes which build is serving traffic.
+Vercel, Netlify, Render, Railway, Fly, Heroku, and most cloud platforms keep the last N deploys and let you promote a previous one to "current" with one click. This is the rollback path you want, it does not change the code, it changes which build is serving traffic.
 
 Use the platform UI: "Deploys" → select previous successful deploy → "Promote" / "Redeploy."
 
@@ -209,9 +209,9 @@ Per `diet §3.4`, roll back when:
 2. Rollback is reversible (you can deploy forward again later).
 3. No data shape changed irrevocably.
 
-If any of those fails, *rollback is itself an incident* — escalate to `diet §3` triage.
+If any of those fails, *rollback is itself an incident*, escalate to `diet §3` triage.
 
-## §6 — When the deploy is failing
+## §6. When the deploy is failing
 
 Common failure modes and the recovery path for each:
 
@@ -224,7 +224,7 @@ Common failure modes and the recovery path for each:
 | Build is fine, deploy is fine, but the change isn't taking effect | Browser cache, CDN cache, platform cache | Hard-refresh (cmd-shift-R); platform "purge cache" if available |
 | Deploy succeeds intermittently and fails intermittently | Flaky build infrastructure, race condition in build step | Re-run; if persistent, investigate platform status page; consider pinning more aggressively |
 
-## §7 — Anti-patterns
+## §7. Anti-patterns
 
 - ❌ **Deploying on Friday afternoon.** Beginner version of this rule: don't deploy when you can't roll back in the next hour. (Day-of-week is the heuristic; the underlying rule is rollback-window-availability.)
 - ❌ **Bundling unrelated changes in one deploy.** "I'll just include this small fix too." Now if anything breaks, you don't know which change caused it. Deploy one logical change at a time.
@@ -242,6 +242,6 @@ Common failure modes and the recovery path for each:
 
 ## Provenance
 
-The deployment gap was the *medium-priority* finding in the SDLC-gap analysis (see `form-check/CHANGELOG.md` 2.1.x). It's not the highest-leverage gap because beginners often get a "good enough" deploy path from their platform's tutorial. But once something is broken at deploy time, the platform tutorial doesn't help — that's where this skill picks up.
+The deployment gap was the *medium-priority* finding in the SDLC-gap analysis (see `form-check/CHANGELOG.md` 2.1.x). It's not the highest-leverage gap because beginners often get a "good enough" deploy path from their platform's tutorial. But once something is broken at deploy time, the platform tutorial doesn't help, that's where this skill picks up.
 
-The pre-deploy checklist (§1) and post-deploy verification (§4) are the load-bearing sections. The rest is reference. The platform sections (§2) intentionally err toward "boring, beginner-friendly" choices — see `form-check/rubrics/stack_decision.md` for the underlying posture.
+The pre-deploy checklist (§1) and post-deploy verification (§4) are the load-bearing sections. The rest is reference. The platform sections (§2) intentionally err toward "boring, beginner-friendly" choices, see `form-check/rubrics/stack_decision.md` for the underlying posture.

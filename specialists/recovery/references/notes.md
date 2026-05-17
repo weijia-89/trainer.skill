@@ -5,13 +5,13 @@ parent_skill: recovery
 inherits: form-check/references/notes.md
 ---
 
-# References — recovery
+# References, recovery
 
 Codeit composes `form-check`. All citation tags resolve via `form-check/references/notes.md`. This file lists tags recovery *adds* beyond form-check's set.
 
 ## Codeit-specific tags
 
-(None at v2.0.0 — recovery is a workflow / composition skill; substantive citations live in form-check.)
+(None at v2.0.0, recovery is a workflow / composition skill; substantive citations live in form-check.)
 
 When recovery adds a citation in future versions, append a row here mirroring the schema in form-check's `notes.md`.
 

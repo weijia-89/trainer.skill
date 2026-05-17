@@ -1,4 +1,4 @@
-# Contributing — recovery.skill
+# Contributing, recovery.skill
 
 This skill is a *workflow* layer over `form-check.skill`. Contributions usually fall into one of these patterns.
 
@@ -6,7 +6,7 @@ This skill is a *workflow* layer over `form-check.skill`. Contributions usually 
 
 ### Adding a new phase to the DAG
 
-1. Edit `workflow/workflow_dag.md` (canonical) — add phase node + edges + activation criteria.
+1. Edit `workflow/workflow_dag.md` (canonical), add phase node + edges + activation criteria.
 2. Add the phase prompt in `workflow/phase_prompts.md` (env-agnostic, parameterized).
 3. Update `SKILL.md` Section 1 phase list.
 4. Update `checklists/launch_ready.md` if the phase contributes to DoD.
@@ -43,10 +43,10 @@ This skill is a *workflow* layer over `form-check.skill`. Contributions usually 
 
 ## Anti-contribution patterns
 
-- Adding a phase without activation criteria — leads to "always run" waterfall drift.
-- Duplicating content from `form-check` instead of referencing — composition over duplication is the design rule.
-- Hardcoding paths in phase prompts — they must be parameterized.
-- Adding voice rules at the file level instead of the archetype level — defeats the segregation.
+- Adding a phase without activation criteria, leads to "always run" waterfall drift.
+- Duplicating content from `form-check` instead of referencing, composition over duplication is the design rule.
+- Hardcoding paths in phase prompts, they must be parameterized.
+- Adding voice rules at the file level instead of the archetype level, defeats the segregation.
 
 ## Review process
 

@@ -1,4 +1,4 @@
-# diet — the daily discipline that supports the lifts
+# diet, the daily discipline that supports the lifts
 
 A skill for keeping shipped software running and for responding to incidents without making things worse.
 
@@ -34,9 +34,9 @@ The forbidden moves are the load-bearing part. Most beginner production disaster
 
 ## Composes with
 
-- `form-check` — incident triage uses the threat-model and reversibility rubric components.
-- `pr` — rollback paths are documented in `pr §5`; this skill links there.
-- `safetybar` — when a code-level rollback is required, this skill hands off there.
+- `form-check`, incident triage uses the threat-model and reversibility rubric components.
+- `pr`, rollback paths are documented in `pr §5`; this skill links there.
+- `safetybar`, when a code-level rollback is required, this skill hands off there.
 
 ## What this skill protects against
 
@@ -44,8 +44,8 @@ The Replit/Lemkin July 2025 pattern: ship → break → panicked destructive act
 
 ## Files
 
-- `SKILL.md` — the five sections (instrumentation, cadence, incident protocol, post-mortem template, escalation)
-- `CHANGELOG.md` — version history
+- `SKILL.md`, the five sections (instrumentation, cadence, incident protocol, post-mortem template, escalation)
+- `CHANGELOG.md`, version history
 - This file
 
 ## License

@@ -1,4 +1,4 @@
-# form-check — someone watches one rep and tells you what's off
+# form-check, someone watches one rep and tells you what's off
 
 A senior-engineer / tech-lead posture skill for AI agents planning, building, and reviewing software in a vibe-coding loop. Default-anti-enterprise; scale-up annex behind a forcing-constraint ADR.
 
@@ -76,7 +76,7 @@ multi-language/
 agent-runtime/
   harness_contract.md          # capability allowlist + ledger + rollback
   prompt_injection.md          # OWASP-LLM01 defense
-scale-up/                      # GATED — forcing-constraint ADR required
+scale-up/                      # GATED, forcing-constraint ADR required
   when_to_activate.md
   distributed_systems.md multi_region.md soc2_iso27001.md service_mesh.md event_sourcing_cqrs.md spring_kotlin_jvm.md
 tools/                         # optional automation; markdown algorithms in docs/
@@ -99,7 +99,7 @@ See `CONTRIBUTING.md` for the extension protocol (adding a new bug-class lens, a
 
 ## License
 
-MIT — see `LICENSE`.
+MIT, see `LICENSE`.
 
 ## References
 

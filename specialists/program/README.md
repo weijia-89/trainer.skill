@@ -1,4 +1,4 @@
-# program — vague idea → scoped spec; the plan before the work
+# program, vague idea → scoped spec; the plan before the work
 
 A pre-build skill that turns a vague idea into a scoped one-page spec you can actually start executing on.
 
@@ -30,16 +30,16 @@ The output is a one-page spec template covering the project's name, one-sentence
 
 ## Composes with
 
-- `form-check` — receives the scoped spec produced by this skill and walks it through the `plan-new-app` engagement (stack decision, ADRs, preflight 10 questions).
+- `form-check`, receives the scoped spec produced by this skill and walks it through the `plan-new-app` engagement (stack decision, ADRs, preflight 10 questions).
 
 ## What this skill protects against
 
-The most common beginner project-death pattern: spending 100 hours on a project that was always going to fail, because there was no kill criterion to surface that fact at hour 10. The kill criteria in the spec template are the forcing function. They are not pessimism; they are calibration. The spec also includes deliberate non-goals — the features you commit to *not* building, which fight scope creep the way kill criteria fight sunk cost.
+The most common beginner project-death pattern: spending 100 hours on a project that was always going to fail, because there was no kill criterion to surface that fact at hour 10. The kill criteria in the spec template are the forcing function. They are not pessimism; they are calibration. The spec also includes deliberate non-goals, the features you commit to *not* building, which fight scope creep the way kill criteria fight sunk cost.
 
 ## Files
 
-- `SKILL.md` — the four questions, the spec template, anti-patterns
-- `CHANGELOG.md` — version history
+- `SKILL.md`, the four questions, the spec template, anti-patterns
+- `CHANGELOG.md`, version history
 - This file
 
 ## License
