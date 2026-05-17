@@ -5,6 +5,29 @@ Scenarios: 3 (the v0.3.1 set).
 Conditions: 2 (baseline, treatment).
 Total: 2 x 3 x 2 = 12 trials. Plan ~5 min per trial.
 
+## Step 0: cd into the kit (do once per terminal session)
+
+Every command in this cheatsheet assumes you are inside the `manual_audit/` directory of a cloned `trainer.skill` repo. Open a terminal and run:
+
+```bash
+cd "$(git -C $(pwd) rev-parse --show-toplevel 2>/dev/null || echo .)"/specialists/form-check/tests/pressure_scenarios/manual_audit
+```
+
+If that fails because the current directory is not inside the trainer.skill clone, cd into your clone first, then re-run the above. Verify:
+
+```bash
+ls prep_trial.sh manual_audit.sh
+# both should print without error
+```
+
+If you must run from outside the kit dir, set `KIT` to the absolute path of `manual_audit/` in your local trainer.skill clone, then prefix every command. The example shown is for trial #1:
+
+```bash
+KIT=/path/to/your/trainer.skill/specialists/form-check/tests/pressure_scenarios/manual_audit
+bash "$KIT/prep_trial.sh" 01_red-flag_upstream-constraint-missed baseline
+bash "$KIT/manual_audit.sh" 01_red-flag_upstream-constraint-missed gpt-5 baseline "$KIT/runs/gpt-5/01/baseline.txt"
+```
+
 ## Fresh-chat URLs (use a NEW chat for EVERY trial)
 
 - ChatGPT (temporary chat): https://chatgpt.com/?temporary-chat=true
