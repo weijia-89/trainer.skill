@@ -118,6 +118,41 @@ else
   echo "PASS  Windsurf trigger is always_on"
 fi
 
+# Invariant 8: zero private-path leaks in the trainer.skill repo (everything that
+# gets pushed to the public github mirror). Catches accidental references to
+# private review docs, career-help workspace, or local-only directories before
+# they ship. Added 2026-05-16 after two consecutive sanitization passes.
+REPO_ROOT="$HOME/Projects/trainer.skill"
+LEAK_PATTERN='(/Users/wjia/|~/Projects/(reviews|career-help|local[-_]?only)/)'
+SELF_BASENAME="$(basename "${BASH_SOURCE[0]}")"
+
+if command -v git >/dev/null 2>&1 && [[ -d "$REPO_ROOT/.git" ]]; then
+  # Collect tracked files, excluding this verify script (which contains the
+  # patterns by necessity) and the CHANGELOG (which documents past sanitization
+  # work and may reference the patterns in prose).
+  mapfile -t TRACKED_FILES < <(
+    git -C "$REPO_ROOT" ls-files \
+      | grep -v "^scripts/$SELF_BASENAME\$" \
+      | sed "s|^|$REPO_ROOT/|"
+  )
+  if [[ ${#TRACKED_FILES[@]} -gt 0 ]]; then
+    LEAK_REPORT=$(grep -HnE "$LEAK_PATTERN" "${TRACKED_FILES[@]}" 2>/dev/null || true)
+    if [[ -n "$LEAK_REPORT" ]]; then
+      LEAK_COUNT=$(printf '%s\n' "$LEAK_REPORT" | grep -c .)
+      echo "FAIL  $LEAK_COUNT private-path leak(s) found in tracked files:"
+      printf '%s\n' "$LEAK_REPORT" | head -20 | sed 's/^/        /'
+      if [[ "$LEAK_COUNT" -gt 20 ]]; then
+        echo "        ... ($((LEAK_COUNT - 20)) more)"
+      fi
+      FAIL=1
+    else
+      echo "PASS  zero private-path leaks across $REPO_ROOT tracked files"
+    fi
+  fi
+else
+  echo "WARN  skipping private-path leak scan (git unavailable or repo not initialized)"
+fi
+
 if [[ "$FAIL" -ne 0 ]]; then
   echo ""
   echo "VERDICT: FAIL ($FAIL invariant(s) violated)"

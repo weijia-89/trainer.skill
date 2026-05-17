@@ -48,7 +48,7 @@ This skill is a knowledge artifact, not a binary. Contributions extend it via we
 
 1. Verify primary source is accessible.
 2. Add row to `references/notes.md` with tag, title, URL, verification date.
-3. (Optional, historical) Cross-check against the archived dossier at `~/Projects/localonly/code-skills-overhaul-archive/REFERENCES.md`. The archive is no longer maintained; you do not need to update it.
+3. (Optional, historical) Cross-check against the upstream research dossier archived in a private local-only directory. That archive is no longer maintained; you do not need to update it.
 4. Use the tag in skill content where applicable.
 5. CHANGELOG entry in PATCH (citation-only) or MINOR (citation drives content).
 

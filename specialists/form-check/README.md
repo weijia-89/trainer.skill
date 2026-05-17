@@ -103,7 +103,7 @@ MIT — see `LICENSE`.
 
 ## References
 
-Primary sources cited via tags in `references/notes.md`. Original research dossier archived at `~/Projects/localonly/code-skills-overhaul-archive/REFERENCES.md` (historical, not maintained).
+Primary sources cited via tags in `references/notes.md`. Original research dossier archived in a private local-only directory (historical, not maintained).
 
 ## Acknowledgments
 

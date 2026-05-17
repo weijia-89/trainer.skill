@@ -90,10 +90,10 @@ def collect_known_tags(refs_files: list[Path]) -> set[str]:
 def main() -> int:
     here = Path(__file__).resolve().parent
     skill = here.parent
-    # The upstream development bundle has been archived to
-    # ~/Projects/localonly/code-skills-overhaul-archive/REFERENCES.md and is no
-    # longer maintained. The skill is now self-contained: every tag used in skill
-    # content must be defined in this skill's references/notes.md.
+    # The upstream development bundle has been archived in a private local-only
+    # directory and is no longer maintained. The skill is now self-contained:
+    # every tag used in skill content must be defined in this skill's
+    # references/notes.md.
     refs_files = [
         skill / "references" / "notes.md",
     ]

@@ -223,7 +223,7 @@ Run **3 phases × 4 lenses**, then synthesize.
 
 ## Section 9 — Evidence posture
 
-Full citations + tier tags: `references/notes.md` (shipped). Spans Parnas 1972 (module-boundary criteria), Cockburn hexagonal (only if 2+ adapter implementations), SOLID/DDD as heuristics not laws — thin empirical support, forward-pointers only; MITRE CWE Top-25 (2025) for bug-class lens; OWASP Top 10 LLM/API/Web; W3C WCAG 2.2 accessibility; SLSA v1.0; RFC 8594; Ford/Parsons/Kua fitness functions; `SLOP-arXiv` (hallucinated-import vigilance); Shai-Hulud chronology (Wiz/Unit42/CISA/Microsoft) for current supply-chain attack model. Original research dossier archived at `~/Projects/localonly/code-skills-overhaul-archive/REFERENCES.md`; not shipped, not maintained.
+Full citations + tier tags: `references/notes.md` (shipped). Spans Parnas 1972 (module-boundary criteria), Cockburn hexagonal (only if 2+ adapter implementations), SOLID/DDD as heuristics not laws — thin empirical support, forward-pointers only; MITRE CWE Top-25 (2025) for bug-class lens; OWASP Top 10 LLM/API/Web; W3C WCAG 2.2 accessibility; SLSA v1.0; RFC 8594; Ford/Parsons/Kua fitness functions; `SLOP-arXiv` (hallucinated-import vigilance); Shai-Hulud chronology (Wiz/Unit42/CISA/Microsoft) for current supply-chain attack model. Original research dossier archived in a private local-only directory; not shipped, not maintained.
 
 ## Section 10 — Mini-runbook (the 80% case)
 
