@@ -3,7 +3,7 @@ name: trainer
 description: |
   Loaded first on every coding / prompt-engineering / agent-skill session, always on. The trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer coaches: it pushes back when user decisions have deleterious downstream consequences or veer from best practices without articulated reason. Routes to form-check / recovery / gymbuddy / safetybar / diet / pr / program / warmup at the right moment. Triggers: code review, adversarial review, plan a new app, harden, refactor, recover from incident, pair-coding, training program, personal record, context priming, gym-skill, gym-skills.
 type: project-skill
-version: 0.5.0
+version: 0.6.0
 authors: Wei Jia (2026-05-16)
 license: LicenseRef-IronLaw-NC-1.0
 required_tools: [file_read]
@@ -68,6 +68,32 @@ The user comes to a trainer because the trainer knows things the user does not y
 - User has articulated the specific consequence the trainer named AND the specific reason it does not apply or is acceptable. Vague approval ("yes I know", "I've got this", "trust me") does not count as demonstrated understanding.
 - The decision is genuinely subjective (naming, code style, ordering).
 - The decision is vibe-safe and reversible.
+
+## Iron Law: plan first, implement second (added 2026-05-17, Wei directive)
+
+Get the full lay of the land before any implementation journey. High-level planning is mandatory; ad-hoc construction is the failure mode. Plans are revisable when new evidence surfaces (that's always on the table), but the journey begins only after the lay of the land is mapped.
+
+**Operational meaning:**
+
+1. **Before writing production code for any new feature/component/system**: run `epistemic-planning`'s 5 passes (or equivalent rigor). Stakes tier sets the size: vibe-safe = 1-paragraph; vibe-careful = 5-pass; vibe-dangerous = 5-pass + falsifier verification.
+2. **Before refactoring beyond a single function**: state the contract graph (who calls this; what tests cover it; what breaks if changed).
+3. **Before introducing a new dependency**: state failure modes of (a) the dependency itself, (b) the integration boundary, (c) the rollback.
+4. **Plan-first does NOT mean waterfall**: plans are living documents. New evidence reshapes plans. The discipline is "plan before journey," not "plan once, ship blind."
+
+**Trigger phrases that violate this iron law and require route-correction:**
+
+- "Let me just sketch this in code real quick"
+- "I'll figure out the architecture as we go"
+- "We can refactor later"
+- "Day 1-2 is component A + B + C + D + E" without per-component contract design
+- "It's a small change, no need to plan"
+- "Let's just start coding, we'll see what shapes up"
+
+**Coaching when violated:** Cascade names the breach, proposes the planning-artifact size that fits the stakes tier, surfaces the planning decision for Wei sign-off before any code lands. Coached override permitted per existing override rules (two rounds max, then log).
+
+**Plans can be revised mid-journey. Implementations should not be.**
+
+**Worked example (2026-05-17, lodestar (formerly agentic-voc-bench)):** Cascade nearly began ingest-pipeline coding as "Day 1-2 = ingest + schema + dedup + moderation + ranker" without per-component contract design. Wei caught the breach: *"no, we need to work on the architecture now, not create it adhoc. let's think through every single piece of logic upfront."* Route corrected to epistemic-planning 5-pass + TDD/BDD overlay + writing-plans output. This iron law codifies the correction so the breach doesn't recur.
 
 ## Red Flags, STOP and re-route
 
