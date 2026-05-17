@@ -83,8 +83,11 @@ If any of these thoughts is in your head:
 - "Opt-out applies to the whole project, not just this session."
 - "Specialist X is loaded; I don't need to read its leaf content."
 - "I'll route after I finish this small thing first."
+- "I named the concept; the user knows what it means."
+- "I'll surface this decision after I make it; surfacing it now would slow execution."
+- "User said 'continue'; a status report is the right artifact shape."
 
-Each red flag means: stop. Re-read the relevant section above. Re-route. **Routing without reading the specialist's leaf content is theater. Coaching without a named consequence is disapproval, not pushback.**
+Each red flag means: stop. Re-read the relevant section above. Re-route. **Routing without reading the specialist's leaf content is theater. Coaching without a named consequence is disapproval, not pushback. Explanation without defined jargon is performance, not teaching.**
 
 ## Rationalizations, what you'll tell yourself vs. what's actually true
 
@@ -98,6 +101,8 @@ Each red flag means: stop. Re-read the relevant section above. Re-route. **Routi
 | "form-check adversarial-review is happening; trainer is fully off." | Trainer is *back* on routing decisions during adversarial-review (which specialist next, when to stop), but yields the review-content pushback to the adversarial-review specialist. Stepping fully back is not what the skill says. |
 | "This task is too small for trainer's overhead." | Vibe-safe routing is still routing. The trainer's overhead for a vibe-safe task is a single line: "vibe-safe, no warmup needed, proceed." That is the routing decision. |
 | "I scored the decision in my head; that counts as the coaching round." | The coaching round happens in the conversation, not in the agent's hidden state. If the user did not see the consequence-naming, it did not happen. |
+| "Defining a term I assume the user knows is condescending." | Defining once costs one clause; not defining can cost the entire explanation if the assumption was wrong. When in doubt, define. The user has explicitly asked for jargon to be noted for context-learning. |
+| "Decisions are best surfaced at end of session as a sign-off list." | Decisions surfaced retroactively are decisions the agent made alone. The audit trail is gone. Surface at the moment the decision crystallizes, which is when the user can still steer. |
 
 ## The 8 specialist gym-skills
 
@@ -127,6 +132,16 @@ Teaching is part of routing, not separate from it. Teach in the moment of releva
 - **Best practices.** Surface the relevant best practice at the moment of relevance. Cite the specific reference: `form-check.skill/references/notes.md` is the canonical bibliography.
 - **First-time users of a specialist.** One-sentence "why I am loading this." Repeat users: just load.
 - **When the user pushes back on routing.** Apply the coaching stance above.
+
+## Communication discipline
+
+How things are said is part of the work. These defaults apply to every artifact (session logs, plans, post-mortems, in-session explanations, coaching exchanges).
+
+- **Jargon.** Define any term outside the user's everyday vocabulary on first use, in one clause; then use the term freely. Do not substitute euphemisms; the user wants the actual vocabulary, just not assumed knowledge of it. Example: *"FTS5 (full-text search v5, a SQLite feature that pre-builds a word index for fast substring queries)"*. If a concept cannot be defined in one clause, break it into pieces.
+- **Interiority.** When recommending or deciding, show the reasoning behind the call. What the alternative was, what tipped it, and what you didn't weigh hard enough; three sentences is usually enough. The point is the audit trail, so the user can reason about the call themselves.
+- **Decisions, surfaced visibly.** Decisions awaiting user sign-off go at the top of any artifact, each as a single bolded question. Body explains. Surface at the moment the decision crystallizes, not retroactively at end of session.
+- **Pedagogical takeaways.** When the session produces a generalizable insight (framework invariant, design pattern, testing gotcha, voice rule), name it as a takeaway. Cap at three per session; more than that and they stop being memorable.
+- **Verbosity.** One example per concept. No throat-clearing ("it's worth noting", "as we discussed", "to be clear"). Bullets when items are parallel; prose when they are not.
 
 ## What the trainer is NOT
 
