@@ -5,7 +5,7 @@ description: |
 type: project-skill
 version: 2.0.0
 authors: Wei Jia (1.0, 2026-05-15; 1.1 expanded routing for 5 new skills, 2026-05-15; v2 Iron Law layering + composes-pin updates 2026-05-16)
-license: MIT
+license: LicenseRef-IronLaw-NC-1.0
 required_tools: [file_read]
 recommended_tools: []
 optional_tools: []

@@ -10,43 +10,111 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - **MINOR**: new sync target added; a specialist gym-skill's invocation pattern is updated; new section added without changing existing semantics.
 - **PATCH**: typo fix; clarification without semantic change; sync-mechanic improvement.
 
-## [0.4.0] (2026-05-16): Apply audit-doc patches; tighten coaching-stance operational definitions
+## [0.5.0] (2026-05-16): Runnable pressure-scenario harness (3 trainer scenarios in form-check shape) + soft-cap bump
 
-**MINOR per SemVer rules.** Routing decision flow and specialist list unchanged; coaching-stance section gains explicit operational definitions for previously-implicit guidance. Driven by `~/Projects/reviews/TRAINER_SKILL_AUDIT_2026-05-16.md` (4 operationalization gaps + 1 minor schema gap).
+**MINOR per SemVer rules.** Routing decision flow and specialist list unchanged. The v0.4.0 doc-only pressure scenarios at `tests/scenarios/S01_*.md`, `S02_*.md`, `S03_*.md` are now also instantiated as runnable harness scenarios under `tests/scenarios/harness/<name>/` matching the form-check pressure-scenario shape (`setup.md` + `prompt.md` + `pass_criteria.py` + `notes.md` + `reference_response.md`). Doc-only scenarios are retained as the human-readable spec.
 
 ### Added
 
-- **Iron Law banner** at the top of the Coaching stance section: `Iron Law of the trainer: coach, do not do. Push back when warranted. Defer when the user has demonstrated understanding. Log coached overrides.` Compresses the entire skill into a single load-bearing directive that survives token pressure.
-- **Coached-override log entry shape** documented inline. Schema: `{ts, event, subject, trainer_position, user_decision, user_rationale, residual_concern, rounds}`. Closes Gap 5 from the audit doc (override log was prescribed in v0.2.0 but schema-undefined).
-- **Adversarial-review deference** added to "What the trainer is NOT". During `form-check adversarial-review`, the trainer steps back; the review is the pushback. Trainer re-engages on routing decisions but not review content. Closes Gap 3.
-- **Opt-out semantics** added as a new section. User can suspend coaching for a session ("no coaching this session"); routing questions still answered, pushback paused. Persistent opt-outs are a signal logged in the calibration log. Closes Gap 4.
+- **`tests/scenarios/harness/_grading.py`** vendored from `form-check.skill/tests/pressure_scenarios/_grading.py` (same `Transcript` substantive-sentence helper; same min-words floor of 10 for `__contains__`).
+- **`tests/scenarios/harness/ceremonial_routing/`** harness shape for S01. Reference response passes its own `pass_criteria.py`.
+- **`tests/scenarios/harness/coaching_collapse_on_i_know/`** harness shape for S02. Reference response passes its own `pass_criteria.py`.
+- **`tests/scenarios/harness/bypass_for_small_task/`** harness shape for S03. Reference response passes its own `pass_criteria.py`.
 
 ### Changed
 
-- **"Demonstrated understanding" clause tightened.** Previously: `User has demonstrated understanding of the tradeoff and has a reasoned position.` Now: `User has articulated the specific consequence the trainer named AND the specific reason it does not apply or is acceptable. Vague approval ("yes I know", "I've got this", "trust me") does not count as demonstrated understanding.` Closes Gap 2 (operational definition was missing; was the most exploitable clause in v0.3.0).
-- **Soft line cap** bumped from 100 to 140 in `scripts/verify_trainer_sync.sh`. Canonical SKILL.md is now 127 lines.
+- **`scripts/verify_trainer_sync.sh`** soft cap bumped from 140 to 180 lines. Canonical `SKILL.md` is now 157 lines after the v0.4.0 Red Flags + Rationalizations additions; the previous 140 cap fired a `WARN` on every verify. New cap leaves headroom for incremental discipline-floor scaffolding without immediately tripping the warning.
+
+### Not changed
+
+- `SKILL.md` content (no normative additions beyond v0.4.0).
+- README scope (already updated in v0.4.0 to acknowledge documentation-skill vs behavioral-skill distinction).
+- The 4 sync targets (canonical, Claude mirror, Cursor trigger, Windsurf trigger) all agree on version 0.5.0 after this entry; verify with `bash scripts/verify_trainer_sync.sh`.
+
+### Verification
+
+- `tests/scenarios/harness/<name>/pass_criteria.py` passes against its corresponding `reference_response.md` for all 3 scenarios (3/3 PASS).
+- `bash scripts/verify_trainer_sync.sh` reports PASS on all 7 invariants (version agreement, em-dash zero, trigger config, byte-identical mirror).
+- `form-check.skill/tests/pressure_scenarios/discriminate_test.py` (mutation-style probe) still reports 0/272 incorrect passes after Option C upgrade of all 34 form-check pass_criteria.
+
+### Known follow-ups
+
+- **Phase 11 blind audit cycle** still pending. Requires `ANTHROPIC_API_KEY` or alternate-vendor harness; not autonomously runnable.
+- **Layer B (calibration log analyzer) and Layer C (mutation testing of agent behavior)** of the Phase 11 plan remain future work; v0.5.0 is Layer A only (per-scenario pass/fail harness).
+
+## [0.4.0] (2026-05-16): Load-bearing-discipline pass (audit-gap patches + Iron Law + Red Flags + Rationalizations + pressure scenarios)
+
+**MINOR per SemVer rules.** Routing decision flow and specialist list unchanged; coaching-stance section gains explicit operational definitions and the discipline-floor scaffolding (Iron Law, Red Flags, Rationalizations) that the other 7 gym-skills already had.
+
+Two converging inputs drove this version:
+
+1. **`~/Projects/reviews/TRAINER_SKILL_AUDIT_2026-05-16.md`** identified 4 operationalization gaps + 1 schema gap (Iron Law, demonstrated-understanding, adversarial-review interaction, opt-out semantics, override-log schema).
+2. **Context-free adversarial review at v0.3.0** (chat 2026-05-16, late) added 4 more items (Red Flags section, Rationalizations table, calibration log infrastructure, README walk-back of v0.3.0 promotional phrasing), plus three doc-only pressure scenarios for the failure modes.
+
+The v0.3.0 portfolio-bundling work made the skill *distributable*; v0.4.0 makes the skill's stated discipline more *enforceable* by surfacing the failure modes the discipline is supposed to prevent.
+
+### Added (SKILL.md)
+
+- **Iron Law banner** at the top of the Coaching stance section. Form: *"coach, do not do. Push back when warranted. Defer when the user has demonstrated understanding. Log coached overrides."* Trainer was the only gym-skill without one as of v0.3.0; closes audit Gap 1.
+- **Coached-override log entry schema inline.** Schema: `{ts, event, subject, trainer_position, user_decision, user_rationale, residual_concern, rounds}`. Closes audit Gap 5 (override log was prescribed in v0.2.0 but schema-undefined).
+- **Red Flags section.** 10 verbatim agent-thoughts that should trigger STOP and re-route (e.g. "I named the specialist; that counts as invoking it", "User said 'I know'; I'll defer"). Matches form-check's structural pattern; sourced from the dominant failure modes in the adversarial review.
+- **Rationalizations table.** 8 excuse / reality pairs covering ceremonial routing, coaching collapse, framing-based bypass, hidden-state coaching.
+- **Adversarial-review deference** added to "What the trainer is NOT". During `form-check adversarial-review`, the trainer steps back on review content but stays engaged on routing decisions (which specialist next, when to stop). Closes audit Gap 3.
+- **Opt-out semantics** as a new section. Per-session opt-out via "no coaching this session"; routing questions still answered, pushback paused. Persistent opt-outs are themselves a signal logged at the start of the next non-opted-out session. Closes audit Gap 4.
+
+### Added (filesystem)
+
+- **`form-check.skill/.recovery/calibration.jsonl`** (empty, append-only). Backs the pointer in `SKILL.md` which was previously dangling (verified by `ls` before the fix: directory did not exist).
+- **`form-check.skill/.recovery/SCHEMA.md`** documenting event types: `coached_override`, `coaching_collapse`, `routing_decision`, `score_event`, `coached_override_revisit`. Append-only, UTC timestamps, no-PII discipline stated.
+- **Three doc-only pressure scenarios** under `trainer.skill/tests/scenarios/`:
+  - `S01_ceremonial_routing.md`, tests Iron Law + Red Flag "I named the specialist; that counts as invoking it"
+  - `S02_coaching_collapse_on_i_know.md`, tests the tightened defer-clause against vague approval
+  - `S03_bypass_for_small_task.md`, tests the always-on claim against user-framed-small tasks that hide tier-relevant context
+  - Each follows the Phase 11 plan schema (Setup, Forcing function, Pass criteria, Fail criteria, Trapdoor). Manually testable by a human; runnable harness deferred to Phase 11 implementation.
+- **`tests/scenarios/README.md`** documenting the manual test protocol and pass/fail mapping back to `SKILL.md` clauses.
+
+### Changed
+
+- **"Demonstrated understanding" clause tightened.** Previously: *"User has demonstrated understanding of the tradeoff and has a reasoned position."* Now: *"User has articulated the specific consequence the trainer named AND the specific reason it does not apply or is acceptable. Vague approval ('yes I know', 'I've got this', 'trust me') does not count as demonstrated understanding."* Closes audit Gap 2 (was the most exploitable clause in v0.3.0).
+- **`README.md` honest-scope paragraph added.** Walks back v0.3.0 promotional phrasing ("8-skill agent ecosystem", "makes the ecosystem coherent"). New framing: documentation skill with discipline scaffolding, not yet a behavioral skill with a runnable harness. References the audit and the Phase 11 plan.
+- **`README.md` repo-layout diagram** updated to include `tests/scenarios/`.
+- **Soft line cap** bumped from 100 to 140 in `scripts/verify_trainer_sync.sh`. Canonical `SKILL.md` is now 157 lines. The cap will need another tune-up at next discipline-pass; see open items.
 
 ### Why MINOR not MAJOR
 
 - 8 specialists unchanged.
-- Routing flow byte-identical.
-- Push-back triggers unchanged.
-- New operational definitions are clarifications, not new behaviors. Any v0.3.0-compliant trainer is already v0.4.0-compliant; the difference is the v0.4.0 version is harder to game.
+- Routing decision flow byte-identical.
+- Push-back triggers unchanged in category (still 3 triggers: concrete consequence, best-practice deviation, missing skill).
+- New operational definitions and discipline scaffolding are clarifications + enforcement aids, not new behaviors. Any v0.3.0-compliant trainer is already v0.4.0-compliant; the v0.4.0 version is harder to game.
 
-### Hard-rule compliance
+### Verification done
 
-- Zero em-dashes across `SKILL.md`, all three mirrors, this CHANGELOG entry, and the audit doc.
-- `verify_trainer_sync.sh` passes all 7 invariants (canonical ≡ Claude mirror; Cursor and Windsurf triggers reference canonical path; all four files agree on version 0.4.0; zero em-dashes; `alwaysApply: true`; `trigger: always_on`).
+- `ls /Users/wjia/Projects/form-check.skill/.recovery/` returns `calibration.jsonl` + `SCHEMA.md`.
+- Em-dash audit: zero across `SKILL.md`, all three mirrors, this CHANGELOG entry, `SCHEMA.md`, the three scenarios, `README.md`, and `scripts/bundle_specialists.sh`.
+- Bundle script re-run confirms 280 files across 8 specialists at `./specialists/`.
+- `verify_trainer_sync.sh` invariants pass (canonical, Claude mirror, Cursor and Windsurf triggers all agree on version 0.4.0; zero em-dashes; `alwaysApply: true`; `trigger: always_on`).
 
 ### Files touched
 
-- `~/Projects/trainer.skill/SKILL.md` (version bump 0.3.0 → 0.4.0; +39 lines for the five patches; total 127 lines)
-- `~/.claude/skills/trainer/SKILL.md` (byte-identical mirror, re-synced)
-- `~/Projects/.cursor/rules/trainer.mdc` (heading bumped to v0.4, canonical-path note bumped to v0.4.0)
+- `~/Projects/trainer.skill/SKILL.md` (Iron Law, log-schema-inline, Red Flags, Rationalizations, defer tightening, adversarial-review carve-out, opt-out semantics; 103 → 157 lines)
+- `~/.claude/skills/trainer/SKILL.md` (byte-identical mirror, re-synced to v0.4.0 on second pass; first pass missed the Red Flags + Rationalizations block, caught by `verify_trainer_sync.sh`)
+- `~/Projects/.cursor/rules/trainer.mdc` (heading bumped to v0.4)
 - `~/Projects/.windsurf/rules/trainer.md` (same)
-- `~/Projects/trainer.skill/scripts/verify_trainer_sync.sh` (line cap 100 → 140; comment updated)
+- `~/Projects/trainer.skill/README.md` (honest-scope paragraph, layout diagram updated)
 - `~/Projects/trainer.skill/CHANGELOG.md` (this entry)
+- `~/Projects/trainer.skill/scripts/verify_trainer_sync.sh` (line cap 100 → 140)
+- `~/Projects/trainer.skill/tests/scenarios/` (new dir, 4 files)
+- `~/Projects/form-check.skill/.recovery/calibration.jsonl` (new, empty)
+- `~/Projects/form-check.skill/.recovery/SCHEMA.md` (new)
 - `~/Projects/reviews/TRAINER_SKILL_AUDIT_2026-05-16.md` (source audit doc; not in the skill repo)
+
+### Open items deferred to next version
+
+- **Phase 11 runnable harness** for the three pressure scenarios: doc-only at v0.4.0. The scenarios are testable manually; no automation submits them to an agent and scores behavior. Estimated 4-8 hr; deferred until external pressure (interview, public release, third party using the skill) makes the runnable case load-bearing.
+- **`SKILL.md` line count at 157 already pushes the 140 cap** added in this version. Next discipline-pass should either re-tune the cap or split Red Flags + Rationalizations into a separate `discipline.md` companion. Splitting trades token efficiency (some agents skip companions) for the cap.
+- ~~**Re-run `verify_trainer_sync.sh`**~~ Done. All 7 hard invariants PASS; the only WARN is the documented `SKILL.md` line count (157) over the bumped soft cap (140), tracked above.
+
+---
 
 ## [0.3.0] (2026-05-16): Bundle the 8 specialists into the repo; rewrite README for portfolio distribution
 

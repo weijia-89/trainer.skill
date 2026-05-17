@@ -5,7 +5,7 @@ description: |
 type: project-skill
 version: 3.1.0
 authors: Wei Jia (1.0, 2026-04); rewrite 2026-05-14; v3 evidence-base audit + Iron Law layering 2026-05-16; v3.1 Phase 9 token trim 2026-05-16
-license: MIT
+license: LicenseRef-IronLaw-NC-1.0
 required_tools: [file_read, grep]
 recommended_tools: [shell, git, web_search]
 optional_tools: [browser]

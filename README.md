@@ -1,10 +1,12 @@
 # trainer
 
-A routing and coaching layer for an 8-skill agent ecosystem. The trainer is always-on, routes work to the right specialist at the right moment, explains why, names downstream consequences, and pushes back when user decisions veer from best practice without an articulated reason.
+An entrypoint and coaching skill for an 8-specialist agent toolkit. The trainer is text the agent reads at the start of every coding / prompt-engineering / agent-skill session. It points the agent to the right specialist for the work, asks the agent to read that specialist's leaf content before responding, and pushes back when the agent (or the user) tries to skip the routing.
 
 > A trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer is a coach: the goal is moving the user toward better patterns, more skills, more experience.
 
-This repo bundles `trainer` plus its 8 specialist skills as a single distribution. Each specialist is independently usable; `trainer` is the entrypoint that makes the ecosystem coherent.
+This repo distributes `trainer` together with the 8 specialist skill directories at `./specialists/`. Each specialist is independently usable. The trainer is the routing prose that connects them; it does not make the specialists work together at runtime, and it does not do the specialists' work itself.
+
+**Honest scope (per `~/Projects/reviews/TRAINER_SKILL_AUDIT_2026-05-16.md` and the context-free adversarial review at v0.4.0):** as of v0.4.0 the trainer is a *documentation skill* with discipline scaffolding (Iron Law, Red Flags, Rationalizations, three doc-only pressure scenarios). It is not yet a *behavioral* skill in the sense that no runnable harness measures whether an agent loaded with the trainer actually behaves differently. The Phase 11 plan at `~/Projects/reviews/PHASE_11_VALIDATION_INFRA_PLAN_2026-05-16.md` covers building that harness; this skill is not yet a portfolio claim that the harness exists.
 
 ---
 
@@ -84,13 +86,19 @@ Read `SKILL.md` for the routing flow and coaching stance. Read each specialist's
 
 ```
 trainer.skill/
-├── SKILL.md                   # canonical trainer body (≤100 lines)
-├── README.md                  # this file
-├── CHANGELOG.md               # version history per SemVer below
-├── LICENSE                    # MIT
+├── SKILL.md                            # canonical trainer body (≤150 lines as of v0.4.0)
+├── README.md                           # this file
+├── CHANGELOG.md                        # version history per SemVer below
+├── LICENSE                             # MIT
 ├── scripts/
-│   ├── bundle_specialists.sh  # refreshes ./specialists/ from sibling-dir canonicals
-│   └── verify_trainer_sync.sh # asserts cross-IDE mirror consistency
+│   ├── bundle_specialists.sh           # refreshes ./specialists/ from sibling-dir canonicals
+│   └── verify_trainer_sync.sh          # asserts cross-IDE mirror consistency
+├── tests/
+│   └── scenarios/                      # doc-only pressure scenarios (v0.4.0)
+│       ├── README.md
+│       ├── S01_ceremonial_routing.md
+│       ├── S02_coaching_collapse_on_i_know.md
+│       └── S03_bypass_for_small_task.md
 └── specialists/
     ├── form-check/    # 243 files: checklists, rubrics, templates, tests, tools, docs
     ├── program/       # multi-session planning
