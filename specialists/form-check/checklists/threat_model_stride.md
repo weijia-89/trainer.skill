@@ -16,7 +16,7 @@ Apply to any vibe-dangerous change. Walk all 6 categories per data-flow boundary
 
 ## Categories
 
-### S — Spoofing
+### S, Spoofing
 **Question**: Can an attacker pretend to be someone they're not?
 
 **Examples**:
@@ -27,7 +27,7 @@ Apply to any vibe-dangerous change. Walk all 6 categories per data-flow boundary
 
 **Mitigations**: strong auth, mTLS for service-to-service, signed tokens, replay-protection (nonce / timestamp), HSTS, secure cookies.
 
-### T — Tampering
+### T, Tampering
 **Question**: Can an attacker modify data in flight or at rest?
 
 **Examples**:
@@ -38,7 +38,7 @@ Apply to any vibe-dangerous change. Walk all 6 categories per data-flow boundary
 
 **Mitigations**: TLS 1.2+, signed releases (sigstore/cosign), integrity-protected encryption (GCM/ChaCha20-Poly1305), server-side validation, SLSA Build Track L2+.
 
-### R — Repudiation
+### R, Repudiation
 **Question**: Can an actor deny taking an action?
 
 **Examples**:
@@ -48,7 +48,7 @@ Apply to any vibe-dangerous change. Walk all 6 categories per data-flow boundary
 
 **Mitigations**: append-only audit log, signed log lines, per-user service identities, time-synced clocks.
 
-### I — Information Disclosure
+### I, Information Disclosure
 **Question**: Can data leak to unauthorized parties?
 
 **Examples**:
@@ -60,7 +60,7 @@ Apply to any vibe-dangerous change. Walk all 6 categories per data-flow boundary
 
 **Mitigations**: structured errors, log redaction, per-tier endpoint exposure, constant-time comparison for tokens.
 
-### D — Denial of Service
+### D, Denial of Service
 **Question**: Can the service be made unavailable?
 
 **Examples**:
@@ -71,7 +71,7 @@ Apply to any vibe-dangerous change. Walk all 6 categories per data-flow boundary
 
 **Mitigations**: timeouts everywhere, body-size limits, regex DoS scan, rate-limit, circuit-breaker.
 
-### E — Elevation of Privilege
+### E, Elevation of Privilege
 **Question**: Can a low-privilege actor gain higher privileges?
 
 **Examples**:

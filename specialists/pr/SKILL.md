@@ -29,7 +29,7 @@ IRON LAW: NO DEPLOY WITHOUT A ROLLBACK COMMAND YOU CAN STATE IN ONE LINE.
 
 Violating the letter of this rule is violating the spirit of this rule. "I'll figure out the rollback if I need it" is the rationalization that turns a 5-minute incident into a 5-hour outage. Before pressing deploy: write the rollback command in the PR description. If you can't, you are not ready.
 
-## Red Flags. STOP before deploying
+## Red Flags, STOP before deploying
 
 - "I'll write the rollback note after the deploy."
 - "Rollback is just `git revert HEAD`, no need to document."
@@ -71,7 +71,7 @@ You have working code locally. You need it running somewhere users can reach it.
 - **Rollback** (a deploy made things worse): §5.
 - **The deploy is failing** (won't build / won't start / health check failing): §6.
 
-## §1. Pre-deploy checklist
+## §1, Pre-deploy checklist
 
 Run through this **before** the first deploy. Skipping it is how beginners ship something that "works on my machine" but doesn't work anywhere else.
 
@@ -119,7 +119,7 @@ Your app exposes an HTTP endpoint (typically `/health` or `/_health`) that retur
 
 Whatever platform you deploy to, confirm you can read its logs *before* you depend on them. The middle of an incident is the wrong time to discover you've never configured log access.
 
-## §2. Platform-specific patterns
+## §2, Platform-specific patterns
 
 This skill assumes you've already chosen a platform per `form-check/rubrics/stack_decision.md`. Patterns below are for the most common beginner-friendly choices.
 
@@ -158,7 +158,7 @@ This skill assumes you've already chosen a platform per `form-check/rubrics/stac
 - **Multi-region active-active** until single-region is provably insufficient.
 - **Service meshes, sidecars, ingress controllers**, these are scale-up tools; using them at the persona's scale is `form-check/forcing-constraint-ADR-required` territory.
 
-## §3. The deploy itself
+## §3, The deploy itself
 
 Default deploy flow for any platform:
 
@@ -170,7 +170,7 @@ Default deploy flow for any platform:
 
 If your deploys take more than ~10 minutes, that's a separate problem, it slows your incident response and pushes you toward `--force` shortcuts. Address it.
 
-## §4. Post-deploy verification
+## §4, Post-deploy verification
 
 Within the first 30 minutes of any production deploy:
 
@@ -181,7 +181,7 @@ Within the first 30 minutes of any production deploy:
 - [ ] If the deploy changed a database schema: spot-check that the migration ran and the data is intact.
 - [ ] If the deploy changed an env-handling code path: spot-check that the env var is being read correctly (often: log a sanity line that shows config got loaded, but **never log the secret values themselves**).
 
-## §5. Rollback procedure
+## §5, Rollback procedure
 
 Two kinds of rollback:
 
@@ -211,7 +211,7 @@ Per `diet §3.4`, roll back when:
 
 If any of those fails, *rollback is itself an incident*, escalate to `diet §3` triage.
 
-## §6. When the deploy is failing
+## §6, When the deploy is failing
 
 Common failure modes and the recovery path for each:
 
@@ -224,7 +224,7 @@ Common failure modes and the recovery path for each:
 | Build is fine, deploy is fine, but the change isn't taking effect | Browser cache, CDN cache, platform cache | Hard-refresh (cmd-shift-R); platform "purge cache" if available |
 | Deploy succeeds intermittently and fails intermittently | Flaky build infrastructure, race condition in build step | Re-run; if persistent, investigate platform status page; consider pinning more aggressively |
 
-## §7. Anti-patterns
+## §7, Anti-patterns
 
 - ❌ **Deploying on Friday afternoon.** Beginner version of this rule: don't deploy when you can't roll back in the next hour. (Day-of-week is the heuristic; the underlying rule is rollback-window-availability.)
 - ❌ **Bundling unrelated changes in one deploy.** "I'll just include this small fix too." Now if anything breaks, you don't know which change caused it. Deploy one logical change at a time.

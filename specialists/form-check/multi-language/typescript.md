@@ -4,7 +4,7 @@ version: 2.0.0
 parent_skill: form-check
 ---
 
-# TypeScript / JavaScript — tooling depth
+# TypeScript / JavaScript, tooling depth
 
 ## Tooling matrix
 
@@ -109,7 +109,7 @@ Or via `dependency-cruiser` for finer-grained graph rules.
 ## Concurrency
 
 JS/TS is single-threaded with async/await; no shared-memory races within a process. But:
-- `Promise.all` doesn't cancel siblings on rejection — use `Promise.allSettled` or AbortController per branch.
+- `Promise.all` doesn't cancel siblings on rejection, use `Promise.allSettled` or AbortController per branch.
 - `for await` with concurrent async work: use `p-map` / `Promise.all` with explicit concurrency limit.
 - Workers (web, Node `worker_threads`) introduce real concurrency: SharedArrayBuffer needs `Atomics`; otherwise message-passing.
 

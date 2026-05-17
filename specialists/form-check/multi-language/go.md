@@ -4,7 +4,7 @@ version: 2.0.0
 parent_skill: form-check
 ---
 
-# Go — tooling depth
+# Go, tooling depth
 
 ## Tooling matrix
 
@@ -125,14 +125,14 @@ func main() {
 }
 ```
 
-Or use `arch-go` / `go-arch-lint` — community options, less mature than ArchUnit.
+Or use `arch-go` / `go-arch-lint`, community options, less mature than ArchUnit.
 
 ## Common pitfalls
 
 - **`http.Client{}` without `Timeout`**: hangs forever. Always set; default is 0 = no timeout.
 - **Goroutine leaks**: spawn without cancellation context. Always `select` on `ctx.Done()`.
 - **`defer` in a loop**: stack accumulates until function returns. Refactor.
-- **`error` ignored**: `result, _ := ...` — `errcheck` lint catches.
+- **`error` ignored**: `result, _ := ...`, `errcheck` lint catches.
 - **String concatenation in SQL**: parameterize. `database/sql` requires `?` / `$1` placeholders.
 - **`crypto/md5` for security**: never. Use SHA-256+ for non-passwords; argon2id / scrypt for passwords.
 - **Public-by-default exported fields**: capitalization controls export; design carefully.

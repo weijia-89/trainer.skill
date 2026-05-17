@@ -36,12 +36,12 @@ composes:
 # warmup, front desk; tell me what's broken and I'll route you
 
 ```
-IRON LAW: NO DIRECT ACTION FROM WARMUP. ROUTE FIRST, THEN ACT IN THE DOWNSTREAM SKILL.
+IRON LAW: NO DIRECT ACTION FROM WARMUP, ROUTE FIRST, THEN ACT IN THE DOWNSTREAM SKILL.
 ```
 
 Violating the letter of this rule is violating the spirit of this rule. "I'll just answer this here" is the rationalization that turns a triage skill into a generalist, generalists give worse advice than specialists. This skill routes; it does not score, plan, fix, deploy, recover, or coach.
 
-## Red Flags. STOP and route
+## Red Flags, STOP and route
 
 - "This is a quick one, no need to route."
 - "I'll route AND give a partial answer."

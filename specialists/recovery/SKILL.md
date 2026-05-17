@@ -27,7 +27,7 @@ IRON LAW: NO LAUNCH-READY VERDICT WITHOUT TIER-FLOOR MET *AND* `.recovery/state.
 
 Violating the letter of this rule is violating the spirit of this rule. "Mostly launch-ready, just one phase short" is not launch-ready. The state.jsonl entries and the tier-floor are independent gates; both must pass. **Below `form-check`'s calibration N=10, the engagement renders `advisory` only, not launch-ready** (per `form-check §5` honest-precision warning).
 
-## Red Flags. STOP
+## Red Flags, STOP
 
 - "We're at engagement-end and one phase didn't run, but we're close enough."
 - "Tier-floor isn't met but the team needs to ship Friday."
@@ -66,7 +66,7 @@ This skill is **not a code generator**. It guides agents through an opinionated 
 
 Default engagement type: `harden`. The skill discovers, reviews, scores, doc-passes, deAI-sweeps, declares launch-ready (or escalates a gap report), and writes a one-page summary.
 
-## Section 1. DAG workflow (single source of truth)
+## Section 1, DAG workflow (single source of truth)
 
 Canonical workflow lives in `workflow/workflow_dag.md`. Phases:
 
@@ -89,7 +89,7 @@ Activation criteria per phase (full set in `workflow/workflow_dag.md`):
 
 Each phase emits one artifact and one structured-verdict JSON entry to `.recovery/state.jsonl`. Re-running `recovery` skips completed phases (idempotency-by-state).
 
-## Section 2. Composition with form-check
+## Section 2, Composition with form-check
 
 `recovery` does **not** duplicate `form-check`'s rubrics or checklists. It pins a version range (frontmatter `composes`) and references files by path. If `form-check`'s pinned components change MAJOR version, `recovery`'s self-test fails (`tests/test_skill_version_compat.py`).
 
@@ -102,7 +102,7 @@ What `recovery` adds beyond `form-check`:
 - Phase prompts (env-agnostic, parameterized output paths) (`workflow/phase_prompts.md`)
 - Full engagement trace example (`examples/full-engagement-trace.md`)
 
-## Section 3. Engagement-level confidence rubric
+## Section 3, Engagement-level confidence rubric
 
 Inherits all 9 components from `form-check` (rubrics/confidence_score.md). Adds 2 engagement-specific:
 
@@ -113,7 +113,7 @@ Inherits all 9 components from `form-check` (rubrics/confidence_score.md). Adds 
 
 Inherited components are rebalanced **0.9× from `form-check`** (sum=90); add 7+3=10 → **100 total**. Tier thresholds inherited from `form-check`. See `rubrics/code_fixer_confidence.md` for the full table, per-component minima, and worked examples.
 
-## Section 4. Posture rules (engagement-level)
+## Section 4, Posture rules (engagement-level)
 
 - **Engagement output is structured**: every phase emits `.recovery/state.jsonl` row; final summary is human-readable + machine-parseable verdict.
 - **Idempotent re-runs**: `recovery` on the same project twice produces identical DAG state if no inputs changed.
@@ -121,7 +121,7 @@ Inherited components are rebalanced **0.9× from `form-check`** (sum=90); add 7+
 - **Multi-language**: `recovery` does not assume a stack. Each phase consults `form-check.skill/multi-language/matrix.md` to pick tooling.
 - **Posture-adaptive**: scale-up content reachable only via `form-check.skill/scale-up/when_to_activate.md` gate.
 
-## Section 5. Refusal list
+## Section 5, Refusal list
 
 Refuse to:
 - Run `recovery` on a project where the user has not granted file-write authority (degrade to advisory mode).
@@ -129,7 +129,7 @@ Refuse to:
 - Mark launch-ready when `form-check`'s tier-floor is unmet.
 - Rewrite source files based on adversarial-review findings without `vibe-dangerous` per-component minima met.
 
-## Section 6. Adversarial review (12 axis-segmented questions)
+## Section 6, Adversarial review (12 axis-segmented questions)
 
 Run all 12 (`workflow/adversarial_questions.md`):
 1. Severity inflation
@@ -147,7 +147,7 @@ Run all 12 (`workflow/adversarial_questions.md`):
 
 Each must produce a verdict (`pass`, `fail`, `n/a-with-reason`).
 
-## Section 7. Voice and docs
+## Section 7, Voice and docs
 
 Per-archetype voice rules (`templates/doc_voice.md`):
 
@@ -165,7 +165,7 @@ Per-archetype voice rules (`templates/doc_voice.md`):
 
 Banned-vocab base + per-archetype overlays in `templates/deai_rules.md`.
 
-## Section 8. Engagement output spec
+## Section 8, Engagement output spec
 
 Every engagement produces:
 
@@ -184,7 +184,7 @@ Every engagement produces:
 {"phase": "scoring", "ts": "...", "verdict": "pass|fail|advisory", "score": 92, "tier": "vibe-careful", "artifacts": ["..."], "notes": "..."}
 ```
 
-## Section 9. Abort protocol
+## Section 9, Abort protocol
 
 If the engagement should abort (user signal, scope mismatch, security concerns, time exhaustion):
 
@@ -194,13 +194,13 @@ If the engagement should abort (user signal, scope mismatch, security concerns, 
 4. Exit with non-zero structured verdict
 5. Do **not** auto-cleanup, user owns disposition
 
-## Section 10. Anti-scope
+## Section 10, Anti-scope
 
 - Not a feature-implementation tool. Reviews, scores, hardens, doc-passes, deAI-sweeps. Does not write feature code.
 - Not a substitute for security audit on vibe-dangerous surfaces.
 - Not for projects without form-check context (host must have `form-check@>=2.0.0,<3.0.0` available).
 
-## Section 11. Mini-runbook
+## Section 11, Mini-runbook
 
 ```text
 1. apply recovery /path/to/project --engagement-type harden

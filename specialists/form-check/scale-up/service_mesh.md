@@ -7,9 +7,9 @@ gate: forcing-constraint-required
 
 # Service Mesh
 
-> **[GATED — informational only]** Forcing-constraint ADR required.
+> **[GATED, informational only]** Forcing-constraint ADR required.
 >
-> Service mesh is operational tax. Most "we need a service mesh" conversations are solved by mTLS + a single ingress + good service discovery — without the mesh's deployment, certificate-management, and debugging burden.
+> Service mesh is operational tax. Most "we need a service mesh" conversations are solved by mTLS + a single ingress + good service discovery, without the mesh's deployment, certificate-management, and debugging burden.
 
 ## When this chapter applies
 
@@ -52,8 +52,8 @@ If these don't address your forcing constraint, *then* consider mesh.
 
 ## Anti-patterns
 
-- Mesh as the first answer to zero-trust — mTLS at ingress + library-level mTLS east-west handles 80%.
-- Multiple meshes (Istio + Linkerd in different teams) — operational nightmare.
+- Mesh as the first answer to zero-trust, mTLS at ingress + library-level mTLS east-west handles 80%.
+- Multiple meshes (Istio + Linkerd in different teams), operational nightmare.
 - Mesh for traffic policy when feature flags suffice.
 - Mesh for observability when OpenTelemetry libraries do it without the sidecar.
 - Mesh that nobody on-call knows how to debug at 3 AM.

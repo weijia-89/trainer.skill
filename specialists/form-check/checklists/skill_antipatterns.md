@@ -4,7 +4,7 @@ version: 2.0.0
 parent_skill: form-check
 ---
 
-# Skill Anti-Patterns — failure modes when applying form-check / recovery
+# Skill Anti-Patterns, failure modes when applying form-check / recovery
 
 Walk this once per engagement to ensure you're not drifting into common ways the skill gets misused or self-undermined.
 
@@ -14,7 +14,7 @@ Walk this once per engagement to ensure you're not drifting into common ways the
 
 **Failure mode**: The rubric's authority comes from fixed weights. Re-weighting hides the gap behind apparent compliance.
 
-**Defense**: Weights are fixed by `rubrics/confidence_score.md`. If a component genuinely doesn't apply, mark `n/a-with-reason` and renormalize transparently — do not silently shift weight.
+**Defense**: Weights are fixed by `rubrics/confidence_score.md`. If a component genuinely doesn't apply, mark `n/a-with-reason` and renormalize transparently, do not silently shift weight.
 
 ## A2. Skipping the forcing-constraint gate on scale-up
 
@@ -36,7 +36,7 @@ Walk this once per engagement to ensure you're not drifting into common ways the
 
 **Symptom**: User asks "why 95 for vibe-dangerous?"; reviewer cannot answer.
 
-**Failure mode**: Tier numbers are tagged `[normative — operator wisdom]`. They're best-guess until the calibration log has ≥50 entries with incident outcomes.
+**Failure mode**: Tier numbers are tagged `[normative, operator wisdom]`. They're best-guess until the calibration log has ≥50 entries with incident outcomes.
 
 **Defense**: Log every score. After 50 entries, retier per empirical correlation. State the normative tag any time you cite the threshold.
 

@@ -5,7 +5,7 @@ parent_skill: recovery
 canonical: true
 ---
 
-# Codeit Workflow — DAG (canonical)
+# Codeit Workflow, DAG (canonical)
 
 The recovery engagement is a DAG, not a waterfall. This is the **single source of truth**; SKILL.md and other workflow files reference by phase ID.
 
@@ -61,7 +61,7 @@ Edges (per diagram):
 
 ## Loop limits
 
-`adversarial → review` loops at most twice. After 2 unsuccessful loops, escalate to user with a structured gap report. **No third silent loop** — the rubric's anti-gaming rule forbids.
+`adversarial → review` loops at most twice. After 2 unsuccessful loops, escalate to user with a structured gap report. **No third silent loop**, the rubric's anti-gaming rule forbids.
 
 ## Per-phase verdict rows (.recovery/state.jsonl)
 
@@ -99,7 +99,7 @@ At any phase, if abort triggered (user signal, scope mismatch, time exhaustion, 
 2. Save partial state to `.recovery/abort-<ts>/`
 3. Emit `.recovery/abort-<ts>/summary.md` with: phases completed, phases skipped, uncommitted-change disposition, what's next
 4. Exit with non-zero structured verdict
-5. Do not auto-cleanup — user owns disposition
+5. Do not auto-cleanup, user owns disposition
 
 ## Cross-references
 
@@ -113,6 +113,6 @@ At any phase, if abort triggered (user signal, scope mismatch, time exhaustion, 
 
 - Treating the DAG as a waterfall (running every phase always).
 - Looping adversarial more than twice silently.
-- Skipping `discovery` because "it's just a small change" — discovery is cheap and prevents larger waste.
-- Re-running entire workflow when only one phase needs re-run — use `--rerun=phase`.
-- Running `launch_ready` for a non-`harden` engagement — confuses DoD with general scoring.
+- Skipping `discovery` because "it's just a small change", discovery is cheap and prevents larger waste.
+- Re-running entire workflow when only one phase needs re-run, use `--rerun=phase`.
+- Running `launch_ready` for a non-`harden` engagement, confuses DoD with general scoring.

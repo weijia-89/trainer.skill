@@ -4,7 +4,7 @@ version: 2.0.0
 parent_skill: form-check
 ---
 
-# Rust — tooling depth
+# Rust, tooling depth
 
 ## Tooling matrix
 
@@ -124,8 +124,8 @@ CI matrix tests against MSRV + stable + nightly to catch regressions.
 - Cryptography / parsing untrusted input (memory safety + zero-copy)
 
 Where Rust does not pay rent (default mode):
-- Quick CLI tools — Go has 10× faster onboarding
-- Forms-heavy CRUD — Rails / Django earn faster
-- Data / ML adjacent — Python ecosystem dominates
+- Quick CLI tools, Go has 10× faster onboarding
+- Forms-heavy CRUD, Rails / Django earn faster
+- Data / ML adjacent, Python ecosystem dominates
 
 Match the spec to the tool, not the tool to the project.

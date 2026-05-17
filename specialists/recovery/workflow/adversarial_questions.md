@@ -4,7 +4,7 @@ version: 2.0.0
 parent_skill: recovery
 ---
 
-# Adversarial Questions — 12 axis-segmented
+# Adversarial Questions, 12 axis-segmented
 
 The adversarial phase walks 12 questions across 12 axes. Each must produce a verdict: `pass`, `fail`, or `n/a-with-reason`. **Five passes is not enough**; the original 5-question set missed too many bug classes that 2025–2026 vibe-coding incidents exposed.
 
@@ -63,7 +63,7 @@ Did the agent scan its own inputs for prompt-injection patterns? Was untrusted c
 Each question produces a row in `.recovery/adversarial.md`:
 
 ```markdown
-### Q{{N}} — {{title}}
+### Q{{N}}, {{title}}
 
 - Verdict: pass | fail | n/a-with-reason
 - Evidence: {{specific reference; file:line; calibration log row; ADR id; ...}}
@@ -86,8 +86,8 @@ Loop cap: 2 (per `workflow_dag.md`). After 2 loops without crossing tier-floor, 
 
 ## Anti-patterns
 
-- "Q1 → pass" without examining a single P0/P1 finding — perfunctory.
-- Marking every question `n/a` for a small change — review fatigue, not vibe budget.
-- Flagging every `fail` as P2 — defeats the severity-inflation check.
-- Skipping Q12 because "the agent isn't an attack surface" — every agent-consumed text is an attack surface.
-- Loop without new evidence between passes — anti-gaming rule violation.
+- "Q1 → pass" without examining a single P0/P1 finding, perfunctory.
+- Marking every question `n/a` for a small change, review fatigue, not vibe budget.
+- Flagging every `fail` as P2, defeats the severity-inflation check.
+- Skipping Q12 because "the agent isn't an attack surface", every agent-consumed text is an attack surface.
+- Loop without new evidence between passes, anti-gaming rule violation.

@@ -4,9 +4,9 @@ version: 2.0.0
 parent_skill: form-check
 ---
 
-# Stack Decision Rubric (v2 — multi-language; cite or `[normative]`)
+# Stack Decision Rubric (v2, multi-language; cite or `[normative]`)
 
-Always state **chosen + rejected alternative + 1-sentence why each**, anchored to a citation OR explicitly tagged `[normative — operator wisdom]`. Section 2 of `SKILL.md` summarizes; this file is the full template.
+Always state **chosen + rejected alternative + 1-sentence why each**, anchored to a citation OR explicitly tagged `[normative, operator wisdom]`. Section 2 of `SKILL.md` summarizes; this file is the full template.
 
 ## Decision tree
 
@@ -14,17 +14,17 @@ Always state **chosen + rejected alternative + 1-sentence why each**, anchored t
 Is this a single binary or CLI tool?
   └─ yes → Go (stdlib + chi or cobra) OR Rust (clap + std).
         Go default unless memory/perf budget is the spec; then Rust.
-        [normative — operator wisdom]
+        [normative, operator wisdom]
 
 Is the team Python-comfortable or is this data/ML-adjacent?
   └─ yes → Python + FastAPI + Postgres + Next.js (only if web UI).
         Reject Django **unless** the team values batteries-included admin/ORM more than async-first contracts.
-        [normative — operator wisdom + FastAPI vs Django stylistic call]
+        [normative, operator wisdom + FastAPI vs Django stylistic call]
 
 Is the team JS-comfortable, or is this a one-person greenfield?
   └─ yes → TS everywhere (Next.js App Router + Drizzle + Postgres via Neon/Supabase + Tailwind).
         Reject Python full-stack ("single language, single deploy, type-safety end-to-end").
-        [normative — operator wisdom]
+        [normative, operator wisdom]
 
 Forms-heavy CRUD, regulated, or "boring web app"?
   └─ yes → Rails 8 (Solid stack) OR Django.
@@ -34,7 +34,7 @@ Forms-heavy CRUD, regulated, or "boring web app"?
 **Enterprise greenfield, JVM org, regulated** (gated)?
   └─ yes → Kotlin + Spring Boot 3 + Postgres + Gradle (see scale-up/spring_kotlin_jvm.md)
         Reject Java + Spring **only on stylistic preference** (Kotlin null-safety + coroutines wins; Java is fine if team owns it).
-        [normative — gated by forcing-constraint ADR]
+        [normative, gated by forcing-constraint ADR]
 
 Embedded / safety-critical?
   └─ yes → Rust (no_std + embassy) OR C with MISRA + frama-c.
@@ -83,11 +83,11 @@ Document as an **ADR** (`templates/MADR_short.md`). Title format: `NNNN-{verb}-{
 ## Anti-checklist (refuse-by-default)
 
 Reject these defaults at project start (default mode):
-- "Microservices because we'll scale" — Newman: last resort; name the forcing constraint
-- "GraphQL because mobile" — REST + good cache headers + JSON:API or HATEOAS-lite solves 95% of cases; GraphQL adds federation cost without measured benefit
-- "Event bus because async" — start with Postgres LISTEN/NOTIFY or a pg-backed queue (River, pgmq, Sidekiq)
-- "Service mesh because zero-trust" — start with mTLS + a single ingress; mesh is operational tax for solving problems you don't have yet
-- "Multi-region because uptime" — start single-region; you can't run multi-region until you can run single-region
+- "Microservices because we'll scale", Newman: last resort; name the forcing constraint
+- "GraphQL because mobile", REST + good cache headers + JSON:API or HATEOAS-lite solves 95% of cases; GraphQL adds federation cost without measured benefit
+- "Event bus because async", start with Postgres LISTEN/NOTIFY or a pg-backed queue (River, pgmq, Sidekiq)
+- "Service mesh because zero-trust", start with mTLS + a single ingress; mesh is operational tax for solving problems you don't have yet
+- "Multi-region because uptime", start single-region; you can't run multi-region until you can run single-region
 
 ## Multi-language tooling references
 

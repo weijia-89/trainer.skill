@@ -5,9 +5,9 @@ parent_skill: form-check
 status: decision tree
 ---
 
-# Checklists — INDEX (decision tree)
+# Checklists, INDEX (decision tree)
 
-Use this as the routing layer. Pick the checklist(s) that match your task. Don't walk every checklist on every change — that wastes vibe budget and produces fatigue-shaped noise.
+Use this as the routing layer. Pick the checklist(s) that match your task. Don't walk every checklist on every change, that wastes vibe budget and produces fatigue-shaped noise.
 
 ## Decision tree
 
@@ -15,7 +15,7 @@ Use this as the routing layer. Pick the checklist(s) that match your task. Don't
 What are you doing?
 
 ├─ Reviewing existing code?
-│   ├─ → codebase_scan.md             (cross-cutting comprehension protocol — run FIRST for unfamiliar code)
+│   ├─ → codebase_scan.md             (cross-cutting comprehension protocol, run FIRST for unfamiliar code)
 │   ├─ → bug_class_audit.md           (CWE Top-25 + AI-PR shapes)
 │   ├─ → smell_catalog.md             (month-3 failure modes per archetype)
 │   ├─ Touches LLM / agent?

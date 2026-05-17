@@ -7,7 +7,7 @@ addresses: smell_catalog "prompt rev drifted; eval gate didn't catch"
 
 # Prompt Versioning
 
-Treat LLM prompts as a versioned artifact. Without versioning + eval gating, prompt drift is silent — model behavior changes between PRs and the eval baseline can't tell you which change caused the regression.
+Treat LLM prompts as a versioned artifact. Without versioning + eval gating, prompt drift is silent, model behavior changes between PRs and the eval baseline can't tell you which change caused the regression.
 
 ## File layout
 
@@ -37,7 +37,7 @@ Mirrors SemVer for libraries. The reasoning is the same: consumers (downstream c
 ## Per-prompt CHANGELOG
 
 ```markdown
-# CHANGELOG — generate_summary prompt
+# CHANGELOG, generate_summary prompt
 
 ## [v3] - 2026-05-12
 ### MAJOR

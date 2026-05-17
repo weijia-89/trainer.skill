@@ -37,16 +37,16 @@ agent_capabilities:
 ```
 
 ### Tool taxonomy
-- `file_read`, `grep` — passive code/doc inspection
-- `file_write_in_workspace` — edit files inside engagement worktree
-- `file_write_outside_workspace` — edit files outside worktree (refused at vibe-dangerous)
-- `shell_safe` — readonly shell ops (`ls`, `cat`, `grep`, `git log`)
-- `shell_unsafe` — anything that writes (`rm`, `chmod`, `git push`, `pip install`)
-- `network_read` — HTTP GET / web fetch
-- `network_write` — HTTP POST / external API with side effects
-- `db_read` / `db_write` — query / mutation
-- `secret_read` — environment vars, KMS, vault
-- `dep_install` — package manager invocation
+- `file_read`, `grep`, passive code/doc inspection
+- `file_write_in_workspace`, edit files inside engagement worktree
+- `file_write_outside_workspace`, edit files outside worktree (refused at vibe-dangerous)
+- `shell_safe`, readonly shell ops (`ls`, `cat`, `grep`, `git log`)
+- `shell_unsafe`, anything that writes (`rm`, `chmod`, `git push`, `pip install`)
+- `network_read`, HTTP GET / web fetch
+- `network_write`, HTTP POST / external API with side effects
+- `db_read` / `db_write`, query / mutation
+- `secret_read`, environment vars, KMS, vault
+- `dep_install`, package manager invocation
 
 ## State ledger
 
@@ -91,10 +91,10 @@ Vibe-careful and vibe-dangerous engagements work in a `git worktree`, not on the
 ## Reasoning provenance tags
 
 Every claim in agent output must carry a tag:
-- `[verified]` — primary source read this session
-- `[inferred]` — reasoning from verified evidence; no contradicting signal found
-- `[speculative]` — best-guess pending evidence
-- `[unknown]` — cannot verify without further research
+- `[verified]`, primary source read this session
+- `[inferred]`, reasoning from verified evidence; no contradicting signal found
+- `[speculative]`, best-guess pending evidence
+- `[unknown]`, cannot verify without further research
 
 The skill's `tests/test_self_voice.sh` checks SKILL.md uses tags appropriately. Agent output that omits tags fails review.
 

@@ -39,7 +39,7 @@ After Sunset:
 | Language | Mechanism |
 |---|---|
 | Python | `@warnings.deprecated(...)` (3.13+) or `DeprecationWarning` |
-| TypeScript | `/** @deprecated since 2.3.0 — use Foo instead */` JSDoc + ESLint rule |
+| TypeScript | `/** @deprecated since 2.3.0, use Foo instead */` JSDoc + ESLint rule |
 | Java/Kotlin | `@Deprecated(since="2.3.0", forRemoval=true, replacement="Foo")` |
 | Go | comment `// Deprecated: use Foo instead.` (godoc convention) |
 | Rust | `#[deprecated(since = "2.3.0", note = "use Foo instead")]` |
@@ -79,7 +79,7 @@ Required PR sections:
 - Deprecating without a replacement.
 - Sunset date in the past at announcement time.
 - Removing before Sunset.
-- "Deprecated since the beginning of time" — undocumented, never enforced.
+- "Deprecated since the beginning of time", undocumented, never enforced.
 - Migration guide that doesn't actually compile / run on the replacement.
 - Silent breaking change in a "patch" version (SemVer violation).
 

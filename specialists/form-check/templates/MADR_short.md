@@ -5,7 +5,7 @@ parent_skill: form-check
 status: template
 ---
 
-# NNNN — {Title in imperative form}
+# NNNN, {Title in imperative form}
 
 - Status: {proposed | accepted | superseded by NNNN}
 - Date: {YYYY-MM-DD}
@@ -23,7 +23,7 @@ status: template
 
 ## Decision Outcome
 
-Chosen option: **{Option B}**, because {one or two sentences citing the strongest evidence — perf number, regulatory line, lock-in cost}.
+Chosen option: **{Option B}**, because {one or two sentences citing the strongest evidence, perf number, regulatory line, lock-in cost}.
 
 ### Consequences
 
@@ -33,11 +33,11 @@ Chosen option: **{Option B}**, because {one or two sentences citing the stronges
 
 ### Confirmation
 
-How we will know if this was right (or wrong) in 90 days: {falsifiable check — e.g. "p99 < 200ms", "no rollback opened against this in 90d"}.
+How we will know if this was right (or wrong) in 90 days: {falsifiable check, e.g. "p99 < 200ms", "no rollback opened against this in 90d"}.
 
 ---
 
-## Worked example — `0001-use-sqlite-wal-for-local-storage.md`
+## Worked example, `0001-use-sqlite-wal-for-local-storage.md`
 
 - Status: accepted
 - Date: 2026-04-30

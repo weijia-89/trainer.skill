@@ -5,12 +5,12 @@ parent_skill: form-check
 gate_for: scale-up/*
 ---
 
-# Forcing-Constraint ADR — template
+# Forcing-Constraint ADR, template
 
 Use this template to document a **forcing constraint** that activates a `scale-up/` chapter. Save as `docs/adr/NNNN-forcing-constraint-<short-name>.md`.
 
 ```markdown
-# NNNN — Forcing Constraint: {{short title}}
+# NNNN, Forcing Constraint: {{short title}}
 
 - Status: accepted
 - Type: forcing-constraint
@@ -63,22 +63,22 @@ If multiplier > 4× without explicit forcing constraint per dimension: re-examin
 
 ## 5. Consequences
 
-- ✅ {{good outcome — addresses the constraint}}
+- ✅ {{good outcome, addresses the constraint}}
 - ✅ {{good outcome}}
-- ⚠ {{trade-off accepted — operational tax}}
-- ⚠ {{trade-off — recruiting / training cost}}
+- ⚠ {{trade-off accepted, operational tax}}
+- ⚠ {{trade-off, recruiting / training cost}}
 
 ## 6. Confirmation (90-day check)
 
 How will we verify this was the right decision in 90 days:
-- {{measurable signal — e.g. "FedRAMP audit pass; >80% controls verified automated"}}
-- {{measurable signal — e.g. "p99 latency < 150ms sustained at 20k RPS"}}
+- {{measurable signal, e.g. "FedRAMP audit pass; >80% controls verified automated"}}
+- {{measurable signal, e.g. "p99 latency < 150ms sustained at 20k RPS"}}
 
 ## 7. Sunset condition
 
 This forcing constraint is reviewed annually. The annex retreats to default-mode if:
-- {{condition — e.g. "FedRAMP requirement deprecated by customer or contract terminated"}}
-- {{condition — e.g. "Sustained traffic drops below 5k RPS for 90 consecutive days"}}
+- {{condition, e.g. "FedRAMP requirement deprecated by customer or contract terminated"}}
+- {{condition, e.g. "Sustained traffic drops below 5k RPS for 90 consecutive days"}}
 
 If sunset condition is met, file an ADR closing this one and removing the activated chapters from active use.
 

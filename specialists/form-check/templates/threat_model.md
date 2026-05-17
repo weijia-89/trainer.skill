@@ -4,14 +4,14 @@ version: 2.0.0
 parent_skill: form-check
 ---
 
-# Threat Model — {{Project / Feature Name}}
+# Threat Model, {{Project / Feature Name}}
 
 > Process: [STRIDE](../checklists/threat_model_stride.md) for security; [LINDDUN](../checklists/threat_model_linddun.md) for privacy. Walk both for any change touching personal data.
 
 ## 1. Scope
 
 - **Feature / change**: {{description}}
-- **Trust boundaries**: {{list — e.g. browser↔server, server↔db, client↔third-party API}}
+- **Trust boundaries**: {{list, e.g. browser↔server, server↔db, client↔third-party API}}
 - **Data classes** (mark all that apply): public / internal / confidential / PII / PHI / PCI / NPI / regulated
 - **Regulatory anchors**: {{GDPR / CCPA / HIPAA / PCI-DSS / SOC2 / ISO 27001 / FedRAMP / none}}
 
@@ -55,7 +55,7 @@ flowchart LR
 
 ## 6. Open questions
 
-- {{question}} — owner / due date
+- {{question}}, owner / due date
 
 ## 7. Sign-off
 

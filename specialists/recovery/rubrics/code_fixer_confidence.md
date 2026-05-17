@@ -5,7 +5,7 @@ parent_skill: recovery
 composes: form-check.rubrics.confidence_score@2.0.0
 ---
 
-# Codeit Confidence Rubric (v2 — composes form-check, no duplication)
+# Codeit Confidence Rubric (v2, composes form-check, no duplication)
 
 The recovery engagement uses **all 9 components from `form-check.skill/rubrics/confidence_score.md`** plus 2 engagement-specific. Total weight rebalanced to sum to 100.
 
@@ -69,7 +69,7 @@ Each phase emits a partial score reflecting only the components it can compute:
 
 | Phase | Components scored |
 |---|---|
-| discovery | (none — meta phase) |
+| discovery | (none, meta phase) |
 | review | 1, 4, 5, 9 |
 | scoring | aggregates per-change scores |
 | doc-pass | 7, 11 |

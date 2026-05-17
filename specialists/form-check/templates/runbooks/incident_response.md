@@ -5,7 +5,7 @@ parent_skill: form-check
 voice: imperative; pre-written for incident-time use
 ---
 
-# Runbook — General Incident Response
+# Runbook, General Incident Response
 
 > Use for any P0/P1 production incident. Specialized runbooks (supply-chain compromise, data leak, auth breach) link from here.
 
@@ -26,7 +26,7 @@ voice: imperative; pre-written for incident-time use
 - [ ] Pair confirmed (P0: required; P1: strongly recommended)
 - [ ] Status page (P0/P1): set "investigating"
 
-## Phase 1 — Detect
+## Phase 1, Detect
 
 - What's the symptom? Which dashboards / alerts?
 - What's the user impact? (How many users? Which regions? Which features?)
@@ -34,7 +34,7 @@ voice: imperative; pre-written for incident-time use
 
 Capture in incident channel; pin the summary message.
 
-## Phase 2 — Contain
+## Phase 2, Contain
 
 Stop the bleeding. Containment ≠ fix; containment = prevent further damage.
 
@@ -47,7 +47,7 @@ Common containments:
 
 Do **not** apply a fix until containment is verified.
 
-## Phase 3 — Eradicate
+## Phase 3, Eradicate
 
 Remove the cause:
 - If config: revert config + deploy
@@ -61,7 +61,7 @@ Hotfix gate (even compressed):
 - [ ] Rollback plan documented in PR
 - [ ] Communicated to incident channel
 
-## Phase 4 — Recover
+## Phase 4, Recover
 
 Restore service:
 - Verify metrics back in SLO
@@ -70,12 +70,12 @@ Restore service:
 
 Status page: "monitoring" → "resolved" once metrics hold for {{N}} minutes.
 
-## Phase 5 — Postmortem
+## Phase 5, Postmortem
 
 Within 5 business days:
 
 ```markdown
-# Postmortem — {{date}} {{slug}}
+# Postmortem, {{date}} {{slug}}
 
 - Severity: P0
 - Duration: {{ts-detect}} → {{ts-resolved}} ({{minutes}})
@@ -147,8 +147,8 @@ Postmortem will be published by {{date}}: {{ticket link}}
 
 ## Anti-patterns
 
-- Skipping containment to "just fix it" — common path to worsening incidents.
-- Communication updates timestamped but no actual content — operator fatigue.
-- "It's resolved" before metrics held — status flap; trust loss.
-- Postmortem with no action items — symptom of blame culture or unwillingness to invest.
-- "Hero culture" rewarded — paper over the systems gaps that allowed the incident.
+- Skipping containment to "just fix it", common path to worsening incidents.
+- Communication updates timestamped but no actual content, operator fatigue.
+- "It's resolved" before metrics held, status flap; trust loss.
+- Postmortem with no action items, symptom of blame culture or unwillingness to invest.
+- "Hero culture" rewarded, paper over the systems gaps that allowed the incident.

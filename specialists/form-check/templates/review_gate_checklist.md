@@ -66,7 +66,7 @@ If the AI agent is asked to skip any of the above, the refusal is not negotiable
 If 3 attempts at the gate fail (score won't reach floor; missing test cannot be written; rollback path cannot be defined):
 - Stop the agent
 - Escalate to user with structured gap report
-- Do not back-channel ("OK we'll skip the gate just this once") — that is the failure mode the gate exists to prevent
+- Do not back-channel ("OK we'll skip the gate just this once"), that is the failure mode the gate exists to prevent
 
 ## Cross-references
 

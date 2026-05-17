@@ -5,9 +5,9 @@ parent_skill: form-check
 gate: forcing-constraint-required (org-mandate or enterprise greenfield with JVM team)
 ---
 
-# Kotlin + Spring Boot 3 — JVM tooling depth
+# Kotlin + Spring Boot 3, JVM tooling depth
 
-> **[GATED — informational only]** Forcing-constraint ADR required (typically: enterprise team uses JVM; greenfield where company-wide JVM mandate; M&A integration).
+> **[GATED, informational only]** Forcing-constraint ADR required (typically: enterprise team uses JVM; greenfield where company-wide JVM mandate; M&A integration).
 >
 > Default-mode `form-check` covers Java/Kotlin tooling lightly in `multi-language/java.md`. This chapter is the depth.
 
@@ -53,7 +53,7 @@ gate: forcing-constraint-required (org-mandate or enterprise greenfield with JVM
 - Avoid `lateinit` outside of testing; prefer constructor injection.
 - Prefer null-safety over `!!` operator; if you find yourself using `!!`, redesign.
 
-## Architectural fitness — ArchUnit
+## Architectural fitness, ArchUnit
 
 ArchUnit rules are JUnit tests; they fail CI like any other test.
 
@@ -70,21 +70,21 @@ class ArchitectureTest {
 
 ## Common pitfalls
 
-- **Spring Security misconfiguration** — default-deny is the right starting point; expose endpoints explicitly.
-- **JPA n+1** — eager / lazy fetch surprises; use `@EntityGraph` or projections.
-- **Transaction propagation** — `@Transactional` on private methods doesn't work; declarative-only on public.
-- **Jackson polymorphic deserialization** — gadget-chain risk; allowlist via `@JsonTypeInfo` annotations carefully.
-- **`@Async` on the same class** — proxy doesn't intercept self-invocation.
-- **Field injection** — harder to test; prefer constructor.
-- **Forgetting `@Validated`** — Bean Validation annotations only fire when the class is `@Validated`.
-- **Maven Central without checksum verification** — enable `gradle-dependency-verification`.
+- **Spring Security misconfiguration**, default-deny is the right starting point; expose endpoints explicitly.
+- **JPA n+1**, eager / lazy fetch surprises; use `@EntityGraph` or projections.
+- **Transaction propagation**, `@Transactional` on private methods doesn't work; declarative-only on public.
+- **Jackson polymorphic deserialization**, gadget-chain risk; allowlist via `@JsonTypeInfo` annotations carefully.
+- **`@Async` on the same class**, proxy doesn't intercept self-invocation.
+- **Field injection**, harder to test; prefer constructor.
+- **Forgetting `@Validated`**, Bean Validation annotations only fire when the class is `@Validated`.
+- **Maven Central without checksum verification**, enable `gradle-dependency-verification`.
 
 ## Concurrency on JVM
 
-- **Virtual threads** (Java 21+) for blocking I/O — replaces a lot of explicit reactive patterns.
-- **Kotlin coroutines** for cooperative suspension — structured by default.
-- **Project Reactor / RxJava** — only when streaming semantics are essential and the team owns the reactive operator vocabulary.
-- **`CompletableFuture`** — legacy; coroutines or virtual threads are more ergonomic.
+- **Virtual threads** (Java 21+) for blocking I/O, replaces a lot of explicit reactive patterns.
+- **Kotlin coroutines** for cooperative suspension, structured by default.
+- **Project Reactor / RxJava**, only when streaming semantics are essential and the team owns the reactive operator vocabulary.
+- **`CompletableFuture`**, legacy; coroutines or virtual threads are more ergonomic.
 
 ## Build optimizations
 
@@ -95,8 +95,8 @@ class ArchitectureTest {
 
 ## Anti-patterns
 
-- Kotlin "stringly-typed" code — value classes exist for a reason.
-- Spring annotations everywhere ("annotation soup") — keep architectural seams visible without annotations.
+- Kotlin "stringly-typed" code, value classes exist for a reason.
+- Spring annotations everywhere ("annotation soup"), keep architectural seams visible without annotations.
 - Reflection-heavy patterns that break native image without compensating hints.
 - "Reactive everywhere" without measurable benefit (Project Reactor adds complexity vs synchronous Spring MVC).
 

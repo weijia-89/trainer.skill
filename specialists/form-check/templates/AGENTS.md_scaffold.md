@@ -7,7 +7,7 @@ note: For hosts using AGENTS.md format (Cursor / Codex). Same content as CLAUDE.
 
 # AGENTS.md scaffold
 
-If your host harness reads `AGENTS.md` instead of `CLAUDE.md`, use `templates/CLAUDE.md_scaffold.md` content with `AGENTS.md` filename. Don't ship both — the file content is identical, the filename is host-specific.
+If your host harness reads `AGENTS.md` instead of `CLAUDE.md`, use `templates/CLAUDE.md_scaffold.md` content with `AGENTS.md` filename. Don't ship both, the file content is identical, the filename is host-specific.
 
 Recommended:
 - One canonical `CLAUDE.md` (or `AGENTS.md`).

@@ -10,7 +10,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 Downstream skills (e.g. `code-fixer.skill`) pin a `composes.version` range. PATCH-level upstream changes are auto-compatible; MINOR triggers a recommended bump; MAJOR breaks the constraint.
 
-## [3.1.0], 2026-05-16. Phase 9 token trim
+## [3.1.0], 2026-05-16, Phase 9 token trim
 
 MINOR (no breaking changes; compression only).
 
@@ -20,7 +20,7 @@ MINOR (no breaking changes; compression only).
 - **No content changes**, only compression. Iron Law block, Red Flags list, Rationalizations table, calibration-honesty quote block, and TDD evidence caveat are byte-identical to v3.0.0.
 - All 13 form-check tests pass post-trim.
 
-## [3.0.0], 2026-05-16. Evidence-base audit + Iron Law layering + pedagogy upgrades
+## [3.0.0], 2026-05-16, Evidence-base audit + Iron Law layering + pedagogy upgrades
 
 This is a MAJOR bump because thresholds gained `(uncalibrated)` annotations and new gating semantics (advisory-only below N=10), downstream `recovery.skill` composes-pin needs to bump to `>=3.0.0,<4.0.0`.
 
@@ -33,7 +33,7 @@ This is a MAJOR bump because thresholds gained `(uncalibrated)` annotations and 
 - TDD evidence flagged `[T1-mixed]` per `RAFIQUE-MISIC-2013`, `KOLLANUS-2010`. Pair programming flagged with `HANNAY-2009` cost-vs-quality tradeoff.
 - New citations added with full provenance: `KIRSCHNER-SWELLER-CLARK-2006`, `BISRA-2018`, `SINHA-KAPUR-2021`, `MARGULIEUX-CATRAMBONE-2016`, `JOENTAUSTA-HELLAS-2022`, `ROHRER-2012`, `CARVALHO-GOLDSTONE-2015`, `BJORK-BJORK-2011`, `GUSKEY-2010`, `HATTIE-TIMPERLEY-2007`, `SLAMECKA-GRAF-1978`, `BACCHELLI-BIRD-2013`, `COHEN-2010`, `PETROVIC-2018`, `BELLER-2016`, `KITCHENHAM-EFFECT-SIZE`, `LUNDH-COCHRANE`, `SIMMONS-2011`, `GELMAN-LOKEN-2013`, plus `SLOP-arXiv` cross-replication tags.
 
-### Changed. Iron Law layering (Phase 3)
+### Changed, Iron Law layering (Phase 3)
 - Added Iron Law block at top of `SKILL.md`: "NO SHIPPING WITHOUT TIER-FLOOR SCORE *AND* PER-COMPONENT MINIMA MET. A HEADLINE PASS WITH A FAILED MINIMUM IS A FAIL."
 - Added "Violating the letter of this rule is violating the spirit of this rule" framing.
 - Added Red Flags list: thoughts that mean STOP and re-score.
@@ -46,7 +46,7 @@ This is a MAJOR bump because thresholds gained `(uncalibrated)` annotations and 
 - N≥50: retiering required per `KITCHENHAM-EFFECT-SIZE` methodology.
 - Mastery-learning anchor (`GUSKEY-2010` `[T1-replicated]`) cited as basis for tier-floor concept; specific thresholds remain operator wisdom.
 
-### Changed. TDD evidence honesty (Phase 8)
+### Changed, TDD evidence honesty (Phase 8)
 - §1 test-as-spec rule annotated with empirical caveat: TDD evidence is mixed (`RAFIQUE-MISIC-2013`, `KOLLANUS-2010`); treat as discipline-shaping default with operator-wisdom backing, not as proven productivity lever.
 - Added evidence-tagged paragraph on adjacent practices: code review (strong evidence per `BACCHELLI-BIRD-2013`), mutation testing (`PETROVIC-2018`), static analysis (`BELLER-2016`), pair programming (`HANNAY-2009` cost-vs-quality tradeoff).
 
@@ -54,7 +54,7 @@ This is a MAJOR bump because thresholds gained `(uncalibrated)` annotations and 
 - Frontmatter `description:` rewritten to triggers-only, third-person, ≤350 chars.
 - Keyword stuffing relocated to `## Keywords for discovery` section in body.
 
-### Changed: `learner/study_protocol.md` (Phases 5 + 6)
+### Changed, `learner/study_protocol.md` (Phases 5 + 6)
 - Habit 3 (interleaving): added boundary conditions per `ROHRER-2012`, `CARVALHO-GOLDSTONE-2015`, works only for related-but-distinct concepts; does NOT work for unrelated topics or true beginners with no prior schema.
 - Habit 4 (worked examples): anchored on `KIRSCHNER-SWELLER-CLARK-2006` "Why Minimal Guidance During Instruction Does Not Work"; added programming-specific subgoal-labeling extension per `MARGULIEUX-CATRAMBONE-2016`.
 - Habit 5 (self-explanation): replaced Wylie & Chi 2014 with `BISRA-2018` meta-analysis (g=0.55, k=20 moderators).
@@ -64,7 +64,7 @@ This is a MAJOR bump because thresholds gained `(uncalibrated)` annotations and 
 - New section: "The pedagogy paradox", addresses the central design failure that AI assistants close the retrieval-practice / self-explanation / prediction loop *for* the learner, removing the conditions for learning. Names the protocol for AI-loaded vs. study-mode sessions; flags red flags for cognitive offloading.
 - Updated retrieval prompts at end to cover the new boundary conditions.
 
-### Changed. METR-2025 de-loading (Phase 2)
+### Changed, METR-2025 de-loading (Phase 2)
 - Removed load-bearing METR-2025 citations from `SKILL.md §1, §9`, `learner/study_protocol.md`, `learner/QUICKSTART.md`, `learner/lessons/01_code_read_depth.md`, `learner/lessons/06_reversibility.md`.
 - Replaced with anchor on the established metacognitive-miscalibration phenomenon (`LICHTENSTEIN-1982`, `KORIAT-BJORK-2005`); METR-2025 retained as one preliminary example RCT (n=16, METR-self-redesigned-for-unreliability) but no longer load-bearing for magnitude.
 
@@ -141,15 +141,15 @@ None of the above changes the rubric, vibe-safety buckets, threshold tiers, or c
 ### Added
 - `agent-runtime/harness_contract.md`, capability allowlist by tier, state ledger schema, rollback contract, scope confinement, reasoning provenance tags. Addresses OWASP-LLM06 (Excessive Agency).
 - `agent-runtime/prompt_injection.md`, defense layered approach. Addresses OWASP-LLM01.
-- `checklists/owasp_llm_top10.md`. OWASP LLM Top 10 (2025).
-- `checklists/owasp_api_top10.md`. OWASP API Top 10 (2023).
-- `checklists/owasp_web_top10.md`. OWASP Top 10:2025 (web).
-- `checklists/threat_model_stride.md`. STRIDE process.
-- `checklists/threat_model_linddun.md`. LINDDUN privacy process.
+- `checklists/owasp_llm_top10.md`, OWASP LLM Top 10 (2025).
+- `checklists/owasp_api_top10.md`, OWASP API Top 10 (2023).
+- `checklists/owasp_web_top10.md`, OWASP Top 10:2025 (web).
+- `checklists/threat_model_stride.md`, STRIDE process.
+- `checklists/threat_model_linddun.md`, LINDDUN privacy process.
 - `checklists/fitness_functions.md`, architectural fitness functions chapter (lint-class default; runtime-class scale-up gated).
-- `checklists/accessibility_wcag22.md`. WCAG 2.2 walk.
+- `checklists/accessibility_wcag22.md`, WCAG 2.2 walk.
 - `checklists/supply_chain_slsa.md`, slopsquatting, SLSA mapping, Shai-Hulud chronology, runbook reference.
-- `checklists/deprecation_policy.md`. RFC 8594 + sunset timeline + per-language deprecation marks.
+- `checklists/deprecation_policy.md`, RFC 8594 + sunset timeline + per-language deprecation marks.
 - `checklists/skill_antipatterns.md`, failure modes when applying this skill.
 - `checklists/INDEX.md`, decision tree to leaf checklists; prevents walking-every-checklist fatigue.
 - `multi-language/matrix.md` + `multi-language/python.md` + `multi-language/typescript.md` + `multi-language/java.md` + `multi-language/go.md` + `multi-language/rust.md`, full per-language tooling depth (test runner, mutation, lint, audit, lockfile, fuzz, format, secrets, IaC, SBOM, concurrency).
@@ -159,8 +159,8 @@ None of the above changes the rubric, vibe-safety buckets, threshold tiers, or c
 - `templates/README_archetypes/{cli,library,service,monorepo}.md`, archetype-driven README templates.
 - `templates/runbooks/{supply_chain_compromise,incident_response}.md`.
 - `templates/calibration_log_render.md`, schema + jq queries for `.code-fixer/calibration.jsonl`.
-- `templates/forcing_constraint_adr.md`. ADR template that gates scale-up annex.
-- `templates/prompt_versioning.md`. SemVer for prompts; eval-gate semantics.
+- `templates/forcing_constraint_adr.md`, ADR template that gates scale-up annex.
+- `templates/prompt_versioning.md`, SemVer for prompts; eval-gate semantics.
 - `tools/` (with `docs/<tool>_algorithm.md` markdown equivalents): `tools/blast_radius.py`, `tools/check_forcing_constraint.sh`, `tools/scan_prompt_injection.sh`, `tools/pin_skill_version.sh`.
 - `tests/` skill self-tests with fixtures: `tests/test_banned_vocab.sh` (+ `tests/test_banned_vocab.py`), `tests/test_rubric_arithmetic.py`, `tests/test_citations.py`, `tests/test_skill_format.sh`, `tests/test_scaleup_gate.sh`, `tests/test_blast_radius.py`, `tests/test_self_voice.sh`, `tests/test_skill_version_compat.py`. Plus `tests/integration/smoke_real_project.md`.
 - `examples/` worked examples: forcing-constraint ADR, full engagement trace.

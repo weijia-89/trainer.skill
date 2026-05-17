@@ -4,7 +4,7 @@ version: 2.0.0
 parent_skill: recovery
 ---
 
-# deAI Rules — voice cleanup with per-archetype overlays
+# deAI Rules, voice cleanup with per-archetype overlays
 
 The deAI sweep is one phase in the recovery DAG. It removes vocabulary and shape patterns that mark prose as "AI-generated to a critical reader." Per-archetype overlays prevent the rules from breaking tooling-specific conventions (e.g. Sphinx-required uniform docstrings).
 
@@ -25,7 +25,7 @@ If a banned word genuinely fits, **state the concrete property instead**:
 - "streamline" → name the bottleneck removed
 - "world-class" → cut; cite the measured property
 
-## Soft-signal vocabulary (per-archetype overlay only — not flagged in base scan)
+## Soft-signal vocabulary (per-archetype overlay only, not flagged in base scan)
 
 These words have legitimate technical uses (`agent harness`, `leverage-per-test`, `robust statistics`, `elevated incidence`). They are caught only by per-archetype overlays where context narrows the meaning:
 
@@ -42,7 +42,7 @@ These are softer signals; flag for review, do not block:
 
 - Opening with "In conclusion," / "Furthermore," / "Moreover," / "It is worth noting that,"
 - Tricolons more than once per page ("planning, executing, and reviewing"; "fast, reliable, and secure")
-- Em-dashes — used three or more — times in one paragraph
+- Em-dashes, used three or more, times in one paragraph
 - Sentence variance below ~10 (run-on uniformity); too-short below 6
 - Hedge stacks ("could potentially", "might possibly", "may perhaps")
 
@@ -142,4 +142,4 @@ Files not matching any pattern get base only.
 - Applying base rules to API reference docstrings → breaks Sphinx / typedoc generation.
 - Banning every flagged word reflexively → over-correction; cut concrete value.
 - Substituting one banned word for a synonym ("robust" → "powerful") → defeats the rule.
-- "Voice cleanup" used as a euphemism for content rewrite — separate concerns.
+- "Voice cleanup" used as a euphemism for content rewrite, separate concerns.

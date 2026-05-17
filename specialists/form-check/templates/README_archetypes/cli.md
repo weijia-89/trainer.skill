@@ -87,5 +87,5 @@ See `CONTRIBUTING.md`.
 - **No "5-step quickstart" for CLI tools** unless the tool genuinely has 5 sequential steps. Most CLI tools have one primary verb; lead with it.
 - **Exit codes belong here**, not just in `--help`. CI integrators read README.
 - **Stable JSON schema** for `--format json` is a downstream contract; bump SemVer accordingly.
-- Avoid screencast GIFs as the only documentation — GIFs are unsearchable, inaccessible, and break in pipelines.
+- Avoid screencast GIFs as the only documentation, GIFs are unsearchable, inaccessible, and break in pipelines.
 - Avoid "Why I built this" sections that drift into autobiography. Lead with user value.

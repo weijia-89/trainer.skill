@@ -5,11 +5,11 @@ source: OWASP-API-2023
 url: https://owasp.org/API-Security/editions/2023/en/0x11-t10/
 ---
 
-# OWASP API Security Top 10 (2023) — review checklist
+# OWASP API Security Top 10 (2023), review checklist
 
 Apply to any code that exposes or consumes HTTP APIs (REST, GraphQL, gRPC-Web).
 
-## API1:2023 — Broken Object Level Authorization (BOLA)
+## API1:2023, Broken Object Level Authorization (BOLA)
 
 **Question**: Does the endpoint accept an object ID from the client and return data without verifying the caller may access *that specific object*?
 
@@ -20,7 +20,7 @@ Apply to any code that exposes or consumes HTTP APIs (REST, GraphQL, gRPC-Web).
 
 **Anti-pattern**: `GET /orders/:id` that loads the order without checking `order.customer_id == auth.user_id`.
 
-## API2:2023 — Broken Authentication
+## API2:2023, Broken Authentication
 
 **Defenses**:
 - OIDC or SAML for human auth; mTLS or signed JWT for service-to-service.
@@ -29,7 +29,7 @@ Apply to any code that exposes or consumes HTTP APIs (REST, GraphQL, gRPC-Web).
 - Rate-limit auth endpoints.
 - 2FA for sensitive operations.
 
-## API3:2023 — Broken Object Property Level Authorization (BOPLA)
+## API3:2023, Broken Object Property Level Authorization (BOPLA)
 
 (Merges 2019's Mass Assignment + Excessive Data Exposure.)
 
@@ -38,7 +38,7 @@ Apply to any code that exposes or consumes HTTP APIs (REST, GraphQL, gRPC-Web).
 - Allowlist output properties on read (per-role response shaping).
 - For GraphQL: per-field auth; depth-limit + cost-limit queries.
 
-## API4:2023 — Unrestricted Resource Consumption
+## API4:2023, Unrestricted Resource Consumption
 
 **Defenses**:
 - Pagination on all list endpoints (max-page-size enforced server-side).
@@ -46,7 +46,7 @@ Apply to any code that exposes or consumes HTTP APIs (REST, GraphQL, gRPC-Web).
 - Timeout on every external dependency call.
 - Body-size limits at ingress.
 
-## API5:2023 — Broken Function Level Authorization (BFLA)
+## API5:2023, Broken Function Level Authorization (BFLA)
 
 **Question**: Can a user-tier caller invoke admin-tier endpoints?
 
@@ -55,7 +55,7 @@ Apply to any code that exposes or consumes HTTP APIs (REST, GraphQL, gRPC-Web).
 - Use a centralized policy engine (OPA, Cedar, Casbin) instead of scattered `if`s.
 - Distinguish authentication from authorization in middleware.
 
-## API6:2023 — Unrestricted Access to Sensitive Business Flows
+## API6:2023, Unrestricted Access to Sensitive Business Flows
 
 **Question**: Could an attacker abuse a legitimate API path at scale (ticket scalping, account creation farming, free-tier abuse)?
 
@@ -65,7 +65,7 @@ Apply to any code that exposes or consumes HTTP APIs (REST, GraphQL, gRPC-Web).
 - Fraud / bot detection layer.
 - Per-flow quota beyond per-endpoint quota.
 
-## API7:2023 — Server Side Request Forgery (SSRF)
+## API7:2023, Server Side Request Forgery (SSRF)
 
 **Question**: Does any endpoint fetch a URL the caller controls?
 
@@ -74,7 +74,7 @@ Apply to any code that exposes or consumes HTTP APIs (REST, GraphQL, gRPC-Web).
 - Egress-only outbound proxy with allowlist.
 - Cross-ref CWE-918.
 
-## API8:2023 — Security Misconfiguration
+## API8:2023, Security Misconfiguration
 
 **Defenses**:
 - Default-secure framework configs (Helmet, secure cookies, HSTS, CSP).
@@ -82,14 +82,14 @@ Apply to any code that exposes or consumes HTTP APIs (REST, GraphQL, gRPC-Web).
 - TLS 1.2+ only; HSTS preload.
 - IaC linted (`tfsec`, `cfn-lint`, `checkov`).
 
-## API9:2023 — Improper Inventory Management
+## API9:2023, Improper Inventory Management
 
 **Defenses**:
 - Maintain `docs/api-inventory.md` listing every endpoint, version, deprecation status.
 - Sunset old API versions per RFC 8594 (`checklists/deprecation_policy.md`).
 - Block or auth-gate "v0/internal" / staging endpoints in prod.
 
-## API10:2023 — Unsafe Consumption of APIs
+## API10:2023, Unsafe Consumption of APIs
 
 **Question**: When *your* code consumes a third-party API, do you treat its responses as trusted?
 

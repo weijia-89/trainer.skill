@@ -75,7 +75,7 @@ test -d docs/adr/ && test "$(ls docs/adr/*.md 2>/dev/null | wc -l)" -ge 1
 
 (Reuse `tests/test_banned_vocab.sh` from the skill itself.)
 
-### 4. (Optional 4th) — Slopsquatting / dep audit
+### 4. (Optional 4th), Slopsquatting / dep audit
 
 ```bash
 pip-audit -r requirements.txt
@@ -107,7 +107,7 @@ jobs:
 - **Fitness function with no name on the failing edge.** ("Build broke; nobody knows why.") → name each lint, document on failure.
 - **Fitness function that runs only in CI but not pre-commit.** Slows feedback. Run pre-commit first.
 - **Fitness function written once, never re-evaluated.** ADRs evolve; functions must too. Quarterly review.
-- **Fitness function for a decision nobody made.** ("We should have unique IDs everywhere" — but the ADR doesn't say this.) Trace each function to an ADR.
+- **Fitness function for a decision nobody made.** ("We should have unique IDs everywhere", but the ADR doesn't say this.) Trace each function to an ADR.
 - **Conflating lint-class with runtime-class** in the same review. They have different cost profiles and failure semantics.
 
 ## Output during review

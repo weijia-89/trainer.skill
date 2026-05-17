@@ -4,7 +4,7 @@ version: 2.0.0
 parent_skill: form-check
 ---
 
-# Calibration Log — render template
+# Calibration Log, render template
 
 The canonical log is JSONL at `.recovery/calibration.jsonl`. Render to markdown for human review using this template.
 
@@ -90,7 +90,7 @@ jq -r '
 ## Markdown render (human review)
 
 ```markdown
-# Calibration Log — {{project}}
+# Calibration Log, {{project}}
 
 > Last 30 days. Total scored changes: N. Tier breakdown: vibe-dangerous (X), vibe-careful (Y), vibe-safe (Z), refactor (W).
 
@@ -120,7 +120,7 @@ Retier proposal goes through ADR review (no silent threshold changes).
 
 ## Anti-patterns
 
-- Single-row log entries that drop the `components` breakdown — defeats the calibration purpose.
-- Logging only successful scores — incident-correlated calibration requires logging *all* scores including the ones that failed the floor.
-- "Forgot to log" — make logging part of the merge gate (CI fitness function: PR cannot merge without an entry referencing the PR ID for non-trivial changes).
-- Rewriting historical entries — append-only.
+- Single-row log entries that drop the `components` breakdown, defeats the calibration purpose.
+- Logging only successful scores, incident-correlated calibration requires logging *all* scores including the ones that failed the floor.
+- "Forgot to log", make logging part of the merge gate (CI fitness function: PR cannot merge without an entry referencing the PR ID for non-trivial changes).
+- Rewriting historical entries, append-only.

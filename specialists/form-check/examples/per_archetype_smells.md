@@ -5,7 +5,7 @@ parent_skill: form-check
 status: examples (non-normative)
 ---
 
-# Per-Archetype Smell Examples — worked failure scenarios
+# Per-Archetype Smell Examples, worked failure scenarios
 
 Companion to `checklists/smell_catalog.md`. Each smell listed there names the failure class; this file shows what the failure *looks like* in real code, what the fix actually does, and what change in `CLAUDE.md` / fitness functions prevents recurrence.
 
@@ -13,17 +13,17 @@ These examples are **non-normative**: they illustrate the failure modes, not the
 
 ---
 
-## CLI archetype — Smell #3 (config-file precedence drift)
+## CLI archetype, Smell #3 (config-file precedence drift)
 
 ### Scenario
 
 A 4-month-old CLI tool ships with `--config /path/to/config.yaml`, `XDG_CONFIG_HOME/myapp/config.yaml`, and `~/.myapprc`. The doc says "CLI flag wins, then env, then XDG, then home". After an AI-assisted refactor of the `Settings` class, the precedence flipped to "home then XDG then env then CLI" because the AI reordered the chained `update()` calls.
 
-Symptoms: user opens a bug report — "my --config flag isn't being respected". Reproduces only when both `--config` and `~/.myapprc` exist.
+Symptoms: user opens a bug report, "my --config flag isn't being respected". Reproduces only when both `--config` and `~/.myapprc` exist.
 
 ### Why it slipped
 
-- No test asserted *precedence ordering* — only "config loads from each source"
+- No test asserted *precedence ordering*, only "config loads from each source"
 - The PR diff was small and looked like a "refactor for clarity"
 - Reviewer didn't read `~/.myapprc` test fixture; AI didn't either
 
@@ -48,17 +48,17 @@ def load_settings() -> Settings:
 
 ---
 
-## Web/API archetype — Smell #14 (rate-limit applied per-instance, not per-cluster)
+## Web/API archetype, Smell #14 (rate-limit applied per-instance, not per-cluster)
 
 ### Scenario
 
-A FastAPI service uses `slowapi` for rate limiting (e.g. `100/minute` per IP). It runs behind a load balancer with 4 replicas. An attacker hits the API from one IP and gets 400 req/min — 4× the limit — because each instance has its own in-memory counter.
+A FastAPI service uses `slowapi` for rate limiting (e.g. `100/minute` per IP). It runs behind a load balancer with 4 replicas. An attacker hits the API from one IP and gets 400 req/min, 4× the limit, because each instance has its own in-memory counter.
 
 Symptoms: incident report from customer ("we got rate-limited at 250 req/min from a single endpoint"); meanwhile a competitor's bot sustained ~380 req/min for 6 hours without trip.
 
 ### Why it slipped
 
-- The original review marked the rate limit as "vibe-safe (UI tweak, internal helper)" — it's neither. Rate limits are vibe-careful (security-sensitive logic affecting denial of service).
+- The original review marked the rate limit as "vibe-safe (UI tweak, internal helper)", it's neither. Rate limits are vibe-careful (security-sensitive logic affecting denial of service).
 - The test harness ran one instance; no integration test ran a cluster.
 - "Per-instance" was an unstated assumption that became false the moment auto-scaling went on.
 
@@ -89,7 +89,7 @@ limiter = Limiter(
 
 ---
 
-## Library archetype — Smell #25 (public API drift via "minor" version)
+## Library archetype, Smell #25 (public API drift via "minor" version)
 
 ### Scenario
 
@@ -119,11 +119,11 @@ Symptoms: 12 downstream consumers' CI breaks within 72 hours. The maintainer's r
 
 ---
 
-## Monorepo archetype — Smell #28 (cross-app dep change broke another app silently)
+## Monorepo archetype, Smell #28 (cross-app dep change broke another app silently)
 
 ### Scenario
 
-A monorepo has `apps/web` (Next.js) and `apps/api` (FastAPI) and a shared `packages/schemas` (Zod + Pydantic generated from a single JSON Schema source). An AI-assisted change to `packages/schemas` adjusted a field name from `user_id` to `userId`. The web app was updated to match. The API was tested in isolation against the old schema — its tests still passed because Pydantic still had the old generated code (the codegen step wasn't part of `apps/api`'s CI).
+A monorepo has `apps/web` (Next.js) and `apps/api` (FastAPI) and a shared `packages/schemas` (Zod + Pydantic generated from a single JSON Schema source). An AI-assisted change to `packages/schemas` adjusted a field name from `user_id` to `userId`. The web app was updated to match. The API was tested in isolation against the old schema, its tests still passed because Pydantic still had the old generated code (the codegen step wasn't part of `apps/api`'s CI).
 
 Symptoms: deploy to prod; the web app and API are now using different field names; user-creation breaks within 4 minutes.
 
@@ -136,7 +136,7 @@ Symptoms: deploy to prod; the web app and API are now using different field name
 ### Fix
 
 ```yaml
-# nx.json — affected configuration
+# nx.json, affected configuration
 "targetDefaults": {
   "test": {
     "dependsOn": ["^codegen"],
@@ -157,7 +157,7 @@ Symptoms: deploy to prod; the web app and API are now using different field name
 
 ---
 
-## LLM-bearing archetype — Smell from `agent-runtime/prompt_injection.md`
+## LLM-bearing archetype, Smell from `agent-runtime/prompt_injection.md`
 
 ### Scenario
 

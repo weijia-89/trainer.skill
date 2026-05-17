@@ -4,13 +4,13 @@ version: 3.0.0
 parent_skill: form-check
 ---
 
-# Confidence-Score Rubric (v2 — tiered + blast-radius + threat-model)
+# Confidence-Score Rubric (v2, tiered + blast-radius + threat-model)
 
 Every non-trivial change, plan, or review gets a score 0–100 + a tier verdict. **Threshold tiered by reversibility, not flat.**
 
 ## Why a tiered floor
 
-A 1-line auth change ≠ a 100-line formatting change. Same rubric numbers, different stakes. Tier the threshold by the **vibe-safety axis** — same three reversibility buckets as `rubrics/vibe_safety_map.md` (vibe-safe / vibe-careful / vibe-dangerous). Vibe-impossible is handled by `rubrics/vibe_safety_map.md` as a *refusal* classification, not a score threshold.
+A 1-line auth change ≠ a 100-line formatting change. Same rubric numbers, different stakes. Tier the threshold by the **vibe-safety axis**, same three reversibility buckets as `rubrics/vibe_safety_map.md` (vibe-safe / vibe-careful / vibe-dangerous). Vibe-impossible is handled by `rubrics/vibe_safety_map.md` as a *refusal* classification, not a score threshold.
 
 | Tier | Threshold | Per-component minima | Trigger axis |
 |---|---|---|---|
@@ -18,9 +18,9 @@ A 1-line auth change ≠ a 100-line formatting change. Same rubric numbers, diff
 | Vibe-careful | ≥90 | Test ≥80, Hallucination ≥85, Adversarial ≥70 | public API, dep add, schema-additive, prompt change |
 | Vibe-safe | ≥80 | Test ≥70, Hallucination ≥70 | UI tweak, internal helper, log change |
 
-**Pure-refactor sub-row** (rename / extract / format, no behavior change): use vibe-safe with relaxed threshold ≥70 *only if* a behavior-preservation check (golden / characterization / mutation-equivalent) passes; otherwise stay at the baseline ≥80. Pure refactor is **not a fourth tier** — it's a conditional discount on the vibe-safe threshold.
+**Pure-refactor sub-row** (rename / extract / format, no behavior change): use vibe-safe with relaxed threshold ≥70 *only if* a behavior-preservation check (golden / characterization / mutation-equivalent) passes; otherwise stay at the baseline ≥80. Pure refactor is **not a fourth tier**, it's a conditional discount on the vibe-safe threshold.
 
-**Tier numbers tagged `[normative — operator wisdom]`.** Calibration: log every score + downstream incident outcome to `.recovery/calibration.jsonl`. After ~50 entries, retier per the empirical correlation between score-tier and incident rate.
+**Tier numbers tagged `[normative, operator wisdom]`.** Calibration: log every score + downstream incident outcome to `.recovery/calibration.jsonl`. After ~50 entries, retier per the empirical correlation between score-tier and incident rate.
 
 ## Components (each 0–100)
 
@@ -36,7 +36,7 @@ A 1-line auth change ≠ a 100-line formatting change. Same rubric numbers, diff
 | 8 | Blast radius | 7 | scoped via `tools/blast_radius.py` (algo: `docs/blast_radius_algorithm.md`); transitive callers walked | rough estimate | not considered |
 | 9 | Threat model | 5 | STRIDE applied to changed surface; LINDDUN if privacy-touching | one of the two applied | neither |
 
-Sum = 100. **Cap headline at 99** — the remaining 1+% is unknown unknowns.
+Sum = 100. **Cap headline at 99**, the remaining 1+% is unknown unknowns.
 
 ## Mutation-score targets per language
 
@@ -52,7 +52,7 @@ Sum = 100. **Cap headline at 99** — the remaining 1+% is unknown unknowns.
 
 Mutation score is computed on **touched lines + their direct dependents**, not the whole codebase. If host harness can't run mutation testing, score test-verification at most 60 (component-floor) and document the gap.
 
-## Worked example — passing (96, vibe-careful)
+## Worked example, passing (96, vibe-careful)
 
 **Change**: add `--dry-run` flag to a CLI tool.
 
@@ -70,7 +70,7 @@ Mutation score is computed on **touched lines + their direct dependents**, not t
 
 Weighted: 15(1.0)+20(0.95)+15(1.0)+12(0.95)+10(1.0)+8(1.0)+8(1.0)+7(0.95)+5(0.9) = **96.45**. Tier=vibe-careful, threshold=90, all minima met → **ship**.
 
-## Worked example — failing (47.5, killed)
+## Worked example, failing (47.5, killed)
 
 **Change**: add Redis cache to a CLI tool.
 
@@ -94,10 +94,10 @@ Weighted = **47.5**. Below every tier's floor.
 
 - **Never re-weight** the rubric to make a score pass. Weights are fixed.
 - **Never claim 100.** Cap at 99.
-- **Verified > assumed** — when in doubt between two scores, take the lower.
+- **Verified > assumed**, when in doubt between two scores, take the lower.
 - **No score-bumping without new evidence.** A re-score that uses the same inputs as the prior score is invalid.
 - **Score per change**, not per project. A project has many scores.
-- **Publish the score** — PR body, review report, commit trailer. Visible scores are honest scores.
+- **Publish the score**, PR body, review report, commit trailer. Visible scores are honest scores.
 - **Log every score** to `.recovery/calibration.jsonl`. Calibration data is what makes the tier numbers eventually empirical instead of normative.
 
 ## Iteration protocol
@@ -118,7 +118,7 @@ Apply the subagent's verdict before re-scoring.
 
 ## Calibration log schema
 
-`.recovery/calibration.jsonl` — one object per scored change:
+`.recovery/calibration.jsonl`, one object per scored change:
 
 ```json
 {

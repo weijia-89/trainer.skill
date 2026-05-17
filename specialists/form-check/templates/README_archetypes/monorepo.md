@@ -89,7 +89,7 @@ make test PACKAGE=auth    # one shared package
 - **UI components**: `packages/ui-components/` for shared design system.
 - **Linting / formatting**: per-language; orchestrated at root.
 - **Dep management**: each language has its own lockfile; root `Makefile` orchestrates updates.
-- **Versioning**: {{independent per app, OR fixed across monorepo, OR Changesets-style — pick and document}}
+- **Versioning**: {{independent per app, OR fixed across monorepo, OR Changesets-style, pick and document}}
 
 ## Releases
 
@@ -99,10 +99,10 @@ make test PACKAGE=auth    # one shared package
 
 ## Documentation
 
-- This README — top-level navigation
-- `ARCHITECTURE.md` — cross-cutting
-- `SECURITY.md` — disclosure policy
-- `CHANGELOG.md` — root-level changes (tooling, structure)
+- This README, top-level navigation
+- `ARCHITECTURE.md`, cross-cutting
+- `SECURITY.md`, disclosure policy
+- `CHANGELOG.md`, root-level changes (tooling, structure)
 - Per-app: `apps/<x>/README.md`, `apps/<x>/CHANGELOG.md`
 - Cross-app runbooks: `docs/runbooks/`
 
@@ -117,7 +117,7 @@ See `CONTRIBUTING.md`. Per-app contributing nuances in `apps/<x>/CONTRIBUTING.md
 
 ## Notes
 
-- **Monorepo README is navigation-led.** Don't try to explain every app inline — link to per-app READMEs.
+- **Monorepo README is navigation-led.** Don't try to explain every app inline, link to per-app READMEs.
 - **Build orchestrator choice is load-bearing**; document why (Turborepo for cache hit rates, Nx for affected-graph, Bazel for cross-language correctness, etc.).
 - **Versioning model decision** (independent vs fixed vs changesets) is a top-3 monorepo decision; ADR it.
 - **Avoid duplicating per-app docs** at the top level. Cross-link.

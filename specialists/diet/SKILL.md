@@ -26,7 +26,7 @@ IRON LAW: NO DESTRUCTIVE ACTION DURING AN INCIDENT WITHOUT A SECOND HUMAN'S EYES
 
 Violating the letter of this rule is violating the spirit of this rule. "Just this one command, it's quick" is the rationalization that produced the Replit production-DB-deletion incident (`REPLIT-FORTUNE`, `AIID-1152`). The second human is non-negotiable on vibe-dangerous incident moves. **If solo: pause 10 minutes, re-read §3.3, then act, or revert/disable rather than delete/migrate.**
 
-## Red Flags. STOP and re-read §3 before doing anything
+## Red Flags, STOP and re-read §3 before doing anything
 
 If any of these thoughts is in your head during an incident:
 
@@ -73,7 +73,7 @@ You shipped something. Now you need to know it's working, notice when it isn't, 
 - **Steady-state check** (existing project): "Is my app behaving normally?" → §2.
 - **Incident** (something is broken right now): **go directly to §3**, do not read §1 first.
 
-## §1. Minimum-viable instrumentation
+## §1, Minimum-viable instrumentation
 
 For a beginner-scale project (one service, ≤1k users, single environment), the *minimum* observable surface is:
 
@@ -112,7 +112,7 @@ A scheduled external probe (Uptime Kuma, Better Uptime free tier, Cron-job.org) 
 - **Custom metrics infrastructure** (Prometheus + Grafana self-hosted). The setup cost exceeds the value at this scale; use a hosted service.
 - **APM agents** (DataDog APM, New Relic). Free tiers are tight; the four golden signals from your platform are usually enough.
 
-## §2. Steady-state operating cadence
+## §2, Steady-state operating cadence
 
 Once instrumented, the operating habit is:
 
@@ -125,7 +125,7 @@ Once instrumented, the operating habit is:
 
 **Calibration component** (per `form-check/learner/study_protocol.md` Habit 7): predict what the next week's traffic / errors / latency will be, write the prediction down, measure the gap. Production operations is the single best calibration-training surface in software work because the ground truth shows up on its own.
 
-## §3. Incident response: the next 30 minutes
+## §3, Incident response: the next 30 minutes
 
 Something is broken. **Read this section before doing anything.** If you act first and read later, you risk the Replit-cautionary-tale failure mode (panicked destructive action).
 
@@ -177,17 +177,17 @@ Before closing the incident, write *two sentences* in `incidents/[date]-[short-n
 
 The two-sentence version becomes the seed for the full post-mortem (§4) within 48 hours.
 
-## §4. Post-mortem template
+## §4, Post-mortem template
 
 ```markdown
-# Post-mortem: [incident short name]: [date]
+# Post-mortem, [incident short name], [date]
 
 ## What happened (user-visible)
 [1 paragraph: what users saw and for how long.]
 
 ## Timeline
-- HH:MM: [event]
-- HH:MM: [event]
+- HH:MM, [event]
+- HH:MM, [event]
 - HH:MM, resolved
 
 ## Root cause
@@ -209,7 +209,7 @@ The two-sentence version becomes the seed for the full post-mortem (§4) within 
 
 **Blame-free** is non-negotiable. Post-mortems written to assign blame produce defensive future post-mortems, which produce no learning. The Etsy / Google SRE / John Allspaw literature converges hard on this point.
 
-## §5. When to escalate to a real ops team
+## §5, When to escalate to a real ops team
 
 This skill is calibrated for solo / small-team beginner contexts. Escalate (hire SRE, adopt managed platform, switch to a stack with stronger operational defaults) when:
 

@@ -5,7 +5,7 @@ parent_skill: form-check
 gate: scale-up-friendly (default-OK; depth in scale-up/spring_kotlin_jvm.md)
 ---
 
-# Java / Kotlin — tooling depth
+# Java / Kotlin, tooling depth
 
 This file covers default-mode JVM tooling (Maven / Gradle, JUnit 5, etc.). Spring Boot 3 + Kotlin coroutines deep-dive is in `scale-up/spring_kotlin_jvm.md` (gated; for enterprise greenfield with JVM forcing constraint).
 
@@ -92,7 +92,7 @@ ArchUnit is the canonical JVM fitness-function library; rules run as JUnit tests
 
 Java 21+: virtual threads (`Thread.ofVirtual()`) + `StructuredTaskScope` is the new default. Replaces a lot of explicit reactive patterns (RxJava, Project Reactor) in straightforward request-handling code.
 
-Kotlin: coroutines (`suspend fun` + `kotlinx.coroutines`) — structured by design (parent-child cancellation).
+Kotlin: coroutines (`suspend fun` + `kotlinx.coroutines`), structured by design (parent-child cancellation).
 
 For both: avoid `CompletableFuture` for new code unless integrating with legacy.
 

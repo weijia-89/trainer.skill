@@ -8,25 +8,25 @@ voice: dated, blunt; "won't-do" load-bearing
 # ROADMAP.md template
 
 ```markdown
-# Roadmap — {{project-name}}
+# Roadmap, {{project-name}}
 
 > Last reviewed: {{date}} • Next scheduled review: {{date + 90d}}
 > Items here are **directional**, not commitments. Commitments live in milestones / sprints.
 
 ## Now (in flight; <30 days)
 
-- {{item}} — owner: {{name}} — target: {{date}}
-- {{item}} — owner: {{name}} — target: {{date}}
+- {{item}}, owner: {{name}}, target: {{date}}
+- {{item}}, owner: {{name}}, target: {{date}}
 
 ## Next (planned; 30–90 days)
 
-- {{item}} — driver / forcing function: {{why now}}
-- {{item}} — driver: {{why}}
+- {{item}}, driver / forcing function: {{why now}}
+- {{item}}, driver: {{why}}
 
 ## Later (90+ days; speculative)
 
-- {{item}} — open questions: {{}}
-- {{item}} — open questions: {{}}
+- {{item}}, open questions: {{}}
+- {{item}}, open questions: {{}}
 
 ## Won't-do (explicit anti-scope)
 
@@ -38,8 +38,8 @@ voice: dated, blunt; "won't-do" load-bearing
 
 ## Recently shipped (deltas; supersedes older roadmap rows)
 
-- {{date}} — {{item}} — moved to ARCHITECTURE.md / CHANGELOG.md
-- {{date}} — {{item}} — moved to "won't-do" with reason: {{}}
+- {{date}}, {{item}}, moved to ARCHITECTURE.md / CHANGELOG.md
+- {{date}}, {{item}}, moved to "won't-do" with reason: {{}}
 
 ## Decision log integration
 
@@ -48,7 +48,7 @@ Every "Now" / "Next" item that survives 30 days becomes an MADR ADR. Roadmap ite
 
 ## Anti-patterns
 
-- Speculative items in "Now" — they belong in "Later."
-- Vague "Won't-do" without reason — re-litigated every quarter.
-- ROADMAP that duplicates ARCHITECTURE / CHANGELOG content — stays in sync via human; almost always drifts. Cross-link instead.
-- "Roadmap" used to communicate commitments — that's a milestones doc; keep separate.
+- Speculative items in "Now", they belong in "Later."
+- Vague "Won't-do" without reason, re-litigated every quarter.
+- ROADMAP that duplicates ARCHITECTURE / CHANGELOG content, stays in sync via human; almost always drifts. Cross-link instead.
+- "Roadmap" used to communicate commitments, that's a milestones doc; keep separate.

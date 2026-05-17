@@ -4,7 +4,7 @@ version: 2.0.0
 parent_skill: recovery
 ---
 
-# Phase Prompts — env-agnostic, parameterized
+# Phase Prompts, env-agnostic, parameterized
 
 Per-phase agent invocation prompts. Use these as the seed for the host harness when recovery is dispatched. Output paths are parameterized (`{{state_dir}}`, `{{repo}}`); no hard-coded session paths.
 

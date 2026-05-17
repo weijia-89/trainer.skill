@@ -8,7 +8,7 @@ voice: imperative for ops; descriptive for threat model
 # SECURITY.md template
 
 ```markdown
-# Security Policy — {{project-name}}
+# Security Policy, {{project-name}}
 
 ## Reporting a vulnerability
 

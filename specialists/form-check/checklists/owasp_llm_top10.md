@@ -5,11 +5,11 @@ source: OWASP-LLM-2025 (v2.0, Nov 2024)
 url: https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/
 ---
 
-# OWASP Top 10 for LLM Applications (2025) — review checklist
+# OWASP Top 10 for LLM Applications (2025), review checklist
 
 Apply to any code that calls an LLM, agent runtime, or vector DB. Each item: question + sample defense.
 
-## LLM01:2025 — Prompt Injection
+## LLM01:2025, Prompt Injection
 
 **Question**: Does any user-controllable input reach the LLM via prompt template, RAG retrieval, tool output, or system message?
 
@@ -22,7 +22,7 @@ Apply to any code that calls an LLM, agent runtime, or vector DB. Each item: que
 
 **Anti-pattern**: concatenating user input directly into the system prompt.
 
-## LLM02:2025 — Sensitive Information Disclosure
+## LLM02:2025, Sensitive Information Disclosure
 
 **Question**: Does the model have access to data that shouldn't be revealed in its outputs?
 
@@ -32,17 +32,17 @@ Apply to any code that calls an LLM, agent runtime, or vector DB. Each item: que
 - Rate-limit and audit-log queries to detect extraction attempts.
 - For fine-tuned models: training-data review for memorized PII; differential privacy where applicable.
 
-## LLM03:2025 — Supply Chain
+## LLM03:2025, Supply Chain
 
 **Question**: Where do model weights, embeddings, fine-tuning data, and prompt templates come from? Are they versioned and integrity-checked?
 
 **Sample defenses**:
 - Pin model versions explicitly (no "latest"). Record in CLAUDE.md / AGENTS.md.
 - Verify model provenance (Hugging Face SHA, signed checkpoints where available).
-- Treat third-party prompt templates as untrusted dependencies — vuln-scan and pin.
+- Treat third-party prompt templates as untrusted dependencies, vuln-scan and pin.
 - For agentic tools: vuln-scan tool implementations as you would for npm/pip deps.
 
-## LLM04:2025 — Data and Model Poisoning
+## LLM04:2025, Data and Model Poisoning
 
 **Question**: Could an attacker poison training data, RAG corpus, or fine-tuning input?
 
@@ -51,7 +51,7 @@ Apply to any code that calls an LLM, agent runtime, or vector DB. Each item: que
 - Anomaly detection on training-data distribution.
 - For RAG: source-trust scoring; never index unsigned content.
 
-## LLM05:2025 — Improper Output Handling
+## LLM05:2025, Improper Output Handling
 
 **Question**: Does downstream code execute or render LLM output?
 
@@ -60,7 +60,7 @@ Apply to any code that calls an LLM, agent runtime, or vector DB. Each item: que
 - Enforce JSON schema before action; reject non-conforming output.
 - For tool-calling: validate every tool-call argument before invocation.
 
-## LLM06:2025 — Excessive Agency
+## LLM06:2025, Excessive Agency
 
 **Question**: Does the agent have more capability than its task requires?
 
@@ -70,7 +70,7 @@ Apply to any code that calls an LLM, agent runtime, or vector DB. Each item: que
 - Tool-call ledger (`.agent/ledger.jsonl`) reviewed before merge.
 - Scope confinement to git worktree, not main.
 
-## LLM07:2025 — System Prompt Leakage
+## LLM07:2025, System Prompt Leakage
 
 **Question**: Could the model leak its system prompt or instructions?
 
@@ -79,16 +79,16 @@ Apply to any code that calls an LLM, agent runtime, or vector DB. Each item: que
 - Treat system-prompt leakage as a likelihood, not a possibility.
 - If the system prompt encodes business rules, also enforce them server-side; do not rely on the prompt as the only gate.
 
-## LLM08:2025 — Vector and Embedding Weaknesses
+## LLM08:2025, Vector and Embedding Weaknesses
 
 **Question**: Are embeddings or vector DBs trusted as authoritative? Could poisoned embeddings change retrieval?
 
 **Sample defenses**:
 - Source-track embeddings: log which corpus chunk produced which vector.
-- Versioning on embedding model — re-embed on model upgrade; treat as a migration.
+- Versioning on embedding model, re-embed on model upgrade; treat as a migration.
 - Rate-limit embedding queries to detect extraction attempts.
 
-## LLM09:2025 — Misinformation
+## LLM09:2025, Misinformation
 
 **Question**: Does the application present model output as fact without verification?
 
@@ -97,7 +97,7 @@ Apply to any code that calls an LLM, agent runtime, or vector DB. Each item: que
 - Confidence flags on output (model uncertainty signals).
 - Human-in-the-loop review on high-stakes domains (medical, legal, financial).
 
-## LLM10:2025 — Unbounded Consumption
+## LLM10:2025, Unbounded Consumption
 
 **Question**: Can a user trigger arbitrarily expensive model calls?
 

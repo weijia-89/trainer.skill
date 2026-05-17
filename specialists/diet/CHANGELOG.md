@@ -8,7 +8,7 @@ Format: Keep a Changelog with SemVer.
 - MINOR: new sections, new instrumentation patterns, new platform-specific guidance, new anti-patterns.
 - PATCH: wording, citations, example refinements.
 
-## [2.0.0], 2026-05-16. Iron Law layering + composes-pin bumps
+## [2.0.0], 2026-05-16, Iron Law layering + composes-pin bumps
 
 MAJOR because composes pin to form-check changed from `>=2.0.0,<3.0.0` to `>=3.0.0,<4.0.0`, and pin to safetybar changed from `>=1.0.0,<2.0.0` to `>=1.1.0,<2.0.0`.
 

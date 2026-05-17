@@ -4,7 +4,7 @@ version: 2.0.0
 parent_skill: recovery
 ---
 
-# Doc Voice — per-archetype rules
+# Doc Voice, per-archetype rules
 
 Different docs serve different consumers and tooling conventions. One voice across all docs is wrong. Use this table to pick the voice per artifact.
 
@@ -19,7 +19,7 @@ Different docs serve different consumers and tooling conventions. One voice acro
 | ARCHITECTURE.md | descriptive third-person | third-person | precise; tag normative claims | n/a | minimal; cross-link to docs |
 | ROADMAP.md | dated, blunt; "won't-do" load-bearing | first-person plural acceptable | committal language only when committed | n/a | no |
 | Runbook | imperative, role-segregated | "you" addressed to operator | no hedging during incident | n/a | yes, in command examples |
-| Glossary | precise definitions, no examples in entry | none | terse | n/a | no — examples in cookbook |
+| Glossary | precise definitions, no examples in entry | none | terse | n/a | no, examples in cookbook |
 | Source comments (non-docstring) | mixed density; deAI base rules apply | first-person plural sparingly | concise | n/a | when the comment IS the example |
 | ADR (MADR) | descriptive past tense | first-person plural ("we") for decision rationale | dated | n/a | yes |
 | Cookbook / user docs | conversational, code-led | second-person | inviting | n/a | yes, every entry |

@@ -5,7 +5,7 @@ source: WCAG-2.2 (W3C Recommendation, Oct 2023)
 url: https://www.w3.org/TR/WCAG22/
 ---
 
-# WCAG 2.2 — Accessibility Review Checklist
+# WCAG 2.2, Accessibility Review Checklist
 
 Apply to every browser-rendered web app, document, or component library. WCAG 2.2 supersedes 2.1; 4.1.1 Parsing is obsolete and removed.
 
@@ -25,7 +25,7 @@ Apply to every browser-rendered web app, document, or component library. WCAG 2.
 
 ## Minimum review process
 
-1. **axe-core / Lighthouse / pa11y** automated scan — catches ~30–40% of issues (the rest require human review).
+1. **axe-core / Lighthouse / pa11y** automated scan, catches ~30–40% of issues (the rest require human review).
 2. **Keyboard-only walkthrough** of every primary user flow.
 3. **Screen-reader walkthrough** with at least one of NVDA / JAWS / VoiceOver / TalkBack.
 4. **Reduced-motion / high-contrast / 200% zoom** rendering check.
@@ -45,7 +45,7 @@ Reference: W3C ARIA Authoring Practices Guide (APG).
 
 ## Vibe-impossible reminder
 
-Decisions about ARIA pattern selection, focus-management semantics, and screen-reader copy require qualified review. AI may *implement* against a documented pattern but should not *select* the pattern unsupervised — see `rubrics/vibe_safety_map.md` Bucket 4.
+Decisions about ARIA pattern selection, focus-management semantics, and screen-reader copy require qualified review. AI may *implement* against a documented pattern but should not *select* the pattern unsupervised, see `rubrics/vibe_safety_map.md` Bucket 4.
 
 ## Output
 

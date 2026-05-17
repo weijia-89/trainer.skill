@@ -4,11 +4,11 @@ version: 2.0.0
 parent_skill: form-check
 ---
 
-# Vibe-Safety Map (v2 — adds vibe-impossible bucket)
+# Vibe-Safety Map (v2, adds vibe-impossible bucket)
 
 For every plan or review, classify each module/surface into one of **four** buckets. The bucket determines the confidence-score tier and the per-component minima.
 
-## Bucket 1 — Vibe-safe (AI ships unread, score ≥80)
+## Bucket 1, Vibe-safe (AI ships unread, score ≥80)
 
 Criteria (all must hold):
 - Pure functions / deterministic transforms / read-only views
@@ -25,7 +25,7 @@ Examples:
 - Renaming an internal helper
 - Adding a Pydantic / Zod field with default
 
-## Bucket 2 — Vibe-careful (human reads diff, score ≥90)
+## Bucket 2, Vibe-careful (human reads diff, score ≥90)
 
 Criteria (any one):
 - Touches a public API surface or CLI shape
@@ -42,7 +42,7 @@ Process:
 - Eval baseline re-run; regression gate must hold
 - API change → `Deprecation` and `Sunset` headers (RFC 8594) added if removing surface
 
-## Bucket 3 — Vibe-dangerous (human writes test + reads diff + staged rollout, score ≥95)
+## Bucket 3, Vibe-dangerous (human writes test + reads diff + staged rollout, score ≥95)
 
 Criteria (any one):
 - Auth, sessions, tokens, cryptography
@@ -58,14 +58,14 @@ Criteria (any one):
 Process:
 1. **Human writes the failing test** that encodes the spec.
 2. AI implements; types check; lint clean; test passes; mutation score ≥ tier-target.
-3. **Human reads the full diff** — no skim.
+3. **Human reads the full diff**, no skim.
 4. STRIDE walked on the changed surface (`checklists/threat_model_stride.md`).
 5. Ship behind a feature flag. **Staged rollout** (web): 1% → 10% → 50% → 100%; (CLI/library): semver patch with explicit changelog entry; (mobile): staged release ring.
 6. Monitor for one full deploy cycle before flag-cleanup.
 7. ADR written and merged (`templates/MADR_short.md`).
 8. Score logged with incident-tracking link.
 
-## Bucket 4 — Vibe-impossible (AI must not ship, even with all gates)
+## Bucket 4, Vibe-impossible (AI must not ship, even with all gates)
 
 These require a qualified human author, not just a reviewer:
 
@@ -78,7 +78,7 @@ These require a qualified human author, not just a reviewer:
 
 If an AI agent attempts to produce vibe-impossible content, the harness must refuse and prompt the user.
 
-## Per-archetype map (initial pass — replace with project-specific)
+## Per-archetype map (initial pass, replace with project-specific)
 
 | Project archetype | Vibe-safe | Vibe-careful | Vibe-dangerous | Vibe-impossible |
 |---|---|---|---|---|

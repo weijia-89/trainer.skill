@@ -7,7 +7,7 @@ gate: forcing-constraint-required
 
 # Event Sourcing + CQRS
 
-> **[GATED — informational only]** Forcing-constraint ADR required.
+> **[GATED, informational only]** Forcing-constraint ADR required.
 >
 > Event sourcing is right for a narrow range of problems. The wider use of CQRS is *some* read-write separation; full event-sourcing-as-source-of-truth is a different beast.
 
@@ -18,9 +18,9 @@ gate: forcing-constraint-required
 - **Multi-system consistency** via event-driven outbox pattern (with a forcing constraint)
 
 **Not when**:
-- "We want better debugging" — event sourcing is *not* a debugger upgrade
-- "We want to be event-driven" — you can have async messaging without event sourcing
-- "Microservices need events" — they need contracts; events are one option, RPC is another
+- "We want better debugging", event sourcing is *not* a debugger upgrade
+- "We want to be event-driven", you can have async messaging without event sourcing
+- "Microservices need events", they need contracts; events are one option, RPC is another
 
 ## CQRS without event sourcing (lighter alternative)
 
@@ -46,7 +46,7 @@ State is a *projection* of an event log; events are the only source of truth. Im
 
 - Storage growth: events are immutable; you keep them all (compaction is project-specific)
 - Replay cost: rebuilding projections takes time proportional to event volume
-- Cognitive load: developers think in events, not state — meaningful learning curve
+- Cognitive load: developers think in events, not state, meaningful learning curve
 - Tooling: many off-the-shelf admin tools assume state-shaped data; event-shaped systems often build their own
 - Schema evolution: every event version must be replayable; renames / removals cost more than in state-shaped systems
 
@@ -60,10 +60,10 @@ State is a *projection* of an event log; events are the only source of truth. Im
 ## Anti-patterns
 
 - Event sourcing because microservices ⇒ events. Microservices need *contracts*; events are one option.
-- "Replay all events to fix a bug" without snapshots — multi-hour outage.
-- Treating events as RPC ("user-created-event" with all the data the consumer needs) — this is RPC with extra steps.
-- Updating events after they're emitted (mutating history) — defeats the purpose.
-- Per-event-type-per-schema rigidity that prevents evolution — design the schema-evolution strategy upfront.
+- "Replay all events to fix a bug" without snapshots, multi-hour outage.
+- Treating events as RPC ("user-created-event" with all the data the consumer needs), this is RPC with extra steps.
+- Updating events after they're emitted (mutating history), defeats the purpose.
+- Per-event-type-per-schema rigidity that prevents evolution, design the schema-evolution strategy upfront.
 
 ## Sunset
 

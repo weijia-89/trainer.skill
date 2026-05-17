@@ -8,7 +8,7 @@ Format: Keep a Changelog with SemVer.
 - MINOR: new commands documented in §2, new conflict-resolution patterns in §3, new branch-surgery patterns in §5.
 - PATCH: wording, example refinements, clarifications.
 
-## [1.1.0], 2026-05-16. Iron Law layering
+## [1.1.0], 2026-05-16, Iron Law layering
 
 MINOR (no breaking changes; added discipline content).
 

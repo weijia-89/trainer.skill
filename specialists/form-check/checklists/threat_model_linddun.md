@@ -7,7 +7,7 @@ url: https://linddun.org/
 
 # LINDDUN Privacy Threat-Model Checklist
 
-Apply to any change touching personal data flows. STRIDE covers security threats; LINDDUN covers privacy threats — they are complementary, not redundant.
+Apply to any change touching personal data flows. STRIDE covers security threats; LINDDUN covers privacy threats, they are complementary, not redundant.
 
 ## Process
 
@@ -18,7 +18,7 @@ Apply to any change touching personal data flows. STRIDE covers security threats
 
 ## Categories
 
-### L — Linkability
+### L, Linkability
 **Question**: Can two records about the same person be linked across contexts?
 
 **Examples**:
@@ -27,7 +27,7 @@ Apply to any change touching personal data flows. STRIDE covers security threats
 
 **Mitigations**: per-context pseudonyms, salted hash for cross-context joins, separate analytics ID from auth ID.
 
-### I — Identifiability
+### I, Identifiability
 **Question**: Can a person be identified within a dataset?
 
 **Examples**:
@@ -36,7 +36,7 @@ Apply to any change touching personal data flows. STRIDE covers security threats
 
 **Mitigations**: k-anonymity (k≥5 typical), generalization, suppression, differential privacy for aggregates.
 
-### N — Non-repudiation (privacy sense)
+### N, Non-repudiation (privacy sense)
 **Question**: Could someone *prove* a person did/said something they shouldn't have to prove?
 
 **Examples**:
@@ -44,7 +44,7 @@ Apply to any change touching personal data flows. STRIDE covers security threats
 
 **Mitigations**: ring signatures, deniable encryption, separate audit-log channel from user-facing channel.
 
-### D — Detectability
+### D, Detectability
 **Question**: Can an attacker detect the *existence* of an item even without reading it?
 
 **Examples**:
@@ -53,14 +53,14 @@ Apply to any change touching personal data flows. STRIDE covers security threats
 
 **Mitigations**: generic responses that don't disclose existence, padding, decoy traffic.
 
-### D — (Information) Disclosure
+### D, (Information) Disclosure
 **Question**: Can personal data leak?
 
 (Cross-listed with STRIDE-I.)
 
 **Mitigations**: encryption at rest + in transit, access controls, output redaction, secure deletion.
 
-### U — Unawareness
+### U, Unawareness
 **Question**: Are users unaware of what data is collected, processed, stored, shared?
 
 **Examples**:
@@ -70,7 +70,7 @@ Apply to any change touching personal data flows. STRIDE covers security threats
 
 **Mitigations**: clear privacy notice, just-in-time consent, transparency dashboard, data-subject-access tooling (GDPR Art 15).
 
-### N — Non-compliance
+### N, Non-compliance
 **Question**: Does the design comply with applicable privacy regulations?
 
 **Examples**:

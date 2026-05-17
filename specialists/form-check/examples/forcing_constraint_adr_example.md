@@ -5,12 +5,12 @@ parent_skill: form-check
 status: example (non-normative)
 ---
 
-# Example — Forcing-Constraint ADR (worked example)
+# Example, Forcing-Constraint ADR (worked example)
 
 This is what a *good* forcing-constraint ADR looks like. Use as a reference; the empty template is at `templates/forcing_constraint_adr.md`.
 
 ```markdown
-# 0042 — Forcing Constraint: HIPAA-Compliant Multi-Region for ACME-Health Contract
+# 0042, Forcing Constraint: HIPAA-Compliant Multi-Region for ACME-Health Contract
 
 - Status: accepted
 - Type: forcing-constraint
@@ -91,17 +91,17 @@ If sunset condition met: file ADR-0099 closing this one; budget 2-quarter retrea
 
 ## What makes this a good example
 
-- **Specific named constraint** (contract clause + regulator) — not vibes.
-- **Default-mode alternative honestly considered** — not a strawman.
-- **Cost projection with multiplier** — finance-checkable.
-- **Confirmation criteria are dated and measurable** — not aspirational.
-- **Sunset condition is real** (contract / regulator) — not "if we feel like it."
-- **Approvers named** — accountability is on the record.
+- **Specific named constraint** (contract clause + regulator), not vibes.
+- **Default-mode alternative honestly considered**, not a strawman.
+- **Cost projection with multiplier**, finance-checkable.
+- **Confirmation criteria are dated and measurable**, not aspirational.
+- **Sunset condition is real** (contract / regulator), not "if we feel like it."
+- **Approvers named**, accountability is on the record.
 
 ## Counterexamples (anti-patterns)
 
-- "We're growing fast and will need this." — not a forcing constraint.
-- "All the SaaS unicorns are multi-region." — not a forcing constraint.
-- Status: proposed but invoked anyway — gate violation.
-- No cost projection — finance can't review; future surprise.
-- "Sunset: never" — implies the constraint is permanent; rare; suspicious.
+- "We're growing fast and will need this.", not a forcing constraint.
+- "All the SaaS unicorns are multi-region.", not a forcing constraint.
+- Status: proposed but invoked anyway, gate violation.
+- No cost projection, finance can't review; future surprise.
+- "Sunset: never", implies the constraint is permanent; rare; suspicious.

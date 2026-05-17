@@ -35,7 +35,7 @@ The skill routes to and references seven downstream skills:
 - `pr`, deploy mechanics
 - `diet`, operate and incident response
 - `safetybar`, git recovery
-- `gymbuddy`. AI-assisted-development workflow
+- `gymbuddy`, AI-assisted-development workflow
 
 And references one cross-cutting checklist: `form-check/checklists/codebase_scan.md`.
 

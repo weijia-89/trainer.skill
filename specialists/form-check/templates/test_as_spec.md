@@ -22,7 +22,7 @@ Write the **failing** test first. The signature and assertions are the spec the 
 
 Per-language detail: `multi-language/{python,typescript,java,go,rust}.md`.
 
-## Pattern A — unit (illustrative; pick your language)
+## Pattern A, unit (illustrative; pick your language)
 
 **Python (pytest)**:
 ```python
@@ -49,13 +49,13 @@ describe("extractWcagCriterion", () => {
 });
 ```
 
-## Pattern B — property-based (round-trip / idempotency)
+## Pattern B, property-based (round-trip / idempotency)
 
 The most leverage-per-test pattern in this skill. Use for parsers, serializers, transforms.
 
 (Examples in `multi-language/python.md`, `multi-language/typescript.md`, etc.)
 
-## Pattern C — integration (tmp DB / file)
+## Pattern C, integration (tmp DB / file)
 
 **Python**:
 ```python
@@ -79,7 +79,7 @@ func TestAuditPersists(t *testing.T) {
 }
 ```
 
-## Pattern D — eval / golden dataset
+## Pattern D, eval / golden dataset
 
 ```python
 @pytest.mark.eval
@@ -96,7 +96,7 @@ def test_eval_baseline(golden_dataset, mock_llm):
 
 Sizing: 50–100 minimum, 200–500 prod-ready, 1000+ mature.
 
-## Pattern E — review-gate test
+## Pattern E, review-gate test
 
 Tests that fail if a vibe-dangerous gate is removed:
 
@@ -113,15 +113,15 @@ it("apply requires explicit confirm flag", () => {
 });
 ```
 
-These are **fitness functions in disguise** — they encode the architecture decision (apply requires confirm) as an executable check.
+These are **fitness functions in disguise**, they encode the architecture decision (apply requires confirm) as an executable check.
 
-## Pattern F — fuzzing (parsing untrusted input)
+## Pattern F, fuzzing (parsing untrusted input)
 
 (See per-language files for syntax. Native fuzz support in Python (Atheris), Go 1.18+, Rust (cargo-fuzz), Java/JS (jazzer).)
 
 Use for: parsers, deserializers, regex engines, anything taking untrusted bytes. Run as a CI job (long-running) or scheduled (nightly).
 
-## Pattern G — mutation testing
+## Pattern G, mutation testing
 
 Mutation tools introduce small program changes (mutants) and re-run tests. A mutation that survives = your test suite missed it.
 

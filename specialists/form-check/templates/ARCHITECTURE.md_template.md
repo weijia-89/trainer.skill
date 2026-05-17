@@ -8,7 +8,7 @@ voice: descriptive third-person; no first-person; no marketing language
 # ARCHITECTURE.md template
 
 ```markdown
-# Architecture — {{project-name}}
+# Architecture, {{project-name}}
 
 > Last updated: {{date}}. This file describes the *current* architecture, not the aspirational one. Roadmap items belong in ROADMAP.md.
 
@@ -98,7 +98,7 @@ Decisions of record in `docs/adr/`:
 Cross-link `SECURITY.md`, `docs/threat-model.md`. Summary here:
 - TLS, mTLS where, encryption at rest scope, secret management, audit log
 
-## 12. Future direction (read-only — full plan in ROADMAP.md)
+## 12. Future direction (read-only, full plan in ROADMAP.md)
 
 Pointer to roadmap. Do not duplicate.
 ```

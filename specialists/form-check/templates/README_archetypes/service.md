@@ -17,7 +17,7 @@ voice: operator-led; what it does, how to run it, how to debug
 ## What this serves
 
 - **Consumers**: {{which clients / services}}
-- **Public surface**: {{HTTP / gRPC / GraphQL — endpoint or schema link}}
+- **Public surface**: {{HTTP / gRPC / GraphQL, endpoint or schema link}}
 - **Trust boundary**: {{which network zone}}
 
 ## Local development
@@ -55,14 +55,14 @@ make seed   # loads minimal dataset for local development
 - **Platform**: {{Fly / Render / Railway / Vercel / Cloud Run}}
 - **CI/CD**: {{GitHub Actions workflow link}}
 - **Rollout**: {{trunk-based, deploy-on-merge, with feature flags}}
-- **Rollback**: {{procedure — last-known-good redeploy, or `flyctl deploy --image=:prev`, or DB-aware rollback runbook}}
+- **Rollback**: {{procedure, last-known-good redeploy, or `flyctl deploy --image=:prev`, or DB-aware rollback runbook}}
 
 ## Observability
 
-- **Metrics**: {{Prometheus / Datadog / Cloud Monitoring}} — dashboard link
+- **Metrics**: {{Prometheus / Datadog / Cloud Monitoring}}, dashboard link
 - **Tracing**: {{OpenTelemetry exporter}}
 - **Logging**: structured JSON; PII redacted at write time
-- **Alerts**: {{alertmanager / PagerDuty}} — runbook links per alert
+- **Alerts**: {{alertmanager / PagerDuty}}, runbook links per alert
 
 ## SLOs
 
@@ -100,6 +100,6 @@ See `CONTRIBUTING.md`. Especially: `docs/adr/` for proposing architectural chang
 ## Notes
 
 - **Service README is operator-led.** Local dev → config → deploy → observe.
-- **Runbook links from alerts** in the README — operators land here at 3 AM.
+- **Runbook links from alerts** in the README, operators land here at 3 AM.
 - **SLOs are a section, not a footnote.** They define the contract.
 - **No "vision" sections** in service READMEs. Vision belongs in ROADMAP or company docs.

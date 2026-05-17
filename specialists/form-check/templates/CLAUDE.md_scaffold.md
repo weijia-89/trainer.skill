@@ -6,10 +6,10 @@ parent_skill: form-check
 
 # CLAUDE.md / AGENTS.md scaffold
 
-Drop this file at `/CLAUDE.md` or `/AGENTS.md` (depending on which agent format the host uses). Replace `{{...}}` placeholders. Keep this concise — agents skim, not read.
+Drop this file at `/CLAUDE.md` or `/AGENTS.md` (depending on which agent format the host uses). Replace `{{...}}` placeholders. Keep this concise, agents skim, not read.
 
 ```markdown
-# CLAUDE.md / AGENTS.md — {{project-name}}
+# CLAUDE.md / AGENTS.md, {{project-name}}
 
 > Version: {{semver}} • Last updated: {{date}} • Owner: {{team}}
 
@@ -34,23 +34,23 @@ Drop this file at `/CLAUDE.md` or `/AGENTS.md` (depending on which agent format 
 
 ```
 src/<pkg>/
-  models.{{py|ts|java|go|rs}}   — boundary contracts (Pydantic / Zod / records)
-  cli.{{ext}}                   — thin shell over the core
-  <core>.{{ext}}                — domain logic; pure where possible
-  database.{{ext}}              — persistence layer
-  llm_client.{{ext}}            — LLM interface (Protocol + Mock + real impl)
+  models.{{py|ts|java|go|rs}}  , boundary contracts (Pydantic / Zod / records)
+  cli.{{ext}}                  , thin shell over the core
+  <core>.{{ext}}               , domain logic; pure where possible
+  database.{{ext}}             , persistence layer
+  llm_client.{{ext}}           , LLM interface (Protocol + Mock + real impl)
 
 tests/
-  unit/         — fast, no network, no browser
-  integration/  — touches local DB / disk
-  eval/         — golden-dataset metric runs (only if LLM-bearing)
-  fixtures/     — golden_dataset.json + per-feature inputs
+  unit/        , fast, no network, no browser
+  integration/ , touches local DB / disk
+  eval/        , golden-dataset metric runs (only if LLM-bearing)
+  fixtures/    , golden_dataset.json + per-feature inputs
 
 docs/
-  adr/          — MADR-short ADRs
-  api-inventory.md  — endpoints + versions + deprecation status
+  adr/         , MADR-short ADRs
+  api-inventory.md , endpoints + versions + deprecation status
   glossary.md
-  threat-model.md   — STRIDE + LINDDUN per data-flow boundary
+  threat-model.md  , STRIDE + LINDDUN per data-flow boundary
 ```
 
 ## Test Commands
@@ -58,8 +58,8 @@ docs/
 ```bash
 {{cmd-unit}}            # fast
 {{cmd-integration}}     # local deps only
-{{cmd-eval}}            # MOCK_LLM=1 — CI-friendly
-{{cmd-eval-full}}       # real LLM — manual / nightly
+{{cmd-eval}}            # MOCK_LLM=1, CI-friendly
+{{cmd-eval-full}}       # real LLM, manual / nightly
 {{cmd-mutation}}        # mutation score on touched lines
 {{cmd-lint}}
 {{cmd-fitness}}         # architectural fitness functions
@@ -140,8 +140,8 @@ If host harness lacks these, this project's agent-assisted changes are advisory-
 ## Notes
 
 - This template is the **floor**, not the ceiling. Add project-specific sections.
-- The Stack table doubles as slopsquatting defense — agents and humans confirm versions before generating code.
+- The Stack table doubles as slopsquatting defense, agents and humans confirm versions before generating code.
 - The Don't-Do List is the negative space; cheaper than catching it in review.
 - The Vibe-Safety Map is the explicit per-module budget for AI freedom.
 - The Confidence-Score Posture links the project to the skill's scoring rule.
-- Skip sections that don't apply (LLM, eval baseline) — half-filled sections are worse than absent ones.
+- Skip sections that don't apply (LLM, eval baseline), half-filled sections are worse than absent ones.

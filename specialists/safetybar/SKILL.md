@@ -20,7 +20,7 @@ IRON LAW: NO DESTRUCTIVE GIT COMMAND BEFORE READING ITS RECOVERY PATH IN THIS FI
 
 Violating the letter of this rule is violating the spirit of this rule. "I'll just check the recovery after I run it" is the rationalization that produces lost work. The recovery is the first read; the command is the second action.
 
-## Red Flags. STOP and re-read this section
+## Red Flags, STOP and re-read this section
 
 If any of these thoughts is in your head right now, you are about to make a recoverable situation unrecoverable:
 
@@ -57,7 +57,7 @@ You did something with git. You're not sure what happened. You're worried you lo
 
 **The first thing to know.** Almost nothing is actually lost in git. **Reflog stores almost every state for 90 days by default.** If you panicked and ran something destructive, you probably still have your work. Read §1 before doing anything else.
 
-## §1. The "I think I lost my work" protocol
+## §1, The "I think I lost my work" protocol
 
 Before anything:
 
@@ -72,7 +72,7 @@ If `git reflog` shows the SHA but `git checkout <sha>` says "unknown revision," 
 
 If even that doesn't work and the work was committed at any point in the last 90 days, file system tools (`find`, search for distinctive file content) often recover it from `.git/objects/`. Beyond that, restore from your editor's undo history, your IDE's local history, or your last backup. (Yes, keep backups.)
 
-## §2. Undo paths for the seven scariest commands
+## §2, Undo paths for the seven scariest commands
 
 For each scary command, this section gives the *recovery* path. Read the recovery before running the command, not after.
 
@@ -144,7 +144,7 @@ For each scary command, this section gives the *recovery* path. Read the recover
 
 **Safer alternative.** Convert important stashes to branches before dropping: `git stash branch <name> <stash-id>`. Then they become reachable through the branch and protected by normal reflog rules.
 
-## §3. Conflict resolution
+## §3, Conflict resolution
 
 A merge or rebase conflict is *not* an error, it's git saying "two changes touched the same lines and I don't know which to keep."
 
@@ -182,7 +182,7 @@ If you can't tell, *don't merge yet*. Get the conflicting authors (often: you + 
 
 These return you to the pre-operation state. Use them when you realize you're in over your head, better to back out and approach differently than to commit a half-resolved mess.
 
-## §4. Detached HEAD
+## §4, Detached HEAD
 
 **What it is.** HEAD points to a commit SHA instead of a branch. Common after `git checkout <sha>` or after some interactive-rebase states.
 
@@ -193,7 +193,7 @@ These return you to the pre-operation state. Use them when you realize you're in
 - If you've made commits while detached and want to keep them: `git checkout -b <new-branch-name>` makes the current detached state a branch.
 - If you've made commits while detached and forgot to branch before checking out a real branch: see §1, they're in the reflog.
 
-## §5. Branch surgery patterns
+## §5, Branch surgery patterns
 
 ### 5.1 "I committed to the wrong branch"
 
@@ -222,7 +222,7 @@ git cherry-pick <sha>
 
 Cherry-pick is the right tool for "I want this specific change, not the whole branch." Conflicts can happen; resolve as in §3.
 
-## §6. Anti-patterns for beginners
+## §6, Anti-patterns for beginners
 
 - ❌ **Force-pushing to shared branches** to "clean up history." History on shared branches is contract, not aesthetic. Use revert.
 - ❌ **Running `git reset --hard` to "fix" an unfamiliar git state.** It almost certainly makes things worse. Always read `git status` and `git log --oneline -10` first.
@@ -230,7 +230,7 @@ Cherry-pick is the right tool for "I want this specific change, not the whole br
 - ❌ **Resolving conflicts by accepting one side blindly** (`git checkout --theirs` / `--ours` without thinking). The conflict means git noticed a real problem, accept-blindly silences git, not the problem.
 - ❌ **`rm -rf .git` to start over.** Almost never the right move and never the right move on a repository with un-pushed work. If you genuinely want to start over: clone again to a new directory, copy current files in, commit. Don't delete the repo metadata.
 
-## §7. Prevention habits
+## §7, Prevention habits
 
 - **Set `merge.ff = false`** in your global config. Forces merge commits to be explicit, which preserves history readability.
 - **Always `git status` before any destructive command.** Knowing the state stops 90% of "oh no" moments.

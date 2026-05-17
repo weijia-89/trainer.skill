@@ -8,7 +8,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - **MINOR**: new phase added; new adversarial question; new launch-ready DoD section; new template.
 - **PATCH**: citation, typo, doc-voice tweak, prompt-text refinement.
 
-## [3.0.0], 2026-05-16. Iron Law layering + composes-pin bump to form-check@>=3
+## [3.0.0], 2026-05-16, Iron Law layering + composes-pin bump to form-check@>=3
 
 MAJOR because composes pin to form-check changed from `>=2.0.0,<3.0.0` to `>=3.0.0,<4.0.0`.
 

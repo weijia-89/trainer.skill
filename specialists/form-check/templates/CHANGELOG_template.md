@@ -63,7 +63,7 @@ A `Deprecated` entry in MINOR plus a `Removed` entry in MAJOR (after the depreca
 
 ## Anti-patterns
 
-- "Various improvements" without specifics — useless to consumers.
-- Removing without deprecation period — SemVer violation.
-- "Security" entries that don't say what was vulnerable (only what was fixed) — confuses consumers about whether they were affected.
-- CHANGELOG never updated — use a fitness function (`tools/check_changelog.sh`) to require an entry per non-trivial PR.
+- "Various improvements" without specifics, useless to consumers.
+- Removing without deprecation period, SemVer violation.
+- "Security" entries that don't say what was vulnerable (only what was fixed), confuses consumers about whether they were affected.
+- CHANGELOG never updated, use a fitness function (`tools/check_changelog.sh`) to require an entry per non-trivial PR.

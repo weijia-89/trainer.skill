@@ -40,7 +40,7 @@ cargo add {{lib}}
 (Code first. The shortest possible example showing the primary primitive in action.)
 
 ```{{language}}
-{{realistic, runnable example — 5–15 lines}}
+{{realistic, runnable example, 5–15 lines}}
 ```
 
 ## Concepts
@@ -50,7 +50,7 @@ cargo add {{lib}}
 
 ## Documentation
 
-- **API reference**: {{generated docs URL — Sphinx / typedoc / Javadoc / godoc / rustdoc}}
+- **API reference**: {{generated docs URL, Sphinx / typedoc / Javadoc / godoc / rustdoc}}
 - **Cookbook**: `docs/cookbook/` (recipes for common tasks)
 - **Architecture**: `ARCHITECTURE.md`
 - **Security**: `SECURITY.md`
@@ -70,7 +70,7 @@ This library follows [Semantic Versioning](https://semver.org/). See `CHANGELOG.
 
 ## Performance
 
-(If performance is a documented characteristic — micro-benchmark table, methodology link. If not, omit this section rather than fudge.)
+(If performance is a documented characteristic, micro-benchmark table, methodology link. If not, omit this section rather than fudge.)
 
 ## Contributing
 
@@ -88,4 +88,4 @@ See `CONTRIBUTING.md`.
 - **No "5-step quickstart"** for libraries with 30+ primitives. Quickstart shows the *most common primitive*; the rest belong in cookbook / API ref.
 - **API reference generation tool** must be uniform-docstring-friendly. Per-archetype voice rules: API ref docstrings are *uniform*, README prose is *conversational*. See `templates/doc_voice.md`.
 - **Performance claims need methodology** or omit entirely.
-- **No "this is a high-quality library" copy** — let the API speak for itself.
+- **No "this is a high-quality library" copy**, let the API speak for itself.

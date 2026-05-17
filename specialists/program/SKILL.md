@@ -23,7 +23,7 @@ IRON LAW: NO IMPLEMENTATION SKILL INVOKED UNTIL THE ONE-PAGE SPEC HAS KILL CRITE
 
 Violating the letter of this rule is violating the spirit of this rule. "I'll add the kill criteria after I start building" is the rationalization that produces 100-hour projects that should have been killed at hour 10. The kill criteria + non-goals are not optional decorations; they are the calibration that makes the build phase finite.
 
-## Red Flags. STOP and finish the spec
+## Red Flags, STOP and finish the spec
 
 - "I have the idea, I'll figure out kill criteria as I go."
 - "Non-goals are too restrictive, I want to keep options open."
@@ -59,7 +59,7 @@ You have an idea. It is too big, too vague, or too vague-and-too-big. This skill
 
 - "I want to build a thing that tracks my reading."
 - "I have a side project but I keep adding features and never shipping."
-- "Should I rebuild this in Rust?" (No: `program` says no, then sends you to `form-check/refactor-prep` if a real refactor case exists.)
+- "Should I rebuild this in Rust?" (No, `program` says no, then sends you to `form-check/refactor-prep` if a real refactor case exists.)
 - "I'm three months in and not sure what I'm building anymore."
 - Your idea has more than **5 sentences** of description but no acceptance criteria.
 
@@ -95,7 +95,7 @@ Examples:
 
 - "If I've spent 10 hours and don't have a working v0 of the digest, I kill it."
 - "If after 5 weekly digests I haven't opened the resulting page, I kill it."
-- "If I cannot get a free Kindle highlights export within 2 hours of research, I kill it." (Real one. Amazon makes this hard; the project may not be feasible without paid tooling.)
+- "If I cannot get a free Kindle highlights export within 2 hours of research, I kill it." (Real one, Amazon makes this hard; the project may not be feasible without paid tooling.)
 
 Write at least two kill criteria. If you can't write any, you're probably not committed to actually shipping, you want a *hobby*, which is fine but doesn't need this skill.
 

@@ -5,7 +5,7 @@ parent_skill: recovery
 status: example (non-normative)
 ---
 
-# Example — Full recovery Engagement Trace
+# Example, Full recovery Engagement Trace
 
 A worked example of a `recovery --engagement-type=harden` run on a synthetic project. Captures phase-by-phase artifacts so reviewers and contributors know what "good output" looks like.
 
@@ -21,7 +21,7 @@ A worked example of a `recovery --engagement-type=harden` run on a synthetic pro
 `.recovery/discovery.md` (excerpt):
 
 ```markdown
-# Discovery — northwind-qa @ 2026-05-14T19:24:00Z
+# Discovery, northwind-qa @ 2026-05-14T19:24:00Z
 
 ## Tree
 
@@ -50,7 +50,7 @@ None found. Default mode applies.
 
 ## Phase: review
 
-`.recovery/review.md` (excerpt — 5 of ~20 findings):
+`.recovery/review.md` (excerpt, 5 of ~20 findings):
 
 ```markdown
 | ID | Lens | File:line | Severity | Reproduction | Proposed fix |
@@ -107,7 +107,7 @@ Engagement aggregate: 91.5 (vibe-careful). Threshold met. No adversarial loop re
 
 ## Phase: adversarial
 
-(Not invoked — engagement aggregate cleared the threshold without it.)
+(Not invoked, engagement aggregate cleared the threshold without it.)
 
 ## Phase: launch-ready
 
@@ -117,7 +117,7 @@ Engagement aggregate: 91.5 (vibe-careful). Threshold met. No adversarial loop re
 | Section | Status |
 |---|---|
 | Documentation baseline | pass |
-| Code quality | partial (mutation testing not configured — fail; tracked) |
+| Code quality | partial (mutation testing not configured, fail; tracked) |
 | Supply chain | pass (SBOM gap acknowledged for tooling-only project) |
 | Security baseline | pass |
 | Operational readiness | n/a (test harness, not a service) |
@@ -136,7 +136,7 @@ Verdict: launch-ready *with* one acknowledged gap (mutation-testing wiring). Fil
 `.recovery/summary.md` (full):
 
 ```markdown
-# Codeit Summary — northwind-qa @ 2026-05-14T20:14Z
+# Codeit Summary, northwind-qa @ 2026-05-14T20:14Z
 
 - Engagement type: harden
 - Duration: 50 minutes
@@ -144,14 +144,14 @@ Verdict: launch-ready *with* one acknowledged gap (mutation-testing wiring). Fil
 
 ## Top 3 findings
 
-1. P0-01 — unbounded auth retries (lib/helpers.js); fix shipped at 91 confidence.
-2. P1-02 — CSRF token absent in auth setup; fix iterated to 92 after adversarial pass on threat-model.
-3. P2-05 — README archetype mismatch; rewritten as `service`.
+1. P0-01, unbounded auth retries (lib/helpers.js); fix shipped at 91 confidence.
+2. P1-02, CSRF token absent in auth setup; fix iterated to 92 after adversarial pass on threat-model.
+3. P2-05, README archetype mismatch; rewritten as `service`.
 
 ## Top 3 deferred
 
-1. Mutation-testing wiring (Stryker) — Roadmap "Next."
-2. Per-test-file ARIA pattern review (n/a — tests target an app we don't own).
+1. Mutation-testing wiring (Stryker), Roadmap "Next."
+2. Per-test-file ARIA pattern review (n/a, tests target an app we don't own).
 3. SBOM generation (gap acknowledged for tooling project; tracked).
 
 ## Doc deltas
@@ -182,7 +182,7 @@ Verdict: launch-ready *with* one acknowledged gap (mutation-testing wiring). Fil
 ## What this trace illustrates
 
 - DAG activation: review → scoring → doc-pass → deAI → launch-ready → summary; adversarial skipped because aggregate cleared threshold.
-- Per-phase verdicts are `pass | fail | advisory` — `advisory` for launch-ready when there's a documented gap that doesn't block the engagement.
+- Per-phase verdicts are `pass | fail | advisory`, `advisory` for launch-ready when there's a documented gap that doesn't block the engagement.
 - Calibration log accumulates per-change rows for future retiering.
 - Voice rules applied per-archetype: README's `service` archetype voice differs from CHANGELOG's impersonal-factual voice.
 - No scale-up content consulted (no forcing-constraint ADR; default mode).

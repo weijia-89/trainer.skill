@@ -6,10 +6,10 @@ voice: imperative; assume incident is active
 trigger: vendor advisory (Wiz / Aikido / Snyk / Socket / CISA / GitHub Advisory) names a package in your dep graph; OR your CI breaks with a known Shai-Hulud / typosquat signature
 ---
 
-# Runbook — Supply-Chain Compromise (Shai-Hulud-class)
+# Runbook, Supply-Chain Compromise (Shai-Hulud-class)
 
-> P0. Run two-up — pair an engineer with a security responder. Do not run solo.
-> Reference incidents: Shai-Hulud (Sept 2025), Shai-Hulud 2.0 (Nov 2025), Mini Shai-Hulud (May 2026 — first cross-ecosystem npm + PyPI).
+> P0. Run two-up, pair an engineer with a security responder. Do not run solo.
+> Reference incidents: Shai-Hulud (Sept 2025), Shai-Hulud 2.0 (Nov 2025), Mini Shai-Hulud (May 2026, first cross-ecosystem npm + PyPI).
 
 ## Pre-flight
 
@@ -18,7 +18,7 @@ trigger: vendor advisory (Wiz / Aikido / Snyk / Socket / CISA / GitHub Advisory)
 - [ ] Status page status set to "investigating" (do not over-promise)
 - [ ] Postmortem ticket created: `INC-{{N}}`
 
-## Step 1 — Identify
+## Step 1, Identify
 
 Check current vendor advisories and your dep graph:
 
@@ -38,7 +38,7 @@ Cross-reference any matches with the vendor advisory's IOC (indicators of compro
 
 Record findings in incident channel.
 
-## Step 2 — Contain
+## Step 2, Contain
 
 If a confirmed compromised package is in your graph:
 
@@ -52,7 +52,7 @@ If a confirmed compromised package is in your graph:
 
 Do **not** redeploy until eradication is complete.
 
-## Step 3 — Rotate ALL tokens
+## Step 3, Rotate ALL tokens
 
 Shai-Hulud's whole purpose is exfil tokens. Assume every token in your CI namespace is compromised.
 
@@ -70,9 +70,9 @@ Shai-Hulud's whole purpose is exfil tokens. Assume every token in your CI namesp
 - [ ] Vault / Secrets-Manager tokens
 - [ ] Any third-party API keys (Sentry, PostHog, OpenAI / Anthropic, Stripe-test, etc.)
 
-Update audit log. **Use a fresh, isolated workstation for rotations** — do not rotate from a possibly-compromised dev machine.
+Update audit log. **Use a fresh, isolated workstation for rotations**, do not rotate from a possibly-compromised dev machine.
 
-## Step 4 — Audit GitHub for exfil repos
+## Step 4, Audit GitHub for exfil repos
 
 ```bash
 gh api -X GET search/repositories \
@@ -83,7 +83,7 @@ gh api -X GET search/repositories \
 
 Repeat for every member of your org. Found repos: capture names + creation timestamps for the postmortem; report to GitHub abuse team; delete.
 
-## Step 5 — Re-scan artifacts
+## Step 5, Re-scan artifacts
 
 ```bash
 # Scan recent built artifacts for the malicious post-install signatures
@@ -96,7 +96,7 @@ find . -name "package.json" -path "*/node_modules/*" \
 
 If any artifact is contaminated, treat as not-shippable. Do not roll forward; rebuild from clean source.
 
-## Step 6 — Recover
+## Step 6, Recover
 
 Pin compromised packages to the last known-good version. Update lockfile.
 
@@ -108,7 +108,7 @@ uv lock --upgrade-package {{pkg}}=={{good-version}} --generate-hashes
 
 Re-run full CI in a clean environment. Confirm green before resuming deploys.
 
-## Step 7 — Customer communication
+## Step 7, Customer communication
 
 If exfiltration likely affected customer data: per breach-notification policy. Use this template:
 
@@ -123,17 +123,17 @@ Postmortem: published at {{date}}.
 
 If exfiltration did not affect customer data: a transparency post may still be appropriate. Confer with security responder.
 
-## Step 8 — Postmortem
+## Step 8, Postmortem
 
 Within 5 business days:
 - Root cause analysis
 - Timeline (detection → containment → eradication → recovery)
 - Action items (CI architectural changes, token-isolation improvements, dep-pinning policy updates)
-- "What went well / what didn't" — blameless
+- "What went well / what didn't", blameless
 
 Filed at `docs/postmortems/{{date}}-supply-chain.md`.
 
-## After the incident — preventive actions
+## After the incident, preventive actions
 
 These should already be in place. If they aren't, this is the action-item set:
 
@@ -148,8 +148,8 @@ These should already be in place. If they aren't, this is the action-item set:
 
 ## Anti-patterns
 
-- Single shared "ci-deploy-token" used across pipelines — single compromise compromises everything.
-- Long-lived PATs with broad scope — should be OIDC federation or short-lived.
-- "We'll rotate later" — Shai-Hulud propagates within minutes; later is too late.
-- Communicating before containment — adversary uses the time.
-- Rotating tokens from a possibly-compromised machine — defeats the rotation.
+- Single shared "ci-deploy-token" used across pipelines, single compromise compromises everything.
+- Long-lived PATs with broad scope, should be OIDC federation or short-lived.
+- "We'll rotate later", Shai-Hulud propagates within minutes; later is too late.
+- Communicating before containment, adversary uses the time.
+- Rotating tokens from a possibly-compromised machine, defeats the rotation.

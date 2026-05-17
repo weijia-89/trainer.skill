@@ -10,11 +10,11 @@ This skill is intentionally thin. Versioning is correspondingly simple.
 - MINOR: routing-table gains or loses a row (a downstream skill is added or retired from the ecosystem).
 - PATCH: wording, examples, or graduation-checklist refinement without changing routing behavior.
 
-## [2.0.0], 2026-05-16. Iron Law layering + all composes-pins bumped
+## [2.0.0], 2026-05-16, Iron Law layering + all composes-pins bumped
 
 MAJOR because all 7 downstream composes pins changed: program `>=1 → >=2`, form-check `>=2 → >=3`, recovery `>=2 → >=3`, pr `>=1 → >=2`, diet `>=1 → >=2`, safetybar `>=1.0 → >=1.1`, gymbuddy `>=1 → >=2`.
 
-- Added Iron Law: "NO DIRECT ACTION FROM WARMUP. ROUTE FIRST, THEN ACT IN THE DOWNSTREAM SKILL."
+- Added Iron Law: "NO DIRECT ACTION FROM WARMUP, ROUTE FIRST, THEN ACT IN THE DOWNSTREAM SKILL."
 - Added "Violating the letter is violating the spirit" framing; Red Flags list; Rationalizations table.
 - Description hygiene: triggers-only frontmatter; keyword block relocated to `## Keywords for discovery` body section.
 

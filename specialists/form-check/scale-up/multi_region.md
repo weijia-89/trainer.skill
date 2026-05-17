@@ -7,7 +7,7 @@ gate: forcing-constraint-required
 
 # Multi-Region
 
-> **[GATED — informational only]** Forcing-constraint ADR required.
+> **[GATED, informational only]** Forcing-constraint ADR required.
 
 ## When this chapter applies
 
@@ -52,11 +52,11 @@ Choose by **what the data semantics require**, not by topology preference.
 
 ## Anti-patterns
 
-- "Multi-region for uptime" without measuring single-region uptime first — you can't run multi-region until you can run single-region.
-- Active-active without conflict resolution strategy — silent data loss.
+- "Multi-region for uptime" without measuring single-region uptime first, you can't run multi-region until you can run single-region.
+- Active-active without conflict resolution strategy, silent data loss.
 - "Eventual consistency" stamped onto a domain that requires atomicity (payments, inventory, RSVP-like single-claim flows).
-- Multi-region read replicas with stale-reads served as authoritative — subtle bugs.
-- Per-region duplicated infrastructure but shared single point of failure (one IAM provider, one config service) — false redundancy.
+- Multi-region read replicas with stale-reads served as authoritative, subtle bugs.
+- Per-region duplicated infrastructure but shared single point of failure (one IAM provider, one config service), false redundancy.
 
 ## Sunset
 

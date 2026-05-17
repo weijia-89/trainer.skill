@@ -8,7 +8,7 @@ parent_skill: recovery
 
 Walk for `engagement_type == "harden"`. Each item: pass | fail | n/a-with-reason. **Block engagement-summary "ready"** verdict on any unresolved fail.
 
-## Section 1 — Documentation baseline (all archetypes)
+## Section 1, Documentation baseline (all archetypes)
 
 - [ ] CLAUDE.md or AGENTS.md present, current, lists stack with exact versions
 - [ ] README.md present, archetype-appropriate, no banned vocab in user-facing text
@@ -17,7 +17,7 @@ Walk for `engagement_type == "harden"`. Each item: pass | fail | n/a-with-reason
 - [ ] LICENSE present, SPDX-identifiable
 - [ ] ≥1 ADR in `docs/adr/` (baseline at minimum)
 
-## Section 2 — Code quality
+## Section 2, Code quality
 
 - [ ] All tests pass (unit + integration; eval if LLM-bearing)
 - [ ] Mutation score ≥ tier target on changed code (per `form-check.skill/multi-language/matrix.md`)
@@ -25,7 +25,7 @@ Walk for `engagement_type == "harden"`. Each item: pass | fail | n/a-with-reason
 - [ ] Type checker passes (where applicable: mypy strict / tsc strict / -Werror in compiled)
 - [ ] Test-as-spec coverage of acceptance criteria (≥1 failing-then-passing test per acceptance row)
 
-## Section 3 — Supply chain
+## Section 3, Supply chain
 
 - [ ] Lockfile present and pinned with hashes
 - [ ] Dep audit passes (`pip-audit` / `npm audit` / `govulncheck` / `cargo-audit` / OWASP DC) with zero high/critical OR documented exceptions
@@ -33,7 +33,7 @@ Walk for `engagement_type == "harden"`. Each item: pass | fail | n/a-with-reason
 - [ ] SLSA Build Track L2 minimum (default mode)
 - [ ] Slopsquatting check trail in PR descriptions for new deps
 
-## Section 4 — Security baseline
+## Section 4, Security baseline
 
 - [ ] Threat model walked (STRIDE for security; LINDDUN for privacy if data flows)
 - [ ] Applicable OWASP Top 10 (LLM / API / Web) walked
@@ -42,7 +42,7 @@ Walk for `engagement_type == "harden"`. Each item: pass | fail | n/a-with-reason
 - [ ] Logging redacts PII; audit log append-only
 - [ ] Rate limits documented per public endpoint
 
-## Section 5 — Operational readiness (services only)
+## Section 5, Operational readiness (services only)
 
 - [ ] Health check endpoint (`/healthz`) and readiness (`/readyz`) implemented
 - [ ] Metrics emitted (Prometheus/Datadog/CloudMonitoring) with named SLOs
@@ -53,19 +53,19 @@ Walk for `engagement_type == "harden"`. Each item: pass | fail | n/a-with-reason
 - [ ] Status page / incident channel template ready
 - [ ] Deploy CI/CD: trunk-based with feature flags
 
-## Section 6 — Architectural fitness functions
+## Section 6, Architectural fitness functions
 
 - [ ] At least 3 lint-class fitness functions wired in CI
 - [ ] Each ADR has a corresponding enforcing function OR documented gap
 - [ ] CHANGELOG entry required per non-trivial PR (CI check)
 
-## Section 7 — Vibe-safety inventory
+## Section 7, Vibe-safety inventory
 
 - [ ] Vibe-safe / vibe-careful / vibe-dangerous / vibe-impossible map declared in CLAUDE.md
 - [ ] Review gates wired for vibe-dangerous surfaces
 - [ ] Calibration log (`.recovery/calibration.jsonl`) accumulating rows per scored change
 
-## Section 8 — Agent-runtime contract (if AI agents consume the project)
+## Section 8, Agent-runtime contract (if AI agents consume the project)
 
 - [ ] Capability allowlist enforced by host harness per tier
 - [ ] State ledger at `.agent/ledger.jsonl`
@@ -73,7 +73,7 @@ Walk for `engagement_type == "harden"`. Each item: pass | fail | n/a-with-reason
 - [ ] Untrusted-content fences applied in agent prompts
 - [ ] Worktree confinement for vibe-careful and vibe-dangerous engagements
 
-## Section 9 — LLM-bearing only
+## Section 9, LLM-bearing only
 
 - [ ] Provider + model pinned (no "latest")
 - [ ] Prompt versioning live (`form-check.skill/templates/prompt_versioning.md`)
@@ -82,7 +82,7 @@ Walk for `engagement_type == "harden"`. Each item: pass | fail | n/a-with-reason
 - [ ] OWASP-LLM Top 10 walked
 - [ ] Cost guard: per-tenant rate + token budget
 
-## Section 10 — Accessibility (if UI)
+## Section 10, Accessibility (if UI)
 
 - [ ] WCAG 2.2 walked for changed surfaces
 - [ ] Keyboard-only walkthrough done
@@ -91,7 +91,7 @@ Walk for `engagement_type == "harden"`. Each item: pass | fail | n/a-with-reason
 - [ ] Reduced-motion alternative for animations
 - [ ] Vibe-impossible accessibility decisions routed to qualified reviewer
 
-## Section 11 — Compliance hooks (if applicable)
+## Section 11, Compliance hooks (if applicable)
 
 - [ ] Data-classification taxonomy documented
 - [ ] Retention policy + automated deletion
@@ -102,7 +102,7 @@ Walk for `engagement_type == "harden"`. Each item: pass | fail | n/a-with-reason
 ## Aggregate output
 
 ```markdown
-# Launch-Ready Verdict — {{project}} {{ts}}
+# Launch-Ready Verdict, {{project}} {{ts}}
 
 | Section | Status |
 |---|---|

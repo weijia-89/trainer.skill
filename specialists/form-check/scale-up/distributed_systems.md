@@ -7,7 +7,7 @@ gate: forcing-constraint-required
 
 # Distributed Systems
 
-> **[GATED — informational only]**
+> **[GATED, informational only]**
 > Read only with an accepted forcing-constraint ADR (`docs/adr/`) of type `forcing-constraint`. Without it, default-mode says: *modular monolith on one PaaS in one region with one DB*.
 >
 > Verify the gate via `tools/check_forcing_constraint.sh` before consuming this content.
@@ -41,7 +41,7 @@ gate: forcing-constraint-required
 
 ## Observability
 
-- **Distributed tracing** (OpenTelemetry) — every service emits spans; trace IDs propagated.
+- **Distributed tracing** (OpenTelemetry), every service emits spans; trace IDs propagated.
 - **Structured logs** with trace correlation.
 - **RED metrics** per endpoint (Rate, Errors, Duration); USE metrics per resource (Utilization, Saturation, Errors).
 
@@ -49,9 +49,9 @@ gate: forcing-constraint-required
 
 - **Distributed monolith**: services so coupled that a change requires coordinated deploys → loses every benefit of distribution. Re-collapse.
 - **Database-per-service ignored**: services sharing a database = distributed monolith with extra steps.
-- **Synchronous chains** beyond depth 2 — latency multiplies; reliability multiplies (multiplicatively).
-- **Eventual consistency where atomic was needed** — pick patterns deliberately.
-- **Service mesh as the first answer** — see `service_mesh.md` (also gated).
+- **Synchronous chains** beyond depth 2, latency multiplies; reliability multiplies (multiplicatively).
+- **Eventual consistency where atomic was needed**, pick patterns deliberately.
+- **Service mesh as the first answer**, see `service_mesh.md` (also gated).
 
 ## Sunset condition
 

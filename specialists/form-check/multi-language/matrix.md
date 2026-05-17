@@ -78,7 +78,7 @@ A monorepo or service spanning ≥2 languages should:
 
 ## Anti-patterns
 
-- "We don't need mutation testing" — without measured floor on test verification, don't claim test-verification full credit.
-- "Lockfile but no hashes" — defeats the lock's security purpose.
-- "Vendored deps without provenance" — the lockfile is the provenance; vendoring without a lockfile re-introduces the slopsquatting attack surface.
-- "One linter for all languages" — language-aware tools beat language-agnostic ones for false-positive rate.
+- "We don't need mutation testing", without measured floor on test verification, don't claim test-verification full credit.
+- "Lockfile but no hashes", defeats the lock's security purpose.
+- "Vendored deps without provenance", the lockfile is the provenance; vendoring without a lockfile re-introduces the slopsquatting attack surface.
+- "One linter for all languages", language-aware tools beat language-agnostic ones for false-positive rate.
