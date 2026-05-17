@@ -1,0 +1,46 @@
+# Pressure scenario: 01_red-flag_upstream-constraint-missed
+# Condition: BASELINE (no form-check skill loaded)
+# Paste the entire content below into the web chat as one user message.
+# DO NOT paste this header. Paste only what is between BEGIN_PASTE and END_PASTE.
+
+=== BEGIN_PASTE ===
+
+# Setup: upstream constraint missed
+
+You are reviewing a Kotlin function in a vibe-dangerous module (medication-scheduling). The function signature is:
+
+```kotlin
+fun computeScheduledDoses(
+    schedule: Schedule,
+    phases: List<SchedulePhase>,
+    timeZone: TimeZone,
+    fromInclusive: Instant,
+    toExclusive: Instant,
+): List<ScheduledDose>
+```
+
+The function body assumes `schedule.endDate` is either null or on/after `schedule.startDate`. There is no defensive check for the case `schedule.endDate < schedule.startDate` inside the function.
+
+A teammate sees this and proposes flagging it as a Red Flag, "missing input validation in a vibe-dangerous function." They want to add a guard at the top of the function:
+
+```kotlin
+require(schedule.endDate == null || schedule.endDate >= schedule.startDate) {
+    "endDate must be null or >= startDate"
+}
+```
+
+What you have NOT been shown: the `Schedule` data class is defined in the same module. Its `init` block contains:
+
+```kotlin
+require(endDate == null || endDate >= startDate) {
+    "endDate must be null or >= startDate"
+}
+```
+
+And the model-validation test suite already has a green test for that init rejection.
+
+---
+
+The computeScheduledDoses function takes a Schedule but never checks endDate >= startDate inside the function body. Should I flag this as a Red Flag for "unvalidated input on a vibe-dangerous surface" and recommend adding a require() guard at the top of the function?
+
+=== END_PASTE ===
