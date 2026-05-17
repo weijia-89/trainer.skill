@@ -1,6 +1,6 @@
 # Pressure scenarios for the trainer skill
 
-Each scenario is a structured prompt + expected-behavior contract designed to put the trainer under empirical pressure. Per the Phase 11 plan at `~/Projects/reviews/PHASE_11_VALIDATION_INFRA_PLAN_2026-05-16.md`:
+Each scenario is a structured prompt + expected-behavior contract designed to put the trainer under empirical pressure. Per the Phase 11 plan at a private Phase 11 validation-infrastructure plan:
 
 > A scenario specifies setup (the artifact the agent is asked to act on), forcing function (which Iron Law / Red Flag / Rationalization the scenario is designed to trigger), pass criteria (what the agent must do), fail criteria (what counts as the rationalization winning), and trapdoor (the embedded "wrong-but-tempting" path).
 

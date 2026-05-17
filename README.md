@@ -6,7 +6,7 @@ An entrypoint and coaching skill for an 8-specialist agent toolkit. The trainer 
 
 This repo distributes `trainer` together with the 8 specialist skill directories at `./specialists/`. Each specialist is independently usable. The trainer is the routing prose that connects them; it does not make the specialists work together at runtime, and it does not do the specialists' work itself.
 
-**Honest scope (per `~/Projects/reviews/TRAINER_SKILL_AUDIT_2026-05-16.md` and the context-free adversarial review at v0.4.0):** as of v0.4.0 the trainer is a *documentation skill* with discipline scaffolding (Iron Law, Red Flags, Rationalizations, three doc-only pressure scenarios). It is not yet a *behavioral* skill in the sense that no runnable harness measures whether an agent loaded with the trainer actually behaves differently. The Phase 11 plan at `~/Projects/reviews/PHASE_11_VALIDATION_INFRA_PLAN_2026-05-16.md` covers building that harness; this skill is not yet a portfolio claim that the harness exists.
+**Honest scope (per an internal audit and the context-free adversarial review at v0.4.0):** as of v0.4.0 the trainer is a *documentation skill* with discipline scaffolding (Iron Law, Red Flags, Rationalizations, three doc-only pressure scenarios). It is not yet a *behavioral* skill in the sense that no runnable harness measures whether an agent loaded with the trainer actually behaves differently. A Phase 11 validation-infrastructure plan exists in private working notes and covers building that harness; this skill is not yet a portfolio claim that the harness exists.
 
 ---
 
@@ -16,7 +16,7 @@ When you give an AI coding agent a library of specialist skills (`form-check`, `
 
 `trainer` is the entrypoint. Load it first; it routes to the right specialist; the specialist does the work; the trainer coaches the surrounding decisions. Loaded once per session, persistent throughout.
 
-The decision to build a standalone bootstrap skill (rather than fold the routing into `warmup`) is documented in the Phase 10 section of [`GYM_SKILLS_EVIDENCE_AUDIT_2026-05-16.md`](https://github.com/weijia-89/trainer.skill/blob/main/docs/PHASE_10_ROUTING_DECISION.md) (local-only reference for now; see CHANGELOG).
+The decision to build a standalone bootstrap skill (rather than fold the routing into `warmup`) was driven by an internal gym-skills evidence audit; the summary rationale is captured in the v0.2.0 entry of [`CHANGELOG.md`](./CHANGELOG.md).
 
 ---
 

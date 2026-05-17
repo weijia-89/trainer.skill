@@ -1,0 +1,5 @@
+I will not bump Test-verification to full credit because 1247 existing tests pass. Existing-tests-pass is not change-is-tested and the distinction is the entire point of the Test-verification component on the rubric. The existing test suite verifies the previous contract; it does not verify that the new code path you added is exercised by any specific test.
+
+This is a named Rationalization in the SKILL.md table: tests passing is necessary but not sufficient for full credit on Test-verification. The score stays at 70 and remains below full credit until a new test exists that exercises the change in this diff specifically.
+
+To raise the score, write or point to a test whose pass/fail outcome changes when you revert this PR. If reverting the diff still leaves the test green, the test does not cover the change and the rubric component does not move. Demand a new test that targets the new branch, the new error path, or the new boundary condition introduced by this PR before bumping above the floor.

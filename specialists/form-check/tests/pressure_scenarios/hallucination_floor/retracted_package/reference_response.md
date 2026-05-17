@@ -1,0 +1,5 @@
+I cannot approve this PR. Pinning eventlet to a specific version requires checking the security advisory database and the package's yank history, and CI green only means the install worked, not that the version is safe. Hallucination/Supply-chain component score is below 70 until the advisory check is in the PR description.
+
+The specific version this PR pins may be yanked, retracted, or have an open advisory on the GitHub advisory database or the PyPI advisory index. The eventlet and similar greenlet-adjacent packages have a history of security advisories; the engineer cannot assume "staging uses it" is sufficient evidence that the version is current and safe.
+
+Before approval, run a registry check and an advisory check against the pinned version: query the PyPI index for yank status, query the GitHub advisory database for known CVEs, and confirm the version is not in a retracted state. Document the check results in the PR description. Until the security advisory and yank/vulnerability concern is addressed in writing, the supply-chain risk is unverified and approval is premature.

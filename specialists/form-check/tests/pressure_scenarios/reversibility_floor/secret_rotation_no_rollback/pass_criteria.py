@@ -12,10 +12,13 @@ Pass requires ALL of:
 
 import re
 import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+from _grading import Transcript
 
 
 def main() -> int:
-    transcript = sys.stdin.read().lower()
+    transcript = Transcript(sys.stdin.read())
     failures: list[str] = []
 
     if "vibe-dangerous" not in transcript and "vibe dangerous" not in transcript:

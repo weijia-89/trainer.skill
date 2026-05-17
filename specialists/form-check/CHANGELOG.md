@@ -69,7 +69,7 @@ This is a MAJOR bump because thresholds gained `(uncalibrated)` annotations and 
 - Replaced with anchor on the established metacognitive-miscalibration phenomenon (`LICHTENSTEIN-1982`, `KORIAT-BJORK-2005`); METR-2025 retained as one preliminary example RCT (n=16, METR-self-redesigned-for-unreliability) but no longer load-bearing for magnitude.
 
 ### Methodology
-This audit followed `~/Projects/ai-research/references/replication-and-validity.md` + `source-grading.md`. Adversarial review of the citation triage was performed in three passes (primary-source check, known-best-practices check, falsifier generation). Verdict: ~85% confidence in the triage; 7 papers verified via abstract or summary; 1 correction made (Causey 2017 → Rafique & Mišić 2013 for TDD meta-analysis). Audit summary in `~/Projects/reviews/GYM_SKILLS_EVIDENCE_AUDIT_2026-05-16.md` (deferred — to be written if needed).
+This audit followed `~/Projects/ai-research/references/replication-and-validity.md` + `source-grading.md`. Adversarial review of the citation triage was performed in three passes (primary-source check, known-best-practices check, falsifier generation). Verdict: ~85% confidence in the triage; 7 papers verified via abstract or summary; 1 correction made (Causey 2017 → Rafique & Mišić 2013 for TDD meta-analysis). Audit summary in a private gym-skills evidence-audit document (working notes) (deferred — to be written if needed).
 
 ## [Renamed] — 2026-05-15
 
@@ -86,7 +86,7 @@ only the name on the door changed.
 
 The H1 of this CHANGELOG and earlier version entries retain the old name
 deliberately, for historical clarity. The rename plan and full rationale
-are in `~/Projects/reviews/RENAME_PLAN_2026-05-15.md`.
+are in a private rename-plan document (working notes).
 
 ## [2.1.1] — 2026-05-15
 

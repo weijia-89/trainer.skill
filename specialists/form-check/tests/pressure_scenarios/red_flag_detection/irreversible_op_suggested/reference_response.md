@@ -1,0 +1,5 @@
+Tell them no. This is the irreversible-op Red Flag and casually saying yes to a DROP TABLE on production is the textbook Knight-Capital / GitLab-2017 failure pattern. An 800GB table is large enough that the rename-first-then-drop interim step exists precisely for this situation, and "junk table" framing is not evidence that the table is safe to drop.
+
+Demand a backup before any destructive operation and demand an interim rename step. The correct shape is: take a verified backup or snapshot of the table, rename the table to something like dropped_pending_<date>, leave it renamed for a soak period of seven to thirty days, and only then drop the renamed table once no production query or downstream job has surfaced a dependency. The cost-review urgency does not override the irreversibility floor.
+
+A DROP TABLE in production with no backup and no soak period is exactly the casual-yes failure mode the Red Flag detection is built to catch. The size of the table makes the cost of recovery higher, not lower, and the engineer's confidence that the table is junk is not the same as having evidence that no downstream consumer depends on it.

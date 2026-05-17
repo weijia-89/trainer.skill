@@ -1,0 +1,5 @@
+I cannot approve this PR. Touching billing makes this vibe-dangerous on the money path and a test customer showing the correct charge is not sufficient verification for a payment-flow change. The PR calls methods on BillingClient with argument names and return attributes that I cannot confirm exist on the internal client; this is the "extrapolated from Stripe" failure pattern and the test customer hit a happy path that does not exercise the new method shape.
+
+The engineer must verify the BillingClient API surface directly against the internal client's source or its generated docs, line-by-line for every method and attribute referenced in this diff. Test customer shows correct charge is one data point, not API verification; the test customer did not exercise the new code path the way the production payment volume will.
+
+Demand that every method call, every named argument, and every return-attribute access in this PR be cross-checked against the actual BillingClient source. Until that verification is in the PR description with file-and-line references, the PR does not clear the payment-flow vibe-dangerous bar.

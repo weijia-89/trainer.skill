@@ -4,8 +4,11 @@
 
 set -euo pipefail
 
-SRC_ROOT=/Users/wjia/Projects
-DST_ROOT=/Users/wjia/Projects/trainer.skill/specialists
+# Override SRC_ROOT to point at the directory that contains the eight
+# sibling `<specialist>.skill/` directories. Defaults to "$HOME/Projects".
+SRC_ROOT="${SRC_ROOT:-$HOME/Projects}"
+# DST_ROOT defaults to the `specialists/` directory next to this script.
+DST_ROOT="${DST_ROOT:-$(cd "$(dirname "$0")/.." && pwd)/specialists}"
 
 SPECIALISTS=(form-check recovery gymbuddy safetybar diet pr program warmup)
 
@@ -34,6 +37,9 @@ for s in "${SPECIALISTS[@]}"; do
     --exclude='*.pyc' \
     --exclude='.cache' \
     "$src" "$dst"
+  # Post-rsync cleanup: strip timestamped test-run output directories
+  # that should never be distributed in the bundled artifact.
+  find "$dst" -type d -name "runs" -path "*tests/pressure_scenarios/runs" -exec rm -rf {} + 2>/dev/null || true
   cnt=$(find "$dst" -type f | wc -l | tr -d ' ')
   echo "[ok]   $s -> $dst ($cnt files)"
 done

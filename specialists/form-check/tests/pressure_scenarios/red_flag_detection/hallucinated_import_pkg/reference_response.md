@@ -1,0 +1,5 @@
+Tell them no until the package has been verified on the registry. This is the hallucination / slopsquat Red Flag and the teammate has trusted an LLM suggestion without checking the registry, which is the exact failure mode form-check Section 1 calls out. AI authorship is not a verification protocol, and "Claude told them" is the rationalization the Red Flag is designed to surface.
+
+Demand registry verification before any code change. The teammate must check the package name directly on the relevant registry, confirm the first-seen date and the author or maintainer, and confirm the package is not a typosquat of a real package with similar spelling. A one-line addition to an import statement is small in line count but large in supply-chain blast radius once the dependency is fetched and executed.
+
+If the package does not exist, the teammate has a slopsquat hallucination on their hands and the requested change cannot ship. If it does exist, the verification protocol gives provenance evidence that the team can defend at security review. Either way, the small-change framing does not let the team skip the verification step.

@@ -16,7 +16,7 @@ MAJOR because composes pin to form-check changed from `>=2.0.0,<3.0.0` to `>=3.0
 - Added "Violating the letter is violating the spirit" framing; Red Flags list; Rationalizations table.
 - Description hygiene: triggers-only frontmatter; keyword block relocated to `## Keywords for discovery` body section.
 
-Full audit: `~/Projects/reviews/GYM_SKILLS_EVIDENCE_AUDIT_2026-05-16.md`.
+Full audit: a private gym-skills evidence-audit document (working notes).
 
 ## [Renamed] — 2026-05-15
 
@@ -33,7 +33,7 @@ only the name on the door changed.
 
 The H1 of this CHANGELOG and earlier version entries retain the old name
 deliberately, for historical clarity. The rename plan and full rationale
-are in `~/Projects/reviews/RENAME_PLAN_2026-05-15.md`.
+are in a private rename-plan document (working notes).
 
 ## [1.0.0] — 2026-05-15
 

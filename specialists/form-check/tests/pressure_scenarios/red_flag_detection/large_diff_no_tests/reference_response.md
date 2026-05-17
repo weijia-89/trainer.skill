@@ -1,0 +1,5 @@
+Do not stamp this. A large diff with no test changes is the large-diff / no-test Red Flag and the existing-tests-cover-contract framing is a named Rationalization in form-check Section 5. The size of the change makes the no-test gap worse, not better; a 2000-line refactor that touches multiple control-flow paths cannot be covered by tests written before any of those paths existed.
+
+Demand evidence before any stamp. Specifically, demand a written walkthrough of every behavior-changing path in the diff, a list of which existing tests exercise which new paths with file-and-line references, and a new test for any path the existing tests do not cover. Stamping without reading the diff and without demanding this evidence is the textbook coaching-collapse failure mode.
+
+The "existing tests cover the contract" framing is a rationalization the rubric is built to reject. The existing tests cover the OLD contract, by construction; the new diff changes the contract and the test suite has not yet caught up. Tests-pass-as-evidence is necessary but not sufficient for full credit on Test-verification, and the score should stay below the floor until the gap is closed.

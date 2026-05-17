@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
-# run.sh: Phase 11 pressure-scenario driver for form-check. v0.2
+# run.sh: Phase 11 pressure-scenario driver for form-check. v0.3
 #
 # Usage:
-#   bash run.sh [--adapter <name>] [--category <name>] [--scenario <path>] [--offline]
+#   bash run.sh [--adapter <name>] [--category <name>] [--scenario <path>]
+#               [--offline] [--skill-file <path>] [--run-dir <path>]
 #
 # Defaults:
-#   --adapter  anthropic_opus   (Claude Opus via Anthropic API; simulates Windsurf+Opus)
-#   --category all
-#   --scenario all
+#   --adapter     anthropic_opus   (Claude Opus via Anthropic API; simulates Windsurf+Opus)
+#   --category    all
+#   --scenario    all
+#   --skill-file  <prod-root>/SKILL.md  (override to test mutated skill text per Layer C)
+#   --run-dir     runs/<timestamp>      (override to bucket results for Layer C aggregation)
 #
 # Each scenario produces:
 #   runs/<timestamp>/<category>/<scenario>/transcript.json   (adapter output)
@@ -29,15 +32,19 @@ ADAPTER="${ADAPTER:-anthropic_opus}"
 CATEGORY="${CATEGORY:-all}"
 SCENARIO="${SCENARIO:-all}"
 OFFLINE="${OFFLINE:-}"
+SKILL_FILE_OVERRIDE="${SKILL_FILE_OVERRIDE:-}"
+RUN_DIR_OVERRIDE="${RUN_DIR_OVERRIDE:-}"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --adapter)  ADAPTER="$2";  shift 2 ;;
-    --category) CATEGORY="$2"; shift 2 ;;
-    --scenario) SCENARIO="$2"; shift 2 ;;
-    --offline)  OFFLINE="1";   shift 1 ;;
+    --adapter)    ADAPTER="$2";             shift 2 ;;
+    --category)   CATEGORY="$2";            shift 2 ;;
+    --scenario)   SCENARIO="$2";            shift 2 ;;
+    --offline)    OFFLINE="1";              shift 1 ;;
+    --skill-file) SKILL_FILE_OVERRIDE="$2"; shift 2 ;;
+    --run-dir)    RUN_DIR_OVERRIDE="$2";    shift 2 ;;
     --help|-h)
-      sed -n '2,28p' "$0"; exit 0 ;;
+      sed -n '2,32p' "$0"; exit 0 ;;
     *)
       echo "Unknown argument: $1" >&2; exit 2 ;;
   esac
@@ -52,10 +59,13 @@ fi
 # Production root for SHA snapshot. Two levels up from this script:
 # pressure_scenarios -> tests -> form-check.skill
 PROD_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-SKILL_FILE="$PROD_ROOT/SKILL.md"
+SKILL_FILE="${SKILL_FILE_OVERRIDE:-$PROD_ROOT/SKILL.md}"
 if [[ ! -f "$SKILL_FILE" ]]; then
   echo "FAIL  expected SKILL.md at $SKILL_FILE" >&2
   exit 1
+fi
+if [[ -n "$SKILL_FILE_OVERRIDE" ]]; then
+  echo "  NOTE: using override skill file: $SKILL_FILE_OVERRIDE" >&2
 fi
 
 # Snapshot production tree (excluding the runs/ dir which is the test output).
@@ -71,7 +81,7 @@ trap 'rm -f "$SNAPSHOT_PRE" "$SNAPSHOT_POST"' EXIT INT TERM
 )
 
 TIMESTAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-RUN_DIR="$SCRIPT_DIR/runs/$TIMESTAMP"
+RUN_DIR="${RUN_DIR_OVERRIDE:-$SCRIPT_DIR/runs/$TIMESTAMP}"
 mkdir -p "$RUN_DIR"
 RESULTS="$RUN_DIR/results.jsonl"
 : > "$RESULTS"

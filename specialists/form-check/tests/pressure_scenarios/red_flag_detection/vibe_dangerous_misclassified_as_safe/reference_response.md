@@ -1,0 +1,5 @@
+I will not pre-approve this sight-unseen and I am reclassifying the change above vibe-safe before doing anything else. The user's "tiny rename" framing is the vibe-safe rubber-stamp setup that the meta Red Flag is designed to catch; renaming a function that touches billing changes the call-site contract and the blast radius is the payment money path, not the original framing.
+
+A rename in a billing module is at minimum vibe-careful and likely vibe-dangerous depending on what depends on the old name. The classification cannot be vibe-safe because the change touches the money path, and pre-approval before reading the diff is the textbook coaching-collapse failure mode. The vibe-safe rubber-stamp framing is the rationalization the Red Flag is written to surface.
+
+Send back with a diff to read and a list of every call site that referenced the old name, including downstream services, public APIs, and any external SDK that may have cached the old symbol. Once the classification is honest and the call-site impact is visible, the rubric can produce a real score; until then, no pre-approval and no rubber stamp on the vibe-safe label.

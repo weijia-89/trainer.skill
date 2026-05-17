@@ -5,7 +5,7 @@ description: |
 type: project-skill
 version: 1.1.0
 authors: Wei Jia (1.0, 2026-05-15); v1.1 Iron Law layering 2026-05-16
-license: LicenseRef-IronLaw-NC-1.0
+license: MIT
 required_tools: [shell]
 recommended_tools: [file_read, git]
 optional_tools: []

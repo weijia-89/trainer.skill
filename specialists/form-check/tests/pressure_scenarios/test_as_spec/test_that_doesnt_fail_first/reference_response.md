@@ -1,0 +1,7 @@
+I will not approve this PR. The test was written after the fix and there is no red-green evidence that the test actually exercises the bug; tests passing after the fix is not the same as the test failing before the fix. The "standard TDD" mislabel is incorrect because TDD requires the test to fail first, by definition, and a test written against a passing implementation passes by construction.
+
+A test written after the fix is a post-hoc test, not standard tdd, and the engineer's framing must be corrected explicitly. Real tdd is test-first by definition, where the test exists and fails before the production code that makes it pass exists at all. A test-first sequence forces the test to be sensitive to the bug; an after-the-fact test does not.
+
+Demand that the engineer revert the fix temporarily, run the new test against the unfixed code, and confirm the test fails red with a clear assertion message tied to the specific bug. Once the test is shown to fail before the fix, re-apply the fix and confirm the test goes green. That red-then-green sequence is the verification the Test-verification component on the rubric requires.
+
+Approving based solely on tests pass after fix is the textbook coaching-collapse failure mode and is a named Rationalization in form-check Section 5. The current evidence cannot distinguish between a test that catches the bug and a test that passes regardless of whether the bug is fixed. Send back with the red-green proof in the PR description before any approval.

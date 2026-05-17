@@ -48,7 +48,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 Two converging inputs drove this version:
 
-1. **`~/Projects/reviews/TRAINER_SKILL_AUDIT_2026-05-16.md`** identified 4 operationalization gaps + 1 schema gap (Iron Law, demonstrated-understanding, adversarial-review interaction, opt-out semantics, override-log schema).
+1. **A targeted audit of the v0.3.0 trainer skill** identified 4 operationalization gaps + 1 schema gap (Iron Law, demonstrated-understanding, adversarial-review interaction, opt-out semantics, override-log schema). The audit document itself is private working notes; the gaps it surfaced are described inline below.
 2. **Context-free adversarial review at v0.3.0** (chat 2026-05-16, late) added 4 more items (Red Flags section, Rationalizations table, calibration log infrastructure, README walk-back of v0.3.0 promotional phrasing), plus three doc-only pressure scenarios for the failure modes.
 
 The v0.3.0 portfolio-bundling work made the skill *distributable*; v0.4.0 makes the skill's stated discipline more *enforceable* by surfacing the failure modes the discipline is supposed to prevent.
@@ -89,7 +89,7 @@ The v0.3.0 portfolio-bundling work made the skill *distributable*; v0.4.0 makes 
 
 ### Verification done
 
-- `ls /Users/wjia/Projects/form-check.skill/.recovery/` returns `calibration.jsonl` + `SCHEMA.md`.
+- `ls $HOME/Projects/form-check.skill/.recovery/` returns `calibration.jsonl` + `SCHEMA.md`.
 - Em-dash audit: zero across `SKILL.md`, all three mirrors, this CHANGELOG entry, `SCHEMA.md`, the three scenarios, `README.md`, and `scripts/bundle_specialists.sh`.
 - Bundle script re-run confirms 280 files across 8 specialists at `./specialists/`.
 - `verify_trainer_sync.sh` invariants pass (canonical, Claude mirror, Cursor and Windsurf triggers all agree on version 0.4.0; zero em-dashes; `alwaysApply: true`; `trigger: always_on`).
@@ -106,7 +106,7 @@ The v0.3.0 portfolio-bundling work made the skill *distributable*; v0.4.0 makes 
 - `~/Projects/trainer.skill/tests/scenarios/` (new dir, 4 files)
 - `~/Projects/form-check.skill/.recovery/calibration.jsonl` (new, empty)
 - `~/Projects/form-check.skill/.recovery/SCHEMA.md` (new)
-- `~/Projects/reviews/TRAINER_SKILL_AUDIT_2026-05-16.md` (source audit doc; not in the skill repo)
+- a private trainer-skill audit (working notes) (source audit doc; not in the skill repo)
 
 ### Open items deferred to next version
 
@@ -176,7 +176,7 @@ The v0.3.0 portfolio-bundling work made the skill *distributable*; v0.4.0 makes 
 - **Proactive teaching responsibilities expanded.** Trainer now explicitly explains: specialist composition (which order, why, how they interact), downstream consequences (what to watch for after a change), best practices (cited from `form-check.skill/references/notes.md` at the moment of relevance).
 - **Triggers changed to always-on.** Cursor trigger: `alwaysApply: true`. Windsurf trigger: `trigger: always_on`. Loaded first on every coding / prompt-engineering / agent-skill session.
 - **Removed "user wishes are the final say"** language entirely. Replaced with the coaching-with-audit-trail model.
-- **README.md added** documenting all four sync targets, SemVer rules, and the link to the Phase 10 decision in `~/Projects/reviews/GYM_SKILLS_EVIDENCE_AUDIT_2026-05-16.md`.
+- **README.md added** documenting all four sync targets and SemVer rules. The Phase 10 routing decision (whether to fold trainer into `warmup` or stand it up separately) was driven by a private gym-skills evidence audit; the decision and rationale are summarized in `docs/PHASE_10_ROUTING_DECISION.md` when that doc exists.
 
 ### Hard-rule compliance
 

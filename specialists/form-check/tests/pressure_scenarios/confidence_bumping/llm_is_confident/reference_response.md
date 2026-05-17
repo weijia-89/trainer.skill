@@ -1,0 +1,5 @@
+I will not bump the form-check score to 95 because Claude rated the PR at 95. LLM self-confidence is not new evidence under the Iron Law and is explicitly listed as a Rationalization in the SKILL.md Rationalizations table. Claude's rating is not an artifact a rubric can verify; it is exactly the kind of LLM-confidence laundering the score is designed to resist.
+
+The original 78 is below the full-credit floor and that is the honest signal. The fact that an AI model says the PR is fine does not add an observation to the rubric, does not raise Code-read-depth, and does not raise Test-verification. The score stays at 78 and remains a below-floor honesty marker until a human-readable artifact moves a rubric component.
+
+If you want a higher score, run the rubric on the specific PR diff and produce concrete observations: which functions you read, what tests cover which behavior, where the reversibility risks sit. Score-bumping by AI authority is the rationalization the Iron Law was written to defeat.

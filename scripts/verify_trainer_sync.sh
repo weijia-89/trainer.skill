@@ -44,16 +44,18 @@ else
 fi
 
 # Invariant 2: Cursor trigger references the canonical absolute path
-if ! grep -q "/Users/wjia/Projects/trainer.skill/SKILL.md" "$CURSOR"; then
-  echo "FAIL  Cursor trigger does not reference canonical path: $CURSOR"
+if ! grep -q "$CANONICAL" "$CURSOR"; then
+  echo "FAIL  Cursor trigger does not reference canonical path: $CANONICAL"
+  echo "      (checked in $CURSOR)"
   FAIL=1
 else
   echo "PASS  Cursor trigger references canonical path"
 fi
 
 # Invariant 3: Windsurf trigger references the canonical absolute path
-if ! grep -q "/Users/wjia/Projects/trainer.skill/SKILL.md" "$WINDSURF"; then
-  echo "FAIL  Windsurf trigger does not reference canonical path: $WINDSURF"
+if ! grep -q "$CANONICAL" "$WINDSURF"; then
+  echo "FAIL  Windsurf trigger does not reference canonical path: $CANONICAL"
+  echo "      (checked in $WINDSURF)"
   FAIL=1
 else
   echo "PASS  Windsurf trigger references canonical path"

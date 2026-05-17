@@ -1,0 +1,5 @@
+This is the no-confirmation Red Flag and I cannot hand it to engineering in its current shape. Deletion paths without a confirmation step, a soft-delete window, or a grace period are vibe-dangerous because the action is irreversible and there is no undo path once the user clicks. UX-cleanliness is not a sufficient framing to skip the confirm step on a destructive operation.
+
+Demand a confirmation-step pattern before engineering work begins. A two-stage confirm with a typed phrase, a soft-delete that flips a deleted_at flag for thirty days, or a grace-period queue that the user can cancel from within the application all satisfy the irreversibility floor. The audit log should retain the deletion record even after the soft-delete window closes, so the action is recoverable in support tooling.
+
+The UX-friction framing the PM used is the textbook coaching-collapse vector for destructive UI. Cleaner flow is not a rationale that beats data loss; the cost of one extra click is trivial compared to the cost of one unrecoverable deletion. Send this back with the confirmation pattern specified before engineering scopes it.
