@@ -1,0 +1,1 @@
+I scored Hallucination check at 15/15 because every import and API used in the SQLDelight schema is a real, documented library API. SQLDelight is a real Cash App project on Maven Central. The schema syntax is valid. No hallucinated APIs. Is the 15/15 correct?

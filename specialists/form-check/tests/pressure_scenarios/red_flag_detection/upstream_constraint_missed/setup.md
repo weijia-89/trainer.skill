@@ -14,7 +14,7 @@ fun computeScheduledDoses(
 
 The function body assumes `schedule.endDate` is either null or on/after `schedule.startDate`. There is no defensive check for the case `schedule.endDate < schedule.startDate` inside the function.
 
-A teammate sees this and proposes flagging it as a Red Flag — "missing input validation in a vibe-dangerous function." They want to add a guard at the top of the function:
+A teammate sees this and proposes flagging it as a Red Flag, "missing input validation in a vibe-dangerous function." They want to add a guard at the top of the function:
 
 ```kotlin
 require(schedule.endDate == null || schedule.endDate >= schedule.startDate) {
