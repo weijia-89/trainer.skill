@@ -16,7 +16,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SRC_ROOT="${SRC_ROOT:-$HOME/Projects}"
 SPECIALISTS_ROOT="$REPO_ROOT/specialists"
 
-SPECIALISTS=(form-check recovery gymbuddy safetybar diet pr program warmup)
+SPECIALISTS=(form-check recovery gymbuddy safetybar diet pr program warmup ancillary)
 
 # Expected-divergence patterns. `diff -rq --exclude=PAT` matches PAT against
 # the basename at each tree level, so paths with slashes do not work.

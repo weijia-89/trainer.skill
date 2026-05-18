@@ -1,6 +1,6 @@
 # trainer
 
-An entrypoint and coaching skill for an 8-specialist agent toolkit. The trainer is text the agent reads at the start of every coding / prompt-engineering / agent-skill session. It points the agent to the right specialist for the work, asks the agent to read that specialist's leaf content before responding, and pushes back when the agent (or the user) tries to skip the routing.
+An entrypoint and coaching skill for a 9-specialist agent toolkit. The trainer is text the agent reads at the start of every coding / prompt-engineering / agent-skill session. It points the agent to the right specialist for the work, asks the agent to read that specialist's leaf content before responding, and pushes back when the agent (or the user) tries to skip the routing.
 
 > A trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer is a coach: the goal is moving the user toward better patterns, more skills, more experience.
 
@@ -12,7 +12,7 @@ This repo distributes `trainer` together with the 8 specialist skill directories
 
 ## Why this exists
 
-When you give an AI coding agent a library of specialist skills (`form-check`, `recovery`, `safetybar`, `program`, `warmup`, `gymbuddy`, `diet`, `pr`), the bootstrap problem is real: which one to load, in what order, for what kind of work? The agent does not know unless something tells it. That bootstrap context lived nowhere in the codebase before this skill existed.
+When you give an AI coding agent a library of specialist skills (`form-check`, `recovery`, `safetybar`, `program`, `warmup`, `gymbuddy`, `diet`, `pr`, `ancillary`), the bootstrap problem is real: which one to load, in what order, for what kind of work? The agent does not know unless something tells it. That bootstrap context lived nowhere in the codebase before this skill existed.
 
 `trainer` is the entrypoint. Load it first; it routes to the right specialist; the specialist does the work; the trainer coaches the surrounding decisions. Loaded once per session, persistent throughout.
 
@@ -20,7 +20,7 @@ The decision to build a standalone bootstrap skill (rather than fold the routing
 
 ---
 
-## The 8 specialists (bundled at `./specialists/`)
+## The 9 specialists (bundled at `./specialists/`)
 
 | Skill | Role | When to load |
 |---|---|---|
@@ -32,6 +32,7 @@ The decision to build a standalone bootstrap skill (rather than fold the routing
 | [`gymbuddy`](./specialists/gymbuddy/) | the pairing peer | Co-coding, pair-on-vibe-dangerous, walkthroughs |
 | [`diet`](./specialists/diet/) | context / token-budget management | Output volume needs trimming, tokens are the constraint |
 | [`pr`](./specialists/pr/) | personal-record celebration | Milestones, retros, achievements |
+| [`ancillary`](./specialists/ancillary/) | parallel-agent dispatch discipline (worktree isolation, prompt templates, falsifier checklist, batch aggregation) | Spawning 2+ fresh-context agents on the same repo; orchestrator-handoff when the coordination chat hits context-window pressure |
 
 Sibling-directory canonicals at `~/Projects/<name>.skill/` remain the editing home for each specialist. The `./specialists/` copies are refreshed by `scripts/bundle_specialists.sh` for distribution.
 
@@ -39,9 +40,9 @@ Sibling-directory canonicals at `~/Projects/<name>.skill/` remain the editing ho
 
 ## How the routing decision works
 
-1. **What is the user doing right now?** Planning new code → `form-check plan-new-app`. Reviewing a diff → `form-check code-review`. Fixing after a bad ship → `recovery`. Pairing → `gymbuddy`. Multi-week plan → `program`. Just opened the workspace → `warmup`.
-2. **What is the stakes tier?** Vibe-safe / vibe-careful / vibe-dangerous, classified per `form-check` Section 5. Vibe-dangerous → also load `safetybar`. Vibe-dangerous AND post-incident → also load `recovery`. Token budget tight → load `diet`.
-3. **Adapt as the session evolves.** A planning session that uncovers an incident routes to `recovery` mid-session. A review that surfaces a runtime concern routes to `safetybar`. Routing is not locked at start.
+1. **What is the user doing right now?** Planning new code → `form-check plan-new-app`. Reviewing a diff → `form-check code-review`. Fixing after a bad ship → `recovery`. Pairing → `gymbuddy`. Multi-week plan → `program`. Just opened the workspace → `warmup`. Spawning 2+ parallel agents on the same repo → `ancillary`.
+2. **What is the stakes tier?** Vibe-safe / vibe-careful / vibe-dangerous, classified per `form-check` Section 5. Vibe-dangerous → also load `safetybar`. Vibe-dangerous AND post-incident → also load `recovery`. Token budget tight → load `diet`. Parallel-agent dispatch at any tier → load `ancillary`.
+3. **Adapt as the session evolves.** A planning session that uncovers an incident routes to `recovery` mid-session. A review that surfaces a runtime concern routes to `safetybar`. A multi-day push that hits IDE-slow or accumulated-context routes to `ancillary` for an orchestrator-handoff. Routing is not locked at start.
 
 Specialists compose. The trainer explains the order and what to watch for between handoffs.
 
@@ -74,7 +75,7 @@ git clone https://github.com/weijia-89/trainer.skill ~/trainer.skill
 ln -s ~/trainer.skill/SKILL.md ~/.claude/skills/trainer/SKILL.md
 ```
 
-The skill triggers loading on every coding / prompt-engineering / agent-skill session. The 8 specialists at `./specialists/` are available to the trainer once they're either symlinked into the agent's skill directory or copied alongside.
+The skill triggers loading on every coding / prompt-engineering / agent-skill session. The 9 specialists at `./specialists/` are available to the trainer once they're either symlinked into the agent's skill directory or copied alongside.
 
 ### As a reference / methodology read
 
@@ -107,7 +108,8 @@ trainer.skill/
     ├── recovery/      # post-incident
     ├── gymbuddy/      # pairing
     ├── diet/          # token budget
-    └── pr/            # milestone retro
+    ├── pr/            # milestone retro
+    └── ancillary/     # parallel-agent dispatch + orchestrator handoff (added v0.7.0)
 ```
 
 ---
