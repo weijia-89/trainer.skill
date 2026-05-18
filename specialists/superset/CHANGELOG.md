@@ -1,12 +1,56 @@
-# Changelog, ancillary
+# Changelog, superset
 
 Format: Keep a Changelog with SemVer.
+
+Renamed from `ancillary` to `superset` at v0.3.0 for trainer-family coherence (all sibling specialists use gym-themed names: form-check, program, warmup, safetybar, recovery, gymbuddy, diet, pr). The v0.2.0 and earlier entries below describe the project under its previous name and are preserved verbatim as historical record.
 
 ## SemVer rules for this skill
 
 - **MAJOR:** the five-pillar prompt shape changes (worktree, baseline, scope, no-push, session log). These are the load-bearing pillars; changing them breaks every prompt downstream of this skill.
-- **MINOR:** new falsifiers, new role archetypes, new templates, new references, new cross-cutting concerns, new patterns borrowed from the public ecosystem.
+- **MINOR:** new falsifiers, new role archetypes, new templates, new references, new cross-cutting concerns, new patterns borrowed from the public ecosystem; pure renames at the skill level (since `name:` frontmatter changes break existing `Skill: <name>` invocations even if the body is unchanged).
 - **PATCH:** wording, citation updates, example refinements, falsifier rewordings without semantic change.
+
+## [0.3.0], 2026-05-18, rename `ancillary` to `superset` for trainer-family coherence
+
+**MINOR per the rename clause in SemVer rules above.** Pure rename with no behavioral changes; existing prompt-template shape, falsifier checklist, role archetypes, and batch-aggregation playbook are byte-equivalent to v0.2.0 modulo the `s/ancillary/superset/` and `s/Ancillary/superset/` substitutions in prose. The frontmatter `name:` field changes, so any existing `Skill: ancillary` invocation in operator notes will need updating to `Skill: superset`.
+
+### Changed
+
+- **Skill name** `ancillary` → `superset` in the frontmatter, all in-body references across SKILL.md, README.md, ROADMAP.md, templates, and references. The trainer bundle path moves from `trainer.skill/specialists/ancillary/` to `trainer.skill/specialists/superset/`.
+- **Top-of-README metaphor** rewritten from Ann Leckie's *Imperial Radch* ancillaries (one consciousness, many bodies) to the weightlifting superset (two or more exercises back-to-back, higher total volume in less wall-clock time). The new metaphor maps onto the dispatch + isolation pattern at the same conceptual depth and fits the gym-themed trainer family.
+- **Section heading** in README.md from "Relationship to the public ancillary-pattern ecosystem" to "Relationship to the public parallel-dispatch ecosystem" (semantic accuracy; the section was always about parallel-dispatch implementations, the previous heading was stem-tied to the old name).
+- **Naming history** section added to README.md documenting the rename and preserving the Radch metaphor as historical record.
+
+### Why a pure rename is MINOR not PATCH
+
+- Existing operator notes, agent prompts, or skill-tool invocations that reference `Skill: ancillary` or `~/.claude/skills/ancillary/` or `~/Projects/ancillary.skill/` will fail under the new name. That's a breaking change for downstream callers, however few there are.
+- PATCH per Keep-a-Changelog is for backwards-compatible bug fixes; this is not a bug fix and is not backwards-compatible at the invocation level.
+- MAJOR is reserved for five-pillar prompt-shape breaks; the prompt shape is unchanged.
+- MINOR captures "new feature, may require minor consumer adjustments" which fits the rename pragmatically.
+
+### Hard-rule compliance
+
+- Zero em-dashes across the renamed README, SKILL.md, ROADMAP, CHANGELOG, templates, and references (verified with `grep`).
+- Voice rules apply to the new README intro paragraph: active voice, no "X, not Y" comma-joined patterns, no tricolon-after-colon, no theatrical paragraph-end mic-drops.
+- The new weightlifting metaphor opens with a definition (X is Y), not a short-fragment opener.
+
+### Files touched
+
+- `~/Projects/superset.skill/SKILL.md` (frontmatter `name:` and version, heading, overview paragraph)
+- `~/Projects/superset.skill/README.md` (heading, intro, naming-history section, all in-body references)
+- `~/Projects/superset.skill/ROADMAP.md` (heading, current-version line, validation-status rows, all references)
+- `~/Projects/superset.skill/CHANGELOG.md` (this entry plus the file-header rename note)
+- `~/Projects/superset.skill/templates/agent-prompt.md` (session-log path reference)
+- `~/Projects/superset.skill/templates/orchestrator-handoff-prompt.md` (multiple in-body references and the Radch-metaphor paragraph)
+- `~/Projects/superset.skill/references/runtime-portability.md` (multiple in-body references)
+- `~/Projects/superset.skill/references/falsifier-checklist.md` (one in-body reference)
+
+### Downstream changes shipped alongside this version
+
+- `~/.claude/skills/ancillary.skill/` removed; `~/.claude/skills/superset.skill/` populated from the canonical sibling.
+- `trainer.skill v0.7.1` (sibling commit): `specialists/ancillary/` renamed to `specialists/superset/`; trainer SKILL.md, README, CHANGELOG, Cursor mirror, Windsurf mirror, bundle scripts all updated. See `trainer.skill/CHANGELOG.md` v0.7.1 entry for the trainer-side rename details.
+
+---
 
 ## [0.2.0], 2026-05-18, public-ecosystem borrowings + role archetypes + batch aggregation
 

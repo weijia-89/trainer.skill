@@ -9,10 +9,11 @@ Distinct from `agent-prompt.md`: an *agent* prompt spawns a worker that
 performs a scoped task and returns. A *handoff* prompt transfers a
 long-running coordination role to a fresh chat without losing context.
 
-The handoff prompt is itself an ancillary artifact (the orchestrator
-chat is "one body, one consciousness" too, per the Imperial Radch
-metaphor, and it gets handed off the same way a worker agent gets
-spawned).
+The handoff prompt is itself a superset-shaped artifact. The orchestrator
+chat is a long-running coordination "body" that, like a worker agent,
+has its own task scope and gets handed off cleanly between chats when
+the original chat saturates. The handoff is the rest interval between
+two orchestrator chats.
 
 ---
 
@@ -57,7 +58,7 @@ directly."
 ### 2. First steps (mandatory, in order)
 
 1. Invoke `trainer` skill.
-2. Invoke `ancillary` skill.
+2. Invoke `superset` skill.
 3. Declare tier (orchestration is typically vibe-careful: coordination
    decisions blast across multiple parallel branches and operator
    review-bandwidth, but no source-edit authority).
@@ -92,7 +93,7 @@ state. Includes:
 - Open PR list at handoff authoring time.
 - Worktree state at handoff authoring time.
 - Rollback SHA if the next batch goes sideways.
-- Any project-specific deviations from ancillary defaults (e.g., the
+- Any project-specific deviations from superset defaults (e.g., the
   push-vs-no-push policy; CI architecture; calibration-log discipline).
 
 Every fact must be one the live state can confirm or refute. If a fact
@@ -133,7 +134,7 @@ moment of relevance:
   or write-to-tmp-first).
 - async-handoff (no self-check-in claims).
 - wei-voice (or project's equivalent voice rules).
-- ancillary (the very skill the orchestrator is operating under).
+- superset (the very skill the orchestrator is operating under).
 - Any project-specific iron laws.
 
 ### Embedded artifacts: the agent prompts themselves
@@ -160,7 +161,7 @@ handoff prompt must pass:
 | HO3 | YOU DO / YOU DO NOT scope table present? | grep for the table | Add the table |
 | HO4 | Agent prompts embedded verbatim (not summarized)? | Each `===AGENT N PROMPT START===` block present, full body? | Re-paste full prompts |
 | HO5 | Rollback SHA stated explicitly? | grep for "rollback" or "reset --hard" | Add the rollback line |
-| HO6 | Trainer + ancillary load as steps 1 and 2? | First-steps section ordering | Reorder |
+| HO6 | Trainer + superset load as steps 1 and 2? | First-steps section ordering | Reorder |
 | HO7 | No-autonomy / no-poll discipline stated? | grep for "no autonomy" or async-handoff reference | Add restatement |
 | HO8 | Initial action is "verify state, report, wait" not "spawn"? | Last section of handoff | Rewrite the close |
 

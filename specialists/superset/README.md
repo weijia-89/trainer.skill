@@ -1,21 +1,21 @@
-# ancillary
+# superset
 
 A skill for orchestrating parallel fresh-chat agents on a single git repository without losing isolation, scope discipline, or session learnings between batches.
 
-The name is from Ann Leckie's Imperial Radch novels: a Radchaai warship is one consciousness running in many bodies (ancillaries) at once, each acting autonomously inside its scope, all coordinating through a shared channel. The skill is the dispatch and isolation discipline that lets one human operator orchestrate parallel AI agents the same way.
+The name is from weightlifting. A **superset** is two or more exercises performed back-to-back, often on different muscle groups, so the lifter sustains higher total volume in less wall-clock time than a sequential set-rest-set-rest cycle. This skill is the dispatch discipline that lets one operator run multiple AI agents the same way. Each agent works its own task in isolation. The operator is the rest interval that coordinates the next round. Total throughput beats sequential single-agent work, provided the isolation, scope, and merge discipline hold.
 
 ## What this skill does
 
 Parallel agents on the same git repo collide on shared state (`.pytest_cache/`, `.ruff_cache/`, `.venv/`, `.git/index.lock`, `pyproject.toml`, lock files). Without isolation, the second agent to commit either merge-conflicts or silently corrupts the first agent's work. Without a structured prompt, agent quality drifts batch-to-batch and the operator loses the cumulative session learning that should make the next batch better.
 
-`ancillary` covers both:
+`superset` covers all four:
 
 - **Isolation:** worktree-per-agent by default, gitignore pre-flight, project-setup auto-detect from manifest, worktree-local venv for Python.
 - **Prompt discipline:** five-pillar template (worktree, baseline, scope, no-push, log) plus a falsifier checklist that catches known prompt-failure modes before spawning.
 - **Batch aggregation:** an operator-facing playbook for end-of-batch merge-order, failure decision matrix, final-review dispatch, and push.
 - **Orchestrator handoff:** a separate template for when the orchestrating chat itself needs to migrate to a fresh chat under context-window pressure.
 
-The skill is a prompt-template generator plus a checklist, not a runtime. The agents are fresh chats; the operator is the only coordination channel between them.
+The skill is a prompt-template generator plus a checklist; the runtime is the operator's fresh chats, and the operator is the only coordination channel between them.
 
 ## When to invoke
 
@@ -50,7 +50,7 @@ This skill assumes the `dispatching-parallel-agents` general pattern from `obra/
 - `using-git-worktrees` for the worktree discipline (directory-selection priority, gitignore pre-flight, project-setup auto-detect, clean-baseline verification).
 - `requesting-code-review` for the final-review subagent dispatch in the batch-aggregation playbook.
 - `safe-terminal` for the shell-hazard rules that apply to both agent `run_command` calls and the operator setup commands handed alongside the agent prompts.
-- `trainer` as the always-on routing skill that loads `ancillary` when it sees a parallel-dispatch trigger.
+- `trainer` as the always-on routing skill that loads `superset` when it sees a parallel-dispatch trigger.
 
 ## What this skill protects against
 
@@ -75,19 +75,23 @@ The recurring failure modes observed across real dispatched-agent sessions:
 
 ## Install
 
-Bundled inside [`weijia-89/trainer.skill`](https://github.com/weijia-89/trainer.skill) at `specialists/ancillary/`. To use standalone, copy the contents of this directory into your runner's skill directory (e.g., `~/.claude/skills/ancillary.skill/`).
+Bundled inside [`weijia-89/trainer.skill`](https://github.com/weijia-89/trainer.skill) at `specialists/superset/`. To use standalone, copy the contents of this directory into your runner's skill directory (e.g., `~/.claude/skills/superset.skill/`).
 
-The skill triggers when an agent recognizes a parallel-dispatch context. The `trainer` skill's routing flow names `ancillary` as the load target for "spawning 2+ parallel agents" triggers.
+The skill triggers when an agent recognizes a parallel-dispatch context. The `trainer` skill's routing flow names `superset` as the load target for "spawning 2+ parallel agents" triggers.
 
-## Relationship to the public ancillary-pattern ecosystem
+## Relationship to the public parallel-dispatch ecosystem
 
 The skill borrows specific patterns from three public projects:
 
 - **`obra/superpowers-skills`** (660 ⭐, archived) is the foundational Claude Code superpowers ecosystem. `using-git-worktrees` is the source of the directory-selection priority, gitignore pre-flight, project-setup auto-detect, and clean-baseline verification.
-- **`Ibrahim-3d/orchestrator-supaconductor`** (350 ⭐) is a more elaborate orchestrator with DAG-based parallel groups, file-lock coordination, deadlock detection, retry-with-escalation, and a JSON message bus. `ancillary` deliberately does not adopt the message-bus or DAG-execution layers; the fresh-chat dispatch model treats agents as one-shot and assumes the operator is the only coordination channel. The role-archetype framing borrows from supaconductor's worker-template differentiation.
+- **`Ibrahim-3d/orchestrator-supaconductor`** (350 ⭐) is a more elaborate orchestrator with DAG-based parallel groups, file-lock coordination, deadlock detection, retry-with-escalation, and a JSON message bus. `superset` deliberately does not adopt the message-bus or DAG-execution layers; the fresh-chat dispatch model treats agents as one-shot and assumes the operator is the only coordination channel. The role-archetype framing borrows from supaconductor's worker-template differentiation.
 - **`usemozzie/mozzie`** (49 ⭐) is a desktop app for parallel agent orchestration with git worktrees and dependency tracking. The file-ownership table in the `Owned-paths:` header field borrows from mozzie's CLAUDE.md.
 
-The deliberate non-adoptions are documented in SKILL.md. ancillary stays at the prompt-template-and-checklist layer; the operator's human review is the rate-limit, and a live message-bus would reinvent supaconductor at a layer where the human is already the coordinator.
+The deliberate non-adoptions are documented in SKILL.md. `superset` stays at the prompt-template-and-checklist layer; the operator's human review is the rate-limit, and a live message-bus would reinvent supaconductor at a layer where the human is already the coordinator.
+
+## Naming history
+
+Released through v0.2.0 as `ancillary`, after Ann Leckie's *Imperial Radch* novels: a Radchaai warship is one consciousness running in many bodies (ancillaries) at once, each acting autonomously inside its scope, all coordinating through a shared channel. The Radch metaphor captured the distributed-agency insight well but did not fit the gym-themed `trainer.skill` family (form-check, program, warmup, safetybar, recovery, gymbuddy, diet, pr). Renamed to `superset` in v0.3.0 (2026-05-18) for family coherence. The distributed-agency insight survives the rename; the file path does not.
 
 ## License
 

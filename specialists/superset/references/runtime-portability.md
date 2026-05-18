@@ -27,22 +27,22 @@ The mapping has been validated for Cascade-on-Windsurf and Claude Code. Cursor, 
 
 - No `Cwd` parameter. Each `Bash` call starts a fresh shell. To run in a worktree, prefix every command with `cd <worktree> &&` (cannot avoid the `cd a && b` pattern that safe-terminal Tier-1 #4 forbids in Cascade).
 - The `Task` tool dispatches a fresh subagent in the same chat, returning to the parent on completion. This is closer to a built-in batch-dispatch primitive than Cascade's fresh-chat model.
-- Skills load via the `Skill` tool. The `Skill: ancillary` invocation reads `~/.claude/skills/ancillary/SKILL.md` (or `~/.claude/skills/ancillary.skill/SKILL.md` if the rename is applied).
+- Skills load via the `Skill` tool. The `Skill: superset` invocation reads `~/.claude/skills/superset.skill/SKILL.md`.
 - The `TodoWrite` tool replaces Cascade's `todo_list`.
 
-Adaptation for ancillary's agent-prompt template: replace `run_command` with `Bash`, drop the `Cwd` parameter callout, replace `read_file`/`edit` with `Read`/`Edit`. Worktree workflow still applies; the operator typically dispatches via the `Task` tool rather than opening a fresh chat window.
+Adaptation for superset's agent-prompt template: replace `run_command` with `Bash`, drop the `Cwd` parameter callout, replace `read_file`/`edit` with `Read`/`Edit`. Worktree workflow still applies; the operator typically dispatches via the `Task` tool rather than opening a fresh chat window.
 
 ## Cursor specifics
 
 - The agent operates inside the editor; `terminal` and `read_file` are the typical tools.
 - No first-party subagent-dispatch primitive. Parallel batches require the operator to open separate Cursor windows or use external agent runners.
-- Cursor's `.cursor/rules/*.mdc` files load on session start. ancillary can be loaded as an `always_apply` rule pointing at the canonical `SKILL.md`.
+- Cursor's `.cursor/rules/*.mdc` files load on session start. superset can be loaded as an `always_apply` rule pointing at the canonical `SKILL.md`.
 
 ## Codex specifics
 
 - Codex agents typically run as one-shot CLI calls or within ChatGPT's agent mode.
 - Worktree workflow applies, but the operator coordinates between agent invocations rather than within a chat.
-- The `--allowedTools` flag (where present) gates which tools the agent can call; ancillary needs at minimum shell + file-read + file-write.
+- The `--allowedTools` flag (where present) gates which tools the agent can call; superset needs at minimum shell + file-read + file-write.
 
 ## Gemini CLI specifics
 

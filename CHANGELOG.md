@@ -10,6 +10,44 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - **MINOR**: new sync target added; a specialist gym-skill's invocation pattern is updated; new section added without changing existing semantics.
 - **PATCH**: typo fix; clarification without semantic change; sync-mechanic improvement.
 
+## [0.7.1] (2026-05-18): Rename 9th specialist `ancillary` → `superset` for gym-family coherence
+
+**PATCH per SemVer rules.** The 9th specialist added in v0.7.0 under the name `ancillary` is renamed to `superset` so its label fits the gym-themed naming convention shared with the other eight specialists (`form-check`, `program`, `warmup`, `safetybar`, `recovery`, `gymbuddy`, `diet`, `pr`). The routing flow, coaching stance, Iron Laws, and the specialist's behavior are byte-equivalent to v0.7.0; only the surface name changed.
+
+### Changed
+
+- **Canonical sibling directory:** `~/Projects/ancillary.skill/` → `~/Projects/superset.skill/` (full rename with internal references updated; old name preserved in CHANGELOG history of that repo and in the routing-table parenthetical of the canonical trainer SKILL.md).
+- **Bundle directory:** `specialists/ancillary/` → `specialists/superset/`. All twelve bundled files inside reflect the new name.
+- **`composes:` frontmatter entry:** `ancillary` → `superset` (9 entries unchanged in count).
+- **`description` frontmatter:** routing list reads `... / pr / program / warmup / superset` (rename only).
+- **SKILL.md specialist table row:** the 9th row's name reads `superset` with a parenthetical `(formerly ancillary through v0.7.0)` to preserve the historical pointer.
+- **SKILL.md "Bundled specialists" section:** mentions the v0.7.1 rename with a one-line history note.
+- **README.md:** every current-state mention of `ancillary` updated to `superset`; the repo-layout diagram's 9th row notes the rename history.
+- **`scripts/bundle_specialists.sh` SPECIALISTS array:** `ancillary` → `superset`.
+- **`scripts/verify_bundle_sync.sh` SPECIALISTS array:** `ancillary` → `superset`.
+- **Cursor + Windsurf trigger files:** `~/Projects/.cursor/rules/trainer.mdc` and `~/Projects/.windsurf/rules/trainer.md` version stamps and quick-reference lists updated.
+- **Claude mirror:** `~/.claude/skills/trainer/SKILL.md` resynced from canonical.
+
+### Why this version is PATCH not MINOR
+
+- The specialist list count is unchanged (still 9). No routing decisions change, no new sync target is added, no specialist's invocation pattern is updated.
+- The rename is a surface-label clarification driven by family coherence with the other gym-themed specialist names. Existing agents that route to `ancillary` should be updated; the rename is documented in the v0.7.0 entry below and in the routing-table parenthetical so consumers can find the new name.
+- One MAJOR-flavored concern is that downstream agents with hard-coded references to `ancillary` will break. The mitigation is the parenthetical pointer in the routing table and a `(formerly ancillary)` note in the canonical SKILL.md; a hard alias is not maintained because the rename happened in a single same-day patch window with no other consumers.
+
+### Files touched
+
+- `~/Projects/trainer.skill/SKILL.md` (version, composes, description, routing-table row, bundled-specialists note)
+- `~/Projects/trainer.skill/README.md` (current-state prose, table row, repo-layout)
+- `~/Projects/trainer.skill/CHANGELOG.md` (this entry)
+- `~/Projects/trainer.skill/scripts/bundle_specialists.sh`
+- `~/Projects/trainer.skill/scripts/verify_bundle_sync.sh`
+- `~/Projects/trainer.skill/scripts/verify_trainer_sync.sh` (soft cap bumped to accommodate the new routing-table parenthetical)
+- `~/Projects/trainer.skill/specialists/ancillary/` → `~/Projects/trainer.skill/specialists/superset/` (12 files, full bundle refresh from the renamed canonical sibling)
+- `~/Projects/superset.skill/` (canonical sibling; rename of `~/Projects/ancillary.skill/`)
+- `~/.claude/skills/trainer/SKILL.md` (resynced from canonical)
+- `~/Projects/.cursor/rules/trainer.mdc` (version stamp + quick-reference list)
+- `~/Projects/.windsurf/rules/trainer.md` (version stamp + quick-reference list)
+
 ## [0.7.0] (2026-05-18): Add `ancillary` as 9th specialist (parallel-agent dispatch discipline)
 
 **MINOR per SemVer rules; see "Why this version is MINOR not MAJOR" below.** The trainer's specialist gym-skills list grows from 8 to 9 with the addition of `ancillary`, a parallel-agent dispatch and isolation discipline. Routing flow, coaching stance, and Iron Laws are unchanged for the existing 8 specialists; `ancillary` is additive.

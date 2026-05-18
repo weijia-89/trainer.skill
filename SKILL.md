@@ -1,9 +1,9 @@
 ---
 name: trainer
 description: |
-  Loaded first on every coding / prompt-engineering / agent-skill session, always on. The trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer coaches: it pushes back when user decisions have deleterious downstream consequences or veer from best practices without articulated reason. Routes to form-check / recovery / gymbuddy / safetybar / diet / pr / program / warmup / ancillary at the right moment. Triggers: code review, adversarial review, plan a new app, harden, refactor, recover from incident, pair-coding, training program, personal record, context priming, parallel agent dispatch, orchestrator handoff, gym-skill, gym-skills.
+  Loaded first on every coding / prompt-engineering / agent-skill session, always on. The trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer coaches: it pushes back when user decisions have deleterious downstream consequences or veer from best practices without articulated reason. Routes to form-check / recovery / gymbuddy / safetybar / diet / pr / program / warmup / superset at the right moment. Triggers: code review, adversarial review, plan a new app, harden, refactor, recover from incident, pair-coding, training program, personal record, context priming, parallel agent dispatch, orchestrator handoff, gym-skill, gym-skills.
 type: project-skill
-version: 0.7.0
+version: 0.7.1
 authors: Wei Jia (2026-05-18)
 license: LicenseRef-IronLaw-NC-1.0
 required_tools: [file_read]
@@ -18,7 +18,7 @@ composes:
   - gymbuddy
   - diet
   - pr
-  - ancillary
+  - superset
 ---
 
 # trainer: the gym-skills entrypoint
@@ -171,13 +171,13 @@ Each red flag means: stop. Re-read the relevant section above. Re-route. **Routi
 | `gymbuddy` | the pairing peer | co-coding, pair-on-vibe-dangerous, walkthroughs |
 | `diet` | nutrition | context or output volume needs trimming, or tokens are the constraint |
 | `pr` | personal-record celebration | milestones, retros, achievements |
-| `ancillary` | the parallel-agent dispatch discipline | spawning 2+ fresh-context agents on the same repo; orchestrator-handoff under context-window pressure |
+| `superset` | the parallel-agent dispatch discipline (formerly `ancillary` through v0.7.0) | spawning 2+ fresh-context agents on the same repo; orchestrator-handoff under context-window pressure |
 
 ## Routing decision flow
 
-1. **What is the user doing right now?** Planning new code → `form-check plan-new-app`. Reviewing a diff → `form-check code-review`. Fixing after a bad ship → `recovery`. Pairing → `gymbuddy`. Multi-week plan → `program`. Just opened the workspace → `warmup`. Spawning 2+ parallel agents on the same repo → `ancillary`.
-2. **What is the stakes tier?** Vibe-safe / vibe-careful / vibe-dangerous; see `form-check` Section 5. Vibe-dangerous → also load `safetybar`. Vibe-dangerous AND post-incident → also load `recovery`. Token budget tight → load `diet`. Parallel-agent dispatch at any tier → load `ancillary` for worktree-isolation and prompt-template discipline.
-3. **Adapt as the session evolves.** A planning session that uncovers an incident routes to `recovery` mid-session. A review that surfaces a runtime concern routes to `safetybar`. A multi-day push that hits IDE-slow accumulates context routes to `ancillary` for an orchestrator-handoff. The trainer does not lock routing in at start.
+1. **What is the user doing right now?** Planning new code → `form-check plan-new-app`. Reviewing a diff → `form-check code-review`. Fixing after a bad ship → `recovery`. Pairing → `gymbuddy`. Multi-week plan → `program`. Just opened the workspace → `warmup`. Spawning 2+ parallel agents on the same repo → `superset`.
+2. **What is the stakes tier?** Vibe-safe / vibe-careful / vibe-dangerous; see `form-check` Section 5. Vibe-dangerous → also load `safetybar`. Vibe-dangerous AND post-incident → also load `recovery`. Token budget tight → load `diet`. Parallel-agent dispatch at any tier → load `superset` for worktree-isolation and prompt-template discipline.
+3. **Adapt as the session evolves.** A planning session that uncovers an incident routes to `recovery` mid-session. A review that surfaces a runtime concern routes to `safetybar`. A multi-day push that hits IDE-slow or accumulated-context routes to `superset` for an orchestrator-handoff. The trainer does not lock routing in at start.
 
 ## Proactive teaching responsibilities
 
@@ -215,7 +215,7 @@ Persistent opt-outs across multiple sessions are a signal: log the pattern in th
 
 The 9 specialists are bundled at `./specialists/<name>/` for portfolio distribution and for clones that want the full ecosystem in a single repo. Local working sessions continue to operate against the sibling `~/Projects/<name>.skill/` directories (faster iteration, separate edit cycles). The bundle is a packaging artifact, and the sibling canonicals remain the authoritative copy. See `README.md` for the relationship.
 
-When a canonical sibling skill is updated, the bundle is refreshed by `scripts/bundle_specialists.sh` (added in v0.3.0; updated in v0.7.0 to include `ancillary`).
+When a canonical sibling skill is updated, the bundle is refreshed by `scripts/bundle_specialists.sh` (added in v0.3.0; updated in v0.7.0 to include the 9th specialist, and again in v0.7.1 when that 9th specialist was renamed from `ancillary` to `superset` for family coherence).
 
 ## Sync targets
 

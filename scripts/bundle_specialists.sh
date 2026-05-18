@@ -10,7 +10,7 @@ SRC_ROOT="${SRC_ROOT:-$HOME/Projects}"
 # DST_ROOT defaults to the `specialists/` directory next to this script.
 DST_ROOT="${DST_ROOT:-$(cd "$(dirname "$0")/.." && pwd)/specialists}"
 
-SPECIALISTS=(form-check recovery gymbuddy safetybar diet pr program warmup ancillary)
+SPECIALISTS=(form-check recovery gymbuddy safetybar diet pr program warmup superset)
 
 mkdir -p "$DST_ROOT"
 

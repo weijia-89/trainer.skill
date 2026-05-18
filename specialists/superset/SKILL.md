@@ -1,8 +1,8 @@
 ---
-name: ancillary
+name: superset
 description: Use when spawning 2+ fresh-context agents on the same git repo for isolated parallel work; symptoms include same-tree shared-state risk (.pytest_cache / pyproject collisions), agents overstepping scope, intermediate commits pushed by accident, session learnings lost between iterations, prompt quality drifting between agents.
 type: project-skill
-version: 0.2.0
+version: 0.3.0
 authors: Wei Jia (2026-05-18)
 license: MIT
 composes:
@@ -13,11 +13,11 @@ composes:
   - trainer
 ---
 
-# Ancillary
+# superset
 
 ## Overview
 
-The name is from Leckie's Imperial Radch: a Radchaai ship is one consciousness running in many bodies (ancillaries) simultaneously, each acting autonomously in its scope, all coordinating through a shared channel. This skill is the dispatch and isolation discipline that lets one operator orchestrate parallel agents the same way.
+Named for the weightlifting superset: two or more exercises performed back-to-back, often on different muscle groups, so the lifter sustains higher total volume in less wall-clock time. This skill is the dispatch discipline that lets one operator run multiple AI agents the same way. Each agent works its own task in isolation; the operator is the rest interval that coordinates the next round; total throughput beats sequential single-agent work, provided the isolation, scope, and merge discipline hold.
 
 Parallel agents on the same git repo collide on shared state (caches, pyproject, lock files) and lose their session learnings unless you build the prompt for isolation. This skill is a prompt-template generator plus a falsifier checklist for catching prompt-quality drift before spawning.
 

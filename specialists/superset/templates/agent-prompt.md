@@ -180,7 +180,7 @@ One or more commits. Title format (single-line `-m` for titles only; multi-line 
 
 ## Write session log (after commit, before return)
 
-Write to `<ABSOLUTE_PROJECT_PATH>/localonly/session-logs/<DATE>-agent<N>-<task-slug>.md` using the shape at `~/.claude/skills/ancillary/templates/session-log.md`. The `localonly/` directory must be gitignored (verify with `grep '^localonly' <project>/.gitignore`). The log is for periodic harness review and never enters version control.
+Write to `<ABSOLUTE_PROJECT_PATH>/localonly/session-logs/<DATE>-agent<N>-<task-slug>.md` using the shape at `~/.claude/skills/superset.skill/templates/session-log.md`. The `localonly/` directory must be gitignored (verify with `grep '^localonly' <project>/.gitignore`). The log is for periodic harness review and never enters version control.
 
 ## Return
 

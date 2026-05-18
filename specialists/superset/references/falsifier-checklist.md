@@ -8,7 +8,7 @@ Run this before pasting an agent prompt into a fresh chat. Each item is a known 
 |---|---|---|---|
 | H1 | Prompt forbids push? | Search prompt for "do not push" or "DO NOT PUSH" | Add explicit no-push line; explain batched-merge model |
 | H2 | Verification uses captured baseline, not hardcoded numbers? | Search for digit-then-passed (e.g. `172 passed`) outside the baseline-capture section | Replace with "test count >= baseline, 0 new failures" |
-| H3 | Vibe-careful work has stop-and-report protocol for source edits? | If task touches non-trivial code, search for explicit "STOP" or "do not edit source" | Add the restricted-error-handling protocol from ancillary/SKILL.md |
+| H3 | Vibe-careful work has stop-and-report protocol for source edits? | If task touches non-trivial code, search for explicit "STOP" or "do not edit source" | Add the restricted-error-handling protocol from superset/SKILL.md |
 | H4 | Out-of-scope list names review-gated files explicitly? | Read project's CLAUDE.md or equivalent review-gate list; cross-check against prompt's out-of-scope | Add every review-gated file to the list |
 | H5 | Worktree setup is the first command, OR same-tree exception is documented? | Search prompt for `git worktree add` or explicit same-tree-exception note | Add worktree-setup block to first-step section |
 | H6 | Dep-touching task creates a worktree-local venv? | If prompt has `pip install`, search for `python -m venv` in worktree path | Add worktree-local-venv block alongside worktree-setup |
