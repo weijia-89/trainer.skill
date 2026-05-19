@@ -1,0 +1,98 @@
+# high-stakes-list.yaml
+#
+# Project freeze list. Each entry names a file or directory whose edits require an
+# explicit `precondition` declaration in any agent's daily-log manifest entry that
+# would touch it. The validator (Phase 2 deliverable `scripts/validate-daily-log.py`)
+# refuses to render the prompt for any agent whose `owned_paths` intersect this list
+# unless the agent's manifest entry declares `precondition: <one-of-allowed-values>`
+# AND a sibling-or-earlier-phase agent in the same daily log has `produces:` covering
+# the research artifact named by the precondition.
+#
+# Location: <project>/localonly/daily/high-stakes-list.yaml
+# Gitignored per the localonly/ convention.
+#
+# Schema:
+#   freeze:
+#     <path-or-glob>:
+#       allowed_preconditions: [research-complete | spec-locked | schema-frozen | <project-defined>]
+#       rationale: <one-line: why this file is high-stakes>
+#       last_reviewed: <YYYY-MM-DD>
+#
+# Allowed precondition vocabulary (extend per project):
+#   - research-complete: a research agent's deliverable exists and Wei has signed off
+#   - spec-locked: the locked spec at the named path has the current lock-date annotation
+#   - schema-frozen: schema migration ADR exists; rollback plan documented
+#   - <project-defined>: any project-specific gate; document in the rationale field
+
+freeze: {}
+
+# ---------------------------------------------------------------------------
+# Annotated starter examples below. Strip the examples block before deploying
+# this file to a real project; replace with the project's actual freeze entries.
+# ---------------------------------------------------------------------------
+
+# Example A, buds:
+#
+# freeze:
+#   LICENSE:
+#     allowed_preconditions: [research-complete]
+#     rationale: License changes are non-reversible without contributor-base agreement; require research precursor per buds AGENTS.md "Editing the LICENSE file" review gate
+#     last_reviewed: 2026-05-19
+#
+#   docs/strategy/**:
+#     allowed_preconditions: [research-complete]
+#     rationale: Strategic decisions including license, business direction, IP-protection; per buds AGENTS.md "Editing prose in docs/strategy/* (strategic decisions)"
+#     last_reviewed: 2026-05-19
+#
+#   docs/specs/**:
+#     allowed_preconditions: [spec-locked]
+#     rationale: Locked product specs (00-design-system, 01-product-shape, 02-storage-and-sync, 04-surfaces, 08-features-locked, OPEN-QUESTIONS); per buds AGENTS.md "Editing prose in docs/specs/* (locked specs)"
+#     last_reviewed: 2026-05-19
+#
+#   lib/data/crypto/key_store.dart:
+#     allowed_preconditions: [research-complete, schema-frozen]
+#     rationale: Keystore code is vibe-dangerous per buds AGENTS.md; edits touch the encryption boundary
+#     last_reviewed: 2026-05-19
+#
+#   lib/data/crypto/db_encryption.dart:
+#     allowed_preconditions: [research-complete, schema-frozen]
+#     rationale: SQLCipher wire-up; vibe-dangerous per buds AGENTS.md
+#     last_reviewed: 2026-05-19
+#
+#   lib/data/db/tables.dart:
+#     allowed_preconditions: [schema-frozen]
+#     rationale: Schema-breaking changes require migration ADR with rollback plan per buds AGENTS.md "Schema-breaking changes to lib/data/db/tables.dart"
+#     last_reviewed: 2026-05-19
+#
+#   research/decisions/**:
+#     allowed_preconditions: [research-complete]
+#     rationale: Locked research outputs; revision requires new research pass per buds AGENTS.md "Editing research/decisions/*.md (locked research)"
+#     last_reviewed: 2026-05-19
+
+# Example B, mailchimp-r-and-a-qa-suite:
+#
+# freeze:
+#   docs/IRON_LAWS.md:
+#     allowed_preconditions: [research-complete]
+#     rationale: Project iron laws; changes affect every agent's runtime behavior
+#     last_reviewed: 2026-05-19
+#
+#   .recovery/HANDOFF.md:
+#     allowed_preconditions: [research-complete]
+#     rationale: Cross-session handoff state; revision affects orchestrator continuity
+#     last_reviewed: 2026-05-19
+#
+#   playwright.config.js:
+#     allowed_preconditions: [research-complete]
+#     rationale: Test harness config; misconfig breaks the entire test suite silently
+#     last_reviewed: 2026-05-19
+#
+#   lib/oracle/metric-registry.js:
+#     allowed_preconditions: [research-complete]
+#     rationale: Authoritative metric definitions consumed by the oracle pipeline; transcription discipline is load-bearing
+#     last_reviewed: 2026-05-19
+#
+#   scripts/utilities/audit-no-focus-steal.js:
+#     allowed_preconditions: [research-complete]
+#     rationale: Iron-law sentinel; if disabled, the no-focus-steal discipline silently breaks
+#     last_reviewed: 2026-05-19

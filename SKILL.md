@@ -3,7 +3,7 @@ name: trainer
 description: |
   Loaded first on every coding / prompt-engineering / agent-skill session, always on. The trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer coaches: it pushes back when user decisions have deleterious downstream consequences or veer from best practices without articulated reason. Routes to form-check / recovery / gymbuddy / safetybar / diet / pr / program / warmup / superset at the right moment. Triggers: code review, adversarial review, plan a new app, harden, refactor, recover from incident, pair-coding, training program, personal record, context priming, parallel agent dispatch, orchestrator handoff, gym-skill, gym-skills.
 type: project-skill
-version: 0.7.1
+version: 0.8.0
 authors: Wei Jia (2026-05-18)
 license: LicenseRef-IronLaw-NC-1.0
 required_tools: [file_read]
@@ -123,6 +123,43 @@ If unable to state all three in one sentence, **STOP and verify first**. No exce
 - *Pushing PHASE11_ANALYSIS.md* without running the pre-push hook locally. Outcome: private-path leak escaped to commit; pre-push hook caught it; amend + re-push required. Would have been prevented by: "Pre-push hook = `bash scripts/verify_trainer_sync.sh`; rollback = `git commit --amend`; verify = re-run hook." (One sentence; gate-pass.)
 
 Both breaches were recoverable; both occurred because the gate did not fire. Promotion to mechanical-gate status (above) is the response.
+
+### Dispatch graph before dispatch (added 2026-05-19, post-buds-f-droid)
+
+The plan-first iron law extends to the dispatch graph itself. Before any multi-agent batch is generated, a daily-log manifest exists at `<project>/localonly/daily/<YYYY-MM-DD>.md`, has been validated by `superset`, and surfaces all dependency edges to the user. The trainer requires this without being asked.
+
+**Operational meaning:**
+
+1. **Trigger:** any user phrase implying multi-agent dispatch ("spawn N agents", "let's run these in parallel", "dispatch agents to handle A B C", "kick off a wave", "run these tasks today"). Cascade does not wait for an explicit "draft a manifest" request; the trigger is the dispatch intent itself.
+2. **Action:** Cascade auto-drafts the daily-log entries for the proposed batch in `<project>/localonly/daily/<YYYY-MM-DD>.md` (creating the file if absent for today). The manifest lists each agent's `name | role | owned_paths | depends_on | produces | consumes | phase | wall_clock | status`.
+3. **Self-adversarial review:** before surfacing the manifest, Cascade runs the `superset` falsifier checklist and a form-check adversarial-review pass against its own draft, looking specifically for owned-path overlaps, missing producer-consumer links, freeze-list violations, duplicate dispatches against existing artifacts, and Cwd-race risks in same-tree dispatches.
+4. **Surface:** the validated manifest plus adversarial-review findings get surfaced under "Decisions awaiting user sign-off" before any per-agent prompts are generated.
+
+**Trigger phrases that violate this iron law and require route-correction:**
+
+- "Just dispatch them, I'll review later."
+- "Skip the manifest this time, it's only two agents."
+- "The prompts can spot collisions on their own."
+- "I'll figure out the wave order as we go."
+- "These are obviously independent; no need to declare consumes."
+
+**Anchor incidents.** Mailchimp 2026-05-18 duplicate dispatch (`localonly/session-logs/2026-05-18-agentB-flrr015-scope.md`): second Agent B run discovered the v1 deliverable already existed at the target path; ~15 min of discovery work wasted. Buds 2026-05-19 f-droid research and LICENSE edit dispatched in parallel without a producer-consumer link; the LICENSE-editing agent's edits did not have the benefit of the research findings. Both would have been caught by daily-log validation: the artifact-existence check catches the first, the `consumes` declaration plus topological wave-ordering catches the second.
+
+Coached override is permitted per existing override rules (two rounds max, then log).
+
+**Three-layer agent architecture (orch + meta + worker).** The iron law operates across three agent layers with distinct lifespans, defined in `superset.skill/SKILL.md` "Three-layer agent architecture":
+
+- **Orch** (1 day default; refresh on IDE slowdown): the chat the operator talks to; dispatches workers, outputs prompts, coaches on next steps, narrates progress. Writes the daily log. On rotation, writes a token-optimized hand-off summary at the top of the daily log so the next orch can ingest it without reading the full day.
+- **Meta** (1 week default; refresh on IDE slowdown): the director; reads daily logs across the week, looks for patterns, collisions, process gaps, and skill-edit candidates. Suggests; does not dispatch. Writes the weekly meta log at `<project>/localonly/meta-logs/<YYYY-WW>-meta.md` (ISO 8601 year-week format).
+- **Worker** (per-task, fresh-context): the dispatched agents covered by the five-pillar prompt discipline.
+
+Hand-off discipline lives in `superset.skill` not here; the trainer's role is to fire the iron law and route to `superset` for the operational detail.
+
+### Private-path leak scan (added 2026-05-19, iron-law severity)
+
+Any file the trainer or a specialist skill ships to a public mirror (trainer-bundle path or specialist canonical that syncs to GitHub) MUST pass an empirical leak scan before commit, before bundle refresh, before push. The scan looks for operator-local absolute paths and gitignored-workspace prefixes; the exact pattern lives in `scripts/verify_trainer_sync.sh` invariant 8.
+
+Empirical means: run the verify script on the actual file tree on disk. Do not infer from "this file shouldn't have a path" reasoning. If the scan returns any match, halt and route to the user for explicit acknowledgement before proceeding. No exceptions; the verify script is the gate.
 
 ## Red Flags, STOP and re-route
 

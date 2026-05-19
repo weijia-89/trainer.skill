@@ -10,6 +10,45 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - **MINOR**: new sync target added; a specialist gym-skill's invocation pattern is updated; new section added without changing existing semantics.
 - **PATCH**: typo fix; clarification without semantic change; sync-mechanic improvement.
 
+## [0.8.0] (2026-05-19): Dispatch-graph-before-dispatch iron-law sub-clause
+
+**MINOR per SemVer rules.** Adds a new sub-clause under the "Iron Law: plan first, implement second" section: the plan-first discipline extends to the dispatch graph itself. Before any multi-agent batch is generated, a daily-log manifest must exist at `<project>/localonly/daily/<YYYY-MM-DD>.md`, validated by `superset`, with all dependency edges surfaced to the user. Cascade auto-drafts the manifest on dispatch-intent triggers; runs a self-adversarial review pass using superset's falsifier checklist plus a form-check adversarial-review against its own draft; surfaces validated manifest plus findings before generating per-agent prompts.
+
+### Added
+
+- **`### Dispatch graph before dispatch` sub-clause** under "Iron Law: plan first, implement second" in canonical SKILL.md. Names the trigger phrases that violate the iron law ("just dispatch them, I'll review later"; "skip the manifest this time"; etc.). Names the two anchor incidents: mailchimp 2026-05-18 duplicate dispatch (Agent B); buds 2026-05-19 f-droid research and LICENSE edit dispatched in parallel without a producer-consumer link. Also names the three-layer agent architecture (orch 1-day, meta 1-week, worker per-task) at a brief level; routes to `superset.skill` for operational detail.
+
+### Changed
+
+- **Soft line cap in `scripts/verify_trainer_sync.sh`** bumped from 240 to 280 to accommodate the new sub-clause (~22 lines added).
+- **Canonical, Claude mirror, Cursor trigger, Windsurf trigger** version stamps updated to v0.8.0.
+- **New invariant 9 in `scripts/verify_trainer_sync.sh`** (script-tooling-only change, no SKILL.md content change, no version bump). Runs the superset falsifier harness at `$HOME/Projects/superset.skill/scripts/falsifier-harness/run-all.sh` and FAILs the verify pass if the harness exits non-zero. Falls back to WARN + skip if the harness script is not present (trainer can theoretically release without superset bundled, though current bundle ships it). errexit suspension around the harness invocation so a harness failure produces full diagnostic output (the failing test name plus the validator's stderr JSON) rather than silently exiting. Tested both positive (clean baseline: 6 hypotheses verified, exit 0) and negative (corrupted valid-baseline fixture: invariant 9 FAILS with full diagnostic including which test failed and which falsifier the validator raised). The harness regression is now part of every bundle-refresh verify gate.
+
+### Why MINOR not PATCH
+
+- Adds new behavior (auto-invoke + self-adversarial review on dispatch triggers).
+- Adds a new iron-law sub-clause that route-corrects on specific user phrases.
+- PATCH would be wording-only; this introduces a new rule.
+
+### Why MINOR not MAJOR
+
+- Routing decision flow unchanged.
+- Specialist gym-skills list unchanged (still 9).
+- Teaching-responsibility tiers unchanged.
+
+### Files touched
+
+- `~/Projects/trainer.skill/SKILL.md` (canonical; new sub-clause + version bump)
+- `~/Projects/trainer.skill/CHANGELOG.md` (this entry)
+- `~/Projects/trainer.skill/scripts/verify_trainer_sync.sh` (line-cap bump)
+- `~/.claude/skills/trainer/SKILL.md` (Claude mirror; resynced byte-identical)
+- `~/Projects/.cursor/rules/trainer.mdc` (Cursor trigger; version stamp)
+- `~/Projects/.windsurf/rules/trainer.md` (Windsurf trigger; version stamp)
+
+### Downstream changes shipped alongside this version
+
+- `superset.skill` v0.4.0 (sibling release): adds daily-log-driven dispatch section, promotes M6/M11/M12 to High, adds H14 (artifact-existence) and H15 (daily-log-precondition) falsifiers, ships new `templates/daily-log.md` and `templates/high-stakes-list.yaml`. See `superset.skill/CHANGELOG.md` v0.4.0 entry.
+
 ## [0.7.1] (2026-05-18): Rename 9th specialist `ancillary` → `superset` for gym-family coherence
 
 **PATCH per SemVer rules.** The 9th specialist added in v0.7.0 under the name `ancillary` is renamed to `superset` so its label fits the gym-themed naming convention shared with the other eight specialists (`form-check`, `program`, `warmup`, `safetybar`, `recovery`, `gymbuddy`, `diet`, `pr`). The routing flow, coaching stance, Iron Laws, and the specialist's behavior are byte-equivalent to v0.7.0; only the surface name changed.

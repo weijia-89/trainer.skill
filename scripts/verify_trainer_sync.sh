@@ -84,10 +84,10 @@ if [[ "$FAIL" -eq 0 ]]; then
   echo "PASS  all four sync targets agree on version $CANONICAL_VERSION"
 fi
 
-# Invariant 5: SKILL.md (canonical) is ≤240 lines (bootstrap-skill cap; original 100, bumped to 140 in v0.4.0 for Iron Law layering, then to 180 in v0.5.0 for Red Flags / Rationalizations, then to 240 in v0.7.0 for the v0.6 Iron-Law pre-action gate + worked examples + ancillary routing-flow entries)
+# Invariant 5: SKILL.md (canonical) is ≤280 lines (bootstrap-skill cap; original 100, bumped to 140 in v0.4.0 for Iron Law layering, then to 180 in v0.5.0 for Red Flags / Rationalizations, then to 240 in v0.7.0 for the v0.6 Iron-Law pre-action gate + worked examples + ancillary routing-flow entries, then to 280 in v0.8.0 for the Dispatch-graph-before-dispatch sub-clause)
 CANONICAL_LINES=$(wc -l < "$CANONICAL")
-if [[ "$CANONICAL_LINES" -gt 240 ]]; then
-  echo "WARN  canonical SKILL.md is $CANONICAL_LINES lines (soft cap 240)"
+if [[ "$CANONICAL_LINES" -gt 280 ]]; then
+  echo "WARN  canonical SKILL.md is $CANONICAL_LINES lines (soft cap 280)"
 fi
 
 # Invariant 6: zero em-dashes (Wei's writing-style hard rule, 2026-05-15)
@@ -151,6 +151,54 @@ if command -v git >/dev/null 2>&1 && [[ -d "$REPO_ROOT/.git" ]]; then
   fi
 else
   echo "WARN  skipping private-path leak scan (git unavailable or repo not initialized)"
+fi
+
+# Invariant 9: superset falsifier harness exits 0 (Mozilla-mythos regression gate).
+# Added 2026-05-19 as part of superset v0.4.0 manifest-harness Phase 2 ship.
+# Runs against the canonical superset.skill harness; the trainer bundle rsyncs
+# from canonical, so canonical-pass implies bundle-pass when bundle is fresh.
+# If the harness script is missing, log WARN and skip rather than FAIL — trainer
+# can theoretically release without superset present, though current bundle ships it.
+SUPERSET_HARNESS="$HOME/Projects/superset.skill/scripts/falsifier-harness/run-all.sh"
+if [[ -f "$SUPERSET_HARNESS" ]]; then
+  # Suspend errexit so a harness failure does not short-circuit the FAIL-block
+  # diagnostic output. Re-enable immediately after capturing the exit code.
+  set +e
+  HARNESS_OUTPUT=$(bash "$SUPERSET_HARNESS" 2>&1)
+  HARNESS_EXIT=$?
+  set -e
+  if [[ "$HARNESS_EXIT" -ne 0 ]]; then
+    echo "FAIL  superset falsifier harness exited $HARNESS_EXIT (expected 0):"
+    printf '%s\n' "$HARNESS_OUTPUT" | head -30 | sed 's/^/        /'
+    FAIL=1
+  else
+    HARNESS_PASS_COUNT=$(printf '%s\n' "$HARNESS_OUTPUT" | grep -c '^PASS ')
+    echo "PASS  superset falsifier harness: $HARNESS_PASS_COUNT hypotheses verified"
+  fi
+else
+  echo "WARN  skipping superset falsifier harness invariant (script not present at $SUPERSET_HARNESS)"
+fi
+
+# Invariant 10: superset prompt-level harness exits 0 (added 2026-05-19 as part of
+# superset v0.6.0 ship). Validates agent prompts against H5 (worktree first command)
+# across three shapes (worktree, same-tree exception, no-git exception). If the script
+# is missing, log WARN and skip rather than FAIL.
+SUPERSET_PROMPT_HARNESS="$HOME/Projects/superset.skill/scripts/prompt-level-harness/run-all.sh"
+if [[ -f "$SUPERSET_PROMPT_HARNESS" ]]; then
+  set +e
+  PROMPT_HARNESS_OUTPUT=$(bash "$SUPERSET_PROMPT_HARNESS" 2>&1)
+  PROMPT_HARNESS_EXIT=$?
+  set -e
+  if [[ "$PROMPT_HARNESS_EXIT" -ne 0 ]]; then
+    echo "FAIL  superset prompt-level harness exited $PROMPT_HARNESS_EXIT (expected 0):"
+    printf '%s\n' "$PROMPT_HARNESS_OUTPUT" | head -30 | sed 's/^/        /'
+    FAIL=1
+  else
+    PROMPT_HARNESS_PASS_COUNT=$(printf '%s\n' "$PROMPT_HARNESS_OUTPUT" | grep -c '^PASS ')
+    echo "PASS  superset prompt-level harness: $PROMPT_HARNESS_PASS_COUNT fixtures verified"
+  fi
+else
+  echo "WARN  skipping superset prompt-level harness invariant (script not present at $SUPERSET_PROMPT_HARNESS)"
 fi
 
 if [[ "$FAIL" -ne 0 ]]; then

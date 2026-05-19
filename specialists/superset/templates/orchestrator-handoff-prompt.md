@@ -99,6 +99,34 @@ state. Includes:
 Every fact must be one the live state can confirm or refute. If a fact
 is "true at handoff time but un-verifiable later," flag it explicitly.
 
+#### Per-fact confidence-tier tagging
+
+Each fact in section 4 carries one of four epistemic tags, borrowed
+from the `epistemic-planning` skill. The new orchestrator reads the
+tag to know which facts to re-verify first.
+
+- `[verified]`: the orchestrator confirmed by running a command or
+  reading a file within the last 30 minutes.
+- `[inferred]`: the orchestrator derived from another verified fact
+  or from the daily log, but did not directly verify.
+- `[speculative]`: the orchestrator's best guess; the new orch
+  should prioritize verifying this before acting on it.
+- `[unknown]`: the orchestrator does not know; the new orch must
+  establish.
+
+When a fact's tag is ambiguous, default to the weaker tag. A fact
+that might be `[verified]` but rests on a 45-minute-old check
+becomes `[inferred]`.
+
+Worked example, four lines of stated context:
+
+```
+HEAD SHA on main: 3a7f1b2 [verified] (git log -1 main, 12:04)
+Open PRs: #41 (Agent B), #43 (Agent C) [verified] (gh pr list, 12:04)
+Operator's intensity expectation for the rest of the day: light review only [inferred from daily log entry at 09:30]
+Whether CI cleared on #43 after the last rebase: [unknown]
+```
+
 ### 5. Plan ahead
 
 The next 3-5 calendar days of planned work, calibrated by the
@@ -149,6 +177,59 @@ Why embed and not persist-to-disk: gitignored paths block
 python-script-to-/tmp adds complexity. Embedding in the handoff text
 is the most reliable artifact transfer.
 
+### When verbatim vs reference-by-path
+
+Verbatim embedding (the `===AGENT N PROMPT START===` block) is the
+default. Reference-by-path is the documented exception when
+verbatim is impractical.
+
+**Verbatim embedding is required when all of these hold:**
+
+- The agent prompt is 200 lines or fewer.
+- The agent prompt will be used as-is by the operator with no
+  further customization expected.
+- The handoff is the primary artifact preserved across the
+  rotation, so the prompt body must travel inside it.
+
+**Reference-by-path is acceptable when any of these hold:**
+
+- The agent prompt exceeds 200 lines and embedding bloats the
+  handoff past usable length.
+- The agent prompt is ephemeral, intended for one-time use (a
+  CI-unblock worker, a single-shot scope correction).
+- The agent prompt was authored in a separate worker chat and the
+  file already exists at a stable path the operator can find.
+- The agent prompt is being actively revised between handoff and
+  dispatch.
+
+When using reference-by-path, the handoff MUST include:
+
+- The exact absolute path to the prompt file.
+- A one-paragraph summary (so the new orchestrator can dispatch
+  without reading the full file).
+- The explicit rationale, citing one of the conditions above.
+- An expected-state note: "If this file does not exist when you
+  reach this step, STOP and report to operator."
+
+Worked example, one verbatim block and one reference-by-path
+block:
+
+```
+===AGENT 1 PROMPT START===
+Role declaration: ...
+First steps: ...
+Task: ...
+[full prompt body, 140 lines]
+===AGENT 1 PROMPT END===
+
+===AGENT 2 PROMPT (reference)===
+Path: $HOME/Projects/<project>/localonly/agent-prompts/2026-05-19-agent2-rebuild-index.md
+Summary: Rebuilds the corpus index after the schema change in PR #41 landed. Single-file scope; out-of-scope guard on everything else under data/.
+Rationale: prompt is 612 lines (above the 200-line verbatim threshold) and lives at a stable path the operator already knows.
+Expected state: if the file does not exist when you reach this step, STOP and report to operator.
+===AGENT 2 PROMPT (reference) END===
+```
+
 ## Falsifier checklist additions for handoff prompts
 
 In addition to the general falsifier-checklist for agent prompts, the
@@ -159,11 +240,12 @@ handoff prompt must pass:
 | HO1 | State facts are verifiable against live state? | Every fact in "Stated context" has a corresponding command in "State verification"? | Add the missing verify command |
 | HO2 | "Treat live state as canonical" stated explicitly? | grep handoff for the phrase or equivalent | Add it |
 | HO3 | YOU DO / YOU DO NOT scope table present? | grep for the table | Add the table |
-| HO4 | Agent prompts embedded verbatim (not summarized)? | Each `===AGENT N PROMPT START===` block present, full body? | Re-paste full prompts |
+| HO4 | Agent prompts embedded verbatim OR reference-by-path with stated rationale? | Each agent prompt has either a `===AGENT N PROMPT START===` block (verbatim) OR a `===AGENT N PROMPT (reference)===` block citing the file path and stating why reference-by-path is appropriate? | Re-paste verbatim OR add reference-block with rationale |
 | HO5 | Rollback SHA stated explicitly? | grep for "rollback" or "reset --hard" | Add the rollback line |
 | HO6 | Trainer + superset load as steps 1 and 2? | First-steps section ordering | Reorder |
 | HO7 | No-autonomy / no-poll discipline stated? | grep for "no autonomy" or async-handoff reference | Add restatement |
 | HO8 | Initial action is "verify state, report, wait" not "spawn"? | Last section of handoff | Rewrite the close |
+| HO9 | Every fact in "Stated context" carries a `[verified\|inferred\|speculative\|unknown]` tag? | grep handoff for tag count vs fact count | Tag each fact |
 
 ## Common mistakes
 
