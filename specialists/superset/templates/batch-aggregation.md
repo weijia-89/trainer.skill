@@ -1,8 +1,8 @@
 # Batch aggregation template
 
-The operator runs this playbook after all dispatched agents in a parallel batch have returned. The pass happens before any push or PR. Budget ~10 minutes per agent on top of the agent's own wall-clock.
+The operator runs this playbook after all dispatched agents in a parallel batch return. Runs before any push or PR. Budget ~10 minutes per agent on top of the agent's wall-clock.
 
-This is the operator's job, not the agents'. The agents have already committed inside their worktrees and written their session logs; the operator now decides what to ship.
+This is the operator's job, not the agents'. Agents have already committed inside their worktrees and written session logs; the operator decides what to ship.
 
 ---
 
@@ -17,8 +17,8 @@ cat <PROJECT>/localonly/session-logs/<DATE>-agent<N>-<task-slug>.md
 What to look for:
 
 - **Outcome line.** Success, partial, or blocked? Partial and blocked agents go through the failure decision matrix below.
-- **Surprises section.** Did the agent encounter prompt-assumptions that diverged from reality? Capture those for the next iteration of the falsifier checklist.
-- **Files touched.** Cross-check against the agent's stated Owned-paths in the prompt. Drift means scope-creep, which means the next batch's prompts need tighter scopes.
+- **Surprises section.** Did the agent encounter prompt-assumptions that diverged from reality? Capture for the next falsifier-checklist iteration.
+- **Files touched.** Cross-check against the agent's stated Owned-paths in the prompt. Drift means scope-creep; the next batch's prompts need tighter scopes.
 - **Commit SHA(s).** Confirm the SHA list matches what you see in the worktree branch.
 
 If a log section is missing or the agent crashed before writing it, the worktree itself is the source of truth. `git log` on the branch tells you what was committed.
@@ -27,7 +27,7 @@ If a log section is missing or the agent crashed before writing it, the worktree
 
 ## Step 2: Cross-check failing-test lists
 
-Per the baseline-capture-then-compare discipline, every agent should have produced two files in `/tmp`:
+Per the baseline-capture-then-compare discipline, every agent produces two files in `/tmp`:
 
 ```
 /tmp/<task-slug>-baseline-failing.txt
@@ -42,7 +42,7 @@ diff /tmp/<task-slug>-baseline-failing.txt /tmp/<task-slug>-after-failing.txt
 
 Expected: no diff. The agent did not introduce new failures and did not fix unrelated pre-existing failures (which would mean scope-creep).
 
-After all agents are reviewed, run the suite on the would-be-merged state:
+After reviewing all agents, run the suite on the would-be-merged state:
 
 ```bash
 # In a scratch branch off main
@@ -83,7 +83,7 @@ For each agent that returned partial, blocked, or with a STOP-and-report message
 | Crashed or returned incoherent state | Rollback the worktree (`git worktree remove`), salvage the session log for falsifier-checklist updates, do not re-dispatch with the same prompt. Rewrite first. |
 | Returned with scope-creep (touched files outside Owned-paths) | Cherry-pick only the in-scope commits; reject the rest. Add the out-of-scope drift to next batch's falsifier review. |
 
-Two retries per agent is the cap, matching the trainer's coached-override pattern. Beyond that, the prompt itself is wrong; rewriting beats redispatching.
+Two retries per agent is the cap, matching the trainer's coached-override pattern. Beyond that, the prompt is wrong; rewriting beats redispatching.
 
 ---
 

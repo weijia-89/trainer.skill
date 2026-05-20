@@ -84,10 +84,10 @@ if [[ "$FAIL" -eq 0 ]]; then
   echo "PASS  all four sync targets agree on version $CANONICAL_VERSION"
 fi
 
-# Invariant 5: SKILL.md (canonical) is ≤280 lines (bootstrap-skill cap; original 100, bumped to 140 in v0.4.0 for Iron Law layering, then to 180 in v0.5.0 for Red Flags / Rationalizations, then to 240 in v0.7.0 for the v0.6 Iron-Law pre-action gate + worked examples + ancillary routing-flow entries, then to 280 in v0.8.0 for the Dispatch-graph-before-dispatch sub-clause)
+# Invariant 5: SKILL.md (canonical) is ≤320 lines (bootstrap-skill cap; original 100, bumped to 140 in v0.4.0 for Iron Law layering, then to 180 in v0.5.0 for Red Flags / Rationalizations, then to 240 in v0.7.0 for the v0.6 Iron-Law pre-action gate + worked examples + ancillary routing-flow entries, then to 280 in v0.8.0 for the Dispatch-graph-before-dispatch sub-clause, then to 320 in v0.9.0 for the Decision-presentation template subsection)
 CANONICAL_LINES=$(wc -l < "$CANONICAL")
-if [[ "$CANONICAL_LINES" -gt 280 ]]; then
-  echo "WARN  canonical SKILL.md is $CANONICAL_LINES lines (soft cap 280)"
+if [[ "$CANONICAL_LINES" -gt 320 ]]; then
+  echo "WARN  canonical SKILL.md is $CANONICAL_LINES lines (soft cap 320)"
 fi
 
 # Invariant 6: zero em-dashes (Wei's writing-style hard rule, 2026-05-15)
@@ -120,10 +120,11 @@ fi
 
 # Invariant 8: zero private-path leaks in the trainer.skill repo (everything that
 # gets pushed to the public github mirror). Catches accidental references to
-# private review docs, career-help workspace, or local-only directories before
+# private review docs, career-help workspace (renamed to toren/ 2026-05-19, both
+# names kept in pattern for transition safety), or local-only directories before
 # they ship. Added 2026-05-16 after two consecutive sanitization passes.
 REPO_ROOT="$HOME/Projects/trainer.skill"
-LEAK_PATTERN='(/Users/wjia/|~/Projects/(reviews|career-help|local[-_]?only)/)'
+LEAK_PATTERN='(/Users/wjia/|~/Projects/(reviews|career-help|toren|local[-_]?only)/)'
 SELF_BASENAME="$(basename "${BASH_SOURCE[0]}")"
 
 if command -v git >/dev/null 2>&1 && [[ -d "$REPO_ROOT/.git" ]]; then

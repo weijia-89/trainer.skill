@@ -1,6 +1,6 @@
 # Role overlays
 
-The base agent prompt at `../templates/agent-prompt.md` is `code`-flavored by default. Two overlays cover the other typical workloads. To apply an overlay, replace the relevant sections of the base template with the substitutions below; everything else (worktree setup, baseline capture, commit-no-push, session log) stays the same.
+The base agent prompt at `../templates/agent-prompt.md` is `code`-flavored by default. Two overlays cover other typical workloads. To apply an overlay, replace the relevant sections of the base template with the substitutions below; everything else (worktree setup, baseline capture, commit-no-push, session log) stays the same.
 
 ---
 
@@ -25,7 +25,7 @@ The base template is already calibrated for this archetype. No substitutions.
 
 ## Overlay: `Role: sweep`
 
-Narrow-scope mechanical edits across many files. The work is largely find-and-replace with judgment, not architecture.
+Narrow-scope mechanical edits across many files. The work is find-and-replace with judgment, not architecture.
 
 **Typical use cases:**
 
@@ -61,7 +61,7 @@ Replace the `Vibe-careful protocol` section with:
 ```markdown
 ## Sweep discipline
 
-Sweep edits are vibe-safe per file but vibe-careful in aggregate. The risks are:
+Sweep edits are vibe-safe per file but vibe-careful in aggregate. Risks:
 
 - False positives: pattern matches in contexts where it should be preserved (code blocks, embedded examples, citation strings). Read every match before edit.
 - False negatives: pattern variants the regex did not anticipate. Run the verification grep after every batch of ~10 files; investigate any residual matches.
@@ -88,7 +88,7 @@ diff /tmp/<task-slug>-baseline-failing.txt <(grep -E 'FAILED|ERROR' /tmp/<task-s
 
 ## Overlay: `Role: prose-audit`
 
-Voice-rule or corpus-grounded review and rewrite of prose. The work judges every sentence against a calibration corpus.
+Voice-rule or corpus-grounded review and rewrite of prose. Judges every sentence against a calibration corpus.
 
 **Typical use cases:**
 
@@ -135,6 +135,6 @@ python3 ~/.claude/skills/deai/deai-check.py <BASELINE_FILE> 2>&1 | tail -10
 
 ## When NOT to use an overlay
 
-Some tasks are mixed. A feature implementation that also requires a doc update is a `code` task with a follow-up `prose-audit` agent, not a single hybrid agent. Mixed roles confuse verification (which signal is canonical) and dilute scope. Split into two agents.
+Some tasks are mixed. A feature implementation that also requires a doc update is a `code` task with a follow-up `prose-audit` agent, not a single hybrid. Mixed roles confuse verification (which signal is canonical) and dilute scope. Split into two agents.
 
-If the work is too small for any overlay (< 30 minutes, single-file, read-mostly), the same-tree exception in `SKILL.md` applies and the prompt is whatever is sufficient. Overlays are calibrated for batched parallel dispatch, not single-shot edits.
+If the work is too small for any overlay (< 30 minutes, single-file, read-mostly), the same-tree exception in `SKILL.md` applies and the prompt is whatever suffices. Overlays are calibrated for batched parallel dispatch, not single-shot edits.

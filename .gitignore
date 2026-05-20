@@ -27,3 +27,6 @@ __pycache__/
 
 # Pressure-scenario run outputs (per-run artifacts; never committed)
 tests/scenarios/harness/runs/
+
+# Parallel-agent worktrees (per superset SKILL.md Worktree discipline)
+.worktrees/

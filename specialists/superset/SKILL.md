@@ -2,7 +2,7 @@
 name: superset
 description: Use when spawning 2+ fresh-context agents on the same git repo for isolated parallel work; symptoms include same-tree shared-state risk (.pytest_cache / pyproject collisions), agents overstepping scope, intermediate commits pushed by accident, session learnings lost between iterations, prompt quality drifting between agents.
 type: project-skill
-version: 0.7.0
+version: 0.8.1
 authors: Wei Jia (2026-05-19)
 license: MIT
 composes:
@@ -19,7 +19,7 @@ composes:
 
 Named for the weightlifting superset: two or more exercises performed back-to-back, often on different muscle groups, so the lifter sustains higher total volume in less wall-clock time. This skill is the dispatch discipline that lets one operator run multiple AI agents the same way. Each agent works its own task in isolation; the operator is the rest interval that coordinates the next round; total throughput beats sequential single-agent work, provided the isolation, scope, and merge discipline hold.
 
-Parallel agents on the same git repo collide on shared state (caches, pyproject, lock files) and lose their session learnings unless you build the prompt for isolation. This skill is a prompt-template generator plus a falsifier checklist for catching prompt-quality drift before spawning.
+Parallel agents on the same git repo collide on shared state (caches, pyproject, lock files) and lose their session learnings unless the prompt is built for isolation. This skill is a prompt-template generator plus a falsifier checklist for catching prompt-quality drift before spawning.
 
 **Core principle:** every dispatched agent gets a self-contained prompt with (a) **isolated worktree by default** (per-agent `.git` index, caches, optional venv), (b) baseline capture (test count, failing-test list, HEAD SHA, lint state), (c) explicit scope + out-of-scope, (d) commit-only no-push, (e) post-session log to `localonly/session-logs/`. Without all five, agents drift or collide.
 
@@ -43,9 +43,7 @@ Do NOT spawn isolated agents when:
 
 ## Daily-log-driven dispatch (added v0.4.0, 2026-05-19)
 
-The coordination primitive for multi-agent days is a single per-project daily log at `<project>/localonly/daily/<YYYY-MM-DD>.md`. It replaces the older pattern of per-batch dispatch manifests plus per-agent session logs as separate artifacts. One file holds the manifest, the in-flight status broadcast, each agent's session-log content, the end-of-day summary, and the work-in-a-day metrics.
-
-Why one file: the orchestrator (Cascade) and every dispatched agent read from and append to the same artifact. Producer-consumer dependencies are surfaced in the manifest header; the consumer agent reads the producer's session-log entry before starting, which gives content-precondition checking for free. Wei reviews one document per project per day instead of N prompts plus N session logs.
+The coordination primitive for multi-agent days is a single per-project daily log at `<project>/localonly/daily/<YYYY-MM-DD>.md`, replacing the older pattern of per-batch dispatch manifests plus per-agent session logs as separate artifacts. One file holds the manifest, in-flight status broadcast, each agent's session-log content, end-of-day summary, and work-in-a-day metrics. The orchestrator (Cascade) and every dispatched agent read and append to it; producer-consumer dependencies surface in the manifest header, so the consumer reads the producer's session-log entry before starting (content-precondition checking). Wei reviews one document per project per day instead of N prompts plus N session logs.
 
 ### The artifact, end to end
 
@@ -56,35 +54,33 @@ The daily log has four sections, in order:
 3. **Per-agent entries.** Each dispatched agent appends its own session-log content to its named subsection of the daily log when it finishes. This is the per-agent session log; there is no separate `localonly/session-logs/<date>-agent<N>-<slug>.md` artifact anymore. The agent writes status transitions (CLAIMED at start, IN_PROGRESS at midpoint optional, DONE or FAILED at end) by editing the manifest's `status` field on its own row.
 4. **End-of-day summary.** Cascade fills this at user's request or at natural end-of-day. Work-in-a-day metrics (see below) plus carries-to-tomorrow plus blocked items.
 
-The template at `templates/daily-log.md` ships the full schema with an annotated example. The full-spec format for each section lives there, not here, to keep the SKILL.md focused on the discipline.
+The template at `templates/daily-log.md` ships the full schema with an annotated example. The per-section spec lives there, not here, to keep SKILL.md focused on the discipline.
 
 ### Auto-invoke and self-adversarial review
 
-Cascade automatically drafts the daily-log manifest section on any user phrase implying multi-agent dispatch. The user does not say "draft a manifest"; the trigger is the dispatch intent itself ("spawn N agents", "let's run these in parallel", "kick off a wave", "run these tasks today", etc.). Before surfacing the draft to the user, Cascade self-adversarially reviews its own proposal using:
+Cascade automatically drafts the daily-log manifest on any user phrase implying multi-agent dispatch. The user does not say "draft a manifest"; the trigger is the dispatch intent itself ("spawn N agents", "let's run these in parallel", "kick off a wave", "run these tasks today", etc.). Before surfacing the draft, Cascade self-adversarially reviews using:
 
 - This skill's falsifier checklist (especially H11 through H15 for dispatch hazards).
 - A `form-check adversarial-review` pass scoped to the manifest, scanning for owned-path overlaps, missing producer-consumer links, freeze-list violations, duplicate dispatches against existing artifacts, and Cwd-race risks in same-tree dispatches.
 - The project's freeze list at `localonly/daily/high-stakes-list.yaml` (Option 4b gate; see Freeze list below).
 
-Adversarial review findings are surfaced alongside the proposed manifest under "Decisions awaiting user sign-off" before per-agent prompts are generated. The user approves or revises one document; Cascade then generates the prompts from the manifest using the template renderer.
+Adversarial review findings surface alongside the proposed manifest under "Decisions awaiting user sign-off" before per-agent prompts are generated. The user approves or revises one document; Cascade then generates the prompts from the manifest using the template renderer.
 
 ### Producer-consumer artifact contract
 
-Each agent declares `produces: [paths]` and `consumes: [paths]`. The orchestrator validates that consumer agents are placed in a later phase than their producers. The validator (Phase 2 deliverable; see ROADMAP) refuses to render the prompt if a `consumes` entry has no matching `produces` in any earlier-phase agent. This is the primitive that catches the buds 2026-05-19 f-droid case: the LICENSE-editing agent declares `consumes: docs/strategy/fdroid-fsl-acceptance.md`, the research agent declares `produces: docs/strategy/fdroid-fsl-acceptance.md`, the validator places the LICENSE agent in Phase 2.
-
-At agent start, the consumer agent's first-steps block reads the producer's daily-log entry (its session-log subsection plus its `produces` paths' content) before doing its own work. If the producer's status is not `DONE` or any `produces` artifact is absent, the consumer halts and updates its own status to `BLOCKED`.
+Each agent declares `produces: [paths]` and `consumes: [paths]`. The orchestrator validates that consumer agents sit in a later phase than their producers. The validator refuses to render the prompt if a `consumes` entry has no matching `produces` in any earlier-phase agent. This catches the buds 2026-05-19 f-droid case: the LICENSE-editing agent declares `consumes: docs/strategy/fdroid-fsl-acceptance.md`, the research agent declares `produces: docs/strategy/fdroid-fsl-acceptance.md`, the validator places the LICENSE agent in Phase 2. At agent start, the consumer's first-steps block reads the producer's daily-log entry (session-log subsection plus `produces` paths' content) before doing its own work; if the producer's status is not `DONE` or any `produces` artifact is absent, the consumer halts and sets its own status to `BLOCKED`.
 
 ### Status broadcast (single-file flavor)
 
-Each agent updates its `status` field in the manifest header at three moments: `CLAIMED` immediately after picking up its task (first commit Cascade should make on the daily log on agent's behalf), `IN_PROGRESS` at any natural midpoint (optional), `DONE` or `FAILED` at end. Sibling agents and the orchestrator read the manifest header on demand to know the live state of the batch. No separate `.status.json` file is needed; the daily log is the single source of truth.
+Each agent updates its `status` field in the manifest header at three moments: `CLAIMED` immediately after picking up its task (first commit Cascade makes on the agent's behalf), `IN_PROGRESS` at any natural midpoint (optional), `DONE` or `FAILED` at end. Sibling agents and the orchestrator read the manifest header on demand. No separate `.status.json` file is needed; the daily log is the single source of truth.
 
 ### Freeze list (high-stakes file gate)
 
-Each project ships `<project>/localonly/daily/high-stakes-list.yaml` (or symlinks an org-wide default). The validator refuses to render a prompt for any agent whose `owned_paths` intersect the freeze list, unless that agent's manifest entry declares `precondition: research-complete` and a sibling-or-earlier-phase agent in the same daily log has `produces:` covering the research artifact. The template at `templates/high-stakes-list.yaml` ships an annotated schema with buds and mailchimp starter entries.
+Each project ships `<project>/localonly/daily/high-stakes-list.yaml` (or symlinks an org-wide default). The validator refuses to render a prompt for any agent whose `owned_paths` intersect the freeze list unless that agent's manifest entry declares `precondition: research-complete` and a sibling-or-earlier-phase agent has `produces:` covering the research artifact. The template at `templates/high-stakes-list.yaml` ships an annotated schema with buds and mailchimp starter entries.
 
 ### Work-in-a-day metrics
 
-End-of-day-summary section reports the following (Set B per the 2026-05-19 research doc decision; Set A is a strict subset; Set C is a Phase 3 escalation):
+End-of-day-summary section reports (Set B per the 2026-05-19 research doc decision; Set A is a strict subset; Set C is a Phase 3 escalation):
 
 - **Agent count.** Dispatched, completed, failed, blocked carrying to tomorrow.
 - **Commit count.** Across all worktrees merged today.
@@ -109,15 +105,15 @@ The verdict is descriptive plus advisory; not a hard cap. Wei holds the override
 
 ### Migration notes
 
-Existing projects with `localonly/session-logs/` keep their historical logs as-is; the directory becomes archival after v0.4.0 adoption. New session logs land inside the daily log. The transition is per-project, not flag-day: a project can adopt v0.4.0 the next time it runs a multi-agent batch.
+Existing projects with `localonly/session-logs/` keep their historical logs as-is; the directory becomes archival after v0.4.0 adoption. New session logs land inside the daily log. The transition is per-project, not flag-day; a project adopts v0.4.0 the next time it runs a multi-agent batch.
 
 ## Three-layer agent architecture (orch + meta + worker)
 
-The dispatch system operates across three named agent layers, each with a distinct lifespan and a distinct responsibility. The trainer iron law "Dispatch graph before dispatch" routes here for the operational detail.
+The dispatch system operates across three named agent layers, each with a distinct lifespan and responsibility. The trainer iron law "Dispatch graph before dispatch" routes here for operational detail.
 
 ### Layer 1, worker
 
-Per-task, fresh-context agents covered by the existing five-pillar prompt discipline (worktree + baseline + scope + no-push + session log to daily log). Spawned by orch; killed at task completion. Worker session logs live as named subsections inside the daily log.
+Per-task, fresh-context agents covered by the five-pillar prompt discipline (worktree + baseline + scope + no-push + session log to daily log). Spawned by orch; killed at task completion. Worker session logs live as named subsections inside the daily log.
 
 ### Layer 2, orch (project manager, 1-day default)
 
@@ -138,7 +134,7 @@ The chat the operator talks to. Lives for one operational day by default. Refres
 - "hand off the orch" / "rotate the orchestrator" / "spawn a new orch"
 - "spin up tomorrow's orch" / "give me a fresh orch chat"
 
-On any of these, Cascade auto-drafts the hand-off summary (see schema below) and writes it to the top of the daily log without being asked to "draft the summary first". The user gets one document to scan; approving the summary is the signal to spin up the new orch chat.
+On any of these, Cascade auto-drafts the hand-off summary (see schema below) and writes it to the top of the daily log without being asked. The user gets one document to scan; approving the summary signals to spin up the new orch chat.
 
 ### Layer 3, meta (director, 1-week default)
 
@@ -168,11 +164,11 @@ The pattern-recognition and skill-improvement layer. Lives for one operational w
 
 On any of these, Cascade either spawns a new meta chat (with the meta-prompt template, pointing it at the week's daily logs) or hands off the current meta-thread's running notes.
 
-**Meta refresh.** Same triggers as orch hand-off but applied to the meta chat: when the meta context bloats or the IDE slows, the outgoing meta writes a hand-off summary at the top of the current weekly meta log; the new meta ingests it as the first turn.
+**Meta refresh.** Same triggers as orch hand-off but applied to the meta chat: when the meta context bloats or the IDE slows, the outgoing meta writes a hand-off summary at the top of the current weekly meta log; the new meta ingests it as its first turn.
 
 ## Orchestrator-role discipline: in-chat fix vs. spawn an agent
 
-The orchestrator's read-only-on-source default is sometimes asked to bend. When the operator asks the orchestrator to fix a small CI failure, a typo in a comment, or a one-line config change, the orchestrator decides between two paths:
+The orchestrator's read-only-on-source default is sometimes asked to bend. When the operator asks for a small CI fix, a comment typo, or a one-line config change, the orchestrator decides between two paths:
 
 1. **In-chat fix** (orchestrator makes the edit directly).
 2. **One-shot agent prompt** (spawn a tiny agent for the fix).
@@ -185,7 +181,7 @@ The orchestrator's read-only-on-source default is sometimes asked to bend. When 
 
 ### Exception logging
 
-When the orchestrator makes an in-chat fix, the exception is logged in the session at the time (not retroactively). The log entry includes: what was edited, what files, the analyzer command that prescribed the fix (if applicable), and the operator's explicit approval. Codified as a precedent for the next orchestrator session.
+When the orchestrator makes an in-chat fix, the exception is logged in the session at the time (not retroactively). The log entry includes: what was edited, what files, the analyzer command that prescribed the fix (if applicable), and the operator's explicit approval. Codified as precedent for the next orchestrator session.
 
 **Exception log entry template** (paste into the session log at the moment of the in-chat fix):
 
@@ -199,13 +195,87 @@ When the orchestrator makes an in-chat fix, the exception is logged in the sessi
 - **Commit SHA(s):** [if the fix was committed]
 ```
 
-The scaffold fields force the orchestrator to articulate each decision criterion at the moment of acting, making the precedent legible for the next session and disambiguating "the operator said go ahead" (insufficient, since the exact phrasing matters) from "the operator authorized this specific scope" (sufficient).
+The scaffold fields force the orchestrator to articulate each decision criterion at the moment of acting, making the precedent legible and disambiguating "the operator said go ahead" (insufficient; exact phrasing matters) from "the operator authorized this specific scope" (sufficient).
 
 Worked example: buds 2026-05-19 commits `20f703b` + `091a268` on `rpd2/flutter-copy-sweep` were CI-unblock lint fixes (drop deprecated `avoid_returning_null_for_future`, clear 16 info-level analyzer issues). Scope was mechanical, CI was blocking, operator approved. Logged in the orchestrator handoff at `localonly/orchestration/handoffs/2026-05-19-orchestrator-handoff.md` Section 6 as a precedent exception.
 
+## Status-claim evidence iron law (added 2026-05-19, post-buds-orch-handoff incident)
+
+Any orch assertion about an in-flight or completed track — in a handoff
+summary, daily-log update, end-of-day close-out, or chat reply — MUST
+be backed by ≥2 evidence sources, of which ≥1 is a primary source.
+
+### Evidence taxonomy
+
+**Primary sources** (the artifact itself, empirically inspectable now):
+- Git commits on the track's named branch: `git log --oneline -n 5 <branch>` 
+- Branch existence: `git rev-parse --verify <branch>` (exit 0 = exists)
+- Files at declared `produces:` paths: `ls -la <path>` 
+- Content head at `produces:` paths: `head -20 <path>` (for non-empty check)
+- CI status on the branch (when applicable)
+
+**Secondary sources** (inference about the artifact; never sufficient alone):
+- The daily-log manifest's `status` field
+- The handoff doc's narrative claim
+- A previous orch's recollection or end-of-day summary
+- Cascade's own memory of prior turns
+
+### Validation rule
+
+A status claim is valid only if:
+- ≥2 evidence sources support it
+- ≥1 of those is a primary source
+- The two sources are independently verifiable (not both derived from the
+  same upstream claim — e.g., a handoff narrative and Cascade's memory of
+  reading that handoff are not two independent sources)
+
+### Required check-in moments (token-cheap by design)
+
+1. **Outgoing orch handoff, before writing summary.**
+   Run `bash scripts/validate-track-status.sh <today's daily log>`.
+   The summary cites evidence rows from the script, not narrative.
+
+2. **Incoming orch first turn, before acting on any track.**
+   Re-run the same script. Divergence from outgoing summary halts and
+   routes to operator.
+
+3. **Daily-log end-of-day close-out.**
+   Validate every track marked DONE has produces-artifact evidence on
+   disk. Tracks with status claims but no primary evidence get marked
+   `STATUS UNVERIFIED` and surfaced.
+
+4. **Any chat reply that makes a status claim.**
+   "Track X is [in-flight | done | blocked]" requires the orch to have
+   run the validator within the current turn or cite a timestamp ≤30 min
+   old. No "I recall from the handoff" claims allowed.
+
+### Validator script shape
+
+`scripts/validate-track-status.sh` parses the daily-log manifest, extracts
+each track's branch + produces path + manifest status, and emits ~5 lines
+per track:
+
+    Track: license-audit-wei-repos
+      Branch HEAD: <no branch named license-audit-*>  [PRIMARY: no dispatch evidence]
+      Produces: /tmp/license-audit-2026-05-19.md: ABSENT  [PRIMARY: no completion evidence]
+      Manifest status: NOT DISPATCHED  [SECONDARY]
+      Last activity: never  [PRIMARY: derived from above]
+      VERDICT: undispatched
+
+Output ~5N lines for N tracks. Typical day = 4-8 tracks = 20-40 lines.
+Token cost ~100-200 tokens per validation cycle. Cheap.
+
+### What this catches (worked example: 2026-05-19 license-audit miss)
+
+Outgoing orch wrote "Track A status: UNCLEAR, verify with Wei." A
+validator run would have emitted the three-line block above. Three
+sources, two primary, all pointing at: track was never live in buds
+context. The orch's correct conclusion: "Track A was undispatched and
+out of scope for buds-orch. Surfacing for drop, not for check-in."
+
 ## Hand-off summary schema (token-optimized)
 
-The orch hand-off summary lives at the very top of the daily log (above the YAML front-matter manifest, in a fenced section that survives the manifest's parser ignoring it). Target: ≤1000 tokens for a typical day; ≤1500 for a heavy day with many in-flight items. The new orch reads this section alone in its first turn and gets ~90% of the day's context without parsing the full daily log.
+The orch hand-off summary lives at the very top of the daily log (above the YAML front-matter manifest, in a fenced section that survives the manifest's parser ignoring it). Target: ≤1000 tokens for a typical day; ≤1500 for a heavy day with many in-flight items. The new orch reads this section alone in its first turn and gets ~90% of the day's context without parsing the full log.
 
 ### Required fields (per the template at `templates/daily-log.md` Section 0)
 
@@ -219,7 +289,7 @@ The orch hand-off summary lives at the very top of the daily log (above the YAML
 
 ### Authorship discipline
 
-Outgoing orch writes the summary AFTER ingesting all worker session-log subsections in the current day's daily log. The summary is a synthesis, not a dump. Cascade's self-adversarial review pass on the summary checks for:
+Outgoing orch writes the summary AFTER ingesting all worker session-log subsections in the day's daily log. The summary is a synthesis, not a dump. Cascade's self-adversarial review pass on the summary checks for:
 
 - Missing in-flight workers (cross-reference manifest STATUS field against the summary's in-flight list)
 - Missing decisions (cross-reference any "Decisions awaiting user sign-off" sections in the wave narrative)
@@ -235,7 +305,7 @@ Outgoing orch writes the summary AFTER ingesting all worker session-log subsecti
 
 ### What the new meta does on refresh
 
-Same pattern, but reading the weekly meta log's hand-off summary at the top of the file. New meta's first action is to acknowledge the week's running patterns and the carries-to-next-week list.
+Same pattern, reading the weekly meta log's hand-off summary at the top of the file. New meta's first action is to acknowledge the week's running patterns and the carries-to-next-week list.
 
 ## Empirical falsifier harness (added v0.4.0, Mozilla-mythos style)
 
@@ -256,7 +326,7 @@ Adding a new falsifier requires (a) the check in the validator, (b) a fixture un
 
 ## Private-path leak scan (iron-law severity, added 2026-05-19)
 
-Empirical scan, not inferred. Before any commit, bundle refresh, or push of any specialist skill or its templates, run the trainer's verify script (`scripts/verify_trainer_sync.sh`); invariant 8 there checks for operator-local absolute paths and gitignored-workspace prefixes across all tracked files. The exact grep pattern lives in the script, not in this rule body, so that the rule body itself does not trigger the scanner.
+Empirical scan, not inferred. Before any commit, bundle refresh, or push of any specialist skill or its templates, run the trainer's verify script (`scripts/verify_trainer_sync.sh`); invariant 8 checks for operator-local absolute paths and gitignored-workspace prefixes across tracked files. The exact grep pattern lives in the script, not here, so this rule body does not trigger the scanner.
 
 If any match returns, halt and route to the operator for explicit acknowledgement. No "I read the file and there shouldn't be a path" overrides; the verify script is the gate.
 
@@ -297,7 +367,7 @@ The prompt template is at `templates/agent-prompt.md`. Copy, fill the bracketed 
 
 For v0.4.0+ daily-log dispatch, the daily-log template at `templates/daily-log.md` is the single artifact containing manifest, wave narrative, per-agent entries, and end-of-day summary. The freeze-list schema at `templates/high-stakes-list.yaml` defines the project's high-stakes files. Both templates ship with annotated buds and mailchimp examples.
 
-For handing off the *orchestrator role itself* to a fresh chat when the current orchestration chat hits context-window pressure or the IDE slows under accumulated history, see `templates/orchestrator-handoff-prompt.md`. The orchestrator handoff is a distinct pattern: it transfers a long-running coordination role rather than spawning a scoped worker. Same five-pillar discipline plus eight orchestrator-specific falsifiers (HO1-HO8 in the template).
+For handing off the *orchestrator role itself* to a fresh chat when context-window pressure or IDE slowdown forces rotation, see `templates/orchestrator-handoff-prompt.md`. The orchestrator handoff is a distinct pattern: it transfers a long-running coordination role rather than spawning a scoped worker. Same five-pillar discipline plus eight orchestrator-specific falsifiers (HO1-HO8 in the template).
 
 ## Run the falsifier checklist before spawning
 
@@ -305,7 +375,7 @@ Before pasting the prompt to a fresh chat, run the falsifier checklist at `refer
 
 ## Worktree discipline
 
-Default: every dispatched agent works in its own git worktree at `<project>/.worktrees/<task-slug>/`. The worktree gives the agent its own `.git/index.lock`, `.pytest_cache/`, `.ruff_cache/`, `.mypy_cache/`, and (optionally) `.venv/`. Without a worktree, parallel agents collide on shared state.
+Default: every dispatched agent works in its own git worktree at `<project>/.worktrees/<task-slug>/`. The worktree gives each agent its own `.git/index.lock`, `.pytest_cache/`, `.ruff_cache/`, `.mypy_cache/`, and optionally `.venv/`. Without it, parallel agents collide on shared state.
 
 ### Directory-selection priority
 
@@ -327,11 +397,11 @@ Before creating a project-local worktree, verify the directory is gitignored:
 git -C <project> check-ignore -q .worktrees 2>/dev/null
 ```
 
-If not ignored, add the directory to `.gitignore` and commit before proceeding. Skipping the pre-flight risks the next `git add .` pulling worktree contents into the main checkout, which the operator may not catch until much later. Global worktree locations outside the project skip this check.
+If not ignored, add it to `.gitignore` and commit before proceeding. Skipping risks the next `git add .` pulling worktree contents into the main checkout. Global worktree locations outside the project skip this check.
 
 ### Project-setup auto-detect
 
-After `git worktree add`, run the right install command based on the manifest in the worktree, not based on operator memory of which language is at play:
+After `git worktree add`, run the right install command from the worktree manifest, not from operator memory:
 
 ```bash
 [ -f package.json ] && npm install
@@ -341,22 +411,20 @@ After `git worktree add`, run the right install command based on the manifest in
 [ -f go.mod ] && go mod download
 ```
 
-The first command that matches wins; the agent runs only one install path. Worktree-local venv is required for any Python project that mutates `.venv`; without it, the shared venv is corrupted mid-flight and the operator's parallel work breaks.
+The first match wins; the agent runs one install path. Worktree-local venv is required for any Python project that mutates `.venv`; without it the shared venv corrupts mid-flight and the operator's parallel work breaks.
 
 ### Clean-baseline verification
 
-Before declaring the worktree ready, run the project's test suite once to verify a green baseline. If tests fail at this step, the agent stops and reports rather than attributing the failures to its own work later. Pattern from `using-git-worktrees`.
+Before declaring the worktree ready, run the test suite once to verify a green baseline. If tests fail, the agent stops and reports rather than attributing failures to its own work later. Pattern from `using-git-worktrees`.
 
-Baseline capture also includes branch verification and dirty-state inspection. The agent's first two `run_command` calls in any same-tree dispatch are:
+Baseline capture also includes branch verification and dirty-state inspection. The agent's first two `run_command` calls in any same-tree dispatch:
 
 ```bash
 git -C <project> branch --show-current
 git -C <project> status --short
 ```
 
-The prompt names the expected base branch (typically `main`). If `branch --show-current` returns anything else, the agent stops and reports. Without this check, the agent may commit on top of a sibling agent's in-flight feature branch by accident, mixing thematic concerns into one branch.
-
-`git status --short` reports any pre-existing dirty state. Any non-empty output is foreign-leak from a prior session or sibling agent. The agent flags these as not-mine, never `git add .`, never resets them, and explicitly excludes them from commits.
+The prompt names the expected base branch (typically `main`); if `branch --show-current` returns anything else, the agent stops to avoid committing on top of a sibling's in-flight feature branch. `git status --short` reports pre-existing dirty state: any non-empty output is foreign-leak from a prior session or sibling agent, flagged as not-mine, never `git add .`'d, never reset, excluded from commits.
 
 ### Worktree setup, compact form
 
@@ -379,30 +447,26 @@ git -C <project> worktree add <project>/.worktrees/<task-slug>
 
 All subsequent commands run with `Cwd=<project>/.worktrees/<task-slug>`.
 
-**Same-tree exception:** when scope is BOTH single-file AND read-mostly AND the operator has no parallel work AND no `docs/specs/*` (or equivalent project-gated) file is touched, skip the worktree. Document the skip in the prompt's worktree section so the agent understands the deliberate choice. The H5 falsifier check still applies, with the same-tree note as the resolution.
+**Same-tree exception:** when scope is BOTH single-file AND read-mostly AND the operator has no parallel work AND no `docs/specs/*` (or equivalent project-gated) file is touched, skip the worktree. Document the skip in the prompt's worktree section. The H5 falsifier check still applies, with the same-tree note as the resolution. If the task escalates mid-flight from read-mostly to edit (e.g., an audit discovers a row that needs adding), the exception voids: the agent stops, escalates to operator, and moves to a worktree before committing the edit.
 
-If the task escalates mid-flight from read-mostly to edit (e.g., an audit discovers a row that needs adding), the same-tree exception voids. The agent stops, escalates to operator, and moves to a worktree before committing the edit.
+**No-git exception:** when the project is not a git repository, worktrees are unavailable and the same-tree exception's read-mostly precondition does not fit author-tasks. Parallel-collision risk is mitigated instead by disjoint `owned_paths` across sibling workers, enforced by the daily-log manifest validator's H11 check. The agent's prompt states the no-git context once near the worktree section and names the mitigation strategy. Worked example: the 2026-05-19 self-bootstrap batch on `superset.skill` itself, which dispatched three parallel workers (A1 templates, A2-A3 templates, A4a scripts) under no-git context with disjoint owned_paths across templates and scripts directories.
 
-**No-git exception:** when the project is not a git repository (no `.git/` at the project root), worktrees are unavailable and the same-tree exception's read-mostly precondition does not fit author-tasks. Parallel-collision risk is instead mitigated by disjoint `owned_paths` across sibling workers, enforced by the daily-log manifest validator's H11 check. The agent's prompt explicitly states the no-git context once near the worktree section and names the parallel-collision-mitigation strategy. Worked example: the 2026-05-19 self-bootstrap batch on `superset.skill` itself, which dispatched three parallel workers (A1 templates, A2-A3 templates, A4a scripts) under no-git context with disjoint owned_paths across templates and scripts directories.
-
-The H5 falsifier accepts three resolutions: Shape A (worktree setup is the first command), Shape B (same-tree exception with all four preconditions plus the mandatory first two commands and the escalation-void clause), or Shape C (no-git exception with stated parallel-collision-mitigation strategy). The prompt-level harness at `scripts/prompt-level-harness/` enforces the three-shape disjunction.
+The H5 falsifier accepts three resolutions: Shape A (worktree setup is the first command), Shape B (same-tree exception with all four preconditions plus the mandatory first two commands and the escalation-void clause), or Shape C (no-git exception with stated parallel-collision-mitigation strategy). The prompt-level harness at `scripts/prompt-level-harness/` enforces the disjunction.
 
 ### Pre-spawn check (orchestrator-side)
 
-Before dispatching a parallel batch, the orchestrator verifies EVERY agent in the batch has its own worktree set up, OR an explicit same-tree exception with all four preconditions met (single-file, read-mostly, no parallel work, no gated-doc edits).
+Before dispatching a parallel batch, the orchestrator verifies EVERY agent in the batch has its own worktree, OR an explicit same-tree exception with all four preconditions (single-file, read-mostly, no parallel work, no gated-doc edits). If any agent is unworktreed without exception, the batch waits or the unworktreed agent moves to a worktree first. Mixed batches (some worktreed, some same-tree without exception) accumulate live state changes in the main checkout that break baseline capture for the same-tree agents.
 
-If ANY agent in the batch is unworktreed without exception, the entire batch waits or the unworktreed agent moves to a worktree first. Mixed batches (some worktreed, some same-tree without exception) accumulate live state changes in the main checkout that break baseline capture for the same-tree agents.
-
-Anti-pattern: dispatching agents one at a time without setting up worktrees, then accumulating multiple agents in the same main checkout. The race is silent until two agents write to the same file. Worked example: buds 2026-05-19 voice-scatter agent ran in its worktree while at least three other agents wrote to main checkout concurrently; live git status rotated across three consecutive checks as commits landed mid-session. The race was contained by byte-range-disjoint edits; next recurrence may not be so lucky.
+Anti-pattern: dispatching agents one at a time without worktrees, accumulating multiple in the same main checkout. The race is silent until two agents write to the same file. Worked example: buds 2026-05-19 voice-scatter agent ran in its worktree while at least three other agents wrote to main checkout concurrently; live git status rotated across three consecutive checks as commits landed mid-session. The race was contained by byte-range-disjoint edits; next recurrence may not be so lucky.
 
 ### Cross-checkout artifact dependencies
 
-When an agent uses BOTH a worktree AND a `localonly/` artifact (audit doc, plan, decision log) that lives in main checkout, the prompt explicitly notes the cross-checkout dependency. Two patterns:
+When an agent uses BOTH a worktree AND a `localonly/` artifact (audit doc, plan, decision log) in the main checkout, the prompt notes the cross-checkout dependency. Two patterns:
 
 - **Hard-link**: `ln <main>/localonly/<file>.md <worktree>/localonly/<file>.md` so the agent can read/edit from either checkout.
 - **Operator-facing record**: commit the localonly file's path into the session log so the next agent finds it without searching.
 
-Without the note, a reader in the worktree cannot see the audit doc that lives in main, and a reader in main cannot see the worktree's commit. The audit-or-plan-and-commit pair becomes invisible from either single vantage. Worked example: buds 2026-05-19 voice-scatter `localonly/plans/voice-scatter-audit.md` lived in main checkout while the OQ16 commit lived in `buds.worktrees/voice-scatter-audit-oq16/`; the audit's Phase 3 ship-log section had to be edited in main checkout to point at the worktree branch.
+Without the note, a reader in the worktree cannot see the audit doc in main, and a reader in main cannot see the worktree's commit; the audit-and-commit pair becomes invisible from either single vantage. Worked example: buds 2026-05-19 voice-scatter `localonly/plans/voice-scatter-audit.md` lived in main checkout while the OQ16 commit lived in `buds.worktrees/voice-scatter-audit-oq16/`; the audit's Phase 3 ship-log section had to be edited in main checkout to point at the worktree branch.
 
 ### Merge-back (operator)
 

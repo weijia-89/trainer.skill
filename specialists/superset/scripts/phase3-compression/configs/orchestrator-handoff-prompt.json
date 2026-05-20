@@ -1,0 +1,81 @@
+{
+  "file": "templates/orchestrator-handoff-prompt.md",
+  "_description": "STOP zones for the orchestrator-handoff template. Used by check-agent-ingest-preservation.py to verify compression preserves the 8-section discipline, HO1-HO10 falsifier table, epistemic-tier tag vocabulary, embedded-artifact markers, and verbatim cross-references that downstream new-orchestrator chats pattern-match on. This file was recently revised by v0.8.0 (HO10 added); compress conservatively.",
+
+  "verbatim_required": [
+    "When to use",
+    "Structure of a handoff prompt",
+    "Role declaration",
+    "First steps",
+    "State-verification commands",
+    "Stated context at handoff time",
+    "Plan ahead",
+    "Role discipline",
+    "Decision protocol for surprises",
+    "Iron-law restatement",
+    "Embedded artifacts",
+    "When verbatim vs reference-by-path",
+    "Falsifier checklist additions for handoff prompts",
+    "Common mistakes",
+    "Worked example",
+    "Per-fact confidence-tier tagging",
+    "Treat live state as canonical",
+    "STOP and report",
+    "no autonomy",
+    "I'll check back",
+    "I'll poll",
+    "YOU DO / YOU DO NOT",
+    "===AGENT N PROMPT START===",
+    "===AGENT N PROMPT END===",
+    "===AGENT N PROMPT (reference)===",
+    "[verified]",
+    "[inferred]",
+    "[speculative]",
+    "[unknown]",
+    "validate-track-status.sh",
+    "status-unverified",
+    "planned-but-evidence-present",
+    "rollback SHA",
+    "epistemic-planning",
+    "safe-terminal",
+    "async-handoff",
+    "wei-voice",
+    "trainer",
+    "superset",
+    "vibe-careful"
+  ],
+
+  "_verbatim_required_rationale": "Section names (8 required sections + falsifier + common-mistakes + worked-example) that the orch references. Iron-law restatement names (trainer/superset/safe-terminal/async-handoff/wei-voice) that the new orch loads on first turn. The 4 epistemic tags [verified|inferred|speculative|unknown] are the per-fact tagging vocabulary. The ===AGENT N PROMPT=== markers are how embedded prompts are located programmatically. validate-track-status.sh + status-unverified + planned-but-evidence-present are the v0.8.0 HO10 vocabulary.",
+
+  "custom_id_patterns": [
+    {"regex": "\\bHO\\d+\\b", "label": "handoff_falsifier_ids"},
+    {"regex": "\\b(Tier-1|Tier-2)\\b", "label": "safe_terminal_tiers"}
+  ],
+
+  "_custom_id_patterns_rationale": "HO1-HO10 are the handoff-specific falsifier IDs (extended to HO10 in v0.8.0 for the status-claim evidence iron law). Tier-1/Tier-2 anchor safe-terminal rule citations.",
+
+  "placeholder_required": [
+    "<project>",
+    "<reason>",
+    "<operator-name>",
+    "<project-root>",
+    "<owner>/<repo>",
+    "<PROJECT>",
+    "<DATE>",
+    "<batch-slug>"
+  ],
+
+  "_placeholder_required_rationale": "Bracketed slots the operator/orch fills in when authoring a handoff prompt.",
+
+  "anchor_phrases": [
+    "agent-prompt\\.md",
+    "AGENTS\\.md",
+    "CLAUDE\\.md",
+    "ROADMAP\\.md",
+    "scripts/validate-track-status\\.sh",
+    "localonly/orchestration/",
+    "localonly/agent-prompts/"
+  ],
+
+  "_anchor_phrases_rationale": "Cross-file path references that anchor handoff to other artifacts in the skill family and the operator's project conventions."
+}

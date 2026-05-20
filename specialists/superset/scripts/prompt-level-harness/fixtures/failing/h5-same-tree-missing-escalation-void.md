@@ -23,8 +23,8 @@ Per superset v0.5.0 Proposal 2, this dispatch uses the **same-tree exception**. 
 The first two `run_command` calls in this dispatch are the v0.5.0 Proposal 3 mandatory baseline-state captures:
 
 ```bash
-git -C $HOME/Projects/career-help branch --show-current
-git -C $HOME/Projects/career-help status --short
+git -C $HOME/Projects/toren branch --show-current
+git -C $HOME/Projects/toren status --short
 ```
 
 This fixture is intentionally missing the escalation-void clause. Without it, an audit that surfaces a discrepancy requiring an edit could silently commit the edit from the same-tree checkout, defeating the purpose of the four preconditions.

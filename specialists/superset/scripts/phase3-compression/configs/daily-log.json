@@ -1,0 +1,102 @@
+{
+  "file": "templates/daily-log.md",
+  "_description": "STOP zones for the daily-log template. Used by check-agent-ingest-preservation.py to verify compression preserves the schema vocabulary, section structure, status enum, YAML manifest keys, and anchor-incident example that downstream agents and orchestrators copy and fill in.",
+
+  "verbatim_required": [
+    "Schema",
+    "Orch hand-off summary",
+    "YAML front-matter manifest",
+    "Wave narrative",
+    "Per-agent entries",
+    "End-of-day summary",
+    "For meta",
+    "Front-matter constraints",
+    "Annotated worked example",
+    "Adversarial review findings",
+    "Decisions awaiting user sign-off",
+    "high-stakes-list.yaml",
+    "Work-in-a-day metrics",
+    "PROMOTE?",
+    "research-complete",
+    "spec-locked",
+    "schema-frozen",
+    "PLANNED",
+    "CLAIMED",
+    "IN_PROGRESS",
+    "DONE",
+    "FAILED",
+    "BLOCKED",
+    "Wave 0",
+    "Wave 1",
+    "Wave 2",
+    "Cross-worker patterns",
+    "Process gaps",
+    "Skill-change candidates",
+    "Process-improvement candidates",
+    "owned_paths",
+    "consumes",
+    "produces",
+    "depends_on",
+    "precondition",
+    "worktree",
+    "wall_clock_min",
+    "load_band_target",
+    "review_budget_min",
+    "batch_id",
+    "<code | research | sweep | prose-audit>",
+    "Status-claim evidence audit",
+    "STATUS UNVERIFIED",
+    "status-unverified",
+    "planned-but-evidence-present",
+    "VERDICT"
+  ],
+
+  "_verbatim_required_rationale": "Section names + manifest-schema keys + status enum values that downstream orch and workers pattern-match on. The status enum (PLANNED/CLAIMED/IN_PROGRESS/DONE/FAILED/BLOCKED) is referenced by the validator script; manifest keys are the YAML schema; section names are how the orch navigates the file. The role-archetype slot is tracked as a verbatim string rather than a regex to avoid false positives on the bare word `code`.",
+
+  "custom_id_patterns": [
+    {"regex": "\\b(H14|H11|H12|H13|H15|PV-1|S1)\\b", "label": "falsifier_ids"},
+    {"regex": "\\b(light|steady|heavy|overloaded)\\b", "label": "load_bands"}
+  ],
+
+  "_custom_id_patterns_rationale": "H14 (artifact-existence) and sibling falsifier IDs are cross-references to SKILL.md falsifier definitions. Load-band vocabulary (light/steady/heavy/overloaded) drives the end-of-day verdict.",
+
+  "placeholder_required": [
+    "<YYYY-MM-DD>",
+    "<YYYY-WW>",
+    "<project>",
+    "<project-name>",
+    "<YYYY-MM-DD HH:MM>",
+    "<one sentence: where we are at hand-off time>",
+    "<name>",
+    "<single-letter or short slug>",
+    "<integer minutes>",
+    "<path1>",
+    "<producer-deliverable-path>",
+    "<deliverable-path>",
+    "<agent-name>",
+    "<task-slug>",
+    "<bold title>",
+    "<one-line \"today was X\" summary>",
+    "<N>"
+  ],
+
+  "_placeholder_required_rationale": "Bracketed substitution slots the orch must fill in when starting a new daily log or appending to an existing one. Count must not decrease.",
+
+  "anchor_phrases": [
+    "buds",
+    "2026-05-19",
+    "fdroid-research",
+    "license-edit",
+    "FSL-1.1-MIT",
+    "Iron Law Addendum",
+    "F-Droid",
+    "templates/worker-session-log\\.md",
+    "localonly/daily/",
+    "localonly/session-logs/",
+    "localonly/meta-logs/",
+    "SKILL\\.md",
+    "scripts/validate-track-status\\.sh"
+  ],
+
+  "_anchor_phrases_rationale": "The annotated worked example anchors to a concrete buds 2026-05-19 licensing batch (A-fdroid-research + B-license-edit, FSL-1.1-MIT + Iron Law Addendum + F-Droid context). Path references to sibling templates, session-logs directory, meta-logs directory, and SKILL.md are how the orch navigates the skill family."
+}

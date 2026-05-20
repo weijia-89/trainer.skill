@@ -10,6 +10,86 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - **MINOR**: new sync target added; a specialist gym-skill's invocation pattern is updated; new section added without changing existing semantics.
 - **PATCH**: typo fix; clarification without semantic change; sync-mechanic improvement.
 
+## [0.9.1] (2026-05-20): Decision-presentation template, anti-patterns + self-check + tightened low-stakes scope
+
+**PATCH per SemVer rules.** Wording-only additions to the v0.9.0 Decision-presentation template subsection. No new behavior beyond what v0.9.0 already added; no routing change. Closes the failure mode where a Cascade session ships formally-compliant decision blocks that pass structural review while delivering zero decision support to the operator.
+
+### Added
+
+- **Anti-patterns list** under the format block. The template explicitly refuses four shapes:
+  - Bullets that name a dimension without filling it.
+  - Recommendation that paraphrases the per-option bullets.
+  - "Both have tradeoffs" framing in the context paragraph.
+  - Low-stakes label applied to decisions whose downstream consequences are unsurfaced.
+- **"Inherits from Communication discipline rules above"** paragraph cross-referencing the parent Jargon / Interiority / Verbosity rules. An agent reading just the subsection still picks up parent-rule teeth (Interiority's "what you didn't weigh hard enough" is the recommendation-block expectation).
+- **Self-check sentence** that Cascade applies to its own draft before posting: "Could the operator decide reading only this block, without scrolling to related artifacts or asking a follow-up?" Converts formal compliance into substantive compliance.
+
+### Changed
+
+- **Tightened low-stakes scope definition.** v0.9.0 defined "low-stakes" only as "operator could resolve in under thirty seconds" (an agent's subjective time estimate). v0.9.1 adds three content gates: reversible, single domain affected, no interaction with active rules or in-flight work. All four conditions must hold; if any one is uncertain, the full template applies.
+- **Canonical, Claude mirror, Cursor trigger, Windsurf trigger** version stamps updated to v0.9.1.
+
+### Why PATCH not MINOR
+
+- Wording-only clarification under an existing subsection; no new subsection added.
+- No routing decision flow change; no new behavior the trainer enforces at session start beyond what v0.9.0 already added.
+- v0.9.0 added the subsection (MINOR); v0.9.1 tightens its quality bar without adding structure (PATCH).
+
+### Files touched
+
+- `~/Projects/trainer.skill/SKILL.md` (canonical; subsection extended + version bump)
+- `~/Projects/trainer.skill/CHANGELOG.md` (this entry)
+- `~/.claude/skills/trainer/SKILL.md` (Claude mirror; resynced byte-identical)
+- `~/Projects/.cursor/rules/trainer.mdc` (Cursor trigger; version stamp)
+- `~/Projects/.windsurf/rules/trainer.md` (Windsurf trigger; version stamp)
+
+### Why this shipped
+
+Wei's same-session followup directive after v0.9.0 landed: "ensure the decision template is not superficial." Adversarial review surfaced five superficiality risks; v0.9.1 closes four (anti-patterns, parent cross-reference, self-check, tightened scope). Risk 5 (worked-example pair) deferred to v0.9.2 if empirically needed; in the meantime the slip-past output drafted in the review session illustrates the bad-pattern anchor.
+
+## [0.9.0] (2026-05-20): Decision-presentation template under Communication discipline
+
+**MINOR per SemVer rules.** Communication discipline gains a new subsection (Decision-presentation template) plus a one-sentence cross-reference from the existing "Decisions, surfaced visibly" bullet. The new subsection codifies the format Cascade uses when surfacing multi-option decisions. The shape is a bolded question with two or three sentences of context, per-option bullets covering whichever grounding dimensions apply (reasons, rationale, roadmap impact, interactions, example), and a bolded recommendation whose reasoning does not duplicate the per-option bullets.
+
+### Added
+
+- **`### Decision-presentation template` subsection** under "Communication discipline" in canonical SKILL.md. Sits after the bulleted discipline list, before "What the trainer is NOT". Includes an explicit scope clause naming what the template covers (in-conversation multi-option surfacing) and what it does not (proposal artifacts, session logs, status updates, sub-thirty-second confirmations). The per-option bullet list is explicitly marked "use whichever apply" so single-stream decisions are not forced to manufacture cross-stream interaction notes.
+- **Cross-reference from the line-235 "Decisions, surfaced visibly" bullet** to the new subsection. Existing bullet text preserved; one sentence added pointing readers at the template format.
+
+### Changed
+
+- **Canonical, Claude mirror, Cursor trigger, Windsurf trigger** version stamps updated to v0.9.0.
+- **Soft line cap in `scripts/verify_trainer_sync.sh`** bumped from 280 to 320 to accommodate the new subsection (approximately 35 lines added).
+
+### Why MINOR not PATCH
+
+- Adds new behavior (a load-bearing artifact-shape rule that Cascade applies at decision-surfacing moments).
+- Adds a new subsection that the existing "Decisions, surfaced visibly" bullet now cross-references rather than wholly contains.
+- PATCH is reserved for renames, typos, sync-mechanic improvements, and wording-only clarifications. The v0.8.0 dispatch-graph sub-clause is the matching precedent for the MINOR call: it also added a sub-clause under existing structure and introduced new operational behavior without changing routing.
+
+### Why MINOR not MAJOR
+
+- Routing decision flow unchanged.
+- Specialist gym-skills list unchanged (still 9).
+- Teaching-responsibility tiers unchanged.
+- Coaching stance, Iron Laws, Red Flags, and Rationalizations table all byte-identical to v0.8.0.
+
+### Files touched
+
+- `~/Projects/trainer.skill/SKILL.md` (canonical; new subsection, line-235 cross-reference, version bump)
+- `~/Projects/trainer.skill/CHANGELOG.md` (this entry)
+- `~/Projects/trainer.skill/scripts/verify_trainer_sync.sh` (soft line cap bump)
+- `~/.claude/skills/trainer/SKILL.md` (Claude mirror; resynced byte-identical via skill-sync)
+- `~/Projects/.cursor/rules/trainer.mdc` (Cursor trigger; version stamp via skill-sync)
+- `~/Projects/.windsurf/rules/trainer.md` (Windsurf trigger; version stamp via skill-sync)
+
+### Companion operator-domain steps shipped alongside this version
+
+- Delete `MEMORY[1adcc98e]` ("Inline questions with rationale"). The new SKILL.md subsection structurally supersedes the memory; keeping both creates duplicate discipline that eventually disagrees. Operator runs the deletion via Cascade memory tooling at ratification.
+- Run `skill-sync` after canonical edit to propagate to the three mirrors.
+- Run `~/Projects/trainer.skill/scripts/bundle_specialists.sh` per the standing discipline of refreshing the bundle after every trainer canonical edit (this version does not affect bundled specialists, but the discipline of running the bundle script remains the safe default).
+- Run `bash ~/Projects/trainer.skill/scripts/verify_trainer_sync.sh` to confirm all invariants pass post-edit.
+
 ## [0.8.0] (2026-05-19): Dispatch-graph-before-dispatch iron-law sub-clause
 
 **MINOR per SemVer rules.** Adds a new sub-clause under the "Iron Law: plan first, implement second" section: the plan-first discipline extends to the dispatch graph itself. Before any multi-agent batch is generated, a daily-log manifest must exist at `<project>/localonly/daily/<YYYY-MM-DD>.md`, validated by `superset`, with all dependency edges surfaced to the user. Cascade auto-drafts the manifest on dispatch-intent triggers; runs a self-adversarial review pass using superset's falsifier checklist plus a form-check adversarial-review against its own draft; surfaces validated manifest plus findings before generating per-agent prompts.

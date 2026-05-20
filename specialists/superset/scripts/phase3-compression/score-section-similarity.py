@@ -72,37 +72,56 @@ def main():
     orig_chunks = split_at_headings(orig_path.read_text(), level=args.level)
     comp_chunks = split_at_headings(comp_path.read_text(), level=args.level)
 
-    # Build heading-keyed maps
-    orig_map = {normalize_heading(h): b for (h, b) in orig_chunks}
-    comp_map = {normalize_heading(h): b for (h, b) in comp_chunks}
+    # Build heading-keyed maps as LIST-of-bodies (preserves duplicates by occurrence order).
+    # Files like templates/daily-log.md can contain the same heading (e.g., "## Wave 1") in
+    # both a sub-template code fence AND an annotated worked example; previous dict-map
+    # collapsed duplicates and produced wrong-pair comparisons.
+    def to_indexed_map(chunks):
+        m = {}
+        for (h, b) in chunks:
+            m.setdefault(normalize_heading(h), []).append(b)
+        return m
+    orig_map = to_indexed_map(orig_chunks)
+    comp_map = to_indexed_map(comp_chunks)
 
     ratios = []
     flagged = []
 
+    # Track per-key occurrence-index as we iterate orig_chunks so the n-th orig "## X" is
+    # compared against the n-th compressed "## X".
+    seen_counts = {}
     for (heading, body) in orig_chunks:
         key = normalize_heading(heading)
-        if key not in comp_map:
+        occurrence = seen_counts.get(key, 0)
+        seen_counts[key] = occurrence + 1
+        comp_bodies = comp_map.get(key, [])
+        if occurrence >= len(comp_bodies):
             flagged.append({
                 'heading': heading,
+                'occurrence': occurrence,
                 'ratio': 0.0,
                 'reason': 'section-missing-from-compressed',
             })
             ratios.append(0.0)
             continue
-        ratio = SequenceMatcher(None, body, comp_map[key]).ratio()
+        ratio = SequenceMatcher(None, body, comp_bodies[occurrence]).ratio()
         ratios.append(ratio)
         if ratio < args.threshold:
             flagged.append({
                 'heading': heading,
+                'occurrence': occurrence,
                 'ratio': round(ratio, 3),
                 'reason': f'below-threshold-{args.threshold}',
             })
 
-    # Sections present in compressed but not original (additions)
+    # Sections present in compressed but not original (additions). Counts extra
+    # occurrences too: if compressed has 3 "## X" and orig has 2, the 3rd is "added".
     added = []
-    for key, body in comp_map.items():
-        if key not in orig_map:
-            added.append(key)
+    for key, comp_bodies in comp_map.items():
+        orig_bodies = orig_map.get(key, [])
+        if len(comp_bodies) > len(orig_bodies):
+            for i in range(len(orig_bodies), len(comp_bodies)):
+                added.append(f'{key} (occurrence {i})')
 
     median = sorted(ratios)[len(ratios) // 2] if ratios else 1.0
     mean = sum(ratios) / len(ratios) if ratios else 1.0

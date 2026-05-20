@@ -1,6 +1,6 @@
 # Falsifier checklist for agent prompts
 
-Run this before pasting an agent prompt into a fresh chat. Each item is a known prompt-failure mode observed in production sessions. Resolve every High-severity item before spawning.
+Run before pasting an agent prompt into a fresh chat. Each item is a known prompt-failure mode from production sessions. Resolve every High-severity item before spawning.
 
 ## High-severity (must fix before spawn)
 
@@ -49,7 +49,7 @@ Run this before pasting an agent prompt into a fresh chat. Each item is a known 
 
 ## Cross-cutting concerns
 
-These apply across the whole batch of agents being spawned, not to any single prompt:
+These apply across the whole batch of spawned agents, not to any single prompt:
 
 - **Shared state map.** Across all agent prompts you're about to spawn, list every file each will touch. Look for collisions. If two agents touch the same file, either re-scope or use git worktrees. Without isolation, second-to-commit may merge-conflict or stomp the first.
 - **Operator review bandwidth.** Each spawned agent costs the operator one review pass at end of batch. If operator is mid-MVP-push or otherwise time-locked, cap the batch at 2-3 agents.
@@ -66,8 +66,8 @@ v0.4.0 (2026-05-19): promoted M6, M11, M12 to High as H11, H12, H13 anchored to 
 
 v0.2.0 (2026-05-18): added H9 (`.worktrees/` gitignored before creation), H10 (project-setup auto-detected from manifest), M11 (`Owned-paths:` table for >3-file scope), M12 (`Phase:` field for multi-phase batches), and the batch-aggregation cross-cutting concern. H9 and H10 are direct borrowings from `obra/superpowers-skills` `using-git-worktrees`; M11 borrows the file-ownership table from `usemozzie/mozzie`'s CLAUDE.md.
 
-Future iterations should:
+Future iterations:
 
-1. After each batch of spawned agents, review their session logs for new failure modes not covered here.
+1. After each batch of spawned agents, review session logs for new failure modes not covered here.
 2. Add new falsifiers as High/Med/Low rows.
 3. Cull falsifiers that have not fired across 5+ batches (false-positive evidence).

@@ -24,8 +24,8 @@ This fixture intentionally omits the fourth precondition from the bullet list ab
 The mandatory baseline-state captures:
 
 ```bash
-git -C $HOME/Projects/career-help branch --show-current
-git -C $HOME/Projects/career-help status --short
+git -C $HOME/Projects/toren branch --show-current
+git -C $HOME/Projects/toren status --short
 ```
 
 ### Escalation-void clause

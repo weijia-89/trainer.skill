@@ -10,6 +10,105 @@ Renamed from `ancillary` to `superset` at v0.3.0 for trainer-family coherence (a
 - **MINOR:** new falsifiers, new role archetypes, new templates, new references, new cross-cutting concerns, new patterns borrowed from the public ecosystem; pure renames at the skill level (since `name:` frontmatter changes break existing `Skill: <name>` invocations even if the body is unchanged).
 - **PATCH:** wording, citation updates, example refinements, falsifier rewordings without semantic change.
 
+## [0.8.1], 2026-05-20, Phase 3 compression of remaining agent-ingest files (PATCH)
+
+Pure wording tightening of the 11 agent-ingest files not covered by v0.7.1 (which covered `SKILL.md` only). Zero semantic changes. All STOP zones preserved (numbered lists, schema field names, falsifier IDs, code fences, verbatim trigger phrases, anchor incidents, status enums). Each file passed criterion (a) 100% structural preservation (strict mode where applicable) and criterion (b) median ≥0.99 / min ≥0.65 section similarity.
+
+### Files touched (line / word deltas vs pre-compression baseline)
+
+- `templates/agent-prompt.md` (210 lines unchanged, 1253 → 1222 words, -2.5%)
+- `templates/daily-log.md` (306 lines unchanged, 1708 → 1663 words, -2.6%; coordinated with parallel v0.8.0 manifest-extension work mid-stream)
+- `templates/meta-log.md` (246 lines unchanged, 1118 → 1101 words, -1.5%)
+- `templates/orchestrator-handoff-prompt.md` (284 → 282 lines, 2017 → 1989 words, -1.4%)
+- `templates/meta-handoff-prompt.md` (299 → 298 lines, 2192 → 2171 words, -1.0%; conservative because file was authored same-day)
+- `templates/batch-aggregation.md` (136 → 135 lines, ~-15 words; 5 of 6 sentence edits retained, 1 reverted after Notes-section similarity dropped below 0.65 floor)
+- `templates/session-log.md` (58 lines unchanged, ~-7 words)
+- `templates/worker-session-log.md` (67 lines unchanged, ~-10 words)
+- `references/role-overlays.md` (140 lines unchanged, ~-5 words)
+- `references/runtime-portability.md` (75 → 74 lines, ~-4 words)
+- `references/falsifier-checklist.md` (74 → 73 lines, ~-5 words; very light because file is mostly STOP-dense falsifier tables)
+
+Aggregate: -6 lines, ~-330 words across the 11 files.
+
+### Infrastructure added
+
+- **`scripts/phase3-compression/check-agent-ingest-preservation.py`** (NEW). Generic stdlib-only structural-preservation checker. Default extractors cover headings, code fences, frontmatter keys, table rows, list items, backticked paths, and generic IDs (e.g., `H5`, `MO10`, `PV-1`). Optional per-file JSON config layers verbatim phrases, custom ID-pattern regexes, placeholder counts, and anchor-phrase requirements. `--strict` flag tightens default-mode passing threshold from ≥95% retention to 100%.
+- **`scripts/phase3-compression/configs/`** (NEW directory). Five per-file STOP-zone configs: `agent-prompt.json`, `daily-log.json`, `meta-log.json`, `orchestrator-handoff-prompt.json`, `meta-handoff-prompt.json`. Each captures the verbatim phrases, ID patterns, placeholders, and anchors that the generic default extractors would miss. The 6 smaller files used default-only `--strict` mode (no config needed).
+- **`scripts/phase3-compression/score-section-similarity.py`** (BUG FIX). Duplicate-heading occurrence-indexed pairing. Pre-fix bug: files with repeated headings (e.g., `## Wave 1` appearing N times across waves) compared the wrong original-vs-compressed section pairs, producing artificially low similarity scores. Post-fix: same-heading occurrences are paired by occurrence index (1st-to-1st, 2nd-to-2nd, etc.), surfaced in the JSON `occurrence` field for diagnostic clarity.
+- **`scripts/phase3-compression/README.md`** updated to document the new generic checker and config-file conventions.
+
+### Why PATCH not MINOR
+
+- Zero semantic changes; pure wording tightening.
+- No new templates, references, falsifiers, or cross-cutting concerns.
+- The new infrastructure scripts (`check-agent-ingest-preservation.py`, configs/) are internal compression-tooling artifacts, not new prompt-engineering surface.
+- Per CHANGELOG SemVer rules line 11: PATCH covers "wording, citation updates, example refinements, falsifier rewordings without semantic change."
+
+### Coordination with parallel v0.8.0 work
+
+The parallel skill-maintainer chat shipped v0.8.0 (status-claim evidence iron law: new top-level SKILL.md section ~73 lines, new `scripts/validate-track-status.sh` validator + fixtures, new HO10 falsifier row, new daily-log end-of-day audit subsection) during the same operational window as this compression sweep. Handled mid-stream:
+
+- `templates/daily-log.md` compression config updated mid-iteration to include the new track-status-audit STOP zones before applying edits.
+- `templates/orchestrator-handoff-prompt.md` compression config updated mid-iteration to include the HO10 row vocabulary (`validate-track-status.sh`, `status-unverified`, `planned-but-evidence-present`).
+- All 5 per-file configs cross-validate against the v0.8.0-extended originals.
+
+### Frontmatter version fix (collateral)
+
+Parallel v0.8.0 CHANGELOG entry stated frontmatter version 0.7.1 → 0.8.0 but the bump was not applied to canonical `SKILL.md`. This v0.8.1 entry rolls the missed v0.8.0 bump and the v0.8.1 PATCH into a single frontmatter update (`version: 0.7.1` → `version: 0.8.1`).
+
+---
+
+## [0.8.0], 2026-05-19, status-claim evidence iron law
+
+**MINOR per SemVer rules.** Adds a new cross-cutting iron law that gates every orch status claim (handoff summary, daily-log update, end-of-day close-out, chat reply) on ≥2 evidence sources, ≥1 primary. New validator script + 4 fixtures cover the four primary VERDICT classes. New HO10 row in `templates/orchestrator-handoff-prompt.md` wires the validator into the outgoing-handoff falsifier checklist. New mandatory section in `templates/daily-log.md` end-of-day close-out requires the validator before day-close. Source: 2026-05-19 post-buds-orch-handoff incident (license-audit track surfaced as "UNCLEAR, verify with Wei" when validator evidence would have shown the track was never live in buds context).
+
+### Added
+
+- **New top-level section in `SKILL.md`: "Status-claim evidence iron law"** (between Orchestrator-role discipline and Hand-off summary schema). Evidence taxonomy (primary vs secondary), validation rule (≥2 sources, ≥1 primary, independently verifiable), four required check-in moments (outgoing handoff, incoming first turn, end-of-day, any chat status claim), validator-script shape, and the license-audit-2026-05-19 worked example.
+- **New script `scripts/validate-track-status.sh`** (stdlib-only bash + awk). Parses the daily-log YAML frontmatter manifest, extracts each agent's `name`, `status`, and `produces` paths, then emits ~5 lines per track: branch HEAD evidence (PRIMARY, via `git branch -a --list "*name*"`), produces existence evidence (PRIMARY, via filesystem check), manifest status (SECONDARY), derived last-activity (PRIMARY), and a VERDICT line. Verdicts: `valid-dispatch`, `in-flight`, `undispatched`, `status-unverified`, `planned-but-evidence-present`, `blocked`, `failed`, `unknown-status`. Gracefully degrades on no-git projects (Shape C) by emitting `[N/A: not a git repo]` for branch evidence and falling back to produces-existence and manifest status. Emits WARN to stderr for any `status-unverified` or `planned-but-evidence-present` verdict. Token cost ~100-200 tokens per validation cycle for a typical 4-8 track day.
+- **4 fixtures under `scripts/track-status-fixtures/`** covering the four primary VERDICT classes: `valid-dispatch.md` (status=DONE + produces present), `undispatched.md` (status=PLANNED + no branch + no produces), `status-unverified.md` (status=DONE but produces absent; the iron-law's target failure mode), `blocked.md` (status=BLOCKED). Plus `_artifact_valid_dispatch.md` marker file required by the valid-dispatch fixture's produces path. Fixtures run cleanly in the superset.skill no-git context.
+- **New row HO10 in `templates/orchestrator-handoff-prompt.md` falsifier checklist**: "Status-claim evidence iron law: outgoing-handoff `validate-track-status.sh` run in the same turn as summary authoring?" Test: every status claim in the summary cites a row from the output, not narrative recall. Fix: run the validator; replace narrative claims with cited evidence rows; route any `status-unverified` or `planned-but-evidence-present` verdict to operator before handoff. Brings the orch-handoff falsifier checklist from 9 rows to 10.
+- **New mandatory subsection in `templates/daily-log.md` End-of-day summary**: "Status-claim evidence audit". Operator runs the validator before day-close; any UNVERIFIED rows get marked `STATUS UNVERIFIED` and surfaced as carries. The audit blocks any DONE claim that lacks primary evidence.
+
+### Why MINOR not PATCH
+
+- New cross-cutting concern (status-claim evidence) per CHANGELOG line 10 SemVer rules.
+- New validator script + fixtures (new infrastructure, not wording polish).
+- New HO-row in the orch-handoff falsifier checklist (new falsifier surface; HO9 → HO10).
+- New mandatory section in the daily-log end-of-day template (semantic addition, not wording polish).
+
+### Why MINOR not MAJOR
+
+- Five-pillar prompt shape unchanged.
+- Existing daily-log manifests authored under v0.7.x remain valid; the new validator reads the same manifest fields (`name`, `status`, `produces`) the existing validator already uses.
+- New HO10 is additive to the existing HO1-HO9 set; existing handoff documents that pass HO1-HO9 do not regress, they only need to add the new HO10 evidence check on their next refresh.
+
+### Enforcement layer
+
+- The iron law fires at four check-in moments (outgoing handoff, incoming first turn, end-of-day close-out, any chat reply with a status claim). Not folded into `references/falsifier-checklist.md` (H1-H15, PV-1, S1) because those falsifiers run per-manifest at dispatch time via `scripts/validate-daily-log.py`; the status-claim iron law runs per-handoff and per-day via the new bash validator. Different cadence, different surface.
+
+### Files touched
+
+- `~/Projects/superset.skill/SKILL.md` (frontmatter version 0.7.1 → 0.8.0; new iron-law section ~73 lines)
+- `~/Projects/superset.skill/CHANGELOG.md` (this entry)
+- `~/Projects/superset.skill/scripts/validate-track-status.sh` (NEW, ~245 lines)
+- `~/Projects/superset.skill/scripts/track-status-fixtures/` (NEW directory; README + 4 fixtures + 1 marker artifact)
+- `~/Projects/superset.skill/templates/orchestrator-handoff-prompt.md` (HO10 row added)
+- `~/Projects/superset.skill/templates/daily-log.md` (end-of-day status-claim audit subsection added)
+
+### Source
+
+- 2026-05-19 post-buds-orch-handoff incident. Outgoing orch wrote "Track A status: UNCLEAR, verify with Wei" for a license-audit track that the validator would have shown was never live in buds context (no branch, no produces, status absent from manifest).
+- Worker prompt authored by 2026-05-19 superset.skill skill-maintainer chat.
+
+---
+
+## [0.7.1], 2026-05-19, Phase 3 compression (PATCH)
+
+Pure wording tightening of `SKILL.md`: 473 → 463 lines, 6631 → 6444 words. Zero semantic changes. All STOP zones preserved (numbered lists, bullet taxonomies, code fences, falsifier IDs, anchor-incidents, v0.7.0 Operationalization paragraphs). Criterion (a) PASS 100% structural preservation; (b) PASS median 1.000, min 0.933. Per-iteration detail in `localonly/daily/2026-05-19.md` Section 3.
+
+---
+
 ## [0.7.0], 2026-05-19, retro_authored support + path-verify warnings + typed signals soft enforcement
 
 **MINOR per SemVer rules.** Adds two new soft-warning falsifiers (PV-1 path-verify, S1 typed-signals), one new frontmatter key with semantic impact (`retro_authored: true` skipping H14), and one collateral H15 fix (live-tree fallback for consumed paths). Source: Wei epistemic-planning questions Q01 (typed non-commit signal entries) + Q02 (mechanical path-verify against live repo) surfaced 2026-05-19 14:42 EDT, plus Q03 (retro_authored handling) discovered the same hour during retro-validation work that hit H14/H15 orthogonality conflicts. All three changes landed in a single chat to avoid Phase 3 compression baking in patterns that Q01/Q02/Q03 codification would later need to revisit.

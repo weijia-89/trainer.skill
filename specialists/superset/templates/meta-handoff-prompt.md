@@ -2,21 +2,20 @@
 
 Use this template when the current meta chat hits context-window pressure
 (IDE slowing, accumulated history across most of a week, multiple daily logs
-ingested) and the meta role itself needs to migrate to a new chat. The
-typical cadence is one meta chat per week; a refresh mid-week is allowed
-when the IDE slows.
+ingested) and the meta role needs to migrate to a new chat. Typical cadence
+is one meta chat per week; mid-week refresh allowed on IDE slowdown.
 
 Distinct from `agent-prompt.md` and `orchestrator-handoff-prompt.md`. An
-*agent* prompt spawns a worker that performs a scoped task and returns.
-An *orchestrator handoff* transfers the project-manager role across a day
-boundary. A *meta handoff* transfers the director role across a week
-boundary. The meta layer is Layer 3 in the Three-layer agent architecture
-documented in `superset.skill/SKILL.md`.
+*agent* prompt spawns a worker for a scoped task. An *orchestrator handoff*
+transfers the project-manager role across a day boundary. A *meta handoff*
+transfers the director role across a week boundary. The meta layer is
+Layer 3 in the Three-layer agent architecture documented in
+`superset.skill/SKILL.md`.
 
 The handoff prompt is itself a superset-shaped artifact. The meta chat is
 a long-running pattern-recognition body that, like a worker agent, has its
-own task scope and gets handed off cleanly between chats when the original
-chat saturates. The handoff is the rest interval between two meta chats.
+own task scope and gets handed off cleanly when the chat saturates. The
+handoff is the rest interval between two meta chats.
 
 ---
 
@@ -178,9 +177,9 @@ pointers_to_session_logs:
   - <project>/localonly/session-logs/<file>
 ```
 
-Every field-name is one the live file system can confirm. If a fact is
-"true at handoff time but un-verifiable later," flag it explicitly in a
-comment next to the field.
+Every field-name is one the live file system can confirm. Flag any fact
+that was "true at handoff time but un-verifiable later" in a comment next
+to the field.
 
 ### 4. Role discipline (YOU DO / YOU DO NOT)
 
@@ -235,12 +234,12 @@ relevance:
 
 ### Embedded artifacts: the candidate proposals themselves
 
-The handoff prompt embeds the current state of the proposals doc verbatim.
-Use `===PROPOSALS DOC START===` / `===PROPOSALS DOC END===` markers so the
+The handoff embeds the current proposals doc verbatim. Use
+`===PROPOSALS DOC START===` / `===PROPOSALS DOC END===` markers so the
 new meta can locate it programmatically. Do NOT abbreviate or paraphrase;
 copy verbatim. Same rationale as the orchestrator-handoff template:
 paraphrase introduces drift; the new meta needs the exact prose the
-operator will eventually dispatch the skill-maintainer chat against.
+operator will dispatch the skill-maintainer chat against.
 
 ## Falsifier checklist for meta handoff prompts (MO1 through MO8)
 
@@ -265,9 +264,9 @@ handoff prompt must pass:
   surfaces proposals verbatim when the operator dispatches the
   skill-maintainer chat.
 - **Stating "as of handoff time" facts as if they are current.** The
-  fresh chat may not run for hours or days after the handoff is
-  authored. Mark every time-sensitive fact with the authoring timestamp
-  and the "verify against live files" reminder.
+  fresh chat may not run for hours or days after authoring. Mark every
+  time-sensitive fact with the authoring timestamp and the "verify
+  against live files" reminder.
 - **Marking a candidate as `applied` because the meta itself made the
   edit.** This is the iron-law violation in slow motion. If the meta
   ever finds itself reaching for the edit tool against a skill source

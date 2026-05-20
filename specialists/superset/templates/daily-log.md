@@ -1,10 +1,10 @@
 # Daily-log template
 
-The daily log is the single coordination artifact for a multi-agent day on a project. One file per project per day, at `<project>/localonly/daily/<YYYY-MM-DD>.md`. The orchestrator (Cascade) and every dispatched agent read from and write to this file.
+The daily log is the single coordination artifact for a multi-agent day on a project. One file per project per day, at `<project>/localonly/daily/<YYYY-MM-DD>.md`. The orchestrator (Cascade) and every dispatched agent read and write to it.
 
-Replaces the older two-artifact pattern (per-batch dispatch manifest plus per-agent session log) with one document. Producer-consumer dependencies, in-flight status, end-of-day metrics, and per-agent session-log content all live here.
+Replaces the older two-artifact pattern (per-batch dispatch manifest + per-agent session log) with one document. Producer-consumer dependencies, in-flight status, end-of-day metrics, and per-agent session-log content all live here.
 
-This template ships annotated. Copy the structure, fill bracketed sections, remove the inline guidance comments before the daily log is first surfaced to the user.
+This template ships annotated. Copy the structure, fill bracketed sections, remove inline guidance comments before first surfacing the daily log to the user.
 
 ---
 
@@ -22,7 +22,7 @@ The daily log has five sections in this order:
 
 ## Section 0, Orch hand-off summary (top of file)
 
-Lives at the very top of the daily log, above the YAML front-matter manifest. Written by the outgoing orch on rotation; absent until then. Target: ≤1000 tokens for a typical day; ≤1500 for a heavy day. The new orch reads this section alone in its first turn.
+Lives at the top of the daily log, above the YAML front-matter manifest. Written by the outgoing orch on rotation; absent until then. Target: ≤1000 tokens typical day; ≤1500 heavy day. The new orch reads this section alone in its first turn.
 
 ```markdown
 # Orch hand-off summary, <YYYY-MM-DD HH:MM>
@@ -119,7 +119,7 @@ load_band_target: <light | steady | heavy | overloaded>  # operator's planned ba
 
 ## Section 2, Wave narrative
 
-One markdown subsection per wave, in `phase` order. Each wave's narrative explains the dispatch shape, the dependency edges, and any surprises Cascade or the operator should watch for. Cascade drafts this alongside the manifest.
+One markdown subsection per wave, in `phase` order. Each wave's narrative explains dispatch shape, dependency edges, and surprises Cascade or the operator should watch for. Cascade drafts alongside the manifest.
 
 ```markdown
 ## Wave 0 (async, runs first)
@@ -135,13 +135,13 @@ One markdown subsection per wave, in `phase` order. Each wave's narrative explai
 <...>
 ```
 
-Cascade's self-adversarial review findings (per the SKILL.md auto-invoke section) get appended to the relevant wave narrative under "Adversarial review findings". Surface high-severity findings under "Decisions awaiting user sign-off" at the top of the wave section.
+Cascade's self-adversarial review findings (per SKILL.md auto-invoke) get appended to the wave narrative under "Adversarial review findings". Surface high-severity findings under "Decisions awaiting user sign-off" at the top of the wave section.
 
 ---
 
 ## Section 3, Per-agent entries (orch-authored, compacted from worker session logs)
 
-Workers write their own session logs at `<project>/localonly/session-logs/<YYYY-MM-DD>-agent<X>-<task>.md` using the 4-section compaction-ready format defined in `templates/worker-session-log.md`. The orch ingests each worker's session log on DONE status and compacts it into this Section 3 entry.
+Workers write session logs at `<project>/localonly/session-logs/<YYYY-MM-DD>-agent<X>-<task>.md` using the 4-section compaction-ready format in `templates/worker-session-log.md`. The orch ingests each worker's session log on DONE status and compacts it into this Section 3 entry.
 
 Shape per worker entry:
 
@@ -160,13 +160,13 @@ Shape per worker entry:
 **Worker session log:** `localonly/session-logs/<YYYY-MM-DD>-agent<X>-<task>.md` (full audit trail; orch may have compacted away Details on ingestion)
 ```
 
-The orch updates the manifest STATUS field to DONE at the moment it finishes writing this entry. The worker's raw session log stays at `localonly/session-logs/` as the historical record.
+The orch updates the manifest STATUS field to DONE when it finishes writing this entry. The worker's raw session log stays at `localonly/session-logs/` as the historical record.
 
 ---
 
 ## Section 4, End-of-day summary
 
-Cascade fills this at user request or natural end-of-day. Set B work-in-a-day metrics per `SKILL.md` "Work-in-a-day metrics":
+Cascade fills this at user request or natural end-of-day. Set B per `SKILL.md` "Work-in-a-day metrics":
 
 ```markdown
 ## End-of-day summary
@@ -204,6 +204,25 @@ Cascade fills this at user request or natural end-of-day. Set B work-in-a-day me
 
 **Pattern observations (optional):**
 - <if 3+ similar surprises today, name the pattern as a candidate falsifier-checklist addition or skill-edit signal>
+
+**Status-claim evidence audit (mandatory per SKILL.md iron law):**
+
+Before closing out the day, run:
+
+```
+bash scripts/validate-track-status.sh <this daily log>
+```
+
+The validator emits ~5 lines per track with primary + secondary evidence
+and a VERDICT line. For every track whose verdict is `status-unverified`
+or `planned-but-evidence-present`, mark it `STATUS UNVERIFIED` in the
+agent-counts section above and surface it to the operator as a carry to
+tomorrow. Do not close out the day with a DONE claim that lacks primary
+evidence.
+
+Paste the per-track block here for any UNVERIFIED row:
+
+- `<verdict block from validator output>`
 ```
 
 ---
@@ -263,13 +282,13 @@ Agent B-license-edit: edit LICENSE and README anchoring constraint #18 per Wei's
 **Adversarial review findings:** LICENSE is on buds' high-stakes-list.yaml; B's precondition `research-complete` is satisfied by A's produces. H14 artifact-existence check: README.md exists (expected); LICENSE exists (expected). B is editing in place, not creating new files. Owned-path overlap: none within Wave 2 (single agent). Cwd-race risk: none (separate worktree).
 ```
 
-End of annotated example. Remove the schema-explanation prose before the daily log is surfaced for the first time on a given day.
+End of annotated example. Remove schema-explanation prose before first surfacing the daily log on a given day.
 
 ---
 
 ## Section 5, For meta (orch-appended throughout the day)
 
-The orch appends to this section throughout the day as cross-worker signals surface. Meta ingests these on weekly invocation. Once a `PROMOTE?` candidate gets ratified into a skill, the corresponding bullet here can be deleted as deduplicated.
+The orch appends here throughout the day as cross-worker signals surface. Meta ingests on weekly invocation. Once a `PROMOTE?` candidate gets ratified into a skill, the bullet can be deleted as deduplicated.
 
 ```markdown
 ## For meta
@@ -284,4 +303,4 @@ The orch appends to this section throughout the day as cross-worker signals surf
 - **PROMOTE?** <candidate; if this pattern fires 2+ times this week, meta should propose a skill edit> (evidence: `localonly/session-logs/...`)
 ```
 
-Meta's weekly ingestion routine reads every daily log's Section 5 within the week's scope (5-7 daily logs). PROMOTE? candidates that fired 2+ times within the week become Process-Improvement Candidates in `localonly/meta-logs/<YYYY-WW>-meta.md`. Once a candidate is ratified by Wei into a skill, the orch deletes the PROMOTE? bullet from this section (the skill itself encodes the rule now).
+Meta's weekly ingestion reads every daily log's Section 5 within the week's scope (5-7 daily logs). PROMOTE? candidates that fired 2+ times become Process-Improvement Candidates in `localonly/meta-logs/<YYYY-WW>-meta.md`. Once ratified into a skill, the orch deletes the PROMOTE? bullet (the skill itself encodes the rule now).

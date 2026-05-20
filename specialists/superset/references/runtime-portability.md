@@ -1,8 +1,8 @@
 # Runtime portability
 
-The agent-prompt template assumes Cascade-on-Windsurf tool semantics. Other runners differ. This reference maps the load-bearing template elements onto the major runners.
+The agent-prompt template assumes Cascade-on-Windsurf tool semantics. Other runners differ. This reference maps load-bearing template elements onto the major runners.
 
-The mapping has been validated for Cascade-on-Windsurf and Claude Code. Cursor, Codex, and Gemini CLI entries are best-effort drafts; verify against current runner docs before relying on them.
+The mapping is validated for Cascade-on-Windsurf and Claude Code. Cursor, Codex, and Gemini CLI entries are best-effort drafts; verify against current runner docs before relying on them.
 
 ## Tool-name mapping
 
@@ -30,7 +30,7 @@ The mapping has been validated for Cascade-on-Windsurf and Claude Code. Cursor, 
 - Skills load via the `Skill` tool. The `Skill: superset` invocation reads `~/.claude/skills/superset.skill/SKILL.md`.
 - The `TodoWrite` tool replaces Cascade's `todo_list`.
 
-Adaptation for superset's agent-prompt template: replace `run_command` with `Bash`, drop the `Cwd` parameter callout, replace `read_file`/`edit` with `Read`/`Edit`. Worktree workflow still applies; the operator typically dispatches via the `Task` tool rather than opening a fresh chat window.
+Adaptation for superset's agent-prompt template: replace `run_command` with `Bash`, drop the `Cwd` parameter callout, replace `read_file`/`edit` with `Read`/`Edit`. Worktree workflow still applies; the operator dispatches via the `Task` tool rather than opening a fresh chat window.
 
 ## Cursor specifics
 
@@ -70,5 +70,5 @@ When adapting for a non-Cascade runner:
 1. Replace `run_command` references with the runner's shell tool name.
 2. Drop the `Cwd` parameter discussion if the runner does not support it; add a `cd` prefix to every command instead.
 3. Replace `read_file` and `edit` with the runner-specific equivalents.
-4. Adjust the safe-terminal references; the Cascade-specific iron laws may not all apply, but the general principle (one logical command per line, no heredocs, no multi-line `-m`) holds.
+4. Adjust safe-terminal references; the Cascade-specific iron laws may not all apply, but the general principle (one logical command per line, no heredocs, no multi-line `-m`) holds.
 5. Test with one dispatched agent before scaling to a parallel batch.

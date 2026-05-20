@@ -52,7 +52,7 @@ Bullet list: `<path>` (one-line description).
 
 ## Notes for the agent writing the log
 
-- If a section has nothing to report, write `None` rather than padding. Brevity is the point.
+- If a section has nothing to report, write `None`. Brevity is the point.
 - Voice rules apply to your prose: no em-dashes (U+2014), no "X, not Y" colon-framings, no theatrical paragraph-ending fragments, no tricolon-after-colon, active voice with "I".
-- The log is for pattern extraction by the operator (or a future agent invoking `harness-review`). Optimize for searchability and pattern density, not narrative.
-- Write the log BEFORE returning the operational summary. If you crash or get interrupted, the partial log is still useful debug signal.
+- The log is for pattern extraction by the operator (or a future `harness-review` agent). Optimize for searchability and pattern density, not narrative.
+- Write the log BEFORE returning the operational summary. If you crash or get interrupted, the partial log is still useful debug.

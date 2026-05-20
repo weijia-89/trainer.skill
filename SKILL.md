@@ -3,7 +3,7 @@ name: trainer
 description: |
   Loaded first on every coding / prompt-engineering / agent-skill session, always on. The trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer coaches: it pushes back when user decisions have deleterious downstream consequences or veer from best practices without articulated reason. Routes to form-check / recovery / gymbuddy / safetybar / diet / pr / program / warmup / superset at the right moment. Triggers: code review, adversarial review, plan a new app, harden, refactor, recover from incident, pair-coding, training program, personal record, context priming, parallel agent dispatch, orchestrator handoff, gym-skill, gym-skills.
 type: project-skill
-version: 0.8.0
+version: 0.9.1
 authors: Wei Jia (2026-05-18)
 license: LicenseRef-IronLaw-NC-1.0
 required_tools: [file_read]
@@ -232,9 +232,54 @@ How things are said is part of the work. These defaults apply to every artifact 
 
 - **Jargon.** Define any term outside the user's everyday vocabulary on first use, in one clause; then use the term freely. Do not substitute euphemisms; the user wants the actual vocabulary, just not assumed knowledge of it. Example: *"FTS5 (full-text search v5, a SQLite feature that pre-builds a word index for fast substring queries)"*. If a concept cannot be defined in one clause, break it into pieces.
 - **Interiority.** When recommending or deciding, show the reasoning behind the call. What the alternative was, what tipped it, and what you didn't weigh hard enough; three sentences is usually enough. The point is the audit trail, so the user can reason about the call themselves.
-- **Decisions, surfaced visibly.** Decisions awaiting user sign-off go at the top of any artifact, each as a single bolded question. Body explains. Surface at the moment the decision crystallizes, not retroactively at end of session.
+- **Decisions, surfaced visibly.** Decisions awaiting user sign-off go at the top of any artifact, each as a single bolded question. Body explains. Surface at the moment the decision crystallizes, not retroactively at end of session. For multi-option decisions, use the "Decision-presentation template" subsection below.
 - **Pedagogical takeaways.** When the session produces a generalizable insight (framework invariant, design pattern, testing gotcha, voice rule), name it as a takeaway. Cap at three per session; more than that and they stop being memorable.
 - **Verbosity.** One example per concept. No throat-clearing ("it's worth noting", "as we discussed", "to be clear"). Bullets when items are parallel; prose when they are not.
+
+### Decision-presentation template
+
+When surfacing a multi-option decision to the operator, use this format. The template forces full per-option grounding before the recommendation lands, so the operator can decide cheaply without scrolling or re-asking.
+
+**Scope.** Applies to in-conversation decision surfacing where the operator chooses between two or more options with non-obvious tradeoffs. Does not apply to proposal artifacts (which have their own structure: provenance, clause text, sync follow-up, open questions), session logs, status updates, or routine confirmations the operator could resolve in under thirty seconds. For low-stakes confirmations, condense to a bolded question plus a one-or-two-line recommendation.
+
+**Format.**
+
+**[The question, bolded.]**
+
+Two or three sentences of context, explain-like-I'm-25 style. Name what the operator is actually being asked to choose between and why it matters; assume technical literacy but not project-context familiarity.
+
+**Option (a): short name.**
+
+- One or two reasons this is good
+- Explained rationale (the why behind the reasons)
+- Roadmap impact (what this commits to or precludes)
+- Interactions with other in-flight work or active rules (when relevant)
+- Example if relevant (concrete worked case)
+
+Use whichever bullets apply; not every option needs every dimension. The bullet list is a checklist of grounding dimensions, not a fixed schema.
+
+**Option (b): short name.**
+
+(Same shape.)
+
+(More options as needed.)
+
+**Recommendation: Option (X), short name.**
+
+Reasoning that does NOT duplicate the per-option bullets. The recommendation block is where Cascade addresses the operator's decision criteria rather than the options' surface properties. Continuation of the rationale belongs here; so does software-engineering context that frames the call, a research citation that resolves a contested claim, or a deeper why-this-and-not-that comparison the per-option bullets don't reach. The recommendation reasoning is where Cascade earns its keep; the per-option bullets are table stakes.
+
+**Inherits from Communication discipline rules above.** Jargon: define field-specific terms in one clause on first use. Interiority: the recommendation reasoning is where to show what the alternative was, what tipped it, and what you didn't weigh hard enough. Verbosity: no throat-clearing ("both have tradeoffs", "it depends", "either could work").
+
+**Low-stakes scope, tightened.** "Low-stakes" means reversible AND single domain affected AND no interaction with active rules or in-flight work AND resolvable by the operator in under thirty seconds. All four conditions must hold; if any one is uncertain, use the full template.
+
+**Anti-patterns to refuse.**
+
+- Bullets that name the dimension without filling it ("saves time", "better practice", "affects the roadmap" with no specifics).
+- Recommendation that paraphrases or summarizes the per-option bullets without adding a consideration absent from all of them.
+- "Both have tradeoffs" / "either could work" framing in the context paragraph; the operator needs the tradeoffs named, not their existence acknowledged.
+- Low-stakes label applied to decisions whose downstream consequences have not been surfaced (when in doubt, use the full template).
+
+**Self-check before posting.** Re-read the draft. Could the operator decide reading only this block, without scrolling to related artifacts or asking a follow-up? If no, the per-option bullets are too thin or the recommendation is paraphrasing rather than reasoning; expand before posting.
 
 ## What the trainer is NOT
 

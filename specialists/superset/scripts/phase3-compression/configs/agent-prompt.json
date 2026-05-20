@@ -1,0 +1,80 @@
+{
+  "file": "templates/agent-prompt.md",
+  "_description": "STOP zones for the agent-prompt template. Used by check-agent-ingest-preservation.py to verify compression preserves load-bearing structure that downstream agents will copy and fill in.",
+
+  "verbatim_required": [
+    "Worktree setup",
+    "Capture the baseline",
+    "Clean-baseline verification",
+    "First steps",
+    "Out of scope",
+    "Decision protocol",
+    "Vibe-careful protocol",
+    "Verification",
+    "Commit + DO NOT PUSH",
+    "Write session log",
+    "Operator merge-back",
+    "STOP and report",
+    "safe-terminal Tier-1 #1",
+    "safe-terminal Tier-1 #4",
+    "Same-tree exception",
+    "Gitignore pre-flight",
+    "Stop-and-report channel",
+    "Allowed without operator review",
+    "STOP and report (do NOT commit)",
+    "Scope-match rule",
+    "Structured-file validation",
+    "Do not push",
+    "form-check",
+    "<code | sweep | prose-audit>"
+  ],
+
+  "_verbatim_required_rationale": "Section names that the operator copies into agent-spawn prompts; downstream agents check for these literal headings/phrases when navigating. Cross-references to safe-terminal Tier-1 #1 and #4 anchor the iron-law citations. The role-archetype slot is tracked as a verbatim string rather than a regex to avoid false positives on the bare word `code`.",
+
+  "custom_id_patterns": [
+    {"regex": "\\b(vibe-safe|vibe-light|vibe-careful)\\b", "label": "task_tiers"},
+    {"regex": "\\bCwd\\b", "label": "cwd_param"}
+  ],
+
+  "_custom_id_patterns_rationale": "Domain vocabulary: task-tier classifications (vibe-safe/-light/-careful) and the `Cwd` Cascade run_command parameter name. Each must survive verbatim because downstream agents pattern-match on these tokens.",
+
+  "placeholder_required": [
+    "<PROJECT_NAME>",
+    "<ABSOLUTE_PROJECT_PATH>",
+    "<ABSOLUTE_WORKTREE_PATH>",
+    "<TASK_SLUG>",
+    "<OPERATOR_NAME>",
+    "<SPECIFIC_TASK_DESCRIPTION>",
+    "<CONCRETE_DELIVERABLE_1>",
+    "<CONCRETE_DELIVERABLE_2>",
+    "<CONCRETE_DELIVERABLE_3>",
+    "<TASK_SPECIFIC_VERIFICATION_COMMANDS>",
+    "<TASK_SPECIFIC_METRICS>",
+    "<PROJECT_CLAUDE_OR_AGENTS_MD>",
+    "<REVIEW_GATED_FILES_OR_DIRS>",
+    "<OPERATOR_PROSE_FILES_IF_ANY>",
+    "<FILES_OTHER_AGENTS_ARE_TOUCHING>",
+    "<ANYTHING_ELSE_OUT_OF_SCOPE>",
+    "<SPECIFIC_AMBIGUITY_OR_BLOCKER_THE_OPERATOR_ANTICIPATES>",
+    "<BRIEF_OPERATOR_STATE",
+    "<ONE_PARAGRAPH_PROJECT_DESCRIPTION>",
+    "<DATE>",
+    "<N>",
+    "<sha>"
+  ],
+
+  "_placeholder_required_rationale": "Bracketed substitution slots the operator must fill in when copying the template. Each must survive at the same or greater count. Reducing count would silently drop a substitution slot, leaving downstream agents missing required context.",
+
+  "anchor_phrases": [
+    "Tier-1 #4",
+    "Tier-1 #1",
+    "trainer",
+    "safe-terminal",
+    "form-check",
+    "references/role-overlays\\.md",
+    "references/falsifier-checklist\\.md",
+    "templates/session-log\\.md"
+  ],
+
+  "_anchor_phrases_rationale": "Cross-references that anchor the prompt's discipline to other artifacts in the skill family. Each must survive (count must not decrease) so downstream agents can navigate to the cited artifact when running the prompt."
+}

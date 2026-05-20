@@ -23,8 +23,8 @@ Per superset v0.5.0 Proposal 2, this dispatch uses the **same-tree exception** (
 The first two `run_command` calls in this dispatch are the v0.5.0 Proposal 3 mandatory baseline-state captures:
 
 ```bash
-git -C $HOME/Projects/career-help branch --show-current
-git -C $HOME/Projects/career-help status --short
+git -C $HOME/Projects/toren branch --show-current
+git -C $HOME/Projects/toren status --short
 ```
 
 These confirm the branch and dirty-state before any work begins.

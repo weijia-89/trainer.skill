@@ -1,0 +1,88 @@
+{
+  "file": "templates/meta-log.md",
+  "_description": "STOP zones for the meta-log template. Used by check-agent-ingest-preservation.py to verify compression preserves the weekly-meta schema vocabulary, section structure, YAML manifest keys, pattern/issue/candidate ID system (P1/I1/C1), and the buds 2026-05-19 anchor-incident worked example.",
+
+  "verbatim_required": [
+    "Schema",
+    "Meta hand-off summary",
+    "YAML front-matter",
+    "Running pattern observations",
+    "Issue inventory",
+    "Process-improvement candidates",
+    "End-of-week summary",
+    "Pattern observations",
+    "Annotated worked example",
+    "research-complete",
+    "research-drafted",
+    "research-signed-off",
+    "high-stakes-list.yaml",
+    "DONE",
+    "FAILED",
+    "BLOCKED",
+    "<code | research | sweep | prose-audit>",
+    "high | medium | low",
+    "week_start",
+    "week_end",
+    "meta_chat_id",
+    "refresh_count",
+    "daily_logs_covered",
+    "worker_dispatch_count",
+    "carries_from_previous_week",
+    "by_role",
+    "by_status",
+    "small (skill body wording)",
+    "medium (new template)",
+    "large (new behavior + falsifier + template)",
+    "Layer 3 of the three-layer agent architecture",
+    "Operator-decision tier",
+    "Estimated wall-clock",
+    "Cross-references"
+  ],
+
+  "_verbatim_required_rationale": "Section names + YAML manifest keys + status/severity enums + role-archetype slot + precondition vocabulary (research-complete et al.) that downstream meta sessions pattern-match on. The operator-decision-tier vocabulary classifies skill-edit candidates by review cost; preserved verbatim because the operator scans for these tier labels when deciding sign-off urgency.",
+
+  "custom_id_patterns": [
+    {"regex": "\\b([PIC]\\d+)\\b", "label": "pattern_issue_candidate_ids"},
+    {"regex": "\\bLayer\\s+\\d+\\b", "label": "layer_refs"}
+  ],
+
+  "_custom_id_patterns_rationale": "P-prefix (Pattern), I-prefix (Issue), C-prefix (Candidate) IDs cross-reference each section's structured entries. Layer references anchor the three-layer agent architecture from SKILL.md.",
+
+  "placeholder_required": [
+    "<YYYY-MM-DD>",
+    "<YYYY-WW>",
+    "<YYYY-MM-DD HH:MM>",
+    "<project-name>",
+    "<project>",
+    "<name>",
+    "<integer>",
+    "<N>",
+    "<one sentence: where the week stands>",
+    "<short pattern name>",
+    "<short incident name>",
+    "<short candidate name>",
+    "<one-paragraph; cite the daily-log entry>",
+    "<one-line \"this week was X\">"
+  ],
+
+  "_placeholder_required_rationale": "Bracketed substitution slots the meta agent fills in when authoring or refreshing the meta log. Each must survive (count must not decrease).",
+
+  "anchor_phrases": [
+    "buds",
+    "2026-05-19",
+    "2026-05-20",
+    "2026-05-21",
+    "fdroid-research",
+    "license-edit",
+    "ip-protection-priorities",
+    "readme-strategy",
+    "FSL",
+    "f-droid",
+    "localonly/daily/",
+    "localonly/meta-logs/",
+    "SKILL\\.md",
+    "AGENTS\\.md"
+  ],
+
+  "_anchor_phrases_rationale": "The annotated worked example anchors to a concrete buds week of 2026-05-19 with four named research-precondition agents (A-fdroid-research, B-license-edit, C-ip-protection-priorities, D-readme-strategy) and the FSL/f-droid pattern P1. Path references anchor cross-file navigation."
+}

@@ -1,8 +1,8 @@
 # Worker session-log template (compaction-ready format)
 
-Each dispatched worker writes its own session log at `<project>/localonly/session-logs/<YYYY-MM-DD>-agent<X>-<task>.md` on task close. The orch ingests these on worker DONE status and compacts them into the daily log's Section 3 (per-agent entries) and the daily log's "For meta" appendix.
+Each dispatched worker writes its own session log at `<project>/localonly/session-logs/<YYYY-MM-DD>-agent<X>-<task>.md` on task close. The orch ingests on worker DONE status and compacts into the daily log's Section 3 (per-agent entries) and the daily log's "For meta" appendix.
 
-This format prioritizes compaction. The first three sections survive ingestion; Section 4 is compactable.
+Format prioritizes compaction. First three sections survive ingestion; Section 4 is compactable.
 
 ## Schema
 
@@ -50,11 +50,11 @@ Everything else: commands run, files touched, decisions made, error traces, inte
 
 ## Compaction discipline
 
-The orch deduplicates Key Learnings against the running notes-for-next-orch section. Once a learning is ratified into a skill (the meta agent's process-improvement candidate gets accepted by Wei), the corresponding bullet here can be dropped as deduplicated; the skill itself encodes the rule now.
+The orch deduplicates Key Learnings against the running notes-for-next-orch section. Once a learning is ratified into a skill (the meta agent's process-improvement candidate gets accepted by Wei), the bullet can be dropped as deduplicated; the skill encodes the rule now.
 
-Audit findings with P0/P1 severity propagate immediately to the daily log's running notes (orch acts on them this session). P2 findings carry to the daily log's "For meta" appendix for weekly review.
+Audit findings with P0/P1 severity propagate immediately to the daily log's running notes (orch acts this session). P2 findings carry to the daily log's "For meta" appendix for weekly review.
 
-Section 4 (Details) is purely for the worker's own audit trail and for hand-off-time deep-context if needed. The orch may discard it on compaction; the raw worker session-log file at `localonly/session-logs/` remains on disk as the historical record.
+Section 4 (Details) is purely for the worker's own audit trail and hand-off-time deep-context if needed. The orch may discard it on compaction; the raw worker session-log file at `localonly/session-logs/` remains on disk as the historical record.
 
 ## What the orch does with a worker session log
 

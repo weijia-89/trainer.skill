@@ -1,10 +1,10 @@
 # Meta log template
 
-The meta log is the weekly artifact for the meta agent (Layer 3 of the three-layer agent architecture; see `SKILL.md`). One file per project per week, at `<project>/localonly/meta-logs/<YYYY-WW>-meta.md` where `<YYYY-WW>` is the ISO 8601 year-week number (e.g., `2026-W21-meta.md` for the week starting Monday 2026-05-18). The meta agent lives for one week by default (refresh sooner on IDE slowdown).
+The meta log is the weekly artifact for the meta agent (Layer 3 of the three-layer agent architecture; see `SKILL.md`). One file per project per week at `<project>/localonly/meta-logs/<YYYY-WW>-meta.md` where `<YYYY-WW>` is the ISO 8601 year-week number (e.g., `2026-W21-meta.md` for the week starting Monday 2026-05-18). Meta lives one week by default (refresh sooner on IDE slowdown).
 
-Meta does pattern recognition across daily logs. Meta surfaces process-improvement candidates. Meta does not dispatch workers and does not coach the operator in real-time.
+Meta does pattern recognition across daily logs and surfaces process-improvement candidates. Meta does not dispatch workers and does not coach the operator in real-time.
 
-This template ships annotated. Copy, fill, remove the inline guidance before the meta log is first surfaced for the week.
+This template ships annotated. Copy, fill, remove inline guidance before first surfacing the meta log for the week.
 
 ---
 
@@ -88,7 +88,7 @@ carries_from_previous_week:
 
 ## Section 2, Running pattern observations
 
-Each observation is a structured entry. Pattern claim, evidence citations from daily logs, count, severity, and a "what this might mean" interpretation.
+Each observation is a structured entry: pattern claim, evidence citations from daily logs, count, severity, and a "what this might mean" interpretation.
 
 ```markdown
 ## Pattern observations
@@ -117,7 +117,7 @@ Each observation is a structured entry. Pattern claim, evidence citations from d
 
 ## Section 3, Issue inventory
 
-Distinct from patterns: discrete incidents this week with attribution and resolution status. Use this as the audit trail.
+Distinct from patterns: discrete incidents this week with attribution and resolution status. The audit trail.
 
 ```markdown
 ## Issue inventory
@@ -136,7 +136,7 @@ Distinct from patterns: discrete incidents this week with attribution and resolu
 
 ## Section 4, Process-improvement candidates
 
-Concrete, actionable. Names specific files and proposed diffs where possible. The operator decides which land.
+Concrete, actionable. Names specific files and proposed diffs where possible. Operator decides which land.
 
 ```markdown
 ## Process-improvement candidates
@@ -152,7 +152,7 @@ Concrete, actionable. Names specific files and proposed diffs where possible. Th
 ### C2, ...
 ```
 
-The operator may choose to sign off on a candidate immediately (Cascade implements next session), defer (carry to next week's meta log), or reject (log the rejection with reason; do not re-surface for N weeks).
+Operator may sign off immediately (Cascade implements next session), defer (carry to next week's meta log), or reject (log rejection with reason; do not re-surface for N weeks).
 
 ---
 
@@ -243,4 +243,4 @@ carries_from_previous_week: []
 **Estimated wall-clock:** 20 min review + sign-off
 ```
 
-End of template. Remove the annotated worked example before the meta log is first surfaced for a real week; keep only the populated sections.
+End of template. Remove the annotated worked example before first surfacing the meta log for a real week; keep only the populated sections.

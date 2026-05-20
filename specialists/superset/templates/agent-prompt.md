@@ -1,10 +1,10 @@
 # Agent prompt template
 
-Copy this whole file, replace every `<bracketed>` placeholder, run the falsifier checklist (`../references/falsifier-checklist.md`), paste into a fresh agent chat.
+Copy this file, replace every `<bracketed>` placeholder, run the falsifier checklist (`../references/falsifier-checklist.md`), paste into a fresh agent chat.
 
-**Portability note:** this template assumes Cascade-on-Windsurf tool semantics (`run_command`, `Cwd` parameter, `read_file` and `edit` tools, gitignored-write guard). Adapt per-runner if spawning into Claude Code, Cursor, or other.
+**Portability note:** assumes Cascade-on-Windsurf tool semantics (`run_command`, `Cwd` parameter, `read_file`/`edit` tools, gitignored-write guard). Adapt per-runner for Claude Code, Cursor, or other.
 
-**Wall-clock estimate:** state up front so the operator can plan coordination. Format: "Expected duration: ~N min from baseline capture to commit, plus ~M min for operator review."
+**Wall-clock estimate:** state up front (format: "Expected duration: ~N min from baseline to commit, plus ~M min for operator review").
 
 ---
 
@@ -61,13 +61,13 @@ Run the install command that matches the manifest in the worktree. First match w
 [ -f go.mod ]            && go mod download
 ```
 
-For Python projects, the worktree-local venv is mandatory. Without it, your `pip install` corrupts the operator's main `.venv` mid-flight.
+For Python, the worktree-local venv is mandatory: without it your `pip install` corrupts the operator's main `.venv` mid-flight.
 
 ### Step 3: Clean-baseline verification
 
 Run the test suite once before any edits. If it fails, STOP and report rather than attributing failures to your own work later.
 
-**Same-tree exception (skip worktree):** ONLY if scope is single-file and read-mostly AND operator confirms no parallel work in the main checkout. State explicitly in your first-step output: "Skipping worktree per operator authorization; scope is `<files>`."
+**Same-tree exception (skip worktree):** ONLY if scope is single-file read-mostly AND operator confirms no parallel work in main checkout. State in your first-step output: "Skipping worktree per operator authorization; scope is `<files>`."
 
 ## First steps (mandatory, in order)
 
@@ -86,7 +86,7 @@ grep -E 'FAILED|ERROR' /tmp/<task-slug>-baseline-pytest.log > /tmp/<task-slug>-b
 git rev-parse HEAD                                     # baseline SHA
 ```
 
-Save the baseline (count + failing-test names + HEAD SHA + lint state). End-state verification is:
+Save baseline (count + failing-test names + HEAD SHA + lint state). End-state verification:
 
 1. Test count is same or higher than baseline
 2. Failing-test names after edits == failing-test names at baseline (no swap; no pre-existing failure left while a new failure is introduced)
@@ -112,7 +112,7 @@ Save the baseline (count + failing-test names + HEAD SHA + lint state). End-stat
 
 If you encounter <SPECIFIC_AMBIGUITY_OR_BLOCKER_THE_OPERATOR_ANTICIPATES>: <stop-and-report / use-this-default / ask-via-output>.
 
-**Stop-and-report channel (explicit):** you have no synchronous channel to the operator. "STOP and report" means: stop the work, emit a clear message in your final chat output stating exactly what blocked you, and wait. The operator checks the chat when they review the batch. Do NOT loop trying to escalate; do NOT silently work around the blocker.
+**Stop-and-report channel (explicit):** you have no synchronous channel to the operator. "STOP and report" means: stop the work, emit a clear chat message stating what blocked you, and wait. The operator checks chat at batch review. Do NOT loop to escalate; do NOT silently work around the blocker.
 
 ## Vibe-careful protocol (source-edit definition)
 
@@ -180,7 +180,7 @@ One or more commits. Title format (single-line `-m` for titles only; multi-line 
 
 ## Write session log (after commit, before return)
 
-Write to `<ABSOLUTE_PROJECT_PATH>/localonly/session-logs/<DATE>-agent<N>-<task-slug>.md` using the shape at `~/.claude/skills/superset.skill/templates/session-log.md`. The `localonly/` directory must be gitignored (verify with `grep '^localonly' <project>/.gitignore`). The log is for periodic harness review and never enters version control.
+Write to `<ABSOLUTE_PROJECT_PATH>/localonly/session-logs/<DATE>-agent<N>-<task-slug>.md` using the shape at `~/.claude/skills/superset.skill/templates/session-log.md`. The `localonly/` directory must be gitignored (verify: `grep '^localonly' <project>/.gitignore`). The log is for periodic harness review; never enters version control.
 
 ## Return
 

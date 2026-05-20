@@ -3,17 +3,16 @@
 Use this template when the current orchestration chat hits context-window
 pressure (IDE slowing, accumulated history > ~50% of window, multi-day
 multi-batch coordination needs a fresh start) and the orchestrator role
-itself needs to migrate to a new chat.
+needs to migrate to a new chat.
 
-Distinct from `agent-prompt.md`: an *agent* prompt spawns a worker that
-performs a scoped task and returns. A *handoff* prompt transfers a
-long-running coordination role to a fresh chat without losing context.
+Distinct from `agent-prompt.md`: an *agent* prompt spawns a worker for a
+scoped task. A *handoff* prompt transfers a long-running coordination role
+to a fresh chat without losing context.
 
 The handoff prompt is itself a superset-shaped artifact. The orchestrator
 chat is a long-running coordination "body" that, like a worker agent,
-has its own task scope and gets handed off cleanly between chats when
-the original chat saturates. The handoff is the rest interval between
-two orchestrator chats.
+has its own task scope and gets handed off cleanly when the chat saturates.
+The handoff is the rest interval between two orchestrator chats.
 
 ---
 
@@ -69,8 +68,8 @@ directly."
 ### 3. State-verification commands
 
 The fresh chat runs these as its first action. Treat live state as
-canonical. The handoff text states the state as of handoff authoring
-time; the live commands establish what state actually is now.
+canonical. The handoff states what was true at authoring time; the live
+commands establish what state is now.
 
 Minimum command set for git-based projects:
 ```
@@ -96,14 +95,14 @@ state. Includes:
 - Any project-specific deviations from superset defaults (e.g., the
   push-vs-no-push policy; CI architecture; calibration-log discipline).
 
-Every fact must be one the live state can confirm or refute. If a fact
-is "true at handoff time but un-verifiable later," flag it explicitly.
+Every fact must be one live state can confirm or refute. Flag any fact
+that was "true at handoff time but un-verifiable later".
 
 #### Per-fact confidence-tier tagging
 
-Each fact in section 4 carries one of four epistemic tags, borrowed
-from the `epistemic-planning` skill. The new orchestrator reads the
-tag to know which facts to re-verify first.
+Each fact in section 4 carries one of four epistemic tags from the
+`epistemic-planning` skill. The new orchestrator reads the tag to know
+which facts to re-verify first.
 
 - `[verified]`: the orchestrator confirmed by running a command or
   reading a file within the last 30 minutes.
@@ -129,9 +128,9 @@ Whether CI cleared on #43 after the last rebase: [unknown]
 
 ### 5. Plan ahead
 
-The next 3-5 calendar days of planned work, calibrated by the
-operator's intensity expectation. Show parallel-vs-sequential structure
-explicitly so the new chat understands which batches can fire when.
+The next 3-5 calendar days of planned work, calibrated to operator
+intensity. Show parallel-vs-sequential structure so the new chat
+understands which batches can fire when.
 
 ### 6. Role discipline
 
@@ -167,15 +166,15 @@ moment of relevance:
 
 ### Embedded artifacts: the agent prompts themselves
 
-The handoff prompt embeds the full text of each agent prompt the new
-orchestrator will need to dispatch. Use `===AGENT N PROMPT START===` /
+The handoff embeds the full text of each agent prompt the new
+orchestrator will dispatch. Use `===AGENT N PROMPT START===` /
 `===AGENT N PROMPT END===` markers so the orchestrator can locate them
 programmatically. Do NOT abbreviate or paraphrase; copy verbatim.
 
 Why embed and not persist-to-disk: gitignored paths block
-`write_to_file` in some IDE configurations; persistence-to-disk via
-python-script-to-/tmp adds complexity. Embedding in the handoff text
-is the most reliable artifact transfer.
+`write_to_file` in some IDE configs; persistence-to-disk via
+python-script-to-/tmp adds complexity. Embedding is the most reliable
+artifact transfer.
 
 ### When verbatim vs reference-by-path
 
@@ -246,6 +245,7 @@ handoff prompt must pass:
 | HO7 | No-autonomy / no-poll discipline stated? | grep for "no autonomy" or async-handoff reference | Add restatement |
 | HO8 | Initial action is "verify state, report, wait" not "spawn"? | Last section of handoff | Rewrite the close |
 | HO9 | Every fact in "Stated context" carries a `[verified\|inferred\|speculative\|unknown]` tag? | grep handoff for tag count vs fact count | Tag each fact |
+| HO10 | Status-claim evidence iron law: outgoing-handoff `validate-track-status.sh` run in the same turn as summary authoring? | `bash scripts/validate-track-status.sh <today's daily log>`; every status claim in the summary cites a row from the output, not narrative recall | Run the validator; replace narrative claims with cited evidence rows; route any `status-unverified` or `planned-but-evidence-present` verdict to operator before handoff |
 
 ## Common mistakes
 
@@ -255,17 +255,16 @@ handoff prompt must pass:
   Paraphrase = drift = the agent's worktree assumptions go subtly
   wrong.
 - **Stating "as of handoff time" facts as if they are current.** The
-  fresh chat may not run for hours after the handoff is authored.
-  Mark every time-sensitive fact with the authoring timestamp and the
-  "verify against live state" reminder.
+  fresh chat may not run for hours after authoring. Mark every
+  time-sensitive fact with the authoring timestamp and the "verify
+  against live state" reminder.
 - **Forgetting the rollback SHA.** If a batch goes sideways, the
   orchestrator needs to know the pre-batch HEAD to reset main to.
   State it once in "Stated context."
 - **Missing the no-autonomy reminder.** A fresh orchestrator inherits
   the always-on async-handoff rule from memory, but the long handoff
-  text gives the chat plenty of opportunities to drift into "I'll
-  check back" framings. State the rule near the top, restate near
-  the close.
+  gives the chat plenty of opportunities to drift into "I'll check
+  back" framings. State the rule near the top, restate near the close.
 - **Initial action says "spawn the four agents."** The orchestrator
   is not a Cascade-internal scheduler; only the operator can open
   agent chats. The orchestrator's initial action is "report verified
