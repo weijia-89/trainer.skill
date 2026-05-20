@@ -10,6 +10,58 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - **MINOR**: new sync target added; a specialist gym-skill's invocation pattern is updated; new section added without changing existing semantics.
 - **PATCH**: typo fix; clarification without semantic change; sync-mechanic improvement.
 
+## [0.10.1] (2026-05-20): Authoring-discipline README section + Claude-mirror resync + v0.10.0 sync-completion
+
+**PATCH per SemVer rules.** README gains an "Authoring discipline" section that documents the three voice gates contributors apply before commit (em-dash zero, deai gate, wei-voice iron rules). The canonical SKILL.md gains no body changes; v0.10.0 (commit `ab5014b`) shipped the new § Adversarial-review pass sub-subsection but left canonical frontmatter at v0.9.1 and did not resync the Claude mirror (which still carried the pre-v0.9.1 line 269 wording). v0.10.1 finishes both syncs and ships the README authoring-discipline section in the same commit.
+
+### Sync-completion context (v0.10.0 → v0.10.1)
+
+L3 codification commit `ab5014b` (v0.10.0) shipped the new SKILL.md sub-subsection body and the Cursor and Windsurf trigger version stamps. It did not bump canonical SKILL.md frontmatter (remained at v0.9.1) and did not resync the Claude mirror (still carried the older paraphrasing-prone line 269 wording from before the v0.9.1 wei-voice rewrite in commit `5198365`). `verify_trainer_sync.sh` invariant 1 was FAILing on canonical-vs-Claude-mirror divergence as a result. v0.10.1 closes both gaps and stamps all four sync targets at v0.10.1.
+
+### Added
+
+- **`README.md` "Authoring discipline" section** (about 15 lines, between "Sync targets" and "SemVer rules"). Documents three voice gates: em-dash zero (mechanical, enforced by `scripts/verify_trainer_sync.sh` invariant 6); deai gate (manual, mandatory before claiming voice-verified, runs `python3 ~/.claude/skills/deai/deai-scan.py <file>`); wei-voice iron rules (manual: no theatrical mic-drops at paragraph end, no tricolon-after-colon, active voice with author as agent). References this CHANGELOG entry as the worked example.
+
+### Changed
+
+- **`~/.claude/skills/trainer/SKILL.md`** (Claude mirror) resynced byte-identical to canonical. Closes the canonical-vs-mirror divergence at line 269 that `verify_trainer_sync.sh` invariant 1 flagged after v0.9.1 landed and v0.10.0 did not address: canonical carried the wei-voice rewrite from commit `5198365` plus the v0.10.0 sub-subsection from commit `ab5014b`; the mirror retained the older paraphrasing-prone wording across both versions.
+- **Canonical SKILL.md frontmatter** bumped from v0.9.1 (the bump skipped in v0.10.0) to v0.10.1.
+- **Cursor trigger, Windsurf trigger** version stamps updated from v0.10.0 to v0.10.1 (both header and body references).
+
+### Worked example: the line 269 rewrite as the four-flavor anti-pattern
+
+The canonical SKILL.md § Decision-presentation template recommendation paragraph (line 269) before commit `5198365` read:
+
+> Reasoning that does NOT duplicate the per-option bullets. **Use this block for:** continuation of the rationale, software-engineering best-practice context, specific research citation, deeper why-this-and-not-that comparison, or anything that addresses the operator's decision criteria rather than the options' surface properties. The recommendation reasoning is where Cascade earns its keep; the per-option bullets are table stakes.
+
+Four iron-rule violations stacked in that single paragraph:
+
+1. **Tricolon-after-colon.** "Use this block for:" introduced five parallel noun-phrase items, the AI / influencer / punditry shape that the wei-voice iron rules explicitly ban.
+2. **Parallel-item mic-drop.** Each of the five items was grammatically parallel ("continuation of X, Y context, Z citation, Q comparison, or anything that..."), reinforcing the rhetorical-zinger effect rather than reading as integrated prose.
+3. **Agent-effacing framing.** "Use this block for:" directed the reader at the block without naming Cascade as the agent doing the using; the rewrite makes Cascade the subject ("The recommendation block is where Cascade addresses...").
+4. **Paraphrase-trap.** The colon-list delegated meaning to the listed items rather than asserting the recommendation block's purpose up front; readers had to read the full list before knowing what the block was for.
+
+The rewrite (now in canonical and, with v0.10.1, in the Claude mirror) replaces the colon-list with continuous prose, names Cascade as the agent, and front-loads the recommendation block's purpose. The paragraph-end "where Cascade earns its keep; the per-option bullets are table stakes" line is preserved as the earned climactic beat of the four-paragraph subsection, not as a theatrical paragraph-end mic-drop.
+
+### Why PATCH not MINOR
+
+- No canonical SKILL.md body change in v0.10.1. The v0.9.1 wei-voice rewrite that v0.10.1 propagates to the Claude mirror was already committed in `5198365`; the new sub-subsection was already committed in `ab5014b` (v0.10.0).
+- README section is contributor-facing documentation, not a sync target. Adding it does not change agent behavior at session start.
+- Routing decision flow unchanged. Specialist list unchanged. Coaching stance unchanged.
+
+### Files touched
+
+- `~/Projects/trainer.skill/README.md` (new "Authoring discipline" section)
+- `~/Projects/trainer.skill/CHANGELOG.md` (this entry)
+- `~/Projects/trainer.skill/SKILL.md` (version stamp only; line 6 frontmatter bump 0.9.1 to 0.10.1)
+- `~/.claude/skills/trainer/SKILL.md` (Claude mirror; resynced byte-identical via `cp` from canonical)
+- `~/Projects/.cursor/rules/trainer.mdc` (Cursor trigger; v0.10.0 to v0.10.1, header and body)
+- `~/Projects/.windsurf/rules/trainer.md` (Windsurf trigger; v0.10.0 to v0.10.1, header and body)
+
+### Why this shipped
+
+`verify_trainer_sync.sh` invariant 1 was FAILing after v0.10.0 landed because the L3 codification commit did not complete the canonical frontmatter bump or the Claude mirror resync. README authoring-discipline section was drafted concurrently to codify the three voice gates that catch this class of regression at author time. v0.10.1 closes both gaps and ships the README section in the same commit.
+
 ## [0.10.0] (2026-05-20): Adversarial-review pass sub-subsection under Mechanical pre-action gate
 
 **MINOR per SemVer rules** (new section added without changing existing semantics). Codifies the L3 verdict from the buds meta cycle (`buds/localonly/orchestration/2026-05-20-meta-proposals.md` § L3), ratified by Wei 2026-05-20 12:43 ET. Composes with the existing v0.6 Iron-Law mechanical pre-action gate: the 3-facts gate is the sign, the new sub-subsection is the discipline that runs when the action's reversibility cost exceeds the 3-facts gate's coverage.
