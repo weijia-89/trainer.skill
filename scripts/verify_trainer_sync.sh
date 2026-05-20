@@ -84,10 +84,10 @@ if [[ "$FAIL" -eq 0 ]]; then
   echo "PASS  all four sync targets agree on version $CANONICAL_VERSION"
 fi
 
-# Invariant 5: SKILL.md (canonical) is ≤320 lines (bootstrap-skill cap; original 100, bumped to 140 in v0.4.0 for Iron Law layering, then to 180 in v0.5.0 for Red Flags / Rationalizations, then to 240 in v0.7.0 for the v0.6 Iron-Law pre-action gate + worked examples + ancillary routing-flow entries, then to 280 in v0.8.0 for the Dispatch-graph-before-dispatch sub-clause, then to 320 in v0.9.0 for the Decision-presentation template subsection)
+# Invariant 5: SKILL.md (canonical) is ≤360 lines (bootstrap-skill cap; original 100, bumped to 140 in v0.4.0 for Iron Law layering, then to 180 in v0.5.0 for Red Flags / Rationalizations, then to 240 in v0.7.0 for the v0.6 Iron-Law pre-action gate + worked examples + ancillary routing-flow entries, then to 280 in v0.8.0 for the Dispatch-graph-before-dispatch sub-clause, then to 320 in v0.9.0 for the Decision-presentation template subsection, then to 360 in v0.10.0 for the Adversarial-review pass sub-subsection under Mechanical pre-action gate)
 CANONICAL_LINES=$(wc -l < "$CANONICAL")
-if [[ "$CANONICAL_LINES" -gt 320 ]]; then
-  echo "WARN  canonical SKILL.md is $CANONICAL_LINES lines (soft cap 320)"
+if [[ "$CANONICAL_LINES" -gt 360 ]]; then
+  echo "WARN  canonical SKILL.md is $CANONICAL_LINES lines (soft cap 360)"
 fi
 
 # Invariant 6: zero em-dashes (Wei's writing-style hard rule, 2026-05-15)

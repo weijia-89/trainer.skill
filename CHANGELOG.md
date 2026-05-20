@@ -10,6 +10,19 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - **MINOR**: new sync target added; a specialist gym-skill's invocation pattern is updated; new section added without changing existing semantics.
 - **PATCH**: typo fix; clarification without semantic change; sync-mechanic improvement.
 
+## [0.10.0] (2026-05-20): Adversarial-review pass sub-subsection under Mechanical pre-action gate
+
+**MINOR per SemVer rules** (new section added without changing existing semantics). Codifies the L3 verdict from the buds meta cycle (`buds/localonly/orchestration/2026-05-20-meta-proposals.md` § L3), ratified by Wei 2026-05-20 12:43 ET. Composes with the existing v0.6 Iron-Law mechanical pre-action gate: the 3-facts gate is the sign, the new sub-subsection is the discipline that runs when the action's reversibility cost exceeds the 3-facts gate's coverage.
+
+### Added
+
+- **§ Mechanical pre-action gate → Adversarial-review pass sub-subsection** (`####` nested under `### Mechanical pre-action gate`). Defines the three-step protocol: (1) enumerate N potential holes in the planned action, (2) verify each empirically with a single tool call, (3) release the gate only when all N are cleared. Trigger set is mechanically enumerated (no judgment threshold): push to origin, force-push, branch delete, PR open, merge, release tag, cross-project write. Stakes-tier override restricts the N-hole pass to vibe-careful and vibe-dangerous; vibe-safe reversible actions still take the 3-facts gate alone. Worked example references the 2026-05-19/20 buds session (14 holes total caught pre-action: 10 in initial cleanup-plan review + 4 in B1/B2 path-catchup gate; 0 surfaced post-action).
+
+### Changed
+
+- **Canonical, Claude mirror, Cursor trigger, Windsurf trigger** version stamps updated to v0.10.0.
+- **`scripts/verify_trainer_sync.sh` Invariant 5 soft line-cap** bumped 320 → 360 to accommodate the new sub-subsection.
+
 ## [0.9.1] (2026-05-20): Decision-presentation template, anti-patterns + self-check + tightened low-stakes scope
 
 **PATCH per SemVer rules.** Wording-only additions to the v0.9.0 Decision-presentation template subsection. No new behavior beyond what v0.9.0 already added; no routing change. Closes the failure mode where a Cascade session ships formally-compliant decision blocks that pass structural review while delivering zero decision support to the operator.
