@@ -2,7 +2,7 @@
 name: superset
 description: Use when spawning 2+ fresh-context agents on the same git repo for isolated parallel work; symptoms include same-tree shared-state risk (.pytest_cache / pyproject collisions), agents overstepping scope, intermediate commits pushed by accident, session learnings lost between iterations, prompt quality drifting between agents.
 type: project-skill
-version: 0.8.3
+version: 0.8.4
 authors: Wei Jia (2026-05-19)
 license: MIT
 composes:
@@ -29,7 +29,7 @@ Parallel agents on the same git repo collide on shared state (caches, pyproject,
 
 Spawn isolated agents when:
 
-- 2 or more tasks have non-overlapping file sets
+- 2 or more tasks have non-overlapping **write** paths **and** pass the [same-repo main integration gate](#same-repo-parallel-agents-main-integration-gate-added-v084) when they share one git repo
 - Each task fits in <90 min of agent wall-clock
 - The operator's critical-path work is NOT one of the agents (operator-bottleneck case kills the parallel speedup)
 - Git worktrees are set up per agent (the default; see Worktree discipline below)
@@ -38,6 +38,7 @@ Do NOT spawn isolated agents when:
 
 - The bottleneck is operator writing or judgment work (agents don't unblock that)
 - Tasks share files or review-gated config (pyproject mutmut section, calibration logs, prose-locked docs)
+- A second agent on the same repo is queued without a pre-spawn integration check or a serial merge-back plan (see [same-repo main integration gate](#same-repo-parallel-agents-main-integration-gate-added-v084))
 - Operator is mid-incident, mid-MVP-push, or otherwise has no review bandwidth
 - The work needs full-system context the prompt can't carry
 
@@ -323,6 +324,61 @@ Orchestrator brief may restate paths; **this section is canonical** for status-c
 
 **SDK affordances (same iron law):** `cursor-sdk-playground/palamedes-ui/` + `scripts/palamedes_serve.sh` for local palamedes research UI; queue SSOT `weekend-queue.md`. Iron-law excerpt: `prompts/status-check-changelog-iron-law.md`.
 
+**Weekend queue (slot 2 on same repo):** Before spawning a second SDK worker on a repo that already has an in-flight agent, run the [pre-spawn gate](#pre-spawn-gate-second-agent-same-repo) below and confirm the first agent's PR is **mergeable** into `origin/main` (or schedule serial merge-back). See `cursor-sdk-playground/weekend-queue.md` § Spawn capacity — cross-ref this section.
+
+## Same-repo parallel agents: main integration gate (added v0.8.4)
+
+Disjoint `owned_paths` and per-agent worktrees stop **write-time** collisions (index lock, caches, same-file stomp). They do **not** stop **integration-time** conflicts when both branches land on `main`: shared append-only parents, version catalogs, lockfiles, or adjacent modules that both touch the repo's merge surface.
+
+**Worked example (toebeans 2026-05-23):** Agents B (`m1-dose-receiver-lookup-spec-sdk`, androidApp + `shared/.../notifications/`) and E (`feat/sqldelight-schedule-repo-sdk`, `shared/.../data/` + `Schedule.sq`) had disjoint WRITE trees and separate worktrees. H11 passed. [PR #42](https://github.com/weijia-89/toebeans/pull/42) still reported `mergeable: CONFLICTING` — both appended to `.codeit/calibration.jsonl`; `CHANGELOG.md` merged cleanly in a local `git merge-tree` but calibration did not. Validator owned-path overlap is necessary, not sufficient.
+
+### Shared parent files (always check)
+
+Treat these as **implicit owned_paths for every same-repo agent** even when the job prompt names only a module subtree:
+
+| Pattern | Why |
+| ------- | --- |
+| `CHANGELOG.md`, `README.md`, release notes | Every agent ships a bullet |
+| Project calibration / session logs (e.g. `.codeit/calibration.jsonl`) | Append-only JSONL per commit |
+| `gradle.lockfile`, `libs.versions.toml`, `settings.gradle.kts`, root `build.gradle.kts` | Dependency or plugin bumps |
+| `.gitignore`, `CODEOWNERS`, CI workflow roots | Repo-wide hygiene |
+| Version catalogs, `package-lock.json`, `uv.lock`, `poetry.lock` | Lockfile merge noise |
+
+Adjacent modules (e.g. `shared/data` + `shared/notifications` + `androidApp/di`) are lower risk at write time but still need **merge-order** or **rebase-after-first-lands** when both PRs are open.
+
+### Pre-spawn gate (second agent, same repo)
+
+Before dispatching agent 2 on a repo that already has agent 1 in flight:
+
+1. **`git fetch origin`** on the repo (orchestrator-side; not the worker's first commit).
+2. **Inventory active branches:** `git worktree list` plus manifest rows for same `project:` — list each worker branch still open.
+3. **Integration dry-run** (pick one; record result in coordination SSOT):
+   - `git merge-tree $(git merge-base <branch-1> <branch-2>) <branch-1> <branch-2>` — treat any `changed in both` as **block spawn** or **serial merge-back** unless operator approves conflict resolution budget.
+   - If branch 1 has no commits yet, compare branch 2 against `origin/main` only.
+4. **Decision:** spawn agent 2 only if merge-tree is clean **or** the manifest schedules **serial merge-back** (agent 2 `depends_on` agent 1, phase strictly later, agent 2 starts only after agent 1 PR merged and agent 2 rebases on updated `origin/main`).
+
+Do not rely on "disjoint owned_paths" alone when the cap allows ≤2 agents per repo (SDK weekend queue policy).
+
+### Post-agent gate (before PR or right after worker return)
+
+Orchestrator runs **before** `gh pr create` and again when the worker exits:
+
+1. **`gh pr view <n> --json mergeable,mergeStateStatus`** when a PR exists — `mergeable: MERGEABLE` required before spawning another same-repo agent; `CONFLICTING` blocks slot 2 and triggers rebase/merge-order work.
+2. **Worktree dry-run** (when no PR yet or to confirm locally):
+
+```bash
+git -C <worktree> fetch origin -q
+git -C <worktree> merge --no-commit --no-ff origin/main
+# inspect conflicts; then:
+git -C <worktree> merge --abort
+```
+
+Equivalent: `git merge-tree $(git merge-base HEAD origin/main) HEAD origin/main` from the worker branch tip.
+
+3. **If conflicting:** do not open a second PR on the same repo until the first lands or the branch rebases; log in daily log / weekend queue status row.
+
+Falsifier **H16** in `references/falsifier-checklist.md` encodes both gates.
+
 ## Hand-off summary schema (token-optimized)
 
 The orch hand-off summary lives at the very top of the daily log (above the YAML front-matter manifest, in a fenced section that survives the manifest's parser ignoring it). Target: ≤1000 tokens for a typical day; ≤1500 for a heavy day with many in-flight items. The new orch reads this section alone in its first turn and gets ~90% of the day's context without parsing the full log.
@@ -507,7 +563,11 @@ The H5 falsifier accepts three resolutions: Shape A (worktree setup is the first
 
 Before dispatching a parallel batch, the orchestrator verifies EVERY agent in the batch has its own worktree, OR an explicit same-tree exception with all four preconditions (single-file, read-mostly, no parallel work, no gated-doc edits). If any agent is unworktreed without exception, the batch waits or the unworktreed agent moves to a worktree first. Mixed batches (some worktreed, some same-tree without exception) accumulate live state changes in the main checkout that break baseline capture for the same-tree agents.
 
+For **two or more agents on the same git repo**, also run the [same-repo main integration gate](#same-repo-parallel-agents-main-integration-gate-added-v084) pre-spawn checklist (fetch, worktree branch inventory, `merge-tree` or serial merge-back). H11 owned-path non-overlap does not replace that gate.
+
 Anti-pattern: dispatching agents one at a time without worktrees, accumulating multiple in the same main checkout. The race is silent until two agents write to the same file. Worked example: buds 2026-05-19 voice-scatter agent ran in its worktree while at least three other agents wrote to main checkout concurrently; live git status rotated across three consecutive checks as commits landed mid-session. The race was contained by byte-range-disjoint edits; next recurrence may not be so lucky.
+
+Anti-pattern: two worktreed agents on the same repo with disjoint module paths but both appending calibration or changelog parents — second PR opens green CI yet stays `mergeable: CONFLICTING` on GitHub. Worked example: toebeans 2026-05-23 agents B + E; `.codeit/calibration.jsonl` `changed in both` in `git merge-tree`.
 
 ### Cross-checkout artifact dependencies
 
@@ -577,6 +637,7 @@ The prompt template assumes Cascade-on-Windsurf tool semantics (`run_command`, `
 - The agent must read >5 files to understand scope. (Scope is too broad.)
 - The agent must make a judgment call the prompt does not preauthorize. (Add explicit authorization or stop-and-report.)
 - Two agents' file sets overlap by any file. (Collision risk; pick one or use worktrees.)
+- Two agents on the **same repo** with only disjoint module paths but no merge-tree / mergeable check. (Integration conflict on shared parents; see same-repo main integration gate.)
 - The verification step does not test the work product (only tests adjacent state).
 - The session-log instructions are absent or vague. (Defeats the iteration loop.)
 - The prompt doesn't specify worktree setup or document the same-tree exception. (Default missing.)

@@ -10,6 +10,19 @@ Renamed from `ancillary` to `superset` at v0.3.0 for trainer-family coherence (a
 - **MINOR:** new falsifiers, new role archetypes, new templates, new references, new cross-cutting concerns, new patterns borrowed from the public ecosystem; pure renames at the skill level (since `name:` frontmatter changes break existing `Skill: <name>` invocations even if the body is unchanged).
 - **PATCH:** wording, citation updates, example refinements, falsifier rewordings without semantic change.
 
+## [0.8.4], 2026-05-23, Same-repo main integration gate (MINOR)
+
+### Added
+
+- **§ Same-repo parallel agents: main integration gate** in `SKILL.md`. Pre-spawn (`git fetch`, worktree branch inventory, `merge-tree` or serial merge-back) and post-agent (`gh pr view` mergeable, worktree merge dry-run) gates when ≤2 agents share one repo. Shared-parent file table (changelog, calibration JSONL, lockfiles, catalogs). Weekend-queue cross-ref for slot 2. Anchored to toebeans 2026-05-23 agents B+E / PR #42.
+- **H16** in `references/falsifier-checklist.md` and same-repo integration map cross-cutting concern.
+- **Step 2b** in `templates/batch-aggregation.md` — mergeable / merge-tree check before merge-order.
+
+### Changed
+
+- **When to use / do not spawn** bullets and red flags: disjoint `owned_paths` alone is insufficient for same-repo parallelism.
+- `templates/status-check-changelog.md` evidence block includes `mergeable` / `mergeStateStatus`.
+
 ## [0.8.3], 2026-05-23, SDK affordances note + status-check prompt path (PATCH)
 
 ### Added

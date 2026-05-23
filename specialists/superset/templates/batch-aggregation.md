@@ -55,13 +55,25 @@ If the union test count differs from the sum of agent baselines, an agent introd
 
 ---
 
+## Step 2b: Same-repo mergeable check (before merge order)
+
+When the batch had **two or more agents on one git repo**, run before choosing merge order:
+
+```bash
+gh pr view <n> --repo <owner/repo> --json mergeable,mergeStateStatus
+# and/or per worktree branch:
+git merge-tree $(git merge-base <branch-a> <branch-b>) <branch-a> <branch-b>
+```
+
+If any PR is `CONFLICTING` or merge-tree shows `changed in both` on shared parents (changelog, calibration JSONL, lockfiles), **stop** — rebase the later branch onto `origin/main` after the first PR lands, or resolve conflicts before merging either to `main`. Do not assume disjoint module paths make merge order irrelevant.
+
 ## Step 3: Merge-order decision
 
 For agents with overlapping or adjacent file sets:
 
 - Identify the dependency direction. Agent A writes a new module; Agent B imports it. Merge A first.
 - For Phase-tagged work, merge Phase 1 before Phase 2. The `Phase:` field in each agent's prompt header tells you the intended order.
-- For agents in the same Phase with non-overlapping files, merge order does not matter; pick alphabetical for reviewer-cognitive simplicity.
+- For agents in the same Phase with non-overlapping **module** paths but the same repo, run Step 2b first; if merge-tree is clean, merge order may be arbitrary; if shared parents conflict, merge the branch that touches fewer shared files first, then rebase the other.
 
 State the order in your coordination notes:
 

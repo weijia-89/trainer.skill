@@ -27,7 +27,8 @@ git -C <repo> fetch origin -q
 git -C <repo> status -sb
 git -C <repo> log origin/main -1 --oneline
 # If PR involved
-gh pr view <n> --repo <owner/repo> --json state,mergeCommit,title
+gh pr view <n> --repo <owner/repo> --json state,mergeCommit,title,mergeable,mergeStateStatus
+# Before spawning a 2nd agent on same repo: mergeable must be MERGEABLE (superset v0.8.4 § main integration gate)
 ```
 
 ## Accomplishment note shape (for queue / daily log)
