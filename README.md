@@ -32,7 +32,7 @@ The decision to build a standalone bootstrap skill (rather than fold the routing
 | [`gymbuddy`](./specialists/gymbuddy/) | the pairing peer | Co-coding, pair-on-vibe-dangerous, walkthroughs |
 | [`diet`](./specialists/diet/) | context / token-budget management | Output volume needs trimming, tokens are the constraint |
 | [`pr`](./specialists/pr/) | personal-record celebration | Milestones, retros, achievements |
-| [`superset`](./specialists/superset/) | parallel-agent dispatch discipline (worktree isolation, prompt templates, falsifier checklist, batch aggregation) | Spawning 2+ fresh-context agents on the same repo; orchestrator-handoff when the coordination chat hits context-window pressure |
+| [`superset`](./specialists/superset/) | parallel-agent dispatch discipline (worktree isolation, prompt templates, falsifier checklist, batch aggregation, status-check and closeout doc hygiene) | Spawning 2+ fresh-context agents on the same repo; orchestrator-handoff when the coordination chat hits context-window pressure; status refresh or job closeout when each touched repo's CHANGELOG, README, and roadmap must match shipped work |
 
 Sibling-directory canonicals at `~/Projects/<name>.skill/` remain the editing home for each specialist. The `./specialists/` copies are refreshed by `scripts/bundle_specialists.sh` for distribution.
 

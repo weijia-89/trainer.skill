@@ -31,6 +31,7 @@ for s in "${SPECIALISTS[@]}"; do
     --exclude='.DS_Store' \
     --exclude='.pytest_cache' \
     --exclude='.recovery' \
+    --exclude='localonly' \
     --exclude='tests/output' \
     --exclude='tests/results' \
     --exclude='tests/__results__' \
@@ -42,6 +43,7 @@ for s in "${SPECIALISTS[@]}"; do
   # Post-rsync cleanup: strip timestamped test-run output directories
   # that should never be distributed in the bundled artifact.
   find "$dst" -type d -name "runs" -path "*tests/pressure_scenarios/runs" -exec rm -rf {} + 2>/dev/null || true
+  rm -rf "$dst/localonly"
   cnt=$(find "$dst" -type f | wc -l | tr -d ' ')
   echo "[ok]   $s -> $dst ($cnt files)"
 done

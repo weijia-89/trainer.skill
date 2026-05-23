@@ -28,6 +28,7 @@ EXCLUDE_GLOBS=(
   ".pytest_cache"
   ".DS_Store"
   ".recovery"
+  "localonly"
   "phase11_report.md"
   ".git"
   ".gitignore"

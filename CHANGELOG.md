@@ -10,6 +10,29 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - **MINOR**: new sync target added; a specialist gym-skill's invocation pattern is updated; new section added without changing existing semantics.
 - **PATCH**: typo fix; clarification without semantic change; sync-mechanic improvement.
 
+## [0.10.2] (2026-05-23): Bundle superset v0.8.5 closeout roadmap alignment
+
+**PATCH per SemVer rules.** Bundles `superset` v0.8.5. Canonical trainer `SKILL.md` body unchanged; routing and coaching stance unchanged.
+
+### Changed
+
+- **Bundled `specialists/superset/`** at v0.8.5. The status-check and job-closeout iron law now requires each touched repo's `CHANGELOG.md`, `README.md`, and roadmap doc(s) to stay aligned with shipped-vs-planned state in the same turn as the coordination SSOT update. Workers propose changelog and roadmap deltas in the daily log; the orchestrator publishes product docs on status refresh or closeout. Template: `specialists/superset/templates/status-check-changelog.md`.
+- **`scripts/bundle_specialists.sh` and `scripts/verify_bundle_sync.sh`** exclude `localonly/` from bundle sync so operator workspace artifacts do not ship in the distribution bundle.
+- **`README.md`** superset table row documents status-check and closeout doc hygiene alongside parallel dispatch.
+
+### Why PATCH not MINOR
+
+- No canonical trainer `SKILL.md` body change. The closeout rule lives in the bundled `superset` specialist, not in trainer routing prose.
+- Specialist count unchanged (still 9). Bundle refresh only.
+
+### Files touched
+
+- `~/Projects/trainer.skill/README.md` (superset table row)
+- `~/Projects/trainer.skill/CHANGELOG.md` (this entry)
+- `~/Projects/trainer.skill/scripts/bundle_specialists.sh` (`localonly` exclude)
+- `~/Projects/trainer.skill/scripts/verify_bundle_sync.sh` (`localonly` exclude)
+- `~/Projects/trainer.skill/specialists/superset/` (v0.8.5 bundle; commit `da7601c` and refresh)
+
 ## [0.10.1] (2026-05-20): Authoring-discipline README section + Claude-mirror resync + v0.10.0 sync-completion
 
 **PATCH per SemVer rules.** README gains an "Authoring discipline" section that documents the three voice gates contributors apply before commit (em-dash zero, deai gate, wei-voice iron rules). The canonical SKILL.md gains no body changes; v0.10.0 (commit `ab5014b`) shipped the new § Adversarial-review pass sub-subsection but left canonical frontmatter at v0.9.1 and did not resync the Claude mirror (which still carried the pre-v0.9.1 line 269 wording). v0.10.1 finishes both syncs and ships the README authoring-discipline section in the same commit.
