@@ -10,6 +10,17 @@ Renamed from `ancillary` to `superset` at v0.3.0 for trainer-family coherence (a
 - **MINOR:** new falsifiers, new role archetypes, new templates, new references, new cross-cutting concerns, new patterns borrowed from the public ecosystem; pure renames at the skill level (since `name:` frontmatter changes break existing `Skill: <name>` invocations even if the body is unchanged).
 - **PATCH:** wording, citation updates, example refinements, falsifier rewordings without semantic change.
 
+## [0.8.2], 2026-05-23, Status check + changelog/README iron law (MINOR)
+
+### Added
+
+- **§ Status check + changelog/README iron law** in `SKILL.md`. Orch must update coordination SSOT, product `CHANGELOG.md` / `README.md`, and queue changelog-source blocks on every status check; chat replies point to SSOT only (no rehash). deai prose gate; accomplishment note shape (behavior / scope / verification). SDK weekend binding to `cursor-sdk-playground/weekend-queue.md`.
+- **`templates/status-check-changelog.md`** — operator checklist for status refresh and EOD doc hygiene.
+
+### Changed
+
+- **Orch responsibilities** bullet: status check + docs references the new iron law and template.
+
 ## [0.8.1], 2026-05-20, Phase 3 compression of remaining agent-ingest files (PATCH)
 
 Pure wording tightening of the 11 agent-ingest files not covered by v0.7.1 (which covered `SKILL.md` only). Zero semantic changes. All STOP zones preserved (numbered lists, schema field names, falsifier IDs, code fences, verbatim trigger phrases, anchor incidents, status enums). Each file passed criterion (a) 100% structural preservation (strict mode where applicable) and criterion (b) median ≥0.99 / min ≥0.65 section similarity.

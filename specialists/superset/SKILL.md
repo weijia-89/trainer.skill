@@ -2,7 +2,7 @@
 name: superset
 description: Use when spawning 2+ fresh-context agents on the same git repo for isolated parallel work; symptoms include same-tree shared-state risk (.pytest_cache / pyproject collisions), agents overstepping scope, intermediate commits pushed by accident, session learnings lost between iterations, prompt quality drifting between agents.
 type: project-skill
-version: 0.8.1
+version: 0.8.2
 authors: Wei Jia (2026-05-19)
 license: MIT
 composes:
@@ -126,6 +126,7 @@ The chat the operator talks to. Lives for one operational day by default. Refres
 - **Coaching.** Per the trainer's coaching stance: push back when worker decisions trip iron-law concerns; defer when operator demonstrates understanding; log overrides.
 - **Narration.** Tell the operator where the day is, what landed, what's stuck, what's next. This is the value the orch provides over the operator coordinating workers themselves.
 - **Hand-off authorship.** On rotation, write the token-optimized hand-off summary at the top of the daily log so the next orch can ingest it.
+- **Status check + docs.** On status refresh, update coordination SSOT and each affected repo's `CHANGELOG.md` + `README.md` per the iron law below; chat points to SSOT only (no rehash). Template: `templates/status-check-changelog.md`.
 
 **Orch rotation triggers** (operator phrases that fire the hand-off iron law):
 
@@ -272,6 +273,53 @@ validator run would have emitted the three-line block above. Three
 sources, two primary, all pointing at: track was never live in buds
 context. The orch's correct conclusion: "Track A was undispatched and
 out of scope for buds-orch. Surfacing for drop, not for check-in."
+
+## Status check + changelog/README iron law (added 2026-05-23, SDK weekend orch)
+
+Every orch **status check** updates contributor-facing docs in the same turn as the coordination SSOT. The operator should not have to ask twice for README/CHANGELOG hygiene at end of day.
+
+**Trigger phrases** (fire the full checklist; do not answer from memory):
+
+- "check status" / "status check" / "refresh queue" / "where are we"
+- "update the queue" / "sync status"
+- End-of-day: "wrap up" / "EOD" / "changelog pass" (runs this iron law plus daily-log close-out if applicable)
+
+### Iron law (orch)
+
+1. **Evidence first.** Per repo in the active set: `git fetch`, `git status -sb`, `git log origin/main -1`, `gh pr view` when a PR row exists. Same bar as [Status-claim evidence](#status-claim-evidence-iron-law-added-2026-05-19-post-buds-orch-handoff-incident); no narrative without primary sources.
+2. **Coordination SSOT.** Write the full status picture to the project's queue or daily log (SDK weekend: `cursor-sdk-playground/weekend-queue.md` only for queue state; push playground). Include § **Changelog source** blocks with deai-quality prose: behavior, file scope, verification, ready-made changelog bullets, and explicit "do not claim" lines where scope is easy to overstate.
+3. **Product docs per repo touched.** For every repo whose merge or review-ready commit changed since the last check, edit that repo's `CHANGELOG.md` and `README.md` in the same session. Use Keep a Changelog shape for `CHANGELOG.md`; keep README to a short "Recent work" stanza that matches the changelog entry. If nothing shipped since last check, skip product doc edits (do not bump version noise).
+4. **Chat discipline.** Reply with one line: path to SSOT (+ playground git SHA if pushed). Never paste the status table or changelog source into the orch window.
+5. **deai before commit.** Changelog and README prose pass the deai pre-output gate (voice prime, meaning preserved, no fabricated specifics). Queue § Changelog source is the draft; product files are the publish target.
+6. **Workers stay narrow.** Workers append proposed changelog bullets to `localonly/daily/<YYYY-MM-DD>.md` on DONE unless the job prompt owns `CHANGELOG.md`. Orch merges worker bullets into product docs on status check.
+
+### Accomplishment note shape (required in SSOT work history)
+
+For each queue row or track that merged or reached review-ready, record:
+
+| Layer | Content |
+| ----- | ------- |
+| Behavior | What works now that did not before (operator- or user-visible) |
+| Scope | Primary paths/modules; what is explicitly out of scope |
+| Verification | Commands that passed before merge or before review |
+
+### SDK weekend binding
+
+| Artifact | Path |
+| -------- | ---- |
+| Queue SSOT | `~/Projects/cursor-sdk-playground/weekend-queue.md` |
+| Checklist template | `templates/status-check-changelog.md` (this repo) |
+| Ops script | `cursor-sdk-playground/scripts/queue_status.sh` |
+
+Orchestrator brief may restate paths; **this section is canonical** for status-check + changelog discipline.
+
+### What this prevents
+
+- EOD scramble to reconstruct what shipped from agent memory.
+- Queue and product README diverging (queue says merged, README still silent).
+- Long status dumps in chat that duplicate SSOT and burn context.
+
+**Anchor:** 2026-05-23 SDK weekend — operator asked for changelog-ready queue notes and iron-law adoption in superset, not trainer-only.
 
 ## Hand-off summary schema (token-optimized)
 

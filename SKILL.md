@@ -167,6 +167,8 @@ Coached override is permitted per existing override rules (two rounds max, then 
 
 Hand-off discipline lives in `superset.skill` not here; the trainer's role is to fire the iron law and route to `superset` for the operational detail.
 
+**Status check + changelog/README** (added 2026-05-23): when the operator refreshes status or closes the day, route to `superset.skill` § **Status check + changelog/README iron law** and `templates/status-check-changelog.md`. Orch updates queue SSOT + each affected repo's `CHANGELOG.md` / `README.md`; chat points to SSOT only.
+
 ### Private-path leak scan (added 2026-05-19, iron-law severity)
 
 Any file the trainer or a specialist skill ships to a public mirror (trainer-bundle path or specialist canonical that syncs to GitHub) MUST pass an empirical leak scan before commit, before bundle refresh, before push. The scan looks for operator-local absolute paths and gitignored-workspace prefixes; the exact pattern lives in `scripts/verify_trainer_sync.sh` invariant 8.
