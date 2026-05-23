@@ -2,7 +2,7 @@
 name: superset
 description: Use when spawning 2+ fresh-context agents on the same git repo for isolated parallel work; symptoms include same-tree shared-state risk (.pytest_cache / pyproject collisions), agents overstepping scope, intermediate commits pushed by accident, session learnings lost between iterations, prompt quality drifting between agents.
 type: project-skill
-version: 0.8.2
+version: 0.8.3
 authors: Wei Jia (2026-05-19)
 license: MIT
 composes:
@@ -320,6 +320,8 @@ Orchestrator brief may restate paths; **this section is canonical** for status-c
 - Long status dumps in chat that duplicate SSOT and burn context.
 
 **Anchor:** 2026-05-23 SDK weekend — operator asked for changelog-ready queue notes and iron-law adoption in superset, not trainer-only.
+
+**SDK affordances (same iron law):** `cursor-sdk-playground/palamedes-ui/` + `scripts/palamedes_serve.sh` for local palamedes research UI; queue SSOT `weekend-queue.md`. Iron-law excerpt: `prompts/status-check-changelog-iron-law.md`.
 
 ## Hand-off summary schema (token-optimized)
 

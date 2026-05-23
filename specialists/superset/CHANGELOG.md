@@ -10,6 +10,13 @@ Renamed from `ancillary` to `superset` at v0.3.0 for trainer-family coherence (a
 - **MINOR:** new falsifiers, new role archetypes, new templates, new references, new cross-cutting concerns, new patterns borrowed from the public ecosystem; pure renames at the skill level (since `name:` frontmatter changes break existing `Skill: <name>` invocations even if the body is unchanged).
 - **PATCH:** wording, citation updates, example refinements, falsifier rewordings without semantic change.
 
+## [0.8.3], 2026-05-23, SDK affordances note + status-check prompt path (PATCH)
+
+### Added
+
+- `prompts/status-check-changelog-iron-law.md` — short excerpt for orch paste.
+- SKILL.md cross-ref to `cursor-sdk-playground/palamedes-ui/` and `palamedes_serve.sh`.
+
 ## [0.8.2], 2026-05-23, Status check + changelog/README iron law (MINOR)
 
 ### Added
