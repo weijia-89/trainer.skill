@@ -10,6 +10,13 @@ Renamed from `ancillary` to `superset` at v0.3.0 for trainer-family coherence (a
 - **MINOR:** new falsifiers, new role archetypes, new templates, new references, new cross-cutting concerns, new patterns borrowed from the public ecosystem; pure renames at the skill level (since `name:` frontmatter changes break existing `Skill: <name>` invocations even if the body is unchanged).
 - **PATCH:** wording, citation updates, example refinements, falsifier rewordings without semantic change.
 
+## [0.8.5], 2026-05-23, Closeout roadmap alignment (PATCH)
+
+### Changed
+
+- **§ Status check + changelog/README iron law** — closeout (status check, EOD, job complete) now requires each touched repo's roadmap doc(s) aligned with **shipped vs planned**, alongside `CHANGELOG.md` and `README.md`. Per-repo discovery via grep; workers propose roadmap deltas in daily log; orch publishes on status check/closeout.
+- **`templates/status-check-changelog.md`** and `cursor-sdk-playground/prompts/superset-status-check-changelog.md` mirrored.
+
 ## [0.8.4], 2026-05-23, Same-repo main integration gate (MINOR)
 
 ### Added

@@ -8,16 +8,17 @@ Use on every **status check** (operator says "check status", "refresh queue", "w
 
 ## Required updates (same turn, before claiming status check done)
 
-For each repo whose shipped state **changed** since the last status check (merge, PR opened/merged, local commit ready for review):
+For each repo whose shipped state **changed** since the last status check or job closeout (merge, PR opened/merged, local commit ready for review):
 
 | Artifact | Action |
 | -------- | ------ |
 | `CHANGELOG.md` | Add or extend `[Unreleased]` (or dated section) with user-facing bullets: what changed, why it matters, verification command if non-obvious |
 | `README.md` | Update "Recent work" / "Development status" (or create ≤8 lines there) — same facts, shorter than CHANGELOG |
+| Roadmap doc(s) | Grep per repo (`rg -l -i roadmap docs/ .`); edit `docs/strategy/ROADMAP.md`, `docs/ROADMAP.md`, or project path — **shipped vs planned** must match merge/PR evidence after closeout |
 | Coordination SSOT | Refresh queue section (SDK: `weekend-queue.md` § **Changelog source** + status tables + work history **Accomplishment** column) |
 | `localonly/daily/<YYYY-MM-DD>.md` | If multi-agent day active: append status row or EOD bullets under the track |
 
-**Prose gate:** Draft changelog/README copy with **deai** discipline (voice prime, no RLHF residue, facts from git/PR only). Changelog source blocks in the queue are the staging area; product `CHANGELOG.md` / `README.md` are what ship to contributors.
+**Prose gate:** Draft changelog/README/roadmap copy with **deai** discipline (voice prime, no RLHF residue, facts from git/PR only). Changelog source blocks in the queue are the staging area; product `CHANGELOG.md`, `README.md`, and roadmap files are what ship to contributors.
 
 ## Evidence (run before writing claims)
 
@@ -44,9 +45,9 @@ Each shipped or review-ready item gets **three layers** (copy into work history 
 1. `./scripts/queue_status.sh`
 2. `git status` on buds, toebeans, oncology-rag-lab
 3. `gh pr view` for any open PRs in Active table
-4. Update **only** `weekend-queue.md` + push playground; update each affected product repo `CHANGELOG.md` + `README.md` when merges land
+4. Update **only** `weekend-queue.md` + push playground; update each affected product repo `CHANGELOG.md`, `README.md`, and roadmap when merges land
 5. Chat: "Queue @ `<sha>` — open `weekend-queue.md`."
 
 ## Worker handoff
 
-Workers do **not** edit product `CHANGELOG.md` / `README.md` unless the job prompt says so. On DONE, workers append proposed changelog bullets to `localonly/daily/<date>.md` under their track; **orch** folds into product docs on the next status check.
+Workers do **not** edit product `CHANGELOG.md`, `README.md`, or roadmap files unless the job prompt says so. On DONE, workers append proposed changelog and roadmap deltas to `localonly/daily/<date>.md` under their track; **orch** folds into product docs and roadmap on the next status check or closeout.
