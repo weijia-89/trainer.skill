@@ -315,6 +315,9 @@ For each queue row or track that merged or reached review-ready, record:
 | Queue SSOT | `~/Projects/cursor-sdk-playground/weekend-queue.md` |
 | Checklist template | `templates/status-check-changelog.md` (this repo) |
 | Ops script | `cursor-sdk-playground/scripts/queue_status.sh` |
+| Merge gate (SDK PRs) | `cursor-sdk-playground/scripts/_sdk_verify_and_pr.sh` → `_sdk_trainer_codereview.sh` → `_sdk_surface_codereview_to_pr.sh` |
+
+**SDK merge + codereview (trainer → form-check + review-rigor):** After verify, the hook runs codereview, **fails if** `localonly/sdk-reviews/{SDK_QUEUE_ID}-{branch-slug}.md` is missing, mirrors to `cursor-sdk-playground/prompts/reviews/`, embeds verdict/summary in the PR body, and posts **full findings** as a PR comment (idempotent HTML marker). `BLOCK` stops before push; `REQUEST_CHANGES` stops only when `SDK_CODEREVIEW_STRICT=1`. Job scripts must set `SDK_QUEUE_ID` to the queue row id (not the worktree folder name). Detail: `references/sdk-merge-codereview-gate.md`.
 
 Orchestrator brief may restate paths; **this section is canonical** for status-check + changelog discipline.
 
