@@ -13,7 +13,7 @@ grep -q trainer README.md
 # Smoke-test canonical dry-run path (no gh auth or live PUT).
 GH_REPO="${GH_REPO:-weijia-89/trainer.skill}" DRY_RUN=1 ./scripts/apply_branch_protection.sh >/dev/null
 
-# sdk-review F2: non-canonical truthy DRY_RUN (e.g. 01) must stay dry-run, not live-PUT.
+# Truthy DRY_RUN values (e.g. 01) must stay dry-run, not live PUT.
 dry_run_out="$(GH_REPO="${GH_REPO:-weijia-89/trainer.skill}" DRY_RUN=01 ./scripts/apply_branch_protection.sh 2>&1)"
 echo "$dry_run_out" | grep -q 'DRY_RUN=1 — would PUT'
 

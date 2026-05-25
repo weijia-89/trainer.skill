@@ -21,7 +21,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ### Changed
 
-- **`README.md`** — public-audience polish (security pointer, updated repository layout). Honest scope unchanged: doc skill only; Phase 11 validation stays outside this repo.
+- **`README.md`** — merged with `main` webapp update (#2); retains Security section and hardening layout entries.
+- **`scripts/apply_branch_protection.sh`**, **`scripts/verify_github_hardening.sh`**, **`SECURITY.md`**, **`docs/BRANCH_PROTECTION.md`** — sdk-review comment cleanup (round 2).
+
+### Fixed
+
+- SDK codereview round 2: playground `trainer_github_hardening.sh` VERIFY uses `./scripts/verify_github_hardening.sh` (F4).
 
 ## [0.10.2] (2026-05-23): Bundle superset v0.8.5 closeout roadmap alignment
 

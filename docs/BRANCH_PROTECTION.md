@@ -133,7 +133,7 @@ Until then, `required_status_checks` stays `null` so merges are not blocked on m
 ## Git workflow after protection
 
 - Work on feature branches; open PRs into `main`.
-- **Do not** `git push --force` to `main` (blocked by protection; also disallowed by project policy).
+- **Do not** `git push --force` to `main` (blocked for non-admin pushes once protection is applied; repo admins may bypass unless `enforce_admins` is enabled; also disallowed by project policy).
 - To undo a bad merge on `main`, use **revert commits**, not force-push.
 
 ## Related

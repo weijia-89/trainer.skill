@@ -50,7 +50,6 @@ Skill Markdown often lands in agent context. Do not commit live credentials to t
 
 ## Branch protection
 
-<!-- sdk-review F3: align force-push claim with enforce_admins bypass in branch-protection doc -->
 See `docs/BRANCH_PROTECTION.md` and `scripts/apply_branch_protection.sh`. Force-push and branch deletion on `main` are blocked for normal pushes once protection is applied; repo admins can bypass unless `enforce_admins` is enabled (see policy table in the branch-protection doc).
 
 Owner: repo maintainers. Last reviewed: 2026-05-25.

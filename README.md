@@ -119,41 +119,6 @@ trainer.skill/
 
 ---
 
-## Sync targets (canonical-to-mirrors, separate from the bundle)
-
-The maintainer mirrors the `SKILL.md` body across four locations so every IDE-resident agent loads the same routing logic:
-
-| Target | Path | Role |
-|---|---|---|
-| Canonical | `~/Projects/trainer.skill/SKILL.md` | Source of truth |
-| Claude mirror | `~/.claude/skills/trainer/SKILL.md` | Byte-identical copy |
-| Cursor trigger | `~/Projects/.cursor/rules/trainer.mdc` | `alwaysApply: true`; points to canonical |
-| Windsurf trigger | `~/Projects/.windsurf/rules/trainer.md` | `trigger: always_on`; points to canonical |
-
-[`skill-sync`](https://github.com/weijia-89/skill-sync) v0.2+ automates cross-IDE sync (Claude, Cursor, Windsurf). Manual sync also works: edit canonical, copy to Claude, then run `scripts/verify_trainer_sync.sh`.
-
-The **bundle** at `./specialists/` is a separate mechanic: it's refreshed by `scripts/bundle_specialists.sh` from the sibling `~/Projects/<name>.skill/` canonicals. The bundle is for distribution; the canonicals are for editing.
-
----
-
-## Authoring discipline
-
-Prose changes to this repo (SKILL.md, CHANGELOG.md, README.md, specialist content) pass three voice gates before commit. One is mechanical and enforced by the verify script; the other two are manual reviewer disciplines that catch what mechanical checks miss.
-
-**1. Em-dash zero (mechanical).** `scripts/verify_trainer_sync.sh` invariant 6 fails the verify pass if any em-dash character appears in any sync target. Replace any em-dash with a hyphen, a comma, or a sentence break.
-
-**2. Deai gate (manual, mandatory before claiming voice-verified).** Prose changes get scanned for structural anti-patterns (passive-voice over-use, hanging colons, tricolons in load-bearing positions, latinate register drift) and per-sentence score-banded against a known-good baseline of the same shape. Score the new prose, report top firing families, and fix any signal that fires above the baseline. The scanner lives in the operator's local skill stack and is not bundled with this repo; contributors without the scanner should at minimum self-check for colon-then-three-or-more-item lists (the "X: A, B, and C" shape) and theatrical paragraph-end fragments.
-
-**3. Wei-voice iron rules (manual).** Three rules apply to any prose in this repo intended for readers other than the operator:
-
-- **No theatrical mic-drops at paragraph end.** Short punchy fragments that would read as tweet-card pull quotes get folded into continuation clauses or into the preceding sentence as a subordinate clause.
-- **No tricolon-after-colon.** The "X: A, B, and C" shape with similarly-sized parallel items is the AI / influencer / punditry pattern. Convert to continuous prose, to markdown sub-bullets, or drop one item and integrate the other two.
-- **Active voice with the author as agent.** Wei wrote the trainer and built the specialists. Passive constructions that erase the author's agency get rewritten with the agent as the subject.
-
-A worked example sits in the v0.9.2 entry of `CHANGELOG.md`. The deai scanner caught four iron-rule violations in v0.9.0 and v0.9.1 prose; v0.9.2 ships the rewrites that fixed them and codifies these gates in this section.
-
----
-
 ## SemVer rules for this skill
 
 - **MAJOR**: routing decision flow changes; specialist list gains or loses entries; coaching-stance criteria change.
@@ -173,7 +138,7 @@ See [`SECURITY.md`](./SECURITY.md) for vulnerability reporting, supported versio
 - **`weijia-89/palamedes`**: rigorous-research skill plus multi-agent synthesis prompt. The trainer's routing logic loads `palamedes/skill/SKILL.md` whenever the agent hits research triggers (`research`, `investigate`, `audit`, `fact-check`).
 - **`weijia-89/playwrighter`**: production Playwright pattern library. The trainer loads it on Playwright file triggers; the `form-check` specialist references its quality scorecard.
 - **`weijia-89/vibe-check`**: PR diff scanner for LLM-tell patterns. Composes with this repo's `form-check` specialist during code-review and adversarial-review modes.
-- **`weijia-89/skill-sync`**: cross-IDE sync utility used by this repo (see Sync targets section above).
+- **`weijia-89/skill-sync`**: cross-IDE sync utility; see `SKILL.md` and `scripts/verify_trainer_sync.sh` for mirror targets.
 
 ---
 
