@@ -58,7 +58,7 @@ The trainer is not a doormat. It is also not an authority that overrides. The mo
 - The decision veers from established best practice without articulated reason. Cite the specific practice.
 - The user is missing a skill, pattern, or experience that would change their decision if they had it. Name what's missing.
 
-**How:** one round (consequence + practice + alternative + cost / benefit). If the user pushes through, a second round with the strongest counter-evidence. After two rounds, defer and log the *coached override* with the user's rationale at `.recovery/calibration.jsonl` in the engagement repo (create `.recovery/` if absent; same path `form-check` uses; JSON shape in `references/trainer-runtime-compactness.md`).
+**How:** one round (consequence + practice + alternative + cost / benefit). If the user pushes through, a second round with the strongest counter-evidence. After two rounds, defer and log the *coached override* with the user's rationale at `.recovery/calibration.jsonl` in the engagement repo (create `.recovery/` if absent; same path `form-check` uses; JSON shape in `~/Projects/trainer.skill/references/trainer-runtime-compactness.md`).
 
 **Do not push back when:** the user has demonstrated tradeoff understanding; the decision is genuinely subjective; the change is vibe-safe and reversible.
 
@@ -70,12 +70,15 @@ Full SKILL.md body: [`./SKILL.md`](./SKILL.md).
 
 ### As a Claude / Cursor / Windsurf skill
 
+<!-- sdk-review F1/F4: canonical layout ~/Projects/trainer.skill; absolute overlay paths in SKILL.md assume this clone target -->
 ```bash
-git clone https://github.com/weijia-89/trainer.skill ~/trainer.skill
-ln -s ~/trainer.skill/SKILL.md ~/.claude/skills/trainer/SKILL.md
+git clone https://github.com/weijia-89/trainer.skill ~/Projects/trainer.skill
+mkdir -p ~/.claude/skills/trainer
+ln -s ~/Projects/trainer.skill/SKILL.md ~/.claude/skills/trainer/SKILL.md
+bash ~/Projects/trainer.skill/scripts/verify_trainer_sync.sh  # syncs references/ → Claude mirror (Invariant 1b)
 ```
 
-The skill triggers loading on every coding / prompt-engineering / agent-skill session. The 9 specialists at `./specialists/` are available to the trainer once they're either symlinked into the agent's skill directory or copied alongside.
+The skill triggers loading on every coding / prompt-engineering / agent-skill session. Mandatory `file_read` overlays live under `~/Projects/trainer.skill/references/` (absolute paths in `SKILL.md`); `verify_trainer_sync.sh` keeps the Claude mirror byte-identical. The 9 specialists at `./specialists/` are available to the trainer once they're either symlinked into the agent's skill directory or copied alongside.
 
 ### As a reference / methodology read
 
@@ -87,7 +90,7 @@ Read `SKILL.md` for the routing flow and coaching stance. Read each specialist's
 
 ```
 trainer.skill/
-├── SKILL.md                            # canonical trainer body (~141 lines / ~2089 est tokens as of v0.11.0 compact router)
+├── SKILL.md                            # canonical trainer body (~144 lines / ~2247 est tokens as of v0.11.0 compact router)
 ├── README.md                           # this file
 ├── CHANGELOG.md                        # version history per SemVer below
 ├── SECURITY.md                         # vulnerability reporting and supported versions
@@ -102,7 +105,7 @@ trainer.skill/
 │   ├── apply_branch_protection.sh      # idempotent protection PUT (DRY_RUN=1 default)
 │   ├── bundle_specialists.sh           # refreshes ./specialists/ from sibling-dir canonicals
 │   ├── verify_github_hardening.sh      # SECURITY.md layout + apply script dry-run smoke
-│   └── verify_trainer_sync.sh          # asserts cross-IDE mirror consistency
+│   └── verify_trainer_sync.sh          # syncs SKILL.md + references/ to Claude mirror; asserts cross-IDE consistency
 ├── tests/
 │   ├── context_budget/                 # root SKILL.md size gate (Invariant 11)
 │   │   ├── budget.toml

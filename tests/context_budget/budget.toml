@@ -8,7 +8,7 @@ root_skill_max_est_tokens = 5500
 max_section_est_tokens = 900
 
 # Recorded at v0.11.0 compact router ship (2026-05-25); validated by check_context_budget.py (sdk-review F1)
-current_lines = 141
-current_est_tokens = 2089
+current_lines = 144
+current_est_tokens = 2247
 target_lines = 180
 target_est_tokens = 4500
