@@ -2,7 +2,6 @@
 """Warn or fail when root SKILL.md exceeds context budget from budget.toml."""
 from __future__ import annotations
 
-import re
 import sys
 from pathlib import Path
 

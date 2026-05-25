@@ -81,8 +81,6 @@ Append one JSON line per override to `specialists/form-check/.recovery/calibrati
 
 ## Plan-first stakes-tier sizing
 
-<!-- sdk-review F2: restore tier→artifact mapping relocated from pre-compact root SKILL.md item 1 -->
-
 Before new feature or system work, size the planning artifact to stakes tier:
 
 - **vibe-safe:** 1-paragraph plan (scope, rollback, verify command).

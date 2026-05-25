@@ -58,7 +58,6 @@ Full examples and violation coaching: `references/trainer-runtime-compactness.md
 
 Before **destructive or wide-scope** action, one sentence with: (1) canonical source of truth, (2) rollback path, (3) verification command. If not statable, STOP.
 
-<!-- sdk-review F4: restore find -exec rm trigger dropped in compact router -->
 **Triggers:** `rsync --delete`, `rm -rf`, `git reset --hard`, `git push --force`, `find ... -exec rm`, mass edit **>5 files**, bundle or sync between trees, any `git push` without local pre-push verify. Full list: `specialists/form-check/references/trainer-pre-action-gates.md`.
 
 Irreversible network ops (push, merge, branch delete, cross-project write): add adversarial-review pass (enumerate holes, one empirical check each). Detail: `specialists/form-check/references/trainer-pre-action-gates.md`.
@@ -127,7 +126,6 @@ Not a code generator. Not a substitute for specialist checklists. Not `program` 
 
 ## On-demand reference map
 
-<!-- sdk-review F3: private-path leak scan must stay discoverable from always-on router -->
 | Topic | File |
 |-------|------|
 | Communication, rationalizations, decision template, bundle/sync | `references/trainer-runtime-compactness.md` |

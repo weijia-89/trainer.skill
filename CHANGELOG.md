@@ -30,7 +30,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ## [0.11.0] (2026-05-25): Context compactness P2/P3/P5 — compact router + on-demand references
 
-**MINOR per SemVer rules.** Root `SKILL.md` becomes a route-and-gate router (~136 lines, ~1935 est tokens). Operational depth moves to on-demand reference files; routing semantics and coaching stance unchanged.
+**MINOR per SemVer rules.** Root `SKILL.md` becomes a route-and-gate router (~137 lines, ~2005 est tokens). Operational depth moves to on-demand reference files; routing semantics and coaching stance unchanged.
 
 ### Added
 
@@ -41,7 +41,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ### Changed
 
-- **`SKILL.md`** — compressed from 324 to 136 lines; adds on-demand reference map; version 0.10.1 → 0.11.0.
+- **`SKILL.md`** — compressed from 324 to 137 lines; adds on-demand reference map; version 0.10.1 → 0.11.0.
 - **`scripts/verify_trainer_sync.sh`** — Invariant 5 comment updated for v0.11.0 compact router; **Invariant 11** added (CI + local `check_context_budget.py` hook).
 
 ### Verification
