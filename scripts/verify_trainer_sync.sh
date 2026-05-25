@@ -26,6 +26,28 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
   fi
   echo "PASS  canonical SKILL.md present"
 
+  # sdk-review F1: CI repo-only path must guard references/ + mandatory gate files (Invariant 1b is local-only)
+  CANONICAL_REFS="$REPO_ROOT/references"
+  REQUIRED_REF_GATES=(
+    trainer-pre-action-gates.md
+    trainer-dispatch-gates.md
+  )
+  if [[ ! -d "$CANONICAL_REFS" ]]; then
+    echo "FAIL  missing canonical references/: $CANONICAL_REFS"
+    FAIL=1
+  else
+    echo "PASS  canonical references/ present"
+    for gate in "${REQUIRED_REF_GATES[@]}"; do
+      if [[ ! -f "$CANONICAL_REFS/$gate" ]]; then
+        echo "FAIL  missing required reference gate file: $gate"
+        FAIL=1
+      fi
+    done
+    if [[ "$FAIL" -eq 0 ]]; then
+      echo "PASS  required reference gate files present"
+    fi
+  fi
+
   SELF_BASENAME="$(basename "${BASH_SOURCE[0]}")"
   mapfile -t TRACKED_FILES < <(
     git -C "$REPO_ROOT" ls-files \
@@ -144,10 +166,8 @@ else
 fi
 
 # Invariant 1b: canonical references/ ≡ Claude mirror (byte-identical per file)
-if [[ ! -d "$CANONICAL_REFS" ]]; then
-  echo "FAIL  missing canonical references/: $CANONICAL_REFS"
-  FAIL=1
-elif [[ ! -d "$CLAUDE_REFS" ]]; then
+# sdk-review F3: canonical refs guard runs once before rsync (lines 110–114); no duplicate check here
+if [[ ! -d "$CLAUDE_REFS" ]]; then
   echo "FAIL  missing Claude references mirror: $CLAUDE_REFS"
   FAIL=1
 else

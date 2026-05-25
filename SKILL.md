@@ -37,11 +37,11 @@ Always-on bootstrap for coding, prompt-engineering, and agent-skill sessions. Ro
 2. Veers from best practice without articulated reason (cite practice; anchor `specialists/form-check/references/notes.md` when applicable).
 3. User lacks a skill or pattern that would change the decision (name what is missing).
 
-**How:** one round with consequence plus alternative; second round with strongest counter-evidence if user holds; after two rounds, respect choice and log coached override to `.recovery/calibration.jsonl` in the engagement repo (create `.recovery/` if absent; same path `form-check` uses; shape in `references/trainer-runtime-compactness.md`).
+**How:** one round with consequence plus alternative; second round with strongest counter-evidence if user holds; after two rounds, respect choice and log coached override to `.recovery/calibration.jsonl` in the engagement repo (create `.recovery/` if absent; same path `form-check` uses; shape in `~/Projects/trainer.skill/references/trainer-runtime-compactness.md`).
 
 **Defer when:** user articulates the named consequence and why it does not apply; decision is subjective; decision is vibe-safe and reversible. Bare "I know" or "trust me" is not demonstrated understanding.
 
-Expanded rationalizations: `references/trainer-runtime-compactness.md`.
+Expanded rationalizations: `~/Projects/trainer.skill/references/trainer-runtime-compactness.md`.
 
 ## Plan-first iron law
 
@@ -52,7 +52,7 @@ Map the lay of the land before implementation. Plans revise with evidence; journ
 3. New dependency: failure modes plus rollback.
 4. Route-correction on "quick sketch in code", "refactor later", "small change no plan", multi-component day-one without contracts.
 
-Full examples and violation coaching: `references/trainer-runtime-compactness.md`. Mechanical pre-action detail: `references/trainer-pre-action-gates.md`.
+Full examples and violation coaching: `~/Projects/trainer.skill/references/trainer-runtime-compactness.md`. Mechanical pre-action detail: `~/Projects/trainer.skill/references/trainer-pre-action-gates.md`.
 
 ## Mechanical pre-action gate
 
@@ -60,9 +60,9 @@ Before **destructive or wide-scope** action, one sentence with: (1) canonical so
 <!-- sdk-review F2: file_read overlay before acting; one-sentence summary alone drifts under token pressure -->
 Before acting on any trigger, `file_read` `~/Projects/trainer.skill/references/trainer-pre-action-gates.md`; the summary above is not sufficient alone.
 
-**Triggers:** `rsync --delete`, `rm -rf`, `git reset --hard`, `git push --force`, `find ... -exec rm`, mass edit **>5 files**, bundle or sync between trees, any `git push` without local pre-push verify. Full list: `references/trainer-pre-action-gates.md`.
+**Triggers:** `rsync --delete`, `rm -rf`, `git reset --hard`, `git push --force`, `find ... -exec rm`, mass edit **>5 files**, bundle or sync between trees, any `git push` without local pre-push verify. Full list: `~/Projects/trainer.skill/references/trainer-pre-action-gates.md`.
 
-Irreversible network ops (push, merge, branch delete, cross-project write): add adversarial-review pass (enumerate holes, one empirical check each). Detail: `references/trainer-pre-action-gates.md`.
+Irreversible network ops (push, merge, branch delete, cross-project write): add adversarial-review pass (enumerate holes, one empirical check each). Detail: `~/Projects/trainer.skill/references/trainer-pre-action-gates.md`.
 
 ## Dispatch before dispatch
 
@@ -72,7 +72,7 @@ Multi-agent intent ("spawn agents", "parallel wave", "kick off batch") requires 
 <!-- sdk-review F2: file_read overlay before dispatch; map links alone do not load gate procedure -->
 Before dispatch, `file_read` `~/Projects/trainer.skill/references/trainer-dispatch-gates.md`.
 
-Procedure, incidents, three-layer orch/meta/worker, status-check closeout: `references/trainer-dispatch-gates.md` and `superset/SKILL.md`.
+Procedure, incidents, three-layer orch/meta/worker, status-check closeout: `~/Projects/trainer.skill/references/trainer-dispatch-gates.md` and `superset/SKILL.md`.
 
 ## The 9 specialist gym-skills
 
@@ -98,11 +98,11 @@ Procedure, incidents, three-layer orch/meta/worker, status-check closeout: `refe
 
 Routing without reading the specialist's `SKILL.md` plus the relevant checklist, rubric, or template is theater. Naming a specialist is a pointer, not invocation.
 
-When composing specialists, explain load order and interaction in one or two sentences (see `references/trainer-runtime-compactness.md` for teaching depth).
+When composing specialists, explain load order and interaction in one or two sentences (see `~/Projects/trainer.skill/references/trainer-runtime-compactness.md` for teaching depth).
 
 ## Decision surfacing
 
-Multi-option decisions with tradeoffs: use decision-presentation template in `references/trainer-runtime-compactness.md`. Surface at decision time, not end of session.
+Multi-option decisions with tradeoffs: use decision-presentation template in `~/Projects/trainer.skill/references/trainer-runtime-compactness.md`. Surface at decision time, not end of session.
 
 ## Red flags (stop and re-route)
 
@@ -114,7 +114,7 @@ Multi-option decisions with tradeoffs: use decision-presentation template in `re
 - "I'll surface this decision after execution."
 - "User said continue; status report replaces routing."
 
-Re-read the relevant section above. Expanded list: `references/trainer-runtime-compactness.md`. Coaching without named consequence is disapproval, not pushback.
+Re-read the relevant section above. Expanded list: `~/Projects/trainer.skill/references/trainer-runtime-compactness.md`. Coaching without named consequence is disapproval, not pushback.
 
 ## During form-check adversarial-review
 
@@ -130,14 +130,15 @@ Not a code generator. Not a substitute for specialist checklists. Not `program` 
 
 ## On-demand reference map
 
-Paths below are relative to canonical skill root `~/Projects/trainer.skill/` (not engagement-repo cwd).
+<!-- sdk-review F2: all references/ file_read paths absolute; engagement-repo cwd must not resolve overlays -->
+All `references/*` paths below use canonical prefix `~/Projects/trainer.skill/references/` (not engagement-repo cwd).
 
 | Topic | File |
 |-------|------|
-| Communication, rationalizations, decision template, bundle/sync | `references/trainer-runtime-compactness.md` |
-| Pre-action and adversarial-review pass | `references/trainer-pre-action-gates.md` |
-| Dispatch manifest, layers, status closeout | `references/trainer-dispatch-gates.md` |
-| Private-path leak scan (pre-commit, bundle, push) | `references/trainer-runtime-compactness.md` § Private-path leak scan |
+| Communication, rationalizations, decision template, bundle/sync | `~/Projects/trainer.skill/references/trainer-runtime-compactness.md` |
+| Pre-action and adversarial-review pass | `~/Projects/trainer.skill/references/trainer-pre-action-gates.md` |
+| Dispatch manifest, layers, status closeout | `~/Projects/trainer.skill/references/trainer-dispatch-gates.md` |
+| Private-path leak scan (pre-commit, bundle, push) | `~/Projects/trainer.skill/references/trainer-runtime-compactness.md` § Private-path leak scan |
 | Repo operations, security, branch protection | `README.md`, `SECURITY.md` |
 
 Verify sync: `scripts/verify_trainer_sync.sh`. Context budget (warn): `tests/context_budget/check_context_budget.py`.
