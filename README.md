@@ -34,7 +34,7 @@ The decision to build a standalone bootstrap skill (rather than fold the routing
 | [`pr`](./specialists/pr/) | personal-record celebration | Milestones, retros, achievements |
 | [`superset`](./specialists/superset/) | parallel-agent dispatch discipline (worktree isolation, prompt templates, falsifier checklist, batch aggregation, status-check and closeout doc hygiene) | Spawning 2+ fresh-context agents on the same repo; orchestrator-handoff when the coordination chat hits context-window pressure; status refresh or job closeout when each touched repo's CHANGELOG, README, and roadmap must match shipped work |
 
-Sibling-directory canonicals at `~/Projects/<name>.skill/` remain the editing home for each specialist. The `./specialists/` copies are refreshed by `scripts/bundle_specialists.sh` for distribution.
+Sibling-directory canonicals at `~/Projects/<name>.skill/` remain the editing home for each specialist. Run `scripts/bundle_specialists.sh` to refresh `./specialists/` for distribution.
 
 ---
 
@@ -90,9 +90,14 @@ trainer.skill/
 ├── SKILL.md                            # canonical trainer body (≤150 lines as of v0.4.0)
 ├── README.md                           # this file
 ├── CHANGELOG.md                        # version history per SemVer below
+├── SECURITY.md                         # vulnerability reporting and supported versions
 ├── LICENSE                             # PolyForm NC 1.0.0 + Iron Law
+├── docs/
+│   └── BRANCH_PROTECTION.md            # main branch protection policy and gh api commands
 ├── scripts/
+│   ├── apply_branch_protection.sh      # idempotent protection PUT (DRY_RUN=1 default)
 │   ├── bundle_specialists.sh           # refreshes ./specialists/ from sibling-dir canonicals
+│   ├── verify_github_hardening.sh      # SECURITY.md layout + apply script dry-run smoke
 │   └── verify_trainer_sync.sh          # asserts cross-IDE mirror consistency
 ├── tests/
 │   └── scenarios/                      # doc-only pressure scenarios (v0.4.0)
@@ -122,12 +127,18 @@ trainer.skill/
 
 ---
 
+## Security
+
+See [`SECURITY.md`](./SECURITY.md) for vulnerability reporting, supported versions, and scope (documentation skill bundle, not a runtime product). Do not paste secrets into public issues. Branch protection policy and apply script: [`docs/BRANCH_PROTECTION.md`](./docs/BRANCH_PROTECTION.md), [`scripts/apply_branch_protection.sh`](./scripts/apply_branch_protection.sh).
+
+---
+
 ## Related portfolio repos
 
 - **`weijia-89/palamedes`**: rigorous-research skill plus multi-agent synthesis prompt. The trainer's routing logic loads `palamedes/skill/SKILL.md` whenever the agent hits research triggers (`research`, `investigate`, `audit`, `fact-check`).
 - **`weijia-89/playwrighter`**: production Playwright pattern library. The trainer loads it on Playwright file triggers; the `form-check` specialist references its quality scorecard.
 - **`weijia-89/vibe-check`**: PR diff scanner for LLM-tell patterns. Composes with this repo's `form-check` specialist during code-review and adversarial-review modes.
-- **`weijia-89/skill-sync`**: cross-IDE sync utility used by this repo (see Sync targets section above).
+- **`weijia-89/skill-sync`**: cross-IDE sync utility; see `SKILL.md` and `scripts/verify_trainer_sync.sh` for mirror targets.
 
 ---
 
