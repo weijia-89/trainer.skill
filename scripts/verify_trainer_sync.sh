@@ -166,7 +166,7 @@ else
 fi
 
 # Invariant 1b: canonical references/ ≡ Claude mirror (byte-identical per file)
-# sdk-review F3: canonical refs guard runs once before rsync (lines 110–114); no duplicate check here
+# sdk-review F2: canonical refs guard runs once before rsync (lines 132–136); no duplicate check here
 if [[ ! -d "$CLAUDE_REFS" ]]; then
   echo "FAIL  missing Claude references mirror: $CLAUDE_REFS"
   FAIL=1
