@@ -95,7 +95,9 @@ trainer.skill/
 ├── docs/
 │   └── BRANCH_PROTECTION.md            # main branch protection policy and gh api commands
 ├── references/
-│   └── trainer-runtime-compactness.md  # on-demand communication, rationalizations, coached-override shape
+│   ├── trainer-runtime-compactness.md  # communication, rationalizations, decision template, coached-override shape
+│   ├── trainer-pre-action-gates.md     # mechanical three-facts gate, triggers, adversarial-review pass
+│   └── trainer-dispatch-gates.md       # dispatch manifest, three-layer orch/meta/worker, status closeout
 ├── scripts/
 │   ├── apply_branch_protection.sh      # idempotent protection PUT (DRY_RUN=1 default)
 │   ├── bundle_specialists.sh           # refreshes ./specialists/ from sibling-dir canonicals
