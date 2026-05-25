@@ -58,7 +58,7 @@ Full examples and violation coaching: `references/trainer-runtime-compactness.md
 
 Before **destructive or wide-scope** action, one sentence with: (1) canonical source of truth, (2) rollback path, (3) verification command. If not statable, STOP.
 <!-- sdk-review F2: file_read overlay before acting; one-sentence summary alone drifts under token pressure -->
-Before acting on any trigger, `file_read` `references/trainer-pre-action-gates.md`; the summary above is not sufficient alone.
+Before acting on any trigger, `file_read` `~/Projects/trainer.skill/references/trainer-pre-action-gates.md`; the summary above is not sufficient alone.
 
 **Triggers:** `rsync --delete`, `rm -rf`, `git reset --hard`, `git push --force`, `find ... -exec rm`, mass edit **>5 files**, bundle or sync between trees, any `git push` without local pre-push verify. Full list: `references/trainer-pre-action-gates.md`.
 
@@ -70,7 +70,7 @@ Multi-agent intent ("spawn agents", "parallel wave", "kick off batch") requires 
 
 **Do not:** dispatch without manifest, skip manifest for "only two agents", assume prompts detect collisions.
 <!-- sdk-review F2: file_read overlay before dispatch; map links alone do not load gate procedure -->
-Before dispatch, `file_read` `references/trainer-dispatch-gates.md`.
+Before dispatch, `file_read` `~/Projects/trainer.skill/references/trainer-dispatch-gates.md`.
 
 Procedure, incidents, three-layer orch/meta/worker, status-check closeout: `references/trainer-dispatch-gates.md` and `superset/SKILL.md`.
 
@@ -129,6 +129,8 @@ Trainer steps back on **review content**; stays on routing (next specialist, sta
 Not a code generator. Not a substitute for specialist checklists. Not `program` (long horizon) or `form-check` (the rep itself). Not authority overriding user. Not a doormat.
 
 ## On-demand reference map
+
+Paths below are relative to canonical skill root `~/Projects/trainer.skill/` (not engagement-repo cwd).
 
 | Topic | File |
 |-------|------|

@@ -554,3 +554,7 @@ The v0.3.0 portfolio-bundling work made the skill *distributable*; v0.4.0 makes 
 - Lists the 8 specialist gym-skills (`form-check`, `program`, `warmup`, `safetybar`, `recovery`, `gymbuddy`, `diet`, `pr`) with one-line invocation criteria.
 - Names "user wishes are the final say" as the trainer's behavioral anchor: overrides are respected and noted, never argued. (Reversed in v0.2.0.)
 - No checklists, no rubrics, no scoring. Pure routing + teaching + adapting.
+
+## Unreleased
+
+- Post-#4 P2: anchor mandatory `file_read` overlays to `~/Projects/trainer.skill/references/`; sync `references/` to Claude mirror in `verify_trainer_sync.sh` (Invariant 1b).
