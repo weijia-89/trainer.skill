@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # verify_trainer_sync.sh
 #
-# Asserts that the four sync targets for the `trainer` skill are consistent:
+# Asserts trainer skill sync targets (canonical SKILL.md + references/, Claude/Cursor/Windsurf mirrors):
 #
 #   1. ~/Projects/trainer.skill/SKILL.md           (canonical)
 #   2. ~/.claude/skills/trainer/SKILL.md            (Claude mirror, byte-identical to canonical)
@@ -106,6 +106,12 @@ FAIL=0
 REPO_ROOT="$HOME/Projects/trainer.skill"
 CANONICAL_REFS="$REPO_ROOT/references"
 CLAUDE_REFS="$HOME/.claude/skills/trainer/references"
+
+# sdk-review F1: guard canonical references/ before rsync; set -e aborts on missing source otherwise
+if [[ ! -d "$CANONICAL_REFS" ]]; then
+  echo "FAIL  missing canonical references/: $CANONICAL_REFS"
+  exit 1
+fi
 
 # Mirror sync: Claude skill tree must include references/ for mandatory file_read overlays (post #4 P2)
 mkdir -p "$(dirname "$CLAUDE")" "$CLAUDE_REFS"
