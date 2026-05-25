@@ -10,6 +10,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - **MINOR**: new sync target added; a specialist gym-skill's invocation pattern is updated; new section added without changing existing semantics.
 - **PATCH**: typo fix; clarification without semantic change; sync-mechanic improvement.
 
+## [Unreleased]
+
+### Added
+
+- **`SECURITY.md`** — private GitHub advisory reporting, supported versions, explicit scope (documentation skill bundle, not a runtime product), no secrets in public issues.
+- **`docs/BRANCH_PROTECTION.md`** — policy table, solo-maintainer tradeoffs, `gh api` inspect and apply commands for `main`.
+- **`scripts/apply_branch_protection.sh`** — idempotent branch protection PUT; `DRY_RUN=1` by default; set `GH_REPO=weijia-89/trainer.skill` before apply.
+
+### Changed
+
+- **`README.md`** — public-audience polish (security pointer, updated repository layout). Scope statement unchanged: documentation skill only; behavioral validation harness remains outside this repo.
+
 ## [0.10.2] (2026-05-23): Bundle superset v0.8.5 closeout roadmap alignment
 
 **PATCH per SemVer rules.** Bundles `superset` v0.8.5. Canonical trainer `SKILL.md` body unchanged; routing and coaching stance unchanged.

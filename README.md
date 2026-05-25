@@ -34,7 +34,7 @@ The decision to build a standalone bootstrap skill (rather than fold the routing
 | [`pr`](./specialists/pr/) | personal-record celebration | Milestones, retros, achievements |
 | [`superset`](./specialists/superset/) | parallel-agent dispatch discipline (worktree isolation, prompt templates, falsifier checklist, batch aggregation, status-check and closeout doc hygiene) | Spawning 2+ fresh-context agents on the same repo; orchestrator-handoff when the coordination chat hits context-window pressure; status refresh or job closeout when each touched repo's CHANGELOG, README, and roadmap must match shipped work |
 
-Sibling-directory canonicals at `~/Projects/<name>.skill/` remain the editing home for each specialist. The `./specialists/` copies are refreshed by `scripts/bundle_specialists.sh` for distribution.
+Sibling-directory canonicals at `~/Projects/<name>.skill/` remain the editing home for each specialist. Run `scripts/bundle_specialists.sh` to refresh `./specialists/` for distribution.
 
 ---
 
@@ -90,9 +90,14 @@ trainer.skill/
 ├── SKILL.md                            # canonical trainer body (≤150 lines as of v0.4.0)
 ├── README.md                           # this file
 ├── CHANGELOG.md                        # version history per SemVer below
+├── SECURITY.md                         # vulnerability reporting and supported versions
 ├── LICENSE                             # PolyForm NC 1.0.0 + Iron Law
+├── docs/
+│   └── BRANCH_PROTECTION.md            # main branch protection policy and gh api commands
 ├── scripts/
+│   ├── apply_branch_protection.sh      # idempotent protection PUT (DRY_RUN=1 default)
 │   ├── bundle_specialists.sh           # refreshes ./specialists/ from sibling-dir canonicals
+│   ├── verify_github_hardening.sh      # SECURITY.md layout + apply script dry-run smoke
 │   └── verify_trainer_sync.sh          # asserts cross-IDE mirror consistency
 ├── tests/
 │   └── scenarios/                      # doc-only pressure scenarios (v0.4.0)
@@ -114,11 +119,52 @@ trainer.skill/
 
 ---
 
+## Sync targets (canonical-to-mirrors, separate from the bundle)
+
+The maintainer mirrors the `SKILL.md` body across four locations so every IDE-resident agent loads the same routing logic:
+
+| Target | Path | Role |
+|---|---|---|
+| Canonical | `~/Projects/trainer.skill/SKILL.md` | Source of truth |
+| Claude mirror | `~/.claude/skills/trainer/SKILL.md` | Byte-identical copy |
+| Cursor trigger | `~/Projects/.cursor/rules/trainer.mdc` | `alwaysApply: true`; points to canonical |
+| Windsurf trigger | `~/Projects/.windsurf/rules/trainer.md` | `trigger: always_on`; points to canonical |
+
+[`skill-sync`](https://github.com/weijia-89/skill-sync) v0.2+ automates cross-IDE sync (Claude, Cursor, Windsurf). Manual sync also works: edit canonical, copy to Claude, then run `scripts/verify_trainer_sync.sh`.
+
+The **bundle** at `./specialists/` is a separate mechanic: it's refreshed by `scripts/bundle_specialists.sh` from the sibling `~/Projects/<name>.skill/` canonicals. The bundle is for distribution; the canonicals are for editing.
+
+---
+
+## Authoring discipline
+
+Prose changes to this repo (SKILL.md, CHANGELOG.md, README.md, specialist content) pass three voice gates before commit. One is mechanical and enforced by the verify script; the other two are manual reviewer disciplines that catch what mechanical checks miss.
+
+**1. Em-dash zero (mechanical).** `scripts/verify_trainer_sync.sh` invariant 6 fails the verify pass if any em-dash character appears in any sync target. Replace any em-dash with a hyphen, a comma, or a sentence break.
+
+**2. Deai gate (manual, mandatory before claiming voice-verified).** Prose changes get scanned for structural anti-patterns (passive-voice over-use, hanging colons, tricolons in load-bearing positions, latinate register drift) and per-sentence score-banded against a known-good baseline of the same shape. Score the new prose, report top firing families, and fix any signal that fires above the baseline. The scanner lives in the operator's local skill stack and is not bundled with this repo; contributors without the scanner should at minimum self-check for colon-then-three-or-more-item lists (the "X: A, B, and C" shape) and theatrical paragraph-end fragments.
+
+**3. Wei-voice iron rules (manual).** Three rules apply to any prose in this repo intended for readers other than the operator:
+
+- **No theatrical mic-drops at paragraph end.** Short punchy fragments that would read as tweet-card pull quotes get folded into continuation clauses or into the preceding sentence as a subordinate clause.
+- **No tricolon-after-colon.** The "X: A, B, and C" shape with similarly-sized parallel items is the AI / influencer / punditry pattern. Convert to continuous prose, to markdown sub-bullets, or drop one item and integrate the other two.
+- **Active voice with the author as agent.** Wei wrote the trainer and built the specialists. Passive constructions that erase the author's agency get rewritten with the agent as the subject.
+
+A worked example sits in the v0.9.2 entry of `CHANGELOG.md`. The deai scanner caught four iron-rule violations in v0.9.0 and v0.9.1 prose; v0.9.2 ships the rewrites that fixed them and codifies these gates in this section.
+
+---
+
 ## SemVer rules for this skill
 
 - **MAJOR**: routing decision flow changes; specialist list gains or loses entries; coaching-stance criteria change.
 - **MINOR**: new sync target added; specialist invocation pattern updated; new teaching responsibility added; bundle mechanic introduced.
 - **PATCH**: typo fix; clarification without semantic change; sync-mechanic improvement.
+
+---
+
+## Security
+
+See [`SECURITY.md`](./SECURITY.md) for vulnerability reporting, supported versions, and scope (documentation skill bundle, not a runtime product). Do not paste secrets into public issues. Branch protection policy and apply script: [`docs/BRANCH_PROTECTION.md`](./docs/BRANCH_PROTECTION.md), [`scripts/apply_branch_protection.sh`](./scripts/apply_branch_protection.sh).
 
 ---
 
