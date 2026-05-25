@@ -13,6 +13,51 @@
 
 set -euo pipefail
 
+# GitHub Actions has no local Claude/Cursor/Windsurf mirrors; run repo-only checks.
+if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
+  REPO_ROOT="${GITHUB_WORKSPACE:?GITHUB_WORKSPACE unset in CI}"
+  CANONICAL="$REPO_ROOT/SKILL.md"
+  FAIL=0
+
+  if [[ ! -f "$CANONICAL" ]]; then
+    echo "FAIL  missing canonical SKILL.md at $CANONICAL"
+    exit 1
+  fi
+  echo "PASS  canonical SKILL.md present"
+
+  SELF_BASENAME="$(basename "${BASH_SOURCE[0]}")"
+  mapfile -t TRACKED_FILES < <(
+    git -C "$REPO_ROOT" ls-files \
+      | grep -v "^scripts/$SELF_BASENAME\$" \
+      | sed "s|^|$REPO_ROOT/|"
+  )
+  LEAK_PATTERN='(/Users/wjia/|~/Projects/(reviews|career-help|toren|local[-_]?only)/)'
+  if [[ ${#TRACKED_FILES[@]} -gt 0 ]]; then
+    LEAK_REPORT=$(grep -HnE "$LEAK_PATTERN" "${TRACKED_FILES[@]}" 2>/dev/null || true)
+    if [[ -n "$LEAK_REPORT" ]]; then
+      LEAK_COUNT=$(printf '%s\n' "$LEAK_REPORT" | grep -c .)
+      echo "FAIL  $LEAK_COUNT private-path leak(s) found in tracked files:"
+      printf '%s\n' "$LEAK_REPORT" | head -20 | sed 's/^/        /'
+      if [[ "$LEAK_COUNT" -gt 20 ]]; then
+        echo "        ... ($((LEAK_COUNT - 20)) more)"
+      fi
+      FAIL=1
+    else
+      echo "PASS  zero private-path leaks across $REPO_ROOT tracked files"
+    fi
+  fi
+
+  if [[ "$FAIL" -ne 0 ]]; then
+    echo ""
+    echo "VERDICT: FAIL (CI repo-only checks)"
+    exit 1
+  fi
+
+  echo ""
+  echo "VERDICT: PASS (CI repo-only checks)"
+  exit 0
+fi
+
 CANONICAL="$HOME/Projects/trainer.skill/SKILL.md"
 CLAUDE="$HOME/.claude/skills/trainer/SKILL.md"
 CURSOR="$HOME/Projects/.cursor/rules/trainer.mdc"
