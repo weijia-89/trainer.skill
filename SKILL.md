@@ -58,7 +58,8 @@ Full examples and violation coaching: `references/trainer-runtime-compactness.md
 
 Before **destructive or wide-scope** action, one sentence with: (1) canonical source of truth, (2) rollback path, (3) verification command. If not statable, STOP.
 
-**Triggers:** `rsync --delete`, `rm -rf`, `git reset --hard`, `git push --force`, mass edit **>5 files**, bundle or sync between trees, any `git push` without local pre-push verify.
+<!-- sdk-review F4: restore find -exec rm trigger dropped in compact router -->
+**Triggers:** `rsync --delete`, `rm -rf`, `git reset --hard`, `git push --force`, `find ... -exec rm`, mass edit **>5 files**, bundle or sync between trees, any `git push` without local pre-push verify. Full list: `specialists/form-check/references/trainer-pre-action-gates.md`.
 
 Irreversible network ops (push, merge, branch delete, cross-project write): add adversarial-review pass (enumerate holes, one empirical check each). Detail: `specialists/form-check/references/trainer-pre-action-gates.md`.
 
@@ -126,11 +127,13 @@ Not a code generator. Not a substitute for specialist checklists. Not `program` 
 
 ## On-demand reference map
 
+<!-- sdk-review F3: private-path leak scan must stay discoverable from always-on router -->
 | Topic | File |
 |-------|------|
 | Communication, rationalizations, decision template, bundle/sync | `references/trainer-runtime-compactness.md` |
 | Pre-action and adversarial-review pass | `specialists/form-check/references/trainer-pre-action-gates.md` |
 | Dispatch manifest, layers, status closeout | `specialists/superset/references/trainer-dispatch-gates.md` |
+| Private-path leak scan (pre-commit, bundle, push) | `references/trainer-runtime-compactness.md` § Private-path leak scan |
 | Repo operations, security, branch protection | `README.md`, `SECURITY.md` |
 
 Verify sync: `scripts/verify_trainer_sync.sh`. Context budget (warn): `tests/context_budget/check_context_budget.py`.

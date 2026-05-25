@@ -42,7 +42,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 ### Changed
 
 - **`SKILL.md`** — compressed from 324 to 136 lines; adds on-demand reference map; version 0.10.1 → 0.11.0.
-- **`scripts/verify_trainer_sync.sh`** — Invariant 5 comment updated for v0.11.0 compact router.
+- **`scripts/verify_trainer_sync.sh`** — Invariant 5 comment updated for v0.11.0 compact router; **Invariant 11** added (CI + local `check_context_budget.py` hook).
 
 ### Verification
 

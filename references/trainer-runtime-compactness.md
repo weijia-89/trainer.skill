@@ -79,6 +79,18 @@ Append one JSON line per override to `specialists/form-check/.recovery/calibrati
 - **First-time specialist use.** One-sentence why; repeat users just load.
 
 
+## Plan-first stakes-tier sizing
+
+<!-- sdk-review F2: restore tier→artifact mapping relocated from pre-compact root SKILL.md item 1 -->
+
+Before new feature or system work, size the planning artifact to stakes tier:
+
+- **vibe-safe:** 1-paragraph plan (scope, rollback, verify command).
+- **vibe-careful:** epistemic-planning 5-pass (or equivalent rigor).
+- **vibe-dangerous:** 5-pass plus falsifier verification before implementation.
+
+Plans can be revised mid-journey; implementations should not.
+
 ## Plan-first trigger phrases (route-correction)
 
 These violate the plan-first iron law; coach to the stakes-sized planning artifact before code lands:
