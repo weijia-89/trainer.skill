@@ -41,6 +41,11 @@ if [[ "$DRY_RUN" == "1" ]]; then
   exit 0
 fi
 
+if ! gh auth status -h github.com >/dev/null 2>&1; then
+  echo "error: gh not authenticated to github.com; run 'gh auth login' before DRY_RUN=0." >&2
+  exit 1
+fi
+
 if ! gh repo view "$GH_REPO" --json nameWithOwner >/dev/null 2>&1; then
   echo "error: repo $GH_REPO not found or not visible; aborting (no PUT)." >&2
   exit 1

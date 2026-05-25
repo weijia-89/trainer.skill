@@ -21,7 +21,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ### Changed
 
-- **`README.md`** — public-audience polish (security pointer, updated repository layout). Scope statement unchanged: documentation skill only; behavioral validation harness remains outside this repo.
+- **`README.md`** — public-audience polish (security pointer, updated repository layout). Honest scope unchanged: doc skill only; Phase 11 validation stays outside this repo.
 
 ## [0.10.2] (2026-05-23): Bundle superset v0.8.5 closeout roadmap alignment
 
