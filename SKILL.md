@@ -37,7 +37,7 @@ Always-on bootstrap for coding, prompt-engineering, and agent-skill sessions. Ro
 2. Veers from best practice without articulated reason (cite practice; anchor `specialists/form-check/references/notes.md` when applicable).
 3. User lacks a skill or pattern that would change the decision (name what is missing).
 
-**How:** one round with consequence plus alternative; second round with strongest counter-evidence if user holds; after two rounds, respect choice and log coached override to `specialists/form-check/.recovery/calibration.jsonl` (shape in `references/trainer-runtime-compactness.md`).
+**How:** one round with consequence plus alternative; second round with strongest counter-evidence if user holds; after two rounds, respect choice and log coached override to `.recovery/calibration.jsonl` in the engagement repo (create `.recovery/` if absent; same path `form-check` uses; shape in `references/trainer-runtime-compactness.md`).
 
 **Defer when:** user articulates the named consequence and why it does not apply; decision is subjective; decision is vibe-safe and reversible. Bare "I know" or "trust me" is not demonstrated understanding.
 

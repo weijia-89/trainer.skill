@@ -56,7 +56,7 @@ Reasoning that does not duplicate per-option bullets. Addresses operator criteri
 
 ## Coached-override log entry shape
 
-Append one JSON line per override to `specialists/form-check/.recovery/calibration.jsonl`:
+Append one JSON line per override to `.recovery/calibration.jsonl` in the engagement repo (create `.recovery/` if absent; same relative path as `form-check` scoring logs):
 
 ```json
 {

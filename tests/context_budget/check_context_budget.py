@@ -78,6 +78,17 @@ def main() -> int:
     for sec, tok in sections.items():
         if tok > max_section:
             violations.append(f"section '{sec}' est_tokens {tok} > max {max_section}")
+    # sdk-review F1: budget.toml snapshot fields must track live measure or drift silently
+    snapshot_lines = cfg.get("current_lines")
+    if snapshot_lines is not None and line_count != int(snapshot_lines):
+        violations.append(
+            f"snapshot current_lines {snapshot_lines} != measured {line_count}"
+        )
+    snapshot_tokens = cfg.get("current_est_tokens")
+    if snapshot_tokens is not None and token_count != int(snapshot_tokens):
+        violations.append(
+            f"snapshot current_est_tokens {snapshot_tokens} != measured {token_count}"
+        )
     print(f"BUDGET_FILE={budget_path}")
     print(f"SKILL_FILE={skill_path}")
     print(f"WARN_ONLY={warn_only}")
