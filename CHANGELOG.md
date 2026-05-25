@@ -28,6 +28,27 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 - SDK codereview round 2: playground `trainer_github_hardening.sh` VERIFY uses `./scripts/verify_github_hardening.sh` (F4).
 
+## [0.11.0] (2026-05-25): Context compactness P2/P3/P5 — compact router + on-demand references
+
+**MINOR per SemVer rules.** Root `SKILL.md` becomes a route-and-gate router (~136 lines, ~1935 est tokens). Operational depth moves to on-demand reference files; routing semantics and coaching stance unchanged.
+
+### Added
+
+- **`references/trainer-runtime-compactness.md`** — communication discipline, decision-presentation template, rationalizations table, proactive teaching depth, worked examples, bundle/sync note (P2 lazy-load target).
+- **`specialists/form-check/references/trainer-pre-action-gates.md`** — mechanical pre-action three-facts gate, triggers, adversarial-review pass (P3 cross-reference).
+- **`specialists/superset/references/trainer-dispatch-gates.md`** — dispatch-before-dispatch manifest procedure, three-layer architecture, status-check closeout (P5 cross-reference).
+- **`tests/context_budget/`** — `budget.toml`, `check_context_budget.py` (warn-only gate), `measure_context.py`, README.
+
+### Changed
+
+- **`SKILL.md`** — compressed from 324 to 136 lines; adds on-demand reference map; version 0.10.1 → 0.11.0.
+- **`scripts/verify_trainer_sync.sh`** — Invariant 5 comment updated for v0.11.0 compact router.
+
+### Verification
+
+- `bash scripts/verify_trainer_sync.sh` → PASS
+- `python3 tests/context_budget/check_context_budget.py` → PASS (VERDICT=PASS, warn-only)
+
 ## [0.10.2] (2026-05-23): Bundle superset v0.8.5 closeout roadmap alignment
 
 **PATCH per SemVer rules.** Bundles `superset` v0.8.5. Canonical trainer `SKILL.md` body unchanged; routing and coaching stance unchanged.
