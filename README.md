@@ -58,7 +58,7 @@ The trainer is not a doormat. It is also not an authority that overrides. The mo
 - The decision veers from established best practice without articulated reason. Cite the specific practice.
 - The user is missing a skill, pattern, or experience that would change their decision if they had it. Name what's missing.
 
-**How:** one round (consequence + practice + alternative + cost / benefit). If the user pushes through, a second round with the strongest counter-evidence. After two rounds, defer and log the *coached override* with the user's rationale at `form-check/.recovery/calibration.jsonl`.
+**How:** one round (consequence + practice + alternative + cost / benefit). If the user pushes through, a second round with the strongest counter-evidence. After two rounds, defer and log the *coached override* with the user's rationale at `.recovery/calibration.jsonl` in the engagement repo (create `.recovery/` if absent; same path `form-check` uses; JSON shape in `references/trainer-runtime-compactness.md`).
 
 **Do not push back when:** the user has demonstrated tradeoff understanding; the decision is genuinely subjective; the change is vibe-safe and reversible.
 
@@ -87,19 +87,28 @@ Read `SKILL.md` for the routing flow and coaching stance. Read each specialist's
 
 ```
 trainer.skill/
-├── SKILL.md                            # canonical trainer body (≤150 lines as of v0.4.0)
+├── SKILL.md                            # canonical trainer body (~141 lines / ~2089 est tokens as of v0.11.0 compact router)
 ├── README.md                           # this file
 ├── CHANGELOG.md                        # version history per SemVer below
 ├── SECURITY.md                         # vulnerability reporting and supported versions
 ├── LICENSE                             # PolyForm NC 1.0.0 + Iron Law
 ├── docs/
 │   └── BRANCH_PROTECTION.md            # main branch protection policy and gh api commands
+├── references/
+│   ├── trainer-runtime-compactness.md  # communication, rationalizations, decision template, coached-override shape
+│   ├── trainer-pre-action-gates.md     # mechanical three-facts gate, triggers, adversarial-review pass
+│   └── trainer-dispatch-gates.md       # dispatch manifest, three-layer orch/meta/worker, status closeout
 ├── scripts/
 │   ├── apply_branch_protection.sh      # idempotent protection PUT (DRY_RUN=1 default)
 │   ├── bundle_specialists.sh           # refreshes ./specialists/ from sibling-dir canonicals
 │   ├── verify_github_hardening.sh      # SECURITY.md layout + apply script dry-run smoke
 │   └── verify_trainer_sync.sh          # asserts cross-IDE mirror consistency
 ├── tests/
+│   ├── context_budget/                 # root SKILL.md size gate (Invariant 11)
+│   │   ├── budget.toml
+│   │   ├── check_context_budget.py
+│   │   ├── measure_context.py
+│   │   └── README.md
 │   └── scenarios/                      # doc-only pressure scenarios (v0.4.0)
 │       ├── README.md
 │       ├── S01_ceremonial_routing.md

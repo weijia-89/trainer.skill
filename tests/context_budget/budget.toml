@@ -1,0 +1,14 @@
+# Root trainer SKILL.md context budget (warn-only until Wei ratifies).
+# Token counts are estimates: ceil(chars / 4), not exact tokenizer output.
+
+[root_skill]
+warn_only = true
+root_skill_max_lines = 220
+root_skill_max_est_tokens = 5500
+max_section_est_tokens = 900
+
+# Recorded at v0.11.0 compact router ship (2026-05-25); validated by check_context_budget.py (sdk-review F1)
+current_lines = 141
+current_est_tokens = 2089
+target_lines = 180
+target_est_tokens = 4500

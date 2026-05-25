@@ -47,6 +47,43 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     fi
   fi
 
+
+  # Invariant (CI): root SKILL.md context budget (see tests/context_budget/budget.toml)
+  CONTEXT_BUDGET="$REPO_ROOT/tests/context_budget/check_context_budget.py"
+  if [[ -f "$CONTEXT_BUDGET" ]]; then
+    set +e
+    CB_OUT=$(python3 "$CONTEXT_BUDGET" 2>&1)
+    CB_EXIT=$?
+    set -e
+    if [[ $CB_EXIT -ne 0 ]]; then
+      echo "FAIL  context budget check exited $CB_EXIT:"
+      printf '%s\n' "$CB_OUT" | sed 's/^/        /'
+      FAIL=1
+    else
+      echo "PASS  context budget check"
+    fi
+  else
+    echo "WARN  skipping context budget check (missing $CONTEXT_BUDGET)"
+  fi
+
+  # sdk-review F2: unit tests guard load_budget, warn-only exit paths, snapshot drift
+  CONTEXT_BUDGET_TESTS="$REPO_ROOT/tests/context_budget/test_check_context_budget.py"
+  if [[ -f "$CONTEXT_BUDGET_TESTS" ]]; then
+    set +e
+    CBT_OUT=$(python3 "$CONTEXT_BUDGET_TESTS" 2>&1)
+    CBT_EXIT=$?
+    set -e
+    if [[ $CBT_EXIT -ne 0 ]]; then
+      echo "FAIL  context budget unit tests exited $CBT_EXIT:"
+      printf '%s\n' "$CBT_OUT" | sed 's/^/        /'
+      FAIL=1
+    else
+      echo "PASS  context budget unit tests"
+    fi
+  else
+    echo "WARN  skipping context budget unit tests (missing $CONTEXT_BUDGET_TESTS)"
+  fi
+
   if [[ "$FAIL" -ne 0 ]]; then
     echo ""
     echo "VERDICT: FAIL (CI repo-only checks)"
@@ -129,7 +166,7 @@ if [[ "$FAIL" -eq 0 ]]; then
   echo "PASS  all four sync targets agree on version $CANONICAL_VERSION"
 fi
 
-# Invariant 5: SKILL.md (canonical) is ≤360 lines (bootstrap-skill cap; original 100, bumped to 140 in v0.4.0 for Iron Law layering, then to 180 in v0.5.0 for Red Flags / Rationalizations, then to 240 in v0.7.0 for the v0.6 Iron-Law pre-action gate + worked examples + ancillary routing-flow entries, then to 280 in v0.8.0 for the Dispatch-graph-before-dispatch sub-clause, then to 320 in v0.9.0 for the Decision-presentation template subsection, then to 360 in v0.10.0 for the Adversarial-review pass sub-subsection under Mechanical pre-action gate)
+# Invariant 5: SKILL.md (canonical) is ≤360 lines (bootstrap-skill cap; v0.11.0 compact router is ~136 lines; token/line budget enforced in Invariant 11)
 CANONICAL_LINES=$(wc -l < "$CANONICAL")
 if [[ "$CANONICAL_LINES" -gt 360 ]]; then
   echo "WARN  canonical SKILL.md is $CANONICAL_LINES lines (soft cap 360)"
@@ -245,6 +282,43 @@ if [[ -f "$SUPERSET_PROMPT_HARNESS" ]]; then
   fi
 else
   echo "WARN  skipping superset prompt-level harness invariant (script not present at $SUPERSET_PROMPT_HARNESS)"
+fi
+
+
+# Invariant 11: root SKILL.md context budget (tests/context_budget/budget.toml)
+CONTEXT_BUDGET="$REPO_ROOT/tests/context_budget/check_context_budget.py"
+if [[ -f "$CONTEXT_BUDGET" ]]; then
+  set +e
+  CB_OUT=$(python3 "$CONTEXT_BUDGET" 2>&1)
+  CB_EXIT=$?
+  set -e
+  if [[ $CB_EXIT -ne 0 ]]; then
+    echo "FAIL  context budget check exited $CB_EXIT:"
+    printf '%s\n' "$CB_OUT" | sed 's/^/        /'
+    FAIL=1
+  else
+    echo "PASS  context budget check"
+  fi
+else
+  echo "WARN  skipping context budget check (missing $CONTEXT_BUDGET)"
+fi
+
+# sdk-review F2: unit tests guard load_budget, warn-only exit paths, snapshot drift
+CONTEXT_BUDGET_TESTS="$REPO_ROOT/tests/context_budget/test_check_context_budget.py"
+if [[ -f "$CONTEXT_BUDGET_TESTS" ]]; then
+  set +e
+  CBT_OUT=$(python3 "$CONTEXT_BUDGET_TESTS" 2>&1)
+  CBT_EXIT=$?
+  set -e
+  if [[ $CBT_EXIT -ne 0 ]]; then
+    echo "FAIL  context budget unit tests exited $CBT_EXIT:"
+    printf '%s\n' "$CBT_OUT" | sed 's/^/        /'
+    FAIL=1
+  else
+    echo "PASS  context budget unit tests"
+  fi
+else
+  echo "WARN  skipping context budget unit tests (missing $CONTEXT_BUDGET_TESTS)"
 fi
 
 if [[ "$FAIL" -ne 0 ]]; then
