@@ -47,6 +47,25 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     fi
   fi
 
+
+  # Invariant (CI): root SKILL.md context budget (see tests/context_budget/budget.toml)
+  CONTEXT_BUDGET="$REPO_ROOT/tests/context_budget/check_context_budget.py"
+  if [[ -f "$CONTEXT_BUDGET" ]]; then
+    set +e
+    CB_OUT=$(python3 "$CONTEXT_BUDGET" 2>&1)
+    CB_EXIT=$?
+    set -e
+    if [[ $CB_EXIT -ne 0 ]]; then
+      echo "FAIL  context budget check exited $CB_EXIT:"
+      printf '%s\n' "$CB_OUT" | sed 's/^/        /'
+      FAIL=1
+    else
+      echo "PASS  context budget check"
+    fi
+  else
+    echo "WARN  skipping context budget check (missing $CONTEXT_BUDGET)"
+  fi
+
   if [[ "$FAIL" -ne 0 ]]; then
     echo ""
     echo "VERDICT: FAIL (CI repo-only checks)"
@@ -129,7 +148,7 @@ if [[ "$FAIL" -eq 0 ]]; then
   echo "PASS  all four sync targets agree on version $CANONICAL_VERSION"
 fi
 
-# Invariant 5: SKILL.md (canonical) is ≤360 lines (bootstrap-skill cap; v0.11.0 compact router is ~136 lines; hard budget gate at tests/context_budget/check_context_budget.py)
+# Invariant 5: SKILL.md (canonical) is ≤360 lines (bootstrap-skill cap; v0.11.0 compact router is ~136 lines; token/line budget enforced in Invariant 11)
 CANONICAL_LINES=$(wc -l < "$CANONICAL")
 if [[ "$CANONICAL_LINES" -gt 360 ]]; then
   echo "WARN  canonical SKILL.md is $CANONICAL_LINES lines (soft cap 360)"
@@ -245,6 +264,25 @@ if [[ -f "$SUPERSET_PROMPT_HARNESS" ]]; then
   fi
 else
   echo "WARN  skipping superset prompt-level harness invariant (script not present at $SUPERSET_PROMPT_HARNESS)"
+fi
+
+
+# Invariant 11: root SKILL.md context budget (tests/context_budget/budget.toml)
+CONTEXT_BUDGET="$REPO_ROOT/tests/context_budget/check_context_budget.py"
+if [[ -f "$CONTEXT_BUDGET" ]]; then
+  set +e
+  CB_OUT=$(python3 "$CONTEXT_BUDGET" 2>&1)
+  CB_EXIT=$?
+  set -e
+  if [[ $CB_EXIT -ne 0 ]]; then
+    echo "FAIL  context budget check exited $CB_EXIT:"
+    printf '%s\n' "$CB_OUT" | sed 's/^/        /'
+    FAIL=1
+  else
+    echo "PASS  context budget check"
+  fi
+else
+  echo "WARN  skipping context budget check (missing $CONTEXT_BUDGET)"
 fi
 
 if [[ "$FAIL" -ne 0 ]]; then

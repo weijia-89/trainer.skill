@@ -110,7 +110,7 @@ Multi-option decisions with tradeoffs: use decision-presentation template in `re
 - "I'll surface this decision after execution."
 - "User said continue; status report replaces routing."
 
-Re-read the relevant section above. Coaching without named consequence is disapproval, not pushback.
+Re-read the relevant section above. Expanded list: `references/trainer-runtime-compactness.md`. Coaching without named consequence is disapproval, not pushback.
 
 ## During form-check adversarial-review
 

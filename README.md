@@ -58,7 +58,7 @@ The trainer is not a doormat. It is also not an authority that overrides. The mo
 - The decision veers from established best practice without articulated reason. Cite the specific practice.
 - The user is missing a skill, pattern, or experience that would change their decision if they had it. Name what's missing.
 
-**How:** one round (consequence + practice + alternative + cost / benefit). If the user pushes through, a second round with the strongest counter-evidence. After two rounds, defer and log the *coached override* with the user's rationale at `form-check/.recovery/calibration.jsonl`.
+**How:** one round (consequence + practice + alternative + cost / benefit). If the user pushes through, a second round with the strongest counter-evidence. After two rounds, defer and log the *coached override* with the user's rationale at `specialists/form-check/.recovery/calibration.jsonl` (JSON shape in `references/trainer-runtime-compactness.md`).
 
 **Do not push back when:** the user has demonstrated tradeoff understanding; the decision is genuinely subjective; the change is vibe-safe and reversible.
 

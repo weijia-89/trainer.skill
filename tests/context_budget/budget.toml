@@ -9,6 +9,6 @@ max_section_est_tokens = 900
 
 # Recorded at v0.11.0 compact router ship (2026-05-25)
 current_lines = 136
-current_est_tokens = 3400
+current_est_tokens = 1950
 target_lines = 180
 target_est_tokens = 4500
