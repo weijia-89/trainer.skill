@@ -87,7 +87,7 @@ Read `SKILL.md` for the routing flow and coaching stance. Read each specialist's
 
 ```
 trainer.skill/
-├── SKILL.md                            # canonical trainer body (~137 lines as of v0.11.0 compact router)
+├── SKILL.md                            # canonical trainer body (~141 lines / ~2089 est tokens as of v0.11.0 compact router)
 ├── README.md                           # this file
 ├── CHANGELOG.md                        # version history per SemVer below
 ├── SECURITY.md                         # vulnerability reporting and supported versions
