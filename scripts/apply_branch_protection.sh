@@ -35,7 +35,8 @@ EOF
 
 echo "target: $GH_REPO branch=$BRANCH DRY_RUN=$DRY_RUN" >&2
 
-if [[ "$DRY_RUN" == "1" ]]; then
+# sdk-review F2: dry-run unless DRY_RUN=0 exactly — truthy typos (01, true, yes) must not live-PUT.
+if [[ "$DRY_RUN" != "0" ]]; then
   echo "DRY_RUN=1 — would PUT repos/$OWNER/$REPO/branches/$BRANCH/protection" >&2
   echo "$PAYLOAD" | python3 -m json.tool
   exit 0
