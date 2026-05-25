@@ -1,3 +1,5 @@
+<!-- sdk-review F1: trainer-owned overlay; bundle rsync --delete removes specialists/ copies -->
+
 # Trainer dispatch gates (superset cross-reference)
 
 Root `trainer` fires dispatch discipline; `superset` owns worktrees, prompt templates, daily-log validation, and falsifier harnesses. Load `superset/SKILL.md` plus this file when multi-agent dispatch is in play.

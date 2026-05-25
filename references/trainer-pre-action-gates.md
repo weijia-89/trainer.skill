@@ -1,3 +1,5 @@
+<!-- sdk-review F1: trainer-owned overlay; bundle rsync --delete removes specialists/ copies -->
+
 # Trainer mechanical pre-action gates (form-check cross-reference)
 
 Root `trainer` routes here before destructive or wide-scope work. `form-check` owns tier scoring and adversarial review content; this file owns the trainer's mechanical gate procedure.

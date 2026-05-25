@@ -52,15 +52,15 @@ Map the lay of the land before implementation. Plans revise with evidence; journ
 3. New dependency: failure modes plus rollback.
 4. Route-correction on "quick sketch in code", "refactor later", "small change no plan", multi-component day-one without contracts.
 
-Full examples and violation coaching: `references/trainer-runtime-compactness.md`. Mechanical pre-action detail: `specialists/form-check/references/trainer-pre-action-gates.md`.
+Full examples and violation coaching: `references/trainer-runtime-compactness.md`. Mechanical pre-action detail: `references/trainer-pre-action-gates.md`.
 
 ## Mechanical pre-action gate
 
 Before **destructive or wide-scope** action, one sentence with: (1) canonical source of truth, (2) rollback path, (3) verification command. If not statable, STOP.
 
-**Triggers:** `rsync --delete`, `rm -rf`, `git reset --hard`, `git push --force`, `find ... -exec rm`, mass edit **>5 files**, bundle or sync between trees, any `git push` without local pre-push verify. Full list: `specialists/form-check/references/trainer-pre-action-gates.md`.
+**Triggers:** `rsync --delete`, `rm -rf`, `git reset --hard`, `git push --force`, `find ... -exec rm`, mass edit **>5 files**, bundle or sync between trees, any `git push` without local pre-push verify. Full list: `references/trainer-pre-action-gates.md`.
 
-Irreversible network ops (push, merge, branch delete, cross-project write): add adversarial-review pass (enumerate holes, one empirical check each). Detail: `specialists/form-check/references/trainer-pre-action-gates.md`.
+Irreversible network ops (push, merge, branch delete, cross-project write): add adversarial-review pass (enumerate holes, one empirical check each). Detail: `references/trainer-pre-action-gates.md`.
 
 ## Dispatch before dispatch
 
@@ -68,7 +68,7 @@ Multi-agent intent ("spawn agents", "parallel wave", "kick off batch") requires 
 
 **Do not:** dispatch without manifest, skip manifest for "only two agents", assume prompts detect collisions.
 
-Procedure, incidents, three-layer orch/meta/worker, status-check closeout: `specialists/superset/references/trainer-dispatch-gates.md` and `superset/SKILL.md`.
+Procedure, incidents, three-layer orch/meta/worker, status-check closeout: `references/trainer-dispatch-gates.md` and `superset/SKILL.md`.
 
 ## The 9 specialist gym-skills
 
@@ -129,8 +129,8 @@ Not a code generator. Not a substitute for specialist checklists. Not `program` 
 | Topic | File |
 |-------|------|
 | Communication, rationalizations, decision template, bundle/sync | `references/trainer-runtime-compactness.md` |
-| Pre-action and adversarial-review pass | `specialists/form-check/references/trainer-pre-action-gates.md` |
-| Dispatch manifest, layers, status closeout | `specialists/superset/references/trainer-dispatch-gates.md` |
+| Pre-action and adversarial-review pass | `references/trainer-pre-action-gates.md` |
+| Dispatch manifest, layers, status closeout | `references/trainer-dispatch-gates.md` |
 | Private-path leak scan (pre-commit, bundle, push) | `references/trainer-runtime-compactness.md` § Private-path leak scan |
 | Repo operations, security, branch protection | `README.md`, `SECURITY.md` |
 

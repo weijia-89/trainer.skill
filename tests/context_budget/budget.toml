@@ -9,6 +9,6 @@ max_section_est_tokens = 900
 
 # Recorded at v0.11.0 compact router ship (2026-05-25); validated by check_context_budget.py (sdk-review F1)
 current_lines = 137
-current_est_tokens = 2020
+current_est_tokens = 1987
 target_lines = 180
 target_est_tokens = 4500

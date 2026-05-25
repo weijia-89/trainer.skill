@@ -66,6 +66,24 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     echo "WARN  skipping context budget check (missing $CONTEXT_BUDGET)"
   fi
 
+  # sdk-review F2: unit tests guard load_budget, warn-only exit paths, snapshot drift
+  CONTEXT_BUDGET_TESTS="$REPO_ROOT/tests/context_budget/test_check_context_budget.py"
+  if [[ -f "$CONTEXT_BUDGET_TESTS" ]]; then
+    set +e
+    CBT_OUT=$(python3 "$CONTEXT_BUDGET_TESTS" 2>&1)
+    CBT_EXIT=$?
+    set -e
+    if [[ $CBT_EXIT -ne 0 ]]; then
+      echo "FAIL  context budget unit tests exited $CBT_EXIT:"
+      printf '%s\n' "$CBT_OUT" | sed 's/^/        /'
+      FAIL=1
+    else
+      echo "PASS  context budget unit tests"
+    fi
+  else
+    echo "WARN  skipping context budget unit tests (missing $CONTEXT_BUDGET_TESTS)"
+  fi
+
   if [[ "$FAIL" -ne 0 ]]; then
     echo ""
     echo "VERDICT: FAIL (CI repo-only checks)"
@@ -283,6 +301,24 @@ if [[ -f "$CONTEXT_BUDGET" ]]; then
   fi
 else
   echo "WARN  skipping context budget check (missing $CONTEXT_BUDGET)"
+fi
+
+# sdk-review F2: unit tests guard load_budget, warn-only exit paths, snapshot drift
+CONTEXT_BUDGET_TESTS="$REPO_ROOT/tests/context_budget/test_check_context_budget.py"
+if [[ -f "$CONTEXT_BUDGET_TESTS" ]]; then
+  set +e
+  CBT_OUT=$(python3 "$CONTEXT_BUDGET_TESTS" 2>&1)
+  CBT_EXIT=$?
+  set -e
+  if [[ $CBT_EXIT -ne 0 ]]; then
+    echo "FAIL  context budget unit tests exited $CBT_EXIT:"
+    printf '%s\n' "$CBT_OUT" | sed 's/^/        /'
+    FAIL=1
+  else
+    echo "PASS  context budget unit tests"
+  fi
+else
+  echo "WARN  skipping context budget unit tests (missing $CONTEXT_BUDGET_TESTS)"
 fi
 
 if [[ "$FAIL" -ne 0 ]]; then

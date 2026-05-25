@@ -10,6 +10,7 @@ Broad always-loaded context often increases cost and steps without improving out
 cd ~/Projects/trainer.skill
 python3 tests/context_budget/measure_context.py SKILL.md
 python3 tests/context_budget/check_context_budget.py
+python3 tests/context_budget/test_check_context_budget.py
 bash scripts/verify_trainer_sync.sh
 ```
 
