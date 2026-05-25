@@ -17,6 +17,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - **`SECURITY.md`** — private GitHub advisory reporting, supported versions, explicit scope (documentation skill bundle, not a runtime product), no secrets in public issues.
 - **`docs/BRANCH_PROTECTION.md`** — policy table, solo-maintainer tradeoffs, `gh api` inspect and apply commands for `main`.
 - **`scripts/apply_branch_protection.sh`** — idempotent branch protection PUT; `DRY_RUN=1` by default; set `GH_REPO=weijia-89/trainer.skill` before apply.
+- **`scripts/verify_github_hardening.sh`** — layout checks plus `apply_branch_protection.sh` dry-run smoke (catches script regressions verify-only file tests miss).
 
 ### Changed
 
