@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 # verify_trainer_sync.sh
 #
-# Asserts that the four sync targets for the `trainer` skill are consistent:
+# Asserts trainer skill sync targets (canonical SKILL.md + references/, Claude/Cursor/Windsurf mirrors):
 #
 #   1. ~/Projects/trainer.skill/SKILL.md           (canonical)
 #   2. ~/.claude/skills/trainer/SKILL.md            (Claude mirror, byte-identical to canonical)
+#   2b. ~/.claude/skills/trainer/references/     (Claude mirror, byte-identical to canonical references/)
 #   3. ~/Projects/.cursor/rules/trainer.mdc         (Cursor trigger, references canonical path)
 #   4. ~/Projects/.windsurf/rules/trainer.md        (Windsurf trigger, references canonical path)
 #
 # Run from anywhere. Exits 0 on success, nonzero on any invariant violation.
-# Prints concrete failure detail. Never modifies any of the four files.
+# Prints concrete failure detail. Syncs canonical SKILL.md + references/ into Claude mirror, then asserts invariants.
 
 set -euo pipefail
 
@@ -24,6 +25,28 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     exit 1
   fi
   echo "PASS  canonical SKILL.md present"
+
+  # sdk-review F1: CI repo-only path must guard references/ + mandatory gate files (Invariant 1b is local-only)
+  CANONICAL_REFS="$REPO_ROOT/references"
+  REQUIRED_REF_GATES=(
+    trainer-pre-action-gates.md
+    trainer-dispatch-gates.md
+  )
+  if [[ ! -d "$CANONICAL_REFS" ]]; then
+    echo "FAIL  missing canonical references/: $CANONICAL_REFS"
+    FAIL=1
+  else
+    echo "PASS  canonical references/ present"
+    for gate in "${REQUIRED_REF_GATES[@]}"; do
+      if [[ ! -f "$CANONICAL_REFS/$gate" ]]; then
+        echo "FAIL  missing required reference gate file: $gate"
+        FAIL=1
+      fi
+    done
+    if [[ "$FAIL" -eq 0 ]]; then
+      echo "PASS  required reference gate files present"
+    fi
+  fi
 
   SELF_BASENAME="$(basename "${BASH_SOURCE[0]}")"
   mapfile -t TRACKED_FILES < <(
@@ -102,6 +125,23 @@ WINDSURF="$HOME/Projects/.windsurf/rules/trainer.md"
 
 FAIL=0
 
+REPO_ROOT="$HOME/Projects/trainer.skill"
+CANONICAL_REFS="$REPO_ROOT/references"
+CLAUDE_REFS="$HOME/.claude/skills/trainer/references"
+
+# sdk-review F1: guard canonical references/ before rsync; set -e aborts on missing source otherwise
+if [[ ! -d "$CANONICAL_REFS" ]]; then
+  echo "FAIL  missing canonical references/: $CANONICAL_REFS"
+  exit 1
+fi
+
+# Mirror sync: Claude skill tree must include references/ for mandatory file_read overlays (post #4 P2)
+mkdir -p "$(dirname "$CLAUDE")" "$CLAUDE_REFS"
+rsync -a --delete "$CANONICAL_REFS/" "$CLAUDE_REFS/"
+if ! diff -q "$CANONICAL" "$CLAUDE" >/dev/null 2>&1; then
+  cp "$CANONICAL" "$CLAUDE"
+fi
+
 # Existence checks
 for path in "$CANONICAL" "$CLAUDE" "$CURSOR" "$WINDSURF"; do
   if [[ ! -f "$path" ]]; then
@@ -123,6 +163,28 @@ if ! diff -q "$CANONICAL" "$CLAUDE" >/dev/null; then
   FAIL=1
 else
   echo "PASS  canonical ≡ Claude mirror (byte-identical)"
+fi
+
+# Invariant 1b: canonical references/ ≡ Claude mirror (byte-identical per file)
+# sdk-review F2: canonical refs guard runs once before rsync (lines 132–136); no duplicate check here
+if [[ ! -d "$CLAUDE_REFS" ]]; then
+  echo "FAIL  missing Claude references mirror: $CLAUDE_REFS"
+  FAIL=1
+else
+  REF_FAIL=0
+  while IFS= read -r -d '' ref_file; do
+    rel="${ref_file#"$CANONICAL_REFS"/}"
+    claude_file="$CLAUDE_REFS/$rel"
+    if [[ ! -f "$claude_file" ]] || ! diff -q "$ref_file" "$claude_file" >/dev/null; then
+      echo "FAIL  references mirror diverge: $rel"
+      REF_FAIL=1
+    fi
+  done < <(find "$CANONICAL_REFS" -type f -print0)
+  if [[ "$REF_FAIL" -ne 0 ]]; then
+    FAIL=1
+  else
+    echo "PASS  canonical references/ ≡ Claude mirror (byte-identical)"
+  fi
 fi
 
 # Invariant 2: Cursor trigger references the canonical absolute path
