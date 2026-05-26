@@ -41,8 +41,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ### Changed
 
-- **`SKILL.md`** — compressed from 324 to 141 lines; adds on-demand reference map; version 0.10.1 → 0.11.0.
-- **`scripts/verify_trainer_sync.sh`** — Invariant 5 comment updated for v0.11.0 compact router; **Invariant 11** added (CI + local `check_context_budget.py` hook).
+- **`SKILL.md`** — compressed from 324 to 141 lines; adds on-demand reference map; version 0.10.1 → 0.11.0; mandatory `file_read` overlays anchored to `~/Projects/trainer.skill/references/` ([PR #6](https://github.com/weijia-89/trainer.skill/pull/6), Invariant 1b).
+- **`scripts/verify_trainer_sync.sh`** — Invariant 5 comment updated for v0.11.0 compact router; **Invariant 11** added (CI + local `check_context_budget.py` hook); `references/` Claude mirror sync ([PR #6](https://github.com/weijia-89/trainer.skill/pull/6), Invariant 1b).
+- **`~/trainer.skill`** clone layout — existing clones must move or symlink to `~/Projects/trainer.skill` (`mv ~/trainer.skill ~/Projects/trainer.skill` or `ln -sf ~/Projects/trainer.skill ~/trainer.skill`); re-run **`scripts/verify_trainer_sync.sh`** so absolute overlay paths and Claude **`references/`** mirror resolve ([PR #6](https://github.com/weijia-89/trainer.skill/pull/6)).
 
 ### Verification
 
@@ -554,8 +555,3 @@ The v0.3.0 portfolio-bundling work made the skill *distributable*; v0.4.0 makes 
 - Lists the 8 specialist gym-skills (`form-check`, `program`, `warmup`, `safetybar`, `recovery`, `gymbuddy`, `diet`, `pr`) with one-line invocation criteria.
 - Names "user wishes are the final say" as the trainer's behavioral anchor: overrides are respected and noted, never argued. (Reversed in v0.2.0.)
 - No checklists, no rubrics, no scoring. Pure routing + teaching + adapting.
-
-## Unreleased
-
-- Post-#4 P2: anchor mandatory `file_read` overlays to `~/Projects/trainer.skill/references/`; sync `references/` to Claude mirror in `verify_trainer_sync.sh` (Invariant 1b).
-- Migration: existing `~/trainer.skill` clones must move or symlink to `~/Projects/trainer.skill` (`mv ~/trainer.skill ~/Projects/trainer.skill` or `ln -sf ~/Projects/trainer.skill ~/trainer.skill`); re-run `scripts/verify_trainer_sync.sh` so absolute overlay paths and Claude `references/` mirror resolve.
