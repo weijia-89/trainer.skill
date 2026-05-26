@@ -42,3 +42,7 @@ Workers do **not** push. The hook owns merge gate + GitHub surfacing. See `promp
 ## PR commentary shape (trainer)
 
 Before `APPROVE`, read `trainer-github-pr-commentary.md`: PR body test plan must include operator steps; PR comment must include Pedagogy. form-check findings go in the comment table; trainer adds teaching and links manual QA to the body.
+
+## Product-repo mechanical gate (non-SDK PRs)
+
+Copy from `trainer.skill/scripts/` into `<repo>/scripts/` and wire CI (see `trainer-github-pr-commentary.md` § Mechanical enforcement). **toebeans** is the reference install. CI fails until `trainer-codereview-{repo}-{branch}` comment exists with `head=` = PR HEAD.

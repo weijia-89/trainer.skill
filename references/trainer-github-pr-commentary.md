@@ -200,3 +200,17 @@ Update the **same** comment; do not leave a stale round-1 verdict at the top.
 - [ ] PR comment has **Pedagogy** section (≤3 bullets).
 - [ ] Every P1+ finding has Status column or explicit waive with reason.
 - [ ] Remediate round updates `head=` sha in comment meta.
+
+---
+
+## Mechanical enforcement (product repos)
+
+**toebeans** ships a CI job that **fails** open PRs until the canonical comment exists with `head=` = current PR HEAD and `### Pedagogy`:
+
+- Gate: `scripts/ci-trainer-pr-review-gate.sh`
+- Post/PATCH: `scripts/trainer_pr_review_post.sh`
+- Workflow job: `Trainer PR review comment gate` in `.github/workflows/ci.yml`
+
+**buds:** copy the same two scripts + CI job when enabling the gate there.
+
+Descriptive rules alone do not post comments; CI blocks merge until the comment is on GitHub.

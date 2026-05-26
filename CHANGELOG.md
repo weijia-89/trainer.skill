@@ -15,6 +15,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 ### Added
 
 - **`references/trainer-github-pr-commentary.md`** — mandatory PR body test-plan granularity (cold start, launch steps, repo paths) and PR comment **Pedagogy** section for all trainer-routed code reviews (buds, toebeans, SDK gate).
+- **`scripts/ci-trainer-pr-review-gate.sh`**, **`scripts/trainer_pr_review_post.sh`**, **`scripts/test_ci_trainer_pr_review_gate.sh`** — canonical mechanical PR review gate (copy into product repos; toebeans ships CI job).
 
 ### Changed
 
