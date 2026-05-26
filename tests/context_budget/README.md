@@ -25,7 +25,7 @@ bash scripts/verify_trainer_sync.sh
 Before adding prose to root `SKILL.md`, ask:
 
 1. Is it needed for first-pass routing or gating without opening a specialist?
-2. Can it live in `references/trainer-runtime-compactness.md` or a specialist `references/` file?
+2. Can it live in `~/Projects/trainer.skill/references/trainer-runtime-compactness.md` or a specialist `references/` file?
 3. Does the token cost beat loading the specialist on demand?
 
 If (2) applies, do not add to root.

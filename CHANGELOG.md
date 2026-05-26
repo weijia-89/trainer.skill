@@ -558,3 +558,4 @@ The v0.3.0 portfolio-bundling work made the skill *distributable*; v0.4.0 makes 
 ## Unreleased
 
 - Post-#4 P2: anchor mandatory `file_read` overlays to `~/Projects/trainer.skill/references/`; sync `references/` to Claude mirror in `verify_trainer_sync.sh` (Invariant 1b).
+- Migration: existing `~/trainer.skill` clones must move or symlink to `~/Projects/trainer.skill` (`mv ~/trainer.skill ~/Projects/trainer.skill` or `ln -sf ~/Projects/trainer.skill ~/trainer.skill`); re-run `scripts/verify_trainer_sync.sh` so absolute overlay paths and Claude `references/` mirror resolve.
