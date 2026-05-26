@@ -70,7 +70,6 @@ Full SKILL.md body: [`./SKILL.md`](./SKILL.md).
 
 ### As a Claude / Cursor / Windsurf skill
 
-<!-- sdk-review F1/F4: canonical layout ~/Projects/trainer.skill; absolute overlay paths in SKILL.md assume this clone target -->
 ```bash
 git clone https://github.com/weijia-89/trainer.skill ~/Projects/trainer.skill
 mkdir -p ~/.claude/skills/trainer
@@ -90,7 +89,7 @@ Read `SKILL.md` for the routing flow and coaching stance. Read each specialist's
 
 ```
 trainer.skill/
-├── SKILL.md                            # canonical trainer body (~144 lines / ~2247 est tokens as of v0.11.0 compact router)
+├── SKILL.md                            # canonical trainer body (~141 lines / ~2166 est tokens as of v0.11.0 compact router)
 ├── README.md                           # this file
 ├── CHANGELOG.md                        # version history per SemVer below
 ├── SECURITY.md                         # vulnerability reporting and supported versions
@@ -112,6 +111,8 @@ trainer.skill/
 │   │   ├── check_context_budget.py
 │   │   ├── measure_context.py
 │   │   └── README.md
+│   ├── trainer_sync/                   # Invariant 1b references mirror regression fixture
+│   │   └── test_invariant_1b_references_mirror.sh
 │   └── scenarios/                      # doc-only pressure scenarios (v0.4.0)
 │       ├── README.md
 │       ├── S01_ceremonial_routing.md

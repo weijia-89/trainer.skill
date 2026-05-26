@@ -11,6 +11,8 @@
 #
 # Run from anywhere. Exits 0 on success, nonzero on any invariant violation.
 # Prints concrete failure detail. Syncs canonical SKILL.md + references/ into Claude mirror, then asserts invariants.
+# Invariant 1b byte-identity (references/ mirror) is local-only; CI checks references/ presence + gate files.
+# Authoritative 1b regression gate: full local verify here, or tests/trainer_sync/test_invariant_1b_references_mirror.sh.
 
 set -euo pipefail
 
@@ -107,6 +109,24 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     echo "WARN  skipping context budget unit tests (missing $CONTEXT_BUDGET_TESTS)"
   fi
 
+  # sdk-review F2: temp-dir fixture guards Invariant 1b rsync + per-file diff loop (local mirror N/A in CI)
+  INVARIANT_1B_TEST="$REPO_ROOT/tests/trainer_sync/test_invariant_1b_references_mirror.sh"
+  if [[ -f "$INVARIANT_1B_TEST" ]]; then
+    set +e
+    I1B_OUT=$(bash "$INVARIANT_1B_TEST" 2>&1)
+    I1B_EXIT=$?
+    set -e
+    if [[ $I1B_EXIT -ne 0 ]]; then
+      echo "FAIL  invariant 1b references mirror fixture exited $I1B_EXIT:"
+      printf '%s\n' "$I1B_OUT" | sed 's/^/        /'
+      FAIL=1
+    else
+      echo "PASS  invariant 1b references mirror fixture"
+    fi
+  else
+    echo "WARN  skipping invariant 1b fixture (missing $INVARIANT_1B_TEST)"
+  fi
+
   if [[ "$FAIL" -ne 0 ]]; then
     echo ""
     echo "VERDICT: FAIL (CI repo-only checks)"
@@ -166,7 +186,7 @@ else
 fi
 
 # Invariant 1b: canonical references/ ≡ Claude mirror (byte-identical per file)
-# sdk-review F2: canonical refs guard runs once before rsync (lines 132–136); no duplicate check here
+# sdk-review F4: canonical refs guard runs once before rsync (lines 152–156 above); no duplicate check here
 if [[ ! -d "$CLAUDE_REFS" ]]; then
   echo "FAIL  missing Claude references mirror: $CLAUDE_REFS"
   FAIL=1
@@ -205,7 +225,7 @@ else
   echo "PASS  Windsurf trigger references canonical path"
 fi
 
-# Invariant 4: all four files agree on the version string
+# Invariant 4: SKILL.md + IDE triggers agree on version string (not references/ tree; see header 2b)
 CANONICAL_VERSION=$(grep -m1 '^version:' "$CANONICAL" | awk '{print $2}')
 CLAUDE_VERSION=$(grep -m1 '^version:' "$CLAUDE" | awk '{print $2}')
 CURSOR_VERSION=$(grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' "$CURSOR" | head -1 | tr -d 'v')
@@ -225,7 +245,7 @@ if [[ "$CANONICAL_VERSION" != "$WINDSURF_VERSION" ]]; then
 fi
 
 if [[ "$FAIL" -eq 0 ]]; then
-  echo "PASS  all four sync targets agree on version $CANONICAL_VERSION"
+  echo "PASS  SKILL.md + IDE triggers agree on version $CANONICAL_VERSION"
 fi
 
 # Invariant 5: SKILL.md (canonical) is ≤360 lines (bootstrap-skill cap; v0.11.0 compact router is ~136 lines; token/line budget enforced in Invariant 11)
@@ -245,7 +265,7 @@ for path in "$CANONICAL" "$CLAUDE" "$CURSOR" "$WINDSURF"; do
   fi
 done
 if [[ "$EMDASH_FAIL" -eq 0 ]]; then
-  echo "PASS  zero em-dashes in all four sync targets"
+  echo "PASS  zero em-dashes in all SKILL/trigger sync targets"
 fi
 
 # Invariant 7: Cursor trigger is alwaysApply:true; Windsurf trigger is always_on
@@ -381,6 +401,24 @@ if [[ -f "$CONTEXT_BUDGET_TESTS" ]]; then
   fi
 else
   echo "WARN  skipping context budget unit tests (missing $CONTEXT_BUDGET_TESTS)"
+fi
+
+# sdk-review F2: temp-dir fixture guards Invariant 1b rsync + per-file diff loop
+INVARIANT_1B_TEST="$REPO_ROOT/tests/trainer_sync/test_invariant_1b_references_mirror.sh"
+if [[ -f "$INVARIANT_1B_TEST" ]]; then
+  set +e
+  I1B_OUT=$(bash "$INVARIANT_1B_TEST" 2>&1)
+  I1B_EXIT=$?
+  set -e
+  if [[ $I1B_EXIT -ne 0 ]]; then
+    echo "FAIL  invariant 1b references mirror fixture exited $I1B_EXIT:"
+    printf '%s\n' "$I1B_OUT" | sed 's/^/        /'
+    FAIL=1
+  else
+    echo "PASS  invariant 1b references mirror fixture"
+  fi
+else
+  echo "WARN  skipping invariant 1b fixture (missing $INVARIANT_1B_TEST)"
 fi
 
 if [[ "$FAIL" -ne 0 ]]; then

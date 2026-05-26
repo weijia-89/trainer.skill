@@ -57,7 +57,6 @@ Full examples and violation coaching: `~/Projects/trainer.skill/references/train
 ## Mechanical pre-action gate
 
 Before **destructive or wide-scope** action, one sentence with: (1) canonical source of truth, (2) rollback path, (3) verification command. If not statable, STOP.
-<!-- sdk-review F2: file_read overlay before acting; one-sentence summary alone drifts under token pressure -->
 Before acting on any trigger, `file_read` `~/Projects/trainer.skill/references/trainer-pre-action-gates.md`; the summary above is not sufficient alone.
 
 **Triggers:** `rsync --delete`, `rm -rf`, `git reset --hard`, `git push --force`, `find ... -exec rm`, mass edit **>5 files**, bundle or sync between trees, any `git push` without local pre-push verify. Full list: `~/Projects/trainer.skill/references/trainer-pre-action-gates.md`.
@@ -69,7 +68,6 @@ Irreversible network ops (push, merge, branch delete, cross-project write): add 
 Multi-agent intent ("spawn agents", "parallel wave", "kick off batch") requires daily-log manifest at `<project>/localonly/daily/<YYYY-MM-DD>.md`, validated via `superset`, surfaced for sign-off **before** prompts.
 
 **Do not:** dispatch without manifest, skip manifest for "only two agents", assume prompts detect collisions.
-<!-- sdk-review F2: file_read overlay before dispatch; map links alone do not load gate procedure -->
 Before dispatch, `file_read` `~/Projects/trainer.skill/references/trainer-dispatch-gates.md`.
 
 Procedure, incidents, three-layer orch/meta/worker, status-check closeout: `~/Projects/trainer.skill/references/trainer-dispatch-gates.md` and `superset/SKILL.md`.
@@ -130,7 +128,6 @@ Not a code generator. Not a substitute for specialist checklists. Not `program` 
 
 ## On-demand reference map
 
-<!-- sdk-review F2: all references/ file_read paths absolute; engagement-repo cwd must not resolve overlays -->
 All `references/*` paths below use canonical prefix `~/Projects/trainer.skill/references/` (not engagement-repo cwd).
 
 | Topic | File |
