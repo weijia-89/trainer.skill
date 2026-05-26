@@ -119,7 +119,6 @@ Nine specialists ship under `./specialists/<name>/`. Sibling `~/Projects/<name>.
 ## Sync targets
 
 Canonical: `~/Projects/trainer.skill/SKILL.md` and `~/Projects/trainer.skill/references/`. Claude mirror (byte-identical, Invariant 1b): `~/.claude/skills/trainer/SKILL.md` and `~/.claude/skills/trainer/references/`. Cursor `trainer.mdc` and Windsurf `trainer.md` reference the canonical path. `scripts/verify_trainer_sync.sh` syncs SKILL.md + references/ into the Claude tree, then asserts invariants.
-<!-- sdk-review F2: post-#4 P2 — references/ mirror + sync-then-assert, not SKILL.md-only -->
 
 ## Red flags (expanded)
 
