@@ -275,7 +275,7 @@ sources, two primary, all pointing at: track was never live in buds
 context. The orch's correct conclusion: "Track A was undispatched and
 out of scope for buds-orch. Surfacing for drop, not for check-in."
 
-## Status check + changelog/README iron law (added 2026-05-23, SDK weekend orch)
+## Status check + changelog/README iron law (added 2026-05-23)
 
 Every orch **status check** updates contributor-facing docs in the same turn as the coordination SSOT. The operator should not have to ask twice for README/CHANGELOG hygiene at end of day.
 
@@ -289,7 +289,7 @@ Every orch **status check** updates contributor-facing docs in the same turn as 
 ### Iron law (orch)
 
 1. **Evidence first.** Per repo in the active set: `git fetch`, `git status -sb`, `git log origin/main -1`, `gh pr view` when a PR row exists. Same bar as [Status-claim evidence](#status-claim-evidence-iron-law-added-2026-05-19-post-buds-orch-handoff-incident); no narrative without primary sources.
-2. **Coordination SSOT.** Write the full status picture to the project's `localonly/daily/<YYYY-MM-DD>.md` or repo-specific queue doc. Include § **Changelog source** blocks with deai-quality prose: behavior, file scope, verification, ready-made changelog bullets, and explicit "do not claim" lines where scope is easy to overstate. (Legacy SDK weekend used `cursor-sdk-playground/weekend-queue.md` — archived one-off, not the default.)
+2. **Coordination SSOT.** Write the full status picture to the project's `localonly/daily/<YYYY-MM-DD>.md` or repo-specific queue doc. Include § **Changelog source** blocks with deai-quality prose: behavior, file scope, verification, ready-made changelog bullets, and explicit "do not claim" lines where scope is easy to overstate.
 3. **Product docs + roadmap per repo touched.** For every repo whose merge or review-ready commit changed since the last check (status check or job closeout), edit in the same session:
    - `CHANGELOG.md` — Keep a Changelog shape; user-facing bullets tied to merge evidence.
    - `README.md` — short "Recent work" / "Development status" stanza (≤8 lines) matching the changelog entry.
@@ -320,10 +320,6 @@ For each queue row or track that merged or reached review-ready, record:
 
 **Merge gate (product PRs):** trainer → form-check `code-review` → post canonical PR comment (`trainer_pr_review_post.sh` in product repo) → CI `ci-trainer-pr-review-gate.sh` must pass. **Do not** route daily buds/toebeans PRs through `cursor-sdk-playground`.
 
-### SDK weekend playground (archived one-off)
-
-`~/Projects/cursor-sdk-playground/` was batch orchestration only (`weekend-queue.md`, `_sdk_*` scripts). Use only when explicitly replaying that weekend; otherwise ignore. Playground `_sdk_codereview.txt` is deprecated — canonical prompt is `trainer.skill/prompts/trainer-codereview.txt`.
-
 Orchestrator brief may restate paths; **Product PR codereview** above is canonical for status-check + merge discipline.
 
 ### What this prevents
@@ -333,9 +329,9 @@ Orchestrator brief may restate paths; **Product PR codereview** above is canonic
 - Roadmap still listing merged work as planned (or marking shipped without merge evidence).
 - Long status dumps in chat that duplicate SSOT and burn context.
 
-**Anchor:** 2026-05-23 SDK weekend — operator asked for changelog-ready queue notes and iron-law adoption in superset, not trainer-only.
+**Anchor:** 2026-05-23 — operator asked for changelog-ready queue notes and iron-law adoption in superset, not trainer-only.
 
-**Palamedes UI (optional):** local research UI may live under a project repo or legacy playground path; not required for product PR codereview. Iron-law excerpt: `prompts/status-check-changelog-iron-law.md`.
+**Palamedes UI (optional):** local research UI may live under a project repo; not required for product PR codereview. Iron-law excerpt: `prompts/status-check-changelog-iron-law.md`.
 
 **Second agent on same repo:** Before spawning a parallel agent, run the [pre-spawn gate](#pre-spawn-gate-second-agent-same-repo) below and confirm the first PR is **mergeable** into `origin/main`.
 
@@ -370,7 +366,7 @@ Before dispatching agent 2 on a repo that already has agent 1 in flight:
    - If branch 1 has no commits yet, compare branch 2 against `origin/main` only.
 4. **Decision:** spawn agent 2 only if merge-tree is clean **or** the manifest schedules **serial merge-back** (agent 2 `depends_on` agent 1, phase strictly later, agent 2 starts only after agent 1 PR merged and agent 2 rebases on updated `origin/main`).
 
-Do not rely on "disjoint owned_paths" alone when the cap allows ≤2 agents per repo (SDK weekend queue policy).
+Do not rely on "disjoint owned_paths" alone when the cap allows ≤2 agents per repo.
 
 ### Post-agent gate (before PR or right after worker return)
 
