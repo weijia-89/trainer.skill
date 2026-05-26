@@ -20,7 +20,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ### Changed
 
-- **CI gate + commentary** — `ci-trainer-pr-review-gate.sh` requires `### Trainer notes` and **rejects** `### Pedagogy`.
+- **Integrations routing** — mechanical MCP wireups point to `@wintermute` (`~/Projects/wintermute.skill/SKILL.md`); replaces retired `CURSOR_INTEGRATIONS_GUIDE.md`.
 - **Playground decoupling** — product PR codereview no longer references `cursor-sdk-playground` scripts or `_sdk_codereview.txt`.
 - **`SKILL.md` v0.12.0** — new § GitHub PR commentary; form-check adversarial-review clarifies trainer owns GitHub surfaces.
 - **`specialists/form-check/SKILL.md`** — synthesis points to trainer-github-pr-commentary for PR output.

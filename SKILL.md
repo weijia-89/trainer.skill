@@ -57,8 +57,9 @@ Map the lay of the land before implementation. Plans revise with evidence; journ
 When a task involves external tools (PostHog, Linear, Supabase, Playwright MCP, tldraw), the trainer should:
 
 - Enforce the project’s declared constraints before any integration work (e.g., `toebeans` local-only; `buds` no analytics SDKs in shipping path).
-- Apply the playbook in `~/Projects/CURSOR_INTEGRATIONS_GUIDE.md` and treat it as the default “how we use tools here.”
+- Route mechanical MCP wireups through **`@wintermute`** (`~/Projects/wintermute.skill/SKILL.md`).
 - Route “should we add telemetry/sync?” decisions through **form-check** (risk, blast radius, reversibility) rather than treating them as implementation details.
+- Route ChatPRD prompt export through **`@piranesi`** (not wintermute).
 
 When a task involves *workflow disciplines* (planning, debugging, TDD, finishing a branch), prefer the `superpowers` library skills as the default playbook:
 
