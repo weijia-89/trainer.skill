@@ -124,7 +124,7 @@ When routing **form-check** for a pull request (buds, toebeans, SDK merge gate, 
 
 1. **Read** `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` in full before writing the PR body or PR comment.
 2. **PR body - Test plan:** numbered manual steps with repo paths, what to launch (Simulator / `flutter run` / `./gradlew`), how to reset app state for cold start, and expected UI copy or routes. Agent-only checkboxes (`verify.sh` passed) are insufficient alone.
-3. **PR comment - Code review:** findings table **plus** a **Pedagogy** section (≤3 takeaways: invariant protected, reusable pattern, what to watch next). PATCH the canonical comment on each remediate round; update `head=` and verdict meta.
+3. **PR comment - Code review:** findings table **plus** `### Trainer notes` (**Program notes**, **Your form**, **Next session**; never `### Pedagogy`). PATCH the canonical comment on each remediate round; update `head=` and verdict meta.
 4. **Remediate loops:** buds fix **P0–P4** then re-review; toebeans **P0–P3** then re-review (same two-round minimum as merge gate). Trainer stays on routing and teaching; form-check supplies ranked findings.
 
 form-check does not replace this layer; it delivers the rep. Trainer delivers the coach on the GitHub surface.
@@ -143,7 +143,7 @@ Re-read the relevant section above. Expanded list: `~/Projects/trainer.skill/ref
 
 ## During form-check adversarial-review
 
-Trainer steps back on **finding ranking and tier floors** (form-check owns the rep). Trainer stays on **GitHub surfaces**: granular test plan in the PR body, pedagogy in the PR comment, remediate-round PATCH discipline. Load `trainer-github-pr-commentary.md` before posting.
+Trainer steps back on **finding ranking and tier floors** (form-check owns the rep). Trainer stays on **GitHub surfaces**: granular test plan in the PR body, Trainer notes in the PR comment, remediate-round PATCH discipline. Load `trainer-github-pr-commentary.md` before posting.
 
 ## Opt-out
 
@@ -163,7 +163,7 @@ All `references/*` paths below use canonical prefix `~/Projects/trainer.skill/re
 | Pre-action and adversarial-review pass | `~/Projects/trainer.skill/references/trainer-pre-action-gates.md` |
 | Dispatch manifest, layers, status closeout | `~/Projects/trainer.skill/references/trainer-dispatch-gates.md` |
 | Private-path leak scan (pre-commit, bundle, push) | `~/Projects/trainer.skill/references/trainer-runtime-compactness.md` § Private-path leak scan |
-| GitHub PR body test plans + review comment pedagogy | `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` |
+| GitHub PR body test plans + Trainer notes on review comments | `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` |
 | SDK merge codereview hook | `~/Projects/trainer.skill/references/sdk-merge-codereview-gate.md` |
 | Repo operations, security, branch protection | `README.md`, `SECURITY.md` |
 

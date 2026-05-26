@@ -16,7 +16,7 @@ Canonical scripts live in `~/Projects/cursor-sdk-playground/scripts/`.
 | `<repo>/localonly/sdk-reviews/{SDK_QUEUE_ID}-{branch-slug}.md` | Canonical review (gitignored) |
 | `cursor-sdk-playground/prompts/reviews/*.md` | Durable mirror for orch / history |
 | GitHub PR body | Short verdict + summary (`--variant short`) |
-| GitHub PR comment | Full findings + **Pedagogy**; marker `<!-- sdk-codereview-{queue}-{branch} -->` + meta `head=` / `verdict=` / `round=` |
+| GitHub PR comment | Full findings + **Trainer notes**; marker `<!-- sdk-codereview-{queue}-{branch} -->` + meta `head=` / `verdict=` / `round=` |
 | GitHub PR body (Test plan) | Granular manual QA per `trainer-github-pr-commentary.md` (not agent shorthand) |
 
 ## PR comment updates (remediate rounds)
@@ -41,7 +41,7 @@ Workers do **not** push. The hook owns merge gate + GitHub surfacing. See `promp
 
 ## PR commentary shape (trainer)
 
-Before `APPROVE`, read `trainer-github-pr-commentary.md`: PR body test plan must include operator steps; PR comment must include Pedagogy. form-check findings go in the comment table; trainer adds teaching and links manual QA to the body.
+Before `APPROVE`, read `trainer-github-pr-commentary.md`: PR body test plan must include operator steps; PR comment must include `### Trainer notes` (not Pedagogy). form-check findings go in the comment table; trainer adds teaching and links manual QA to the body.
 
 ## Product-repo mechanical gate (non-SDK PRs)
 

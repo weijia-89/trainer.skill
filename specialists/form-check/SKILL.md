@@ -219,7 +219,7 @@ Run **3 phases × 4 lenses**, then synthesize.
 When findings ship on a pull request, **form-check supplies the ranked findings**; **trainer** formats GitHub per `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md`:
 
 - PR **body:** granular manual test plan (numbered steps, repo paths, launch/reset instructions, expected UI).
-- PR **comment:** findings table + **Pedagogy** (≤3 takeaways) + remediate-round meta (`head=`, verdict).
+- PR **comment:** findings table + `### Trainer notes` (Program notes · Your form · Next session) + remediate-round meta (`head=`, verdict).
 - Re-review after fixes; PATCH the same canonical comment (do not leave stale round-1 verdict).
 
 ## Section 8. Posture rules
