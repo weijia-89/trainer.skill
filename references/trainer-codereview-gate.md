@@ -2,6 +2,10 @@
 
 **Default path for buds, toebeans, and normal Cursor PR work.** Does not require `cursor-sdk-playground`.
 
+## Iron law
+
+If a change is going to **merge into `buds` or `toebeans`**, it must have a **fresh trainer code review** posted on the PR **HEAD** in the canonical format (see pipeline below). No exceptions.
+
 ## Pipeline (product PR)
 
 1. Implement on feature branch; run repo verify.
