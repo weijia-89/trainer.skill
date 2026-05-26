@@ -34,7 +34,9 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     trainer-pre-action-gates.md
     trainer-dispatch-gates.md
     trainer-runtime-compactness.md  # sdk-review F1: SKILL.md lazy-load target; CI must fail if deleted
-    trainer-github-pr-commentary.md  # PR body test plans + review comment pedagogy
+    trainer-github-pr-commentary.md  # PR body test plans + Trainer notes on comments
+    trainer-codereview.md
+    trainer-codereview-gate.md
   )
   if [[ ! -d "$CANONICAL_REFS" ]]; then
     echo "FAIL  missing canonical references/: $CANONICAL_REFS"

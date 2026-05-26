@@ -164,7 +164,8 @@ All `references/*` paths below use canonical prefix `~/Projects/trainer.skill/re
 | Dispatch manifest, layers, status closeout | `~/Projects/trainer.skill/references/trainer-dispatch-gates.md` |
 | Private-path leak scan (pre-commit, bundle, push) | `~/Projects/trainer.skill/references/trainer-runtime-compactness.md` § Private-path leak scan |
 | GitHub PR body test plans + Trainer notes on review comments | `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` |
-| SDK merge codereview hook | `~/Projects/trainer.skill/references/sdk-merge-codereview-gate.md` |
+| PR codereview gate (product repos) | `~/Projects/trainer.skill/references/trainer-codereview-gate.md` |
+| Code review routing + verdicts | `~/Projects/trainer.skill/references/trainer-codereview.md` |
 | Repo operations, security, branch protection | `README.md`, `SECURITY.md` |
 
 Verify sync: `scripts/verify_trainer_sync.sh`. Context budget (warn): `tests/context_budget/check_context_budget.py`.

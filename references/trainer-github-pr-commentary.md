@@ -9,8 +9,8 @@ Load this file whenever the trainer routes **form-check code-review** (or SDK me
 ## When this applies
 
 - Any PR review for repos under trainer always-on policy (e.g. **buds**, **toebeans**).
-- SDK merge gate: `_sdk_surface_codereview_to_pr.sh` posts the canonical comment; still follow this doc.
-- Manual reviews: same structure even without the SDK hook.
+- **Product PRs (default):** post via `<repo>/scripts/trainer_pr_review_post.sh`; CI gate `ci-trainer-pr-review-gate.sh`. Spec: `trainer-codereview-gate.md`.
+- Manual reviews: same structure; do not route through `cursor-sdk-playground`.
 
 **Forbidden:** findings-only tables with no teaching block; test plans that only say "cold start" without launch steps, repo paths, and expected UI signals; heading `### Pedagogy` or `### Cool-down` (use `### Trainer notes` only).
 
@@ -187,11 +187,11 @@ Update the **same** comment; do not leave a stale round-1 verdict at the top.
 
 ---
 
-## SDK hook integration
+## Codereview integration
 
-- `_sdk_codereview.txt` must require PR body test plan granularity before `APPROVE`.
-- `_sdk_surface_codereview_to_pr.sh` embeds short verdict in body; **full** comment uses this doc’s comment template.
-- Marker: prefer `<!-- trainer-codereview-... -->` alongside legacy `<!-- sdk-codereview-... -->` when both apply.
+- Agent prompt: `~/Projects/trainer.skill/prompts/trainer-codereview.txt`
+- Review spec: `~/Projects/trainer.skill/references/trainer-codereview.md`
+- Marker: `<!-- trainer-codereview-{repo}-{branch} -->` (legacy `<!-- sdk-codereview-... -->` accepted by CI gate only for old PRs)
 
 ---
 
