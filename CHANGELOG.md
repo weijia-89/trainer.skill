@@ -43,8 +43,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 - **`SKILL.md`** — compressed from 324 to 141 lines; adds on-demand reference map; version 0.10.1 → 0.11.0.
 - **`scripts/verify_trainer_sync.sh`** — Invariant 5 comment updated for v0.11.0 compact router; **Invariant 11** added (CI + local `check_context_budget.py` hook).
-- Post-#4 P2 (shipped #5): anchor mandatory `file_read` overlays to `~/Projects/trainer.skill/references/`; sync `references/` to Claude mirror in `verify_trainer_sync.sh` (Invariant 1b).
-- Migration note (shipped #5): existing `~/trainer.skill` clones must move or symlink to `~/Projects/trainer.skill` (`mv ~/trainer.skill ~/Projects/trainer.skill` or `ln -sf ~/Projects/trainer.skill ~/trainer.skill`); re-run `scripts/verify_trainer_sync.sh` so absolute overlay paths and Claude `references/` mirror resolve.
+- **`SKILL.md`**, **`references/`**, **`scripts/verify_trainer_sync.sh`** — PR #6 (post reference-mirror remediate): anchor mandatory `file_read` overlays to `~/Projects/trainer.skill/references/`; sync `references/` to Claude mirror (Invariant 1b).
+- Migration (PR #6): existing `~/trainer.skill` clones must move or symlink to `~/Projects/trainer.skill` (`mv ~/trainer.skill ~/Projects/trainer.skill` or `ln -sf ~/Projects/trainer.skill ~/trainer.skill`); re-run `scripts/verify_trainer_sync.sh` so absolute overlay paths and Claude `references/` mirror resolve.
 
 ### Verification
 
