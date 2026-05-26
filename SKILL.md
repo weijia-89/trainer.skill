@@ -3,7 +3,7 @@ name: trainer
 description: |
   Loaded first on every coding / prompt-engineering / agent-skill session, always on. The trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer coaches: it pushes back when user decisions have deleterious downstream consequences or veer from best practices without articulated reason. Routes to form-check / recovery / gymbuddy / safetybar / diet / pr / program / warmup / superset at the right moment. Triggers: code review, adversarial review, plan a new app, harden, refactor, recover from incident, pair-coding, training program, personal record, context priming, parallel agent dispatch, orchestrator handoff, gym-skill, gym-skills.
 type: project-skill
-version: 0.11.0
+version: 0.12.0
 authors: Wei Jia (2026-05-18)
 license: LicenseRef-IronLaw-NC-1.0
 required_tools: [file_read]
@@ -51,6 +51,22 @@ Map the lay of the land before implementation. Plans revise with evidence; journ
 2. Refactor beyond one function: contract graph (callers, tests, breakage).
 3. New dependency: failure modes plus rollback.
 4. Route-correction on "quick sketch in code", "refactor later", "small change no plan", multi-component day-one without contracts.
+
+## Integrations stance (MCP / plugins)
+
+When a task involves external tools (PostHog, Linear, Supabase, Playwright MCP, tldraw), the trainer should:
+
+- Enforce the project’s declared constraints before any integration work (e.g., `toebeans` local-only; `buds` no analytics SDKs in shipping path).
+- Apply the playbook in `~/Projects/CURSOR_INTEGRATIONS_GUIDE.md` and treat it as the default “how we use tools here.”
+- Route “should we add telemetry/sync?” decisions through **form-check** (risk, blast radius, reversibility) rather than treating them as implementation details.
+
+When a task involves *workflow disciplines* (planning, debugging, TDD, finishing a branch), prefer the `superpowers` library skills as the default playbook:
+
+- Debugging unexpected behavior: `systematic-debugging`
+- Implementing a feature/bugfix: `test-driven-development`
+- Responding to review feedback: `receiving-code-review`
+- Before claiming “done”: `verification-before-completion`
+- Parallel work with isolation: `using-git-worktrees` (or `superset` when dispatching 2+ agents)
 
 Full examples and violation coaching: `~/Projects/trainer.skill/references/trainer-runtime-compactness.md`. Mechanical pre-action detail: `~/Projects/trainer.skill/references/trainer-pre-action-gates.md`.
 
@@ -102,6 +118,17 @@ When composing specialists, explain load order and interaction in one or two sen
 
 Multi-option decisions with tradeoffs: use decision-presentation template in `~/Projects/trainer.skill/references/trainer-runtime-compactness.md`. Surface at decision time, not end of session.
 
+## GitHub PR commentary (all code reviews)
+
+When routing **form-check** for a pull request (buds, toebeans, SDK merge gate, or any review that posts on GitHub):
+
+1. **Read** `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` in full before writing the PR body or PR comment.
+2. **PR body — Test plan:** numbered manual steps with repo paths, what to launch (Simulator / `flutter run` / `./gradlew`), how to reset app state for cold start, and expected UI copy or routes. Agent-only checkboxes (`verify.sh` passed) are insufficient alone.
+3. **PR comment — Code review:** findings table **plus** a **Pedagogy** section (≤3 takeaways: invariant protected, reusable pattern, what to watch next). PATCH the canonical comment on each remediate round; update `head=` and verdict meta.
+4. **Remediate loops:** buds fix **P0–P4** then re-review; toebeans **P0–P3** then re-review (same two-round minimum as merge gate). Trainer stays on routing and teaching; form-check supplies ranked findings.
+
+form-check does not replace this layer; it delivers the rep. Trainer delivers the coach on the GitHub surface.
+
 ## Red flags (stop and re-route)
 
 - "Naming the specialist counts as invoking it."
@@ -116,7 +143,7 @@ Re-read the relevant section above. Expanded list: `~/Projects/trainer.skill/ref
 
 ## During form-check adversarial-review
 
-Trainer steps back on **review content**; stays on routing (next specialist, stakes, when to stop).
+Trainer steps back on **finding ranking and tier floors** (form-check owns the rep). Trainer stays on **GitHub surfaces**: granular test plan in the PR body, pedagogy in the PR comment, remediate-round PATCH discipline. Load `trainer-github-pr-commentary.md` before posting.
 
 ## Opt-out
 
@@ -136,6 +163,8 @@ All `references/*` paths below use canonical prefix `~/Projects/trainer.skill/re
 | Pre-action and adversarial-review pass | `~/Projects/trainer.skill/references/trainer-pre-action-gates.md` |
 | Dispatch manifest, layers, status closeout | `~/Projects/trainer.skill/references/trainer-dispatch-gates.md` |
 | Private-path leak scan (pre-commit, bundle, push) | `~/Projects/trainer.skill/references/trainer-runtime-compactness.md` § Private-path leak scan |
+| GitHub PR body test plans + review comment pedagogy | `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` |
+| SDK merge codereview hook | `~/Projects/trainer.skill/references/sdk-merge-codereview-gate.md` |
 | Repo operations, security, branch protection | `README.md`, `SECURITY.md` |
 
 Verify sync: `scripts/verify_trainer_sync.sh`. Context budget (warn): `tests/context_budget/check_context_budget.py`.

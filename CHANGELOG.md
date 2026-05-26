@@ -14,6 +14,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ### Added
 
+- **`references/trainer-github-pr-commentary.md`** — mandatory PR body test-plan granularity (cold start, launch steps, repo paths) and PR comment **Pedagogy** section for all trainer-routed code reviews (buds, toebeans, SDK gate).
+
+### Changed
+
+- **`SKILL.md` v0.12.0** — new § GitHub PR commentary; form-check adversarial-review clarifies trainer owns GitHub surfaces.
+- **`specialists/form-check/SKILL.md`** — synthesis points to trainer-github-pr-commentary for PR output.
+- **`references/sdk-merge-codereview-gate.md`**, **`cursor-sdk-playground/prompts/_sdk_codereview.txt`** — require granular test plans + Pedagogy before APPROVE.
+- **`.cursor/rules/trainer.mdc`** — v0.12.0 pointer + PR commentary load rule.
+
+### Added (prior)
+
 - **`SECURITY.md`** — private GitHub advisory reporting, supported versions, explicit scope (documentation skill bundle, not a runtime product), no secrets in public issues.
 - **`docs/BRANCH_PROTECTION.md`** — policy table, solo-maintainer tradeoffs, `gh api` inspect and apply commands for `main`.
 - **`scripts/apply_branch_protection.sh`** — idempotent branch protection PUT; `DRY_RUN=1` by default; set `GH_REPO=weijia-89/trainer.skill` before apply.
