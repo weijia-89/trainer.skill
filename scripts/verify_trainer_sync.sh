@@ -33,6 +33,7 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
   REQUIRED_REF_GATES=(
     trainer-pre-action-gates.md
     trainer-dispatch-gates.md
+    trainer-runtime-compactness.md  # sdk-review F1: SKILL.md lazy-load target; CI must fail if deleted
   )
   if [[ ! -d "$CANONICAL_REFS" ]]; then
     echo "FAIL  missing canonical references/: $CANONICAL_REFS"
