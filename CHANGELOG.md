@@ -14,13 +14,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ### Added
 
-- **`references/trainer-github-pr-commentary.md`** — mandatory PR body test-plan granularity (cold start, launch steps, repo paths) and PR comment **Pedagogy** section for all trainer-routed code reviews (buds, toebeans, SDK gate).
+- **`references/trainer-github-pr-commentary.md`** — mandatory PR body test-plan granularity and PR comment **`### Trainer notes`** (Program notes · Your form · Next session); forbids Pedagogy heading.
+- **`references/trainer-codereview.md`**, **`references/trainer-codereview-gate.md`**, **`prompts/trainer-codereview.txt`** — canonical PR review (migrated off `cursor-sdk-playground`).
+- **`scripts/ci-trainer-pr-review-gate.sh`**, **`scripts/trainer_pr_review_post.sh`**, **`scripts/test_ci_trainer_pr_review_gate.sh`** — canonical mechanical PR review gate (copy into product repos; toebeans ships CI job).
 
 ### Changed
 
+- **CI gate + commentary** — `ci-trainer-pr-review-gate.sh` requires `### Trainer notes` and **rejects** `### Pedagogy`.
+- **Playground decoupling** — product PR codereview no longer references `cursor-sdk-playground` scripts or `_sdk_codereview.txt`.
 - **`SKILL.md` v0.12.0** — new § GitHub PR commentary; form-check adversarial-review clarifies trainer owns GitHub surfaces.
 - **`specialists/form-check/SKILL.md`** — synthesis points to trainer-github-pr-commentary for PR output.
-- **`references/sdk-merge-codereview-gate.md`**, **`cursor-sdk-playground/prompts/_sdk_codereview.txt`** — require granular test plans + Pedagogy before APPROVE.
+- **`references/sdk-merge-codereview-gate.md`** — retired stub; use `trainer-codereview-gate.md` instead.
 - **`.cursor/rules/trainer.mdc`** — v0.12.0 pointer + PR commentary load rule.
 
 ### Added (prior)

@@ -1,0 +1,32 @@
+# Trainer code review — product PR (canonical)
+
+Invoke for PR review before merge. Canonical spec: ~/Projects/trainer.skill/references/trainer-codereview.md
+GitHub shape: ~/Projects/trainer.skill/references/trainer-github-pr-commentary.md
+
+## Trainer routing (mandatory)
+
+1. trainer — coach; no scope creep beyond the diff.
+2. form-check — code-review / adversarial-review on the PR diff; stakes from repo AGENTS.md.
+3. review-rigor — rubric + scorecard on P1/P2.
+
+## Task
+
+1. Read the full PR diff and every load-bearing changed file (not grep-only for COR/TST).
+2. Classify stakes; run verify command from repo root.
+3. Produce findings ranked P0–P4 (repo policy for merge bar).
+4. Post GitHub:
+   - PR comment via: bash scripts/trainer_pr_review_post.sh <PR_NUM> <VERDICT> <ROUND> <review.md>
+   - review.md must include ### Findings and ### Trainer notes (Program notes, Your form, Next session).
+   - Never ### Pedagogy.
+5. Ensure PR body ## Test plan has numbered manual steps (repo path, launch, cold start, expected UI).
+
+## Verdict
+
+Print exactly one line when done:
+TRAINER_CODEREVIEW_VERDICT=APPROVE|REQUEST_CHANGES|BLOCK
+
+## Forbidden
+
+- Approving without reading changed Dart/Kotlin/Python bodies on behavior PRs.
+- PR comments without Trainer notes on buds/toebeans.
+- Routing through cursor-sdk-playground for normal product PRs.

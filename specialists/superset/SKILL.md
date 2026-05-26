@@ -289,7 +289,7 @@ Every orch **status check** updates contributor-facing docs in the same turn as 
 ### Iron law (orch)
 
 1. **Evidence first.** Per repo in the active set: `git fetch`, `git status -sb`, `git log origin/main -1`, `gh pr view` when a PR row exists. Same bar as [Status-claim evidence](#status-claim-evidence-iron-law-added-2026-05-19-post-buds-orch-handoff-incident); no narrative without primary sources.
-2. **Coordination SSOT.** Write the full status picture to the project's queue or daily log (SDK weekend: `cursor-sdk-playground/weekend-queue.md` only for queue state; push playground). Include § **Changelog source** blocks with deai-quality prose: behavior, file scope, verification, ready-made changelog bullets, and explicit "do not claim" lines where scope is easy to overstate.
+2. **Coordination SSOT.** Write the full status picture to the project's `localonly/daily/<YYYY-MM-DD>.md` or repo-specific queue doc. Include § **Changelog source** blocks with deai-quality prose: behavior, file scope, verification, ready-made changelog bullets, and explicit "do not claim" lines where scope is easy to overstate. (Legacy SDK weekend used `cursor-sdk-playground/weekend-queue.md` — archived one-off, not the default.)
 3. **Product docs + roadmap per repo touched.** For every repo whose merge or review-ready commit changed since the last check (status check or job closeout), edit in the same session:
    - `CHANGELOG.md` — Keep a Changelog shape; user-facing bullets tied to merge evidence.
    - `README.md` — short "Recent work" / "Development status" stanza (≤8 lines) matching the changelog entry.
@@ -308,18 +308,23 @@ For each queue row or track that merged or reached review-ready, record:
 | Scope | Primary paths/modules; what is explicitly out of scope |
 | Verification | Commands that passed before merge or before review |
 
-### SDK weekend binding
+### Product PR codereview (default — not SDK playground)
 
 | Artifact | Path |
 | -------- | ---- |
-| Queue SSOT | `~/Projects/cursor-sdk-playground/weekend-queue.md` |
+| Review spec | `~/Projects/trainer.skill/references/trainer-codereview.md` |
+| GitHub shape | `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` |
+| Gate + scripts | `~/Projects/trainer.skill/references/trainer-codereview-gate.md` |
+| Agent prompt | `~/Projects/trainer.skill/prompts/trainer-codereview.txt` |
 | Checklist template | `templates/status-check-changelog.md` (this repo) |
-| Ops script | `cursor-sdk-playground/scripts/queue_status.sh` |
-| Merge gate (SDK PRs) | `cursor-sdk-playground/scripts/_sdk_verify_and_pr.sh` → `_sdk_trainer_codereview.sh` → `_sdk_surface_codereview_to_pr.sh` |
 
-**SDK merge + codereview (trainer → form-check + review-rigor):** After verify, the hook runs codereview, **fails if** `localonly/sdk-reviews/{SDK_QUEUE_ID}-{branch-slug}.md` is missing, mirrors to `cursor-sdk-playground/prompts/reviews/`, embeds verdict/summary in the PR body, and posts **full findings** as a PR comment (idempotent HTML marker). `BLOCK` stops before push; `REQUEST_CHANGES` stops only when `SDK_CODEREVIEW_STRICT=1`. Job scripts must set `SDK_QUEUE_ID` to the queue row id (not the worktree folder name). Detail: `references/sdk-merge-codereview-gate.md`.
+**Merge gate (product PRs):** trainer → form-check `code-review` → post canonical PR comment (`trainer_pr_review_post.sh` in product repo) → CI `ci-trainer-pr-review-gate.sh` must pass. **Do not** route daily buds/toebeans PRs through `cursor-sdk-playground`.
 
-Orchestrator brief may restate paths; **this section is canonical** for status-check + changelog discipline.
+### SDK weekend playground (archived one-off)
+
+`~/Projects/cursor-sdk-playground/` was batch orchestration only (`weekend-queue.md`, `_sdk_*` scripts). Use only when explicitly replaying that weekend; otherwise ignore. Playground `_sdk_codereview.txt` is deprecated — canonical prompt is `trainer.skill/prompts/trainer-codereview.txt`.
+
+Orchestrator brief may restate paths; **Product PR codereview** above is canonical for status-check + merge discipline.
 
 ### What this prevents
 
@@ -330,9 +335,9 @@ Orchestrator brief may restate paths; **this section is canonical** for status-c
 
 **Anchor:** 2026-05-23 SDK weekend — operator asked for changelog-ready queue notes and iron-law adoption in superset, not trainer-only.
 
-**SDK affordances (same iron law):** `cursor-sdk-playground/palamedes-ui/` + `scripts/palamedes_serve.sh` for local palamedes research UI; queue SSOT `weekend-queue.md`. Iron-law excerpt: `prompts/status-check-changelog-iron-law.md`.
+**Palamedes UI (optional):** local research UI may live under a project repo or legacy playground path; not required for product PR codereview. Iron-law excerpt: `prompts/status-check-changelog-iron-law.md`.
 
-**Weekend queue (slot 2 on same repo):** Before spawning a second SDK worker on a repo that already has an in-flight agent, run the [pre-spawn gate](#pre-spawn-gate-second-agent-same-repo) below and confirm the first agent's PR is **mergeable** into `origin/main` (or schedule serial merge-back). See `cursor-sdk-playground/weekend-queue.md` § Spawn capacity — cross-ref this section.
+**Second agent on same repo:** Before spawning a parallel agent, run the [pre-spawn gate](#pre-spawn-gate-second-agent-same-repo) below and confirm the first PR is **mergeable** into `origin/main`.
 
 ## Same-repo parallel agents: main integration gate (added v0.8.4)
 

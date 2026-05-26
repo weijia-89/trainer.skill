@@ -2,17 +2,17 @@
 
 Load this file whenever the trainer routes **form-check code-review** (or SDK merge codereview) and the output will appear on GitHub: PR **body**, PR **comment(s)**, or both.
 
-**Trainer owns the shape.** form-check owns findings and tier floors; review-rigor owns scorecards. The trainer adds **pedagogy** and **operator-grade test plans** on top.
+**Trainer owns the shape.** form-check owns findings and tier floors; review-rigor owns scorecards. The trainer adds **Trainer notes** (gym voice) and **operator-grade test plans** on top.
 
 ---
 
 ## When this applies
 
 - Any PR review for repos under trainer always-on policy (e.g. **buds**, **toebeans**).
-- SDK merge gate: `_sdk_surface_codereview_to_pr.sh` posts the canonical comment; still follow this doc.
-- Manual reviews: same structure even without the SDK hook.
+- **Product PRs (default):** post via `<repo>/scripts/trainer_pr_review_post.sh`; CI gate `ci-trainer-pr-review-gate.sh`. Spec: `trainer-codereview-gate.md`.
+- Manual reviews: same structure; do not route through `cursor-sdk-playground`.
 
-**Forbidden:** findings-only tables with no teaching block; test plans that only say "cold start" without launch steps, repo paths, and expected UI signals.
+**Forbidden:** findings-only tables with no teaching block; test plans that only say "cold start" without launch steps, repo paths, and expected UI signals; heading `### Pedagogy` or `### Cool-down` (use `### Trainer notes` only).
 
 ---
 
@@ -21,7 +21,7 @@ Load this file whenever the trainer routes **form-check code-review** (or SDK me
 | Surface | Audience | Content |
 | -------- | -------- | ------- |
 | **PR body — Test plan** | Merger / QA doing hands-on checks | Granular, checkbox steps the human runs locally. Not agent shorthand. |
-| **PR comment — Code review** | Reviewer + future you | Findings table + **Pedagogy** + link to test plan in body. PATCH same comment on remediate rounds (`sdk-codereview` marker). |
+| **PR comment — Code review** | Reviewer + future you | Findings table + **Trainer notes** + link to test plan in body. PATCH same comment on remediate rounds (`sdk-codereview` marker). |
 
 ---
 
@@ -141,13 +141,13 @@ Post **one canonical comment** per PR (PATCH on remediate). Structure:
 |----|-----|---------|--------|
 | … | P0–P4 | … | fixed in `{sha}` / waived / open |
 
-### Pedagogy (trainer)
+### Trainer notes
 
-Cap at **three** takeaways. Tie each to a finding or design choice the reader can reuse.
+Exactly three bullets (gym voice OK). Tie each to a finding or design choice.
 
-1. **What we were protecting:** …
-2. **Pattern to remember:** … (e.g. two persisted flags → define redirect refresh + test harness overrides for each)
-3. **What to watch next:** …
+1. **Program notes:** what we were protecting / invariant (consequence if waived).
+2. **Your form:** reusable pattern from this PR (what to repeat next time).
+3. **Next session:** what to watch on the next change or merge (one concrete hook).
 
 ### Why these severities
 
@@ -167,11 +167,12 @@ Full steps are in the PR body **Test plan**. Minimum merge bar: scenarios {A, B}
 *Trainer routes form-check for findings; this comment adds teaching + links hands-on QA.*
 ```
 
-### Pedagogy rules
+### Trainer notes rules
 
 - **Name the invariant**, not only the fix (“GoRouter does not re-run redirect unless `refreshListenable` hears notifier updates”).
 - **Connect to specialist:** “form-check COR: contract between prefs keys and redirect branches.”
-- **No filler praise.** Teaching is consequence + pattern + next watch, not “great job.”
+- **No filler praise.** Notes are consequence + pattern + next watch, not “great job.”
+- **Never** use `### Pedagogy` or `### Cool-down` as the section heading.
 - After round 2 **APPROVE**, add: “Merge when PR body manual scenarios are checked.”
 
 ---
@@ -179,24 +180,38 @@ Full steps are in the PR body **Test plan**. Minimum merge bar: scenarios {A, B}
 ## Remediate loop (buds P0–P4, toebeans P0–P3)
 
 1. **Round 1:** Post comment with findings; fix all in-scope severities; push; run verify.
-2. **Round 2:** Re-read full diff + call graph; PATCH comment (new `head=`, update table, add pedagogy for *new* lessons); fix any new P0–P(n); push; verify.
+2. **Round 2:** Re-read full diff + call graph; PATCH comment (new `head=`, update table, refresh Trainer notes for *new* lessons); fix any new P0–P(n); push; verify.
 3. **Round 3 (optional):** Repeat only if round 2 introduced regressions or verdict not APPROVE.
 
 Update the **same** comment; do not leave a stale round-1 verdict at the top.
 
 ---
 
-## SDK hook integration
+## Codereview integration
 
-- `_sdk_codereview.txt` must require PR body test plan granularity before `APPROVE`.
-- `_sdk_surface_codereview_to_pr.sh` embeds short verdict in body; **full** comment uses this doc’s comment template.
-- Marker: prefer `<!-- trainer-codereview-... -->` alongside legacy `<!-- sdk-codereview-... -->` when both apply.
+- Agent prompt: `~/Projects/trainer.skill/prompts/trainer-codereview.txt`
+- Review spec: `~/Projects/trainer.skill/references/trainer-codereview.md`
+- Marker: `<!-- trainer-codereview-{repo}-{branch} -->` (legacy `<!-- sdk-codereview-... -->` accepted by CI gate only for old PRs)
 
 ---
 
 ## Self-check before posting
 
 - [ ] PR body test plan has numbered steps, repo paths, app launch/clear instructions, expected copy or routes.
-- [ ] PR comment has **Pedagogy** section (≤3 bullets).
+- [ ] PR comment has `### Trainer notes` with **Program notes**, **Your form**, **Next session** (not Pedagogy).
 - [ ] Every P1+ finding has Status column or explicit waive with reason.
 - [ ] Remediate round updates `head=` sha in comment meta.
+
+---
+
+## Mechanical enforcement (product repos)
+
+**toebeans** ships a CI job that **fails** open PRs until the canonical comment exists with `head=` = current PR HEAD and `### Trainer notes` (forbids `### Pedagogy`):
+
+- Gate: `scripts/ci-trainer-pr-review-gate.sh`
+- Post/PATCH: `scripts/trainer_pr_review_post.sh`
+- Workflow job: `Trainer PR review comment gate` in `.github/workflows/ci.yml`
+
+**buds:** copy the same two scripts + CI job when enabling the gate there.
+
+Descriptive rules alone do not post comments; CI blocks merge until the comment is on GitHub.
