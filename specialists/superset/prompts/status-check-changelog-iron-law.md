@@ -5,9 +5,9 @@
 When the operator says **check status** (or EOD changelog pass):
 
 1. Evidence: git + `gh pr` per active repo.
-2. **Queue SSOT** (`weekend-queue.md` for SDK weekend): full update + push playground.
+2. **Coordination SSOT:** full update (daily log or repo queue doc).
 3. **Product docs** per repo with new merges or review-ready commits: `CHANGELOG.md` + README recent-work stanza.
-4. **Chat:** one line pointing at queue path @ SHA. No rehash.
+4. **Chat:** one line pointing at SSOT path. No rehash.
 
 Accomplishment rows use behavior / scope / verification (deai-quality prose in § Changelog source).
 
