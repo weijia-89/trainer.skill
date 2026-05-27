@@ -10,9 +10,9 @@ If a change is going to **merge into `buds` or `toebeans`**, it must have a **fr
 
 1. Implement on feature branch; run repo verify.
 2. **trainer** → **form-check** `code-review` per `trainer-codereview.md`.
-3. Post canonical PR comment: `bash scripts/trainer_pr_review_post.sh <pr#> <verdict> <round> review.md`
-4. Push; CI job **Trainer PR review comment gate** must pass (`ci-trainer-pr-review-gate.sh`).
-5. Human merge after PR body manual scenarios pass.
+3. Post canonical PR comment: `bash scripts/trainer_pr_review_post.sh <pr#> <verdict> <round> review.md` **before** the push that should pass CI (round 1: post then push; remediate: PATCH `head=` then push).
+4. Push; CI job **Trainer PR review comment gate** must pass (`ci-trainer-pr-review-gate.sh`). **Gradle/build jobs must not `needs:` the gate** — run in parallel (see toebeans/buds `ci.yml`) so compile/test signal is not skipped while the comment is missing or stale.
+5. Human merge after PR body manual scenarios pass and all required checks green.
 
 ## Canonical files (trainer.skill)
 
@@ -26,9 +26,9 @@ If a change is going to **merge into `buds` or `toebeans`**, it must have a **fr
 
 ## Reference install
 
-**toebeans** — CI wired in `.github/workflows/ci.yml`; contract in `AGENTS.md` / `CLAUDE.md`.
+**toebeans** — CI wired in `.github/workflows/ci.yml`; contract in `AGENTS.md` / `CLAUDE.md`. `build-and-test` depends only on `fitness-functions`, not the trainer gate.
 
-**buds** — copy the three scripts + CI job when enabling the gate.
+**buds** — gate job parallel to `flutter-test` (no `needs` edge); same scripts when enabling elsewhere.
 
 ## Remediate rounds
 

@@ -6,6 +6,10 @@
 #   bash scripts/trainer_pr_review_post.sh <pr_num> <verdict> <round> <body.md>
 #
 # verdict: APPROVE | REQUEST_CHANGES | BLOCK
+#
+# Order: post/PATCH before push when CI should pass on that SHA (trainer-codereview-gate.md).
+# After posting on an already-pushed PR, re-run the failed "Trainer PR review comment gate"
+# workflow (or push an empty commit) so CI picks up the comment without waiting on Gradle.
 
 set -euo pipefail
 
