@@ -63,3 +63,11 @@ else
 fi
 
 rm -f "$OUT"
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+RERUN="${SCRIPT_DIR}/trainer_pr_review_gate_rerun.sh"
+if [[ -f "$RERUN" ]]; then
+  bash "$RERUN" "$PR_NUM" "$GH_REPO" || {
+    echo "trainer_pr_review_post: comment posted; gate rerun failed (re-run: bash scripts/trainer_pr_review_gate_rerun.sh ${PR_NUM} ${GH_REPO})" >&2
+  }
+fi

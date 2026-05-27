@@ -16,7 +16,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 - **`references/trainer-github-pr-commentary.md`** — mandatory PR body test-plan granularity and PR comment **`### Trainer notes`** (Program notes · Your form · Next session); forbids Pedagogy heading.
 - **`references/trainer-codereview.md`**, **`references/trainer-codereview-gate.md`**, **`prompts/trainer-codereview.txt`** — canonical PR review (migrated off `cursor-sdk-playground`).
-- **`scripts/ci-trainer-pr-review-gate.sh`**, **`scripts/trainer_pr_review_post.sh`**, **`scripts/test_ci_trainer_pr_review_gate.sh`** — canonical mechanical PR review gate (copy into product repos; toebeans ships CI job).
+- **`scripts/ci-trainer-pr-review-gate.sh`**, **`scripts/trainer_pr_review_post.sh`**, **`scripts/trainer_pr_review_gate_rerun.sh`**, **`scripts/test_ci_trainer_pr_review_gate.sh`**, **`scripts/test_trainer_pr_review_gate_rerun.sh`** — canonical mechanical PR review gate + idempotent gate job rerun after POST/PATCH (copy into product repos).
 
 ### Changed
 
@@ -99,7 +99,7 @@ L3 codification commit `ab5014b` (v0.10.0) shipped the new SKILL.md sub-subsecti
 
 ### Added
 
-- **`README.md` "Authoring discipline" section** (about 15 lines, between "Sync targets" and "SemVer rules"). Documents three voice gates: em-dash zero (mechanical, enforced by `scripts/verify_trainer_sync.sh` invariant 6); deai gate (manual, mandatory before claiming voice-verified, runs `python3 ~/.claude/skills/deai/deai-scan.py <file>`); wei-voice iron rules (manual: no theatrical mic-drops at paragraph end, no tricolon-after-colon, active voice with author as agent). References this CHANGELOG entry as the worked example.
+- **`README.md` "Authoring discipline" section** (about 15 lines, between "Sync targets" and "SemVer rules"). Documents three voice gates: em-dash zero (mechanical, enforced by `scripts/verify_trainer_sync.sh` invariant 6); deai gate (manual, mandatory before claiming voice-verified, runs `python3 ~/Projects/deai.skill/deai-scan.py <file>` — or `~/.claude/skills/deai/` after `skill-sync`); wei-voice iron rules (manual: no theatrical mic-drops at paragraph end, no tricolon-after-colon, active voice with author as agent). References this CHANGELOG entry as the worked example.
 
 ### Changed
 
