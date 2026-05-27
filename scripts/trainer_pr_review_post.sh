@@ -6,6 +6,10 @@
 #   bash scripts/trainer_pr_review_post.sh <pr_num> <verdict> <round> <body.md>
 #
 # verdict: APPROVE | REQUEST_CHANGES | BLOCK
+#
+# Order: post/PATCH before push when CI should pass on that SHA (trainer-codereview-gate.md).
+# After posting on an already-pushed PR, re-run the failed "Trainer PR review comment gate"
+# workflow (or push an empty commit) so CI picks up the comment without waiting on Gradle.
 
 set -euo pipefail
 
@@ -59,3 +63,11 @@ else
 fi
 
 rm -f "$OUT"
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+RERUN="${SCRIPT_DIR}/trainer_pr_review_gate_rerun.sh"
+if [[ -f "$RERUN" ]]; then
+  bash "$RERUN" "$PR_NUM" "$GH_REPO" || {
+    echo "trainer_pr_review_post: comment posted; gate rerun failed (re-run: bash scripts/trainer_pr_review_gate_rerun.sh ${PR_NUM} ${GH_REPO})" >&2
+  }
+fi
