@@ -40,6 +40,41 @@ else
 fi
 REPO_SLUG="${GH_REPO##*/}"
 
+_validate_review_body_for_repo() {
+  local body_file=$1
+  local repo=$2
+  local body
+  body=$(<"$body_file")
+  # Match launch instructions (numbered steps / backticks), not "do not use …" disclaimers.
+  local launch_lines
+  launch_lines=$(printf '%s\n' "$body" | grep -E '^[0-9]+\. `|^[0-9]+\. cd |`cd ~/Projects/' || true)
+  case "$repo" in
+    buds)
+      if printf '%s\n' "$launch_lines" | grep -qE '\./gradlew|:androidApp:installDebug|app\.toebeans\.android|cd ~/Projects/toebeans|cd /Projects/toebeans'; then
+        echo "trainer_pr_review_post: buds PR Manual QA lists toebeans-only launch commands" >&2
+        echo "  Use: cd ~/Projects/buds/app && flutter run (AVD toebeans-pixel7 is OK)" >&2
+        exit 1
+      fi
+      if ! printf '%s' "$body" | grep -qE 'Projects/buds.*flutter run|flutter run.*Projects/buds'; then
+        echo "trainer_pr_review_post: buds PR comment should include ~/Projects/buds and flutter run" >&2
+        exit 1
+      fi
+      ;;
+    toebeans)
+      if printf '%s\n' "$launch_lines" | grep -qE 'Projects/buds|verify_buds\.sh|flutter run'; then
+        echo "trainer_pr_review_post: toebeans PR Manual QA lists buds-only launch commands" >&2
+        exit 1
+      fi
+      if ! printf '%s' "$body" | grep -qE '\./gradlew|app\.toebeans\.android|Projects/toebeans'; then
+        echo "trainer_pr_review_post: toebeans PR comment should include gradlew installDebug or app.toebeans.android" >&2
+        exit 1
+      fi
+      ;;
+  esac
+}
+
+_validate_review_body_for_repo "$BODY_FILE" "$REPO_SLUG"
+
 MARKER="<!-- trainer-codereview-${REPO_SLUG}-${BRANCH_SLUG} -->"
 META="<!-- head=${HEAD_SHORT} verdict=${VERDICT} round=${ROUND} -->"
 

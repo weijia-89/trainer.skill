@@ -16,6 +16,16 @@ Load this file whenever the trainer routes **form-check code-review** (or SDK me
 
 **Snippet helper:** `bash ~/Projects/trainer.skill/scripts/trainer_manual_test_block.sh buds|toebeans` prints the canonical emulator + launch blocks; add `--scenario <name>` for buds in-app steps when defined.
 
+### Repo detection (buds vs toebeans) — mandatory
+
+| PR repo | Launch block | Forbidden in Manual QA / test plan |
+| ------- | ------------ | ---------------------------------- |
+| **buds** | `cd ~/Projects/buds/app && flutter run …` | `./gradlew`, `:androidApp:installDebug`, `app.toebeans.android`, `~/Projects/toebeans` (shared AVD name `toebeans-pixel7` is OK) |
+| **toebeans** | `cd ~/Projects/toebeans && ./gradlew :androidApp:installDebug` + `adb shell am start -n app.toebeans.android/.MainActivity` | `flutter run`, `~/Projects/buds`, `verify_buds.sh` |
+
+- Generate snippets with `trainer_manual_test_block.sh <repo>` from that product repo’s git root; the script **errors** if the stack argument does not match the checkout.
+- `trainer_pr_review_post.sh` **rejects** cross-repo launch commands before POST/PATCH.
+
 ---
 
 ## Two surfaces on GitHub
@@ -234,6 +244,7 @@ Update the **same** comment; do not leave a stale round-1 verdict at the top.
 
 ## Self-check before posting
 
+- [ ] Manual QA / test plan uses **this PR’s repo only** (buds → Flutter; toebeans → Gradle + `app.toebeans.android`; no cross-repo paths).
 - [ ] PR body test plan has emulator cold-start shell commands, numbered in-app steps, repo paths, reset/clear when needed, expected copy or routes.
 - [ ] PR comment `### Manual QA` repeats the cold-start shell block (not “see PR body” only).
 - [ ] PR comment has `### Trainer notes` with **Program notes**, **Your form**, **Next session** (not Pedagogy).

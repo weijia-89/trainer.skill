@@ -30,6 +30,31 @@ if [[ -z "$STACK" ]]; then
   exit 2
 fi
 
+# Normalize aliases before repo detection
+case "$STACK" in
+  flutter) STACK=buds ;;
+  android|kmp) STACK=toebeans ;;
+esac
+
+_detect_cwd_repo() {
+  local root
+  root=$(git -C "${TRAINER_REPO_ROOT:-$PWD}" rev-parse --show-toplevel 2>/dev/null || true)
+  [[ -z "$root" ]] && return 0
+  case "$root" in
+    */buds|*/buds-wt-*|*/buds/*) echo buds ;;
+    */toebeans|*/toebeans-*|*/toebeans-worktrees/*|*/toebeans/*) echo toebeans ;;
+    *) echo "" ;;
+  esac
+}
+
+CWD_REPO=$(_detect_cwd_repo)
+GIT_ROOT=$(git -C "${TRAINER_REPO_ROOT:-$PWD}" rev-parse --show-toplevel 2>/dev/null || true)
+if [[ -n "$CWD_REPO" && "$CWD_REPO" != "$STACK" ]]; then
+  echo "trainer_manual_test_block: stack '$STACK' does not match git root repo '$CWD_REPO' (${GIT_ROOT:-unknown})" >&2
+  echo "  Run from the matching product repo, or pass the correct stack (buds|toebeans)." >&2
+  exit 1
+fi
+
 _emulator_block() {
   cat <<'EOF'
 #### Emulator — cold start (no device booted)
@@ -85,7 +110,7 @@ EOF
 }
 
 case "$STACK" in
-  buds|flutter)
+  buds)
     _emulator_block
     _buds_launch
     case "$SCENARIO" in
@@ -113,7 +138,7 @@ EOF
         ;;
     esac
     ;;
-  toebeans|android|kmp)
+  toebeans)
     _emulator_block
     _toebeans_launch
     ;;

@@ -41,7 +41,8 @@ TRAINER_GATE_RERUN_DRY_RUN=1 bash scripts/trainer_pr_review_gate_rerun.sh <pr#> 
 |------|------|
 | `references/trainer-codereview.md` | Review routing, verdicts, findings shape |
 | `references/trainer-github-pr-commentary.md` | PR body test plan + Trainer notes comment template |
-| `scripts/trainer_manual_test_block.sh` | Canonical emulator cold-start + launch snippets (`buds` / `toebeans`) |
+| `scripts/trainer_manual_test_block.sh` | Canonical emulator cold-start + launch snippets (`buds` / `toebeans`); errors on stack vs git-root mismatch |
+| `scripts/trainer_pr_review_post.sh` | Rejects cross-repo launch commands in review body before POST/PATCH |
 | `scripts/ci-trainer-pr-review-gate.sh` | Copy to product repo `scripts/` |
 | `scripts/ci-trainer-pr-review-gate-exempt.sh` | Docs/research text-only exempt check |
 | `scripts/trainer_pr_review_post.sh` | Copy to product repo `scripts/` |
