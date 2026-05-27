@@ -12,7 +12,9 @@ Load this file whenever the trainer routes **form-check code-review** (or SDK me
 - **Product PRs (default):** post via `<repo>/scripts/trainer_pr_review_post.sh`; CI gate `ci-trainer-pr-review-gate.sh`. Spec: `trainer-codereview-gate.md`.
 - Manual reviews: same structure; do not route through `cursor-sdk-playground`.
 
-**Forbidden:** findings-only tables with no teaching block; test plans that only say "cold start" without launch steps, repo paths, and expected UI signals; heading `### Pedagogy` or `### Cool-down` (use `### Trainer notes` only).
+**Forbidden:** findings-only tables with no teaching block; test plans or `### Manual QA` sections that only say "cold start" or "launch simulator" **without copy-paste shell** to boot the emulator, wait for `adb`/`flutter devices`, and `flutter run` / `gradlew installDebug` + `adb shell am start`; heading `### Pedagogy` or `### Cool-down` (use `### Trainer notes` only).
+
+**Snippet helper:** `bash ~/Projects/trainer.skill/scripts/trainer_manual_test_block.sh buds|toebeans` prints the canonical emulator + launch blocks; add `--scenario <name>` for buds in-app steps when defined.
 
 ---
 
@@ -43,9 +45,21 @@ Use these headings in every buds/toebeans (and SDK-gated) PR:
 - **Branch:** `<branch-name>` checked out
 - **Tooling:** list JDK / Flutter / Android SDK versions if non-default
 
+### Manual — emulator cold start (required when QA needs a device)
+
+Every manual scenario that touches the app **starts** with this block (assume **no** emulator booted). Copy from `trainer_manual_test_block.sh` or paste verbatim:
+
+1. `export PATH="$HOME/Library/Android/sdk/platform-tools:$HOME/Library/Android/sdk/emulator:$PATH"`
+2. `flutter emulators --launch toebeans-pixel7` **or** `~/Library/Android/sdk/emulator/emulator -avd toebeans-pixel7 &`
+3. Wait: `adb devices` and `flutter devices` show `emulator-5554` / `toebeans-pixel7`
+4. **buds:** `cd ~/Projects/buds/app && flutter run -d emulator-5554` (or `-d toebeans-pixel7`)
+5. **toebeans:** `cd ~/Projects/toebeans && ./gradlew :androidApp:installDebug` then `adb shell am start -n app.toebeans.android/.MainActivity`
+
+Then numbered **in-app** steps (navigation, expected copy/routes).
+
 ### Manual — scenario A: <name>
 
-Number every step. Each step states **what to launch**, **where in the repo**, and **what you should see**.
+Number every step after the cold-start block. Each in-app step states **where to tap / route** and **what you should see**.
 
 ### Manual — scenario B: <name>
 
@@ -64,30 +78,35 @@ Number every step. Each step states **what to launch**, **where in the repo**, a
 
 ### Flutter app template (buds-shaped)
 
-Copy and adapt; replace bracketed placeholders.
+Copy and adapt; replace bracketed placeholders. **Always** lead with the emulator cold-start block above (Android AVD `toebeans-pixel7` is the default dev device in this workspace).
 
 ```markdown
 ### Manual — fresh install / cold start (S13 → onboarding → garden)
 
 **Goal:** Prove `first_run_gate_completed` and `onboarding_completed` in `app/lib/core/routing.dart` match real navigation.
 
-1. **Terminal — repo root:** `cd ~/Projects/buds` (or worktree: `cd ~/Projects/buds/.worktrees/<worktree-name>`).
-2. **Verify once:** `bash scripts/verify_buds.sh` (from repo root, not `app/`).
-3. **Simulator or device:** Start an iOS Simulator (Xcode → Open Developer Tool → Simulator) *or* connect a physical device with USB debugging enabled.
-4. **Clean app state (required for “fresh install”):**
+#### Emulator — cold start (no device booted)
+
+1. `export PATH="$HOME/Library/Android/sdk/platform-tools:$HOME/Library/Android/sdk/emulator:$PATH"`
+2. `flutter emulators --launch toebeans-pixel7` **or** `~/Library/Android/sdk/emulator/emulator -avd toebeans-pixel7 &`
+3. Wait until ready: `adb devices` → `emulator-5554`; `flutter devices` lists the emulator
+4. `cd ~/Projects/buds/app && flutter run -d emulator-5554` (or `-d toebeans-pixel7`)
+
+#### In-app — fresh install
+
+5. **Verify once (repo root, separate terminal):** `cd ~/Projects/buds && bash scripts/verify_buds.sh`
+6. **Clean app state (required for “fresh install”):**
    - **iOS Simulator:** Long-press the Buds icon → Remove App → Delete App.
-   - **Android:** Settings → Apps → Buds → Storage → Clear storage (or `adb shell pm clear <applicationId>` if you know the id from `app/android/app/build.gradle`).
-5. **Install and run from `app/`:**  
-   `cd app && flutter run -d <device-id>`  
-   (`flutter devices` lists ids; e.g. `iPhone 16`.)
-6. **Expect — S13 splash (~300ms):** Full-screen “buds” wordmark + tagline. Code: `app/lib/features/onboarding/first_run_page.dart` (`_SplashView`). HTML reference: `docs/mocks/explorations/s13-first-run.html`.
-7. **Expect — path question:** Copy “welcome.” and planks “new garden” / “i have a .buds file”. Privacy line at bottom. Do **not** skip; spec has no skip on this screen.
-8. **Tap “new garden”.** Expect navigation to onboarding welcome: headline “a garden, not a CRM”. Code: `app/lib/features/onboarding/welcome_page.dart`.
-9. **Walk onboarding** (or tap Skip on welcome/honest if testing skip path): honest → plant → how Buds works (scroll to bottom, “good, I read it”) → PII import → primary CTA to garden.
-10. **Expect — garden home:** Empty or seeded garden per your DB; you must **not** bounce back to `/first-run`. Routing: `app/lib/core/routing.dart` redirect when `onboarding_completed` is true.
-11. **Kill the app** (swipe away from app switcher).
-12. **Relaunch Buds** from the home screen (do not reinstall).
-13. **Expect — lands on garden**, not first-run or onboarding. Confirms persistence keys `first_run_gate_completed` and `onboarding_completed` in SharedPreferences (see `onboardingCompletedKey`, `firstRunGateCompletedKey` in `routing.dart`).
+   - **Android emulator:** Settings → Apps → Buds → Storage → Clear storage (or `adb shell pm clear com.example.buds` — confirm `applicationId` in `app/android/app/build.gradle`).
+7. **Relaunch** from the emulator app drawer if you cleared storage while the app was installed (or stop `flutter run` and re-run step 4).
+8. **Expect — S13 splash (~300ms):** Full-screen “buds” wordmark + tagline. Code: `app/lib/features/onboarding/first_run_page.dart` (`_SplashView`). HTML reference: `docs/mocks/explorations/s13-first-run.html`.
+9. **Expect — path question:** Copy “welcome.” and planks “new garden” / “i have a .buds file”. Privacy line at bottom. Do **not** skip; spec has no skip on this screen.
+10. **Tap “new garden”.** Expect navigation to onboarding welcome: headline “a garden, not a CRM”. Code: `app/lib/features/onboarding/welcome_page.dart`.
+11. **Walk onboarding** (or tap Skip on welcome/honest if testing skip path): honest → plant → how Buds works (scroll to bottom, “good, I read it”) → PII import → primary CTA to garden.
+12. **Expect — garden home:** Empty or seeded garden per your DB; you must **not** bounce back to `/first-run`. Routing: `app/lib/core/routing.dart` redirect when `onboarding_completed` is true.
+13. **Kill the app** (swipe away from app switcher).
+14. **Relaunch Buds** from the home screen (do not reinstall).
+15. **Expect — lands on garden**, not first-run or onboarding. Confirms persistence keys `first_run_gate_completed` and `onboarding_completed` in SharedPreferences (see `onboardingCompletedKey`, `firstRunGateCompletedKey` in `routing.dart`).
 
 ### Manual — restore stub (no archive import)
 
@@ -107,6 +126,20 @@ Copy and adapt; replace bracketed placeholders.
 ### Android / JVM template (toebeans-shaped)
 
 ```markdown
+### Manual — emulator + app launch (device QA)
+
+#### Emulator — cold start (no device booted)
+
+1. `export PATH="$HOME/Library/Android/sdk/platform-tools:$HOME/Library/Android/sdk/emulator:$PATH"`
+2. `flutter emulators --launch toebeans-pixel7` **or** `~/Library/Android/sdk/emulator/emulator -avd toebeans-pixel7 &`
+3. Wait: `adb devices` shows `emulator-5554`; `flutter devices` lists the emulator
+4. `cd ~/Projects/toebeans && ./gradlew :androidApp:installDebug`
+5. `adb shell am start -n app.toebeans.android/.MainActivity`
+
+#### In-app — <scenario name>
+
+6. …
+
 ### Manual — docs / style lab
 
 1. `cd ~/Projects/toebeans`
@@ -160,7 +193,11 @@ One short paragraph: what would have broken in production or in the next PR if w
 
 ### Manual QA
 
-Full steps are in the PR body **Test plan**. Minimum merge bar: scenarios {A, B} checked.
+**Required:** paste the full **emulator cold-start** shell block (PATH → launch AVD → `adb devices` / `flutter devices` → `flutter run` or `gradlew installDebug` + `adb shell am start`), then numbered **in-app** steps with expected UI. Do **not** defer launch commands to the PR body only — reviewers must copy-paste from this section.
+
+Minimum merge bar: cold start + scenario(s) {A, B} checked.
+
+Snippet: `bash ~/Projects/trainer.skill/scripts/trainer_manual_test_block.sh buds|toebeans`
 
 ---
 
@@ -197,7 +234,8 @@ Update the **same** comment; do not leave a stale round-1 verdict at the top.
 
 ## Self-check before posting
 
-- [ ] PR body test plan has numbered steps, repo paths, app launch/clear instructions, expected copy or routes.
+- [ ] PR body test plan has emulator cold-start shell commands, numbered in-app steps, repo paths, reset/clear when needed, expected copy or routes.
+- [ ] PR comment `### Manual QA` repeats the cold-start shell block (not “see PR body” only).
 - [ ] PR comment has `### Trainer notes` with **Program notes**, **Your form**, **Next session** (not Pedagogy).
 - [ ] Every P1+ finding has Status column or explicit waive with reason.
 - [ ] Remediate round updates `head=` sha in comment meta.
