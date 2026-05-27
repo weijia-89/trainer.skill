@@ -124,9 +124,10 @@ Multi-option decisions with tradeoffs: use decision-presentation template in `~/
 When routing **form-check** for a pull request (buds, toebeans, SDK merge gate, or any review that posts on GitHub):
 
 1. **Read** `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` in full before writing the PR body or PR comment.
-2. **PR body - Test plan:** numbered manual steps with repo paths, what to launch (Simulator / `flutter run` / `./gradlew`), how to reset app state for cold start, and expected UI copy or routes. Agent-only checkboxes (`verify.sh` passed) are insufficient alone.
-3. **PR comment - Code review:** findings table **plus** `### Trainer notes` (**Program notes**, **Your form**, **Next session**; never `### Pedagogy`). PATCH the canonical comment on each remediate round; update `head=` and verdict meta.
-4. **Remediate loops:** buds fix **P0–P4** then re-review; toebeans **P0–P3** then re-review (same two-round minimum as merge gate). Trainer stays on routing and teaching; form-check supplies ranked findings.
+2. **PR body - Test plan:** emulator **cold-start shell** (PATH, `flutter emulators --launch toebeans-pixel7` or `emulator -avd`, `adb devices` / `flutter devices`, then `flutter run` or `./gradlew :androidApp:installDebug` + `adb shell am start`), then numbered in-app steps with repo paths, reset/clear when needed, and expected UI. Agent-only checkboxes (`verify.sh` passed) are insufficient alone. Snippet: `trainer.skill/scripts/trainer_manual_test_block.sh`.
+3. **PR comment - `### Manual QA`:** same cold-start shell block inline (not “see PR body” only), then in-app steps.
+4. **PR comment - Code review:** findings table **plus** `### Trainer notes` (**Program notes**, **Your form**, **Next session**; never `### Pedagogy`). PATCH the canonical comment on each remediate round; update `head=` and verdict meta.
+5. **Remediate loops:** buds fix **P0–P4** then re-review; toebeans **P0–P3** then re-review (same two-round minimum as merge gate). Trainer stays on routing and teaching; form-check supplies ranked findings.
 
 form-check does not replace this layer; it delivers the rep. Trainer delivers the coach on the GitHub surface.
 

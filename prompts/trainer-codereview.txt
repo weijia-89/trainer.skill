@@ -18,7 +18,7 @@ GitHub shape: ~/Projects/trainer.skill/references/trainer-github-pr-commentary.m
    - PR comment via: bash scripts/trainer_pr_review_post.sh <PR_NUM> <VERDICT> <ROUND> <review.md>
    - review.md must include ### Findings and ### Trainer notes (Program notes, Your form, Next session).
    - Never ### Pedagogy.
-5. Ensure PR body ## Test plan has numbered manual steps (repo path, launch, cold start, expected UI).
+5. Ensure PR body ## Test plan and comment ### Manual QA include full emulator cold-start shell (PATH, launch AVD, adb/flutter devices, flutter run or gradlew+adb start) then in-app steps. Use trainer_manual_test_block.sh when helpful.
 
 ## Verdict
 
