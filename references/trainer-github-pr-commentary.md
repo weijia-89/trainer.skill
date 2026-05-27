@@ -209,6 +209,24 @@ Minimum merge bar: cold start + scenario(s) {A, B} checked.
 
 Snippet: `bash ~/Projects/trainer.skill/scripts/trainer_manual_test_block.sh buds|toebeans`
 
+### Sign-off (automated vs manual — required in PR comment)
+
+Separate **CI-automated** verification from **operator manual** work. Do not leave automated unchecked when the matching CI job is **SUCCESS** on current PR HEAD.
+
+```markdown
+### Sign-off
+
+- [x] **Automated tests (CI)** — [{job name}]({link to passing Actions run on this PR HEAD}) green on `{short_sha}`
+- [ ] **Manual testing** — operator: PR body scenarios (+ comment `### Manual QA` when device QA applies)
+```
+
+| Repo | CI job to link when green | Leave manual unchecked until |
+| ---- | ------------------------- | ------------------------------ |
+| **buds** | `Flutter analyze + test` | Operator runs PR body / comment manual steps |
+| **toebeans** | `Gradle build + shared tests` | Operator runs PR body / comment manual steps |
+
+**Agent rule:** Before POST/PATCH, read PR `statusCheckRollup` (or Actions UI). If the repo’s automated test job above is **SUCCESS** on HEAD, the automated line **must** be `[x]` with a link to that run. Never `[ ]` automated when CI already passed. Manual stays `[ ]` until the operator completes hands-on checks.
+
 ---
 
 *Trainer routes form-check for findings; this comment adds teaching + links hands-on QA.*
@@ -250,6 +268,7 @@ Update the **same** comment; do not leave a stale round-1 verdict at the top.
 - [ ] PR comment has `### Trainer notes` with **Program notes**, **Your form**, **Next session** (not Pedagogy).
 - [ ] Every P1+ finding has Status column or explicit waive with reason.
 - [ ] Remediate round updates `head=` sha in comment meta.
+- [ ] PR comment `### Sign-off`: automated line `[x]` with CI run link when test job green on HEAD; manual `[ ]` until operator sign-off.
 
 ---
 

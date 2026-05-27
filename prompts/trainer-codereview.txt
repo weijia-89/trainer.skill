@@ -19,6 +19,7 @@ GitHub shape: ~/Projects/trainer.skill/references/trainer-github-pr-commentary.m
    - review.md must include ### Findings and ### Trainer notes (Program notes, Your form, Next session).
    - Never ### Pedagogy.
 5. Ensure PR body ## Test plan and comment ### Manual QA include full emulator cold-start shell (PATH, launch AVD, adb/flutter devices, flutter run or gradlew+adb start) then in-app steps. Use trainer_manual_test_block.sh when helpful.
+6. PR comment must include ### Sign-off with automated vs manual checkboxes (trainer-github-pr-commentary.md). If CI automated test job is green on HEAD, check [x] automated with link to that run; leave manual [ ] for operator.
 
 ## Verdict
 
