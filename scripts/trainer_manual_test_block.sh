@@ -210,17 +210,16 @@ case "$STACK" in
       settings-how-buds-works)
         cat <<'EOF'
 
-#### In-app — Settings → How Buds works (PR #41-shaped)
+#### In-app — Settings → How Buds works
 
 **Goal:** `/settings/how-buds-works` renders `HowBudsWorksPage` (`fromSettings: true`), not the placeholder.
 
 6. Reach **garden home** (complete onboarding on fresh install, or use an already-onboarded simulator).
-7. Tap the **weather strip** on garden home → **your state** (`/settings/state`).
-8. Tap **pause** → on pause screen tap **rest for now** (or **tend again** if already paused) → lands on **settings** root (`/settings`).
-9. Tap **how Buds works**.
-10. **Expect:** Full S01d explainer (scrollable sections, plant icons). **Not** placeholder copy `S01d (from settings)`.
-11. **Expect:** Bottom action shows **done** (settings mode), not onboarding **back** / scroll-to-continue CTA.
-12. Tap **done** → returns to settings root.
+7. Tap top-right **settings** (gear) → **settings** root (`/settings`). *(Requires PR that wires garden gear; not the pause detour.)*
+8. Tap **how Buds works**.
+9. **Expect:** Full S01d explainer (scrollable sections, plant icons). **Not** placeholder copy `S01d (from settings)`.
+10. **Expect:** Bottom action shows **done** (settings mode), not onboarding **back** / scroll-to-continue CTA.
+11. Tap **done** → returns to settings root.
 EOF
         ;;
       *)

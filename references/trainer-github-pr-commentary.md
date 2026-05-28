@@ -27,6 +27,16 @@ Load this file whenever the trainer routes **form-check code-review** (or SDK me
 - Generate snippets with `trainer_manual_test_block.sh <repo>` from that product repo’s git root; the script **errors** if the stack argument does not match the checkout.
 - `trainer_pr_review_post.sh` **rejects** cross-repo launch commands before POST/PATCH.
 
+### Repo detection (buds vs toebeans) — mandatory
+
+| PR repo | Launch block | Forbidden in Manual QA / test plan |
+| ------- | ------------ | ---------------------------------- |
+| **buds** | `cd ~/Projects/buds/app && flutter run …` | `./gradlew`, `:androidApp:installDebug`, `app.toebeans.android`, `~/Projects/toebeans` (shared AVD name `toebeans-pixel7` is OK) |
+| **toebeans** | `cd ~/Projects/toebeans && ./gradlew :androidApp:installDebug` + `adb shell am start -n app.toebeans.android/.MainActivity` | `flutter run`, `~/Projects/buds`, `verify_buds.sh` |
+
+- Generate snippets with `trainer_manual_test_block.sh <repo>` from that product repo’s git root; the script **errors** if the stack argument does not match the checkout.
+- `trainer_pr_review_post.sh` **rejects** cross-repo launch commands before POST/PATCH.
+
 ---
 
 ## Two surfaces on GitHub

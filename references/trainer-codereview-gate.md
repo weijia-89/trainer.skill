@@ -41,7 +41,7 @@ TRAINER_GATE_RERUN_DRY_RUN=1 bash scripts/trainer_pr_review_gate_rerun.sh <pr#> 
 |------|------|
 | `references/trainer-codereview.md` | Review routing, verdicts, findings shape |
 | `references/trainer-github-pr-commentary.md` | PR body test plan + Trainer notes comment template |
-| `scripts/trainer_manual_test_block.sh` | Canonical device cold-start + launch (`buds` iOS-first from `localonly/trainer/` when present; `toebeans` Gradle); errors on stack vs git-root mismatch. See `references/buds-manual-testing.md`. |
+| `scripts/trainer_manual_test_block.sh` | Canonical device cold-start + launch (`buds` iOS-first from `localonly/trainer/` when present; `toebeans` Gradle); `--scenario` for in-app paths; errors on stack vs git-root mismatch. See `references/buds-manual-testing.md`. |
 | `scripts/ci-trainer-pr-review-gate.sh` | Copy to product repo `scripts/` |
 | `scripts/ci-trainer-pr-review-gate-exempt.sh` | Docs/research text-only exempt check |
 | `scripts/trainer_pr_review_post.sh` | Rejects cross-repo launch commands before POST/PATCH; copy to product repo `scripts/` |
