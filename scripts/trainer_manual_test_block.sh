@@ -1,19 +1,24 @@
 #!/usr/bin/env bash
-# Print canonical emulator cold-start + launch blocks for trainer PR manual QA.
-# Source of truth: references/trainer-github-pr-commentary.md
+# Print canonical device cold-start + launch blocks for trainer PR manual QA.
+# Buds: iOS-first; reads ~/Projects/buds/localonly/trainer/manual-testing-buds.md when present.
+# Source: references/buds-manual-testing.md, references/trainer-github-pr-commentary.md
 #
 # Usage:
-#   bash scripts/trainer_manual_test_block.sh buds
+#   bash scripts/trainer_manual_test_block.sh buds [--platform ios|android|both] [--scenario name]
 #   bash scripts/trainer_manual_test_block.sh toebeans
-#   bash scripts/trainer_manual_test_block.sh buds --scenario settings-how-buds-works
 #
 set -euo pipefail
 
 STACK=${1:-}
+PLATFORM=ios
 SCENARIO=""
 shift || true
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    --platform)
+      PLATFORM=${2:-}
+      shift 2
+      ;;
     --scenario)
       SCENARIO=${2:-}
       shift 2
@@ -26,15 +31,26 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ -z "$STACK" ]]; then
-  echo "usage: $0 buds|toebeans [--scenario name]" >&2
+  echo "usage: $0 buds|toebeans [--platform ios|android|both] [--scenario name]" >&2
   exit 2
 fi
+
+case "$PLATFORM" in
+  ios|android|both) ;;
+  *)
+    echo "usage: --platform must be ios, android, or both" >&2
+    exit 2
+    ;;
+esac
 
 # Normalize aliases before repo detection
 case "$STACK" in
   flutter) STACK=buds ;;
   android|kmp) STACK=toebeans ;;
 esac
+
+BUDS_ROOT=${BUDS_ROOT:-$HOME/Projects/buds}
+BUDS_MANUAL="${BUDS_ROOT}/localonly/trainer/manual-testing-buds.md"
 
 _detect_cwd_repo() {
   local root
@@ -55,11 +71,101 @@ if [[ -n "$CWD_REPO" && "$CWD_REPO" != "$STACK" ]]; then
   exit 1
 fi
 
-_emulator_block() {
+# If invoked from buds checkout, prefer that tree for localonly reads
+if [[ "$CWD_REPO" == buds && -n "$GIT_ROOT" ]]; then
+  BUDS_ROOT=$GIT_ROOT
+  BUDS_MANUAL="${BUDS_ROOT}/localonly/trainer/manual-testing-buds.md"
+fi
+
+_buds_extract_marked() {
+  local start_tag="$1"
+  local end_tag="$2"
+  local file="$3"
+  awk -v start="$start_tag" -v end="$end_tag" '
+    $0 ~ start { found=1; next }
+    $0 ~ end { found=0; next }
+    found { print }
+  ' "$file"
+}
+
+_buds_emit_from_localonly() {
+  local want=$1
+  if [[ ! -f "$BUDS_MANUAL" ]]; then
+    return 1
+  fi
+  case "$want" in
+    ios)
+      _buds_extract_marked 'TRAINER_MANUAL_IOS_START' 'TRAINER_MANUAL_IOS_END' "$BUDS_MANUAL"
+      ;;
+    android)
+      _buds_extract_marked 'TRAINER_MANUAL_ANDROID_START' 'TRAINER_MANUAL_ANDROID_END' "$BUDS_MANUAL"
+      ;;
+    both)
+      _buds_emit_from_localonly ios
+      echo
+      _buds_emit_from_localonly android
+      ;;
+  esac
+}
+
+_buds_fallback_ios() {
+  cat <<'EOF'
+#### iOS Simulator — cold start (buds; copy-paste)
+
+Assume **no** Simulator booted and **no** `flutter run` session.
+
+1. Open Simulator and boot **iPhone 17 Pro** (`C2787FD6-4302-4598-89CB-5B5902AA17A5`):
+   ```bash
+   open -a Simulator
+   xcrun simctl boot C2787FD6-4302-4598-89CB-5B5902AA17A5
+   xcrun simctl bootstatus C2787FD6-4302-4598-89CB-5B5902AA17A5 -b
+   ```
+2. **Run Buds:**
+   ```bash
+   cd ~/Projects/buds/app
+   flutter devices
+   flutter run -d C2787FD6-4302-4598-89CB-5B5902AA17A5
+   ```
+3. **Fresh install:** `xcrun simctl uninstall C2787FD6-4302-4598-89CB-5B5902AA17A5 io.github.weijia89.buds` then repeat step 2.
+4. **Verify:** `cd ~/Projects/buds && bash scripts/verify_buds.sh`
+
+**Forbidden on buds PRs:** `./gradlew`, `:androidApp:installDebug`, `app.toebeans.android`, toebeans launch paths.
+EOF
+}
+
+_buds_fallback_android() {
+  cat <<'EOF'
+#### Android emulator — optional (buds)
+
+1. `export PATH="$HOME/Library/Android/sdk/platform-tools:$HOME/Library/Android/sdk/emulator:$PATH"`
+2. `flutter emulators --launch buds-pixel7` (or `emulator -avd buds-pixel7 &`)
+3. Wait: `adb devices` and `flutter devices` show a device id (e.g. `emulator-5554`).
+4. `cd ~/Projects/buds/app && flutter run -d emulator-5554`
+5. Fresh install: `adb shell pm clear io.github.weijia_89.buds`
+EOF
+}
+
+_buds_emit_platform() {
+  local want=$1
+  if _buds_emit_from_localonly "$want" 2>/dev/null; then
+    return 0
+  fi
+  case "$want" in
+    ios) _buds_fallback_ios ;;
+    android) _buds_fallback_android ;;
+    both)
+      _buds_fallback_ios
+      echo
+      _buds_fallback_android
+      ;;
+  esac
+}
+
+_emulator_block_toebeans() {
   cat <<'EOF'
 #### Emulator — cold start (no device booted)
 
-Assume **no** emulator running and **no** `flutter run` session.
+Assume **no** emulator running.
 
 1. **PATH (Android SDK tools):**
    ```bash
@@ -81,20 +187,6 @@ Assume **no** emulator running and **no** `flutter run` session.
 EOF
 }
 
-_buds_launch() {
-  cat <<'EOF'
-4. **Run Buds on the emulator** (from repo root):
-   ```bash
-   cd ~/Projects/buds/app
-   flutter run -d emulator-5554
-   ```
-   If `flutter devices` shows only `toebeans-pixel7`, use:
-   ```bash
-   flutter run -d toebeans-pixel7
-   ```
-EOF
-}
-
 _toebeans_launch() {
   cat <<'EOF'
 4. **Install debug APK** (from repo root):
@@ -111,8 +203,7 @@ EOF
 
 case "$STACK" in
   buds)
-    _emulator_block
-    _buds_launch
+    _buds_emit_platform "$PLATFORM"
     case "$SCENARIO" in
       ""|"--scenario")
         ;;
@@ -123,7 +214,7 @@ case "$STACK" in
 
 **Goal:** `/settings/how-buds-works` renders `HowBudsWorksPage` (`fromSettings: true`), not the placeholder.
 
-6. Reach **garden home** (complete onboarding on fresh install, or use an already-onboarded emulator).
+6. Reach **garden home** (complete onboarding on fresh install, or use an already-onboarded simulator).
 7. Tap the **weather strip** on garden home → **your state** (`/settings/state`).
 8. Tap **pause** → on pause screen tap **rest for now** (or **tend again** if already paused) → lands on **settings** root (`/settings`).
 9. Tap **how Buds works**.
@@ -139,11 +230,14 @@ EOF
     esac
     ;;
   toebeans)
-    _emulator_block
+    if [[ "$PLATFORM" != ios ]]; then
+      echo "trainer_manual_test_block: toebeans ignores --platform (Android only)" >&2
+    fi
+    _emulator_block_toebeans
     _toebeans_launch
     ;;
   *)
-    echo "usage: $0 buds|toebeans [--scenario name]" >&2
+    echo "usage: $0 buds|toebeans [--platform ios|android|both] [--scenario name]" >&2
     exit 2
     ;;
 esac

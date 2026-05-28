@@ -14,15 +14,16 @@ Load this file whenever the trainer routes **form-check code-review** (or SDK me
 
 **Forbidden:** findings-only tables with no teaching block; test plans or `### Manual QA` sections that only say "cold start" or "launch simulator" **without copy-paste shell** to boot the emulator, wait for `adb`/`flutter devices`, and `flutter run` / `gradlew installDebug` + `adb shell am start`; heading `### Pedagogy` or `### Cool-down` (use `### Trainer notes` only).
 
-**Snippet helper:** `bash ~/Projects/trainer.skill/scripts/trainer_manual_test_block.sh buds|toebeans` prints the canonical emulator + launch blocks; add `--scenario <name>` for buds in-app steps when defined.
+**Snippet helper:** `trainer_manual_test_block.sh` — **buds:** iOS-first (`--platform ios` default); reads `~/Projects/buds/localonly/trainer/manual-testing-buds.md` when present (see `references/buds-manual-testing.md`). **toebeans:** Android Gradle block only.
 
 ### Repo detection (buds vs toebeans) — mandatory
 
 | PR repo | Launch block | Forbidden in Manual QA / test plan |
 | ------- | ------------ | ---------------------------------- |
-| **buds** | `cd ~/Projects/buds/app && flutter run …` | `./gradlew`, `:androidApp:installDebug`, `app.toebeans.android`, `~/Projects/toebeans` (shared AVD name `toebeans-pixel7` is OK) |
+| **buds** | **Primary:** iOS sim → `open -a Simulator`, `xcrun simctl boot`, `cd ~/Projects/buds/app && flutter run -d <udid>`. **Optional:** Android AVD `buds-pixel7` + `flutter run`. | `./gradlew`, `:androidApp:installDebug`, `app.toebeans.android`, `~/Projects/toebeans` as launch path; toebeans Gradle blocks as primary QA |
 | **toebeans** | `cd ~/Projects/toebeans && ./gradlew :androidApp:installDebug` + `adb shell am start -n app.toebeans.android/.MainActivity` | `flutter run`, `~/Projects/buds`, `verify_buds.sh` |
 
+- **buds PRs:** load `~/Projects/buds/localonly/trainer/INDEX.md`; embed iOS block from `manual-testing-buds.md` (or `bash scripts/trainer_manual_test_block.sh` from buds root).
 - Generate snippets with `trainer_manual_test_block.sh <repo>` from that product repo’s git root; the script **errors** if the stack argument does not match the checkout.
 - `trainer_pr_review_post.sh` **rejects** cross-repo launch commands before POST/PATCH.
 
@@ -55,15 +56,25 @@ Use these headings in every buds/toebeans (and SDK-gated) PR:
 - **Branch:** `<branch-name>` checked out
 - **Tooling:** list JDK / Flutter / Android SDK versions if non-default
 
-### Manual — emulator cold start (required when QA needs a device)
+### Manual — device cold start (required when QA needs a device)
 
-Every manual scenario that touches the app **starts** with this block (assume **no** emulator booted). Copy from `trainer_manual_test_block.sh` or paste verbatim:
+Every manual scenario that touches the app **starts** with the repo-appropriate block (assume **no** device booted). Copy from `trainer_manual_test_block.sh` or buds `localonly/trainer/manual-testing-buds.md`.
+
+**buds (default — iOS):**
+
+1. `open -a Simulator`
+2. `xcrun simctl boot C2787FD6-4302-4598-89CB-5B5902AA17A5` (iPhone 17 Pro; skip if Booted)
+3. `cd ~/Projects/buds/app && flutter run -d C2787FD6-4302-4598-89CB-5B5902AA17A5`
+4. Fresh install: `xcrun simctl uninstall … io.github.weijia89.buds` before re-run
+
+**buds (optional — Android):** AVD `buds-pixel7` → `flutter run -d emulator-5554` (see `localonly/process/android-emulator.md`).
+
+**toebeans:**
 
 1. `export PATH="$HOME/Library/Android/sdk/platform-tools:$HOME/Library/Android/sdk/emulator:$PATH"`
-2. `flutter emulators --launch toebeans-pixel7` **or** `~/Library/Android/sdk/emulator/emulator -avd toebeans-pixel7 &`
-3. Wait: `adb devices` and `flutter devices` show `emulator-5554` / `toebeans-pixel7`
-4. **buds:** `cd ~/Projects/buds/app && flutter run -d emulator-5554` (or `-d toebeans-pixel7`)
-5. **toebeans:** `cd ~/Projects/toebeans && ./gradlew :androidApp:installDebug` then `adb shell am start -n app.toebeans.android/.MainActivity`
+2. `flutter emulators --launch toebeans-pixel7` **or** `emulator -avd toebeans-pixel7 &`
+3. Wait: `adb devices` / `flutter devices` show `emulator-5554`
+4. `cd ~/Projects/toebeans && ./gradlew :androidApp:installDebug` then `adb shell am start -n app.toebeans.android/.MainActivity`
 
 Then numbered **in-app** steps (navigation, expected copy/routes).
 
@@ -88,7 +99,7 @@ Number every step after the cold-start block. Each in-app step states **where to
 
 ### Flutter app template (buds-shaped)
 
-Copy and adapt; replace bracketed placeholders. **Always** lead with the emulator cold-start block above (Android AVD `toebeans-pixel7` is the default dev device in this workspace).
+Copy and adapt; replace bracketed placeholders. **Always** lead with the **iOS Simulator** cold-start block (`trainer_manual_test_block.sh buds` or `localonly/trainer/manual-testing-buds.md`). Add Android only when the PR is Android-specific (`--platform android`).
 
 ```markdown
 ### Manual — fresh install / cold start (S13 → onboarding → garden)
