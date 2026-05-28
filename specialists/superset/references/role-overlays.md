@@ -118,13 +118,13 @@ Replace the `Verification` block with:
 
 ```bash
 # Lexical-signal pass
-python3 ~/.claude/skills/deai/deai-scan.py <PROSE_FILE> 2>&1 | tee /tmp/<task-slug>-deai-scan.txt
+python3 ~/.cursor/skills/deai/deai-scan.py <PROSE_FILE> 2>&1 | tee /tmp/<task-slug>-deai-scan.txt
 
 # Per-sentence band + family map
-python3 ~/.claude/skills/deai/deai-check.py <PROSE_FILE> 2>&1 | tee /tmp/<task-slug>-deai-check.txt
+python3 ~/.cursor/skills/deai/deai-check.py <PROSE_FILE> 2>&1 | tee /tmp/<task-slug>-deai-check.txt
 
 # Baseline comparison (the canon Wei file for this genre)
-python3 ~/.claude/skills/deai/deai-check.py <BASELINE_FILE> 2>&1 | tail -10
+python3 ~/.cursor/skills/deai/deai-check.py <BASELINE_FILE> 2>&1 | tail -10
 
 # Expected: target score band <= baseline score band; no banned lexical signals; no theatrical fragments at paragraph close
 ```
