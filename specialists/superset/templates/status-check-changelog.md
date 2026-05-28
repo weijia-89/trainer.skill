@@ -4,7 +4,7 @@ Use on every **status check** (operator says "check status", "refresh queue", "w
 
 ## Chat reply (orch window)
 
-- **One line only:** point to the coordination SSOT path (e.g. `<repo>/localonly/daily/<YYYY-MM-DD>.md`). Do not rehash tables, accomplishments, or kickoff blocks in chat.
+- **One line only:** point to the coordination SSOT path (e.g. `~/Projects/cursor-sdk-playground/sdk-ssot-1.md`). Do not rehash tables, accomplishments, or kickoff blocks in chat.
 
 ## Required updates (same turn, before claiming status check done)
 
@@ -15,7 +15,7 @@ For each repo whose shipped state **changed** since the last status check or job
 | `CHANGELOG.md` | Add or extend `[Unreleased]` (or dated section) with user-facing bullets: what changed, why it matters, verification command if non-obvious |
 | `README.md` | Update "Recent work" / "Development status" (or create ≤8 lines there) — same facts, shorter than CHANGELOG |
 | Roadmap doc(s) | Grep per repo (`rg -l -i roadmap docs/ .`); edit `docs/strategy/ROADMAP.md`, `docs/ROADMAP.md`, or project path — **shipped vs planned** must match merge/PR evidence after closeout |
-| Coordination SSOT | Refresh daily log or project queue (§ **Changelog source** + status tables + **Accomplishment** column) |
+| Coordination SSOT | Refresh queue section (SDK: `sdk-ssot-1.md` § **Changelog source** + status tables + work history **Accomplishment** column) |
 | `localonly/daily/<YYYY-MM-DD>.md` | If multi-agent day active: append status row or EOD bullets under the track |
 
 **Prose gate:** Draft changelog/README/roadmap copy with **deai** discipline (voice prime, no RLHF residue, facts from git/PR only). Changelog source blocks in the queue are the staging area; product `CHANGELOG.md`, `README.md`, and roadmap files are what ship to contributors.
@@ -39,6 +39,14 @@ Each shipped or review-ready item gets **three layers** (copy into work history 
 1. **Behavior** — what the user or operator can do now that they could not before.
 2. **Scope** — primary files/modules; explicit "not included" when scope creep is likely.
 3. **Verification** — exact command(s) that passed before merge or review.
+
+## SDK weekend (cursor-sdk-playground)
+
+1. `./scripts/queue_status.sh`
+2. `git status` on buds, toebeans, oncology-rag-lab
+3. `gh pr view` for any open PRs in Active table
+4. Update **only** `sdk-ssot-1.md` + push playground; update each affected product repo `CHANGELOG.md`, `README.md`, and roadmap when merges land
+5. Chat: "Queue @ `<sha>` — open `sdk-ssot-1.md`."
 
 ## Worker handoff
 
