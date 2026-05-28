@@ -16,6 +16,16 @@ Load this file whenever the trainer routes **form-check code-review** (or SDK me
 
 **Snippet helper:** `bash ~/Projects/trainer.skill/scripts/trainer_manual_test_block.sh buds|toebeans` prints the canonical emulator + launch blocks; add `--scenario <name>` for buds in-app steps when defined.
 
+### Repo detection (buds vs toebeans) — mandatory
+
+| PR repo | Launch block | Forbidden in Manual QA / test plan |
+| ------- | ------------ | ---------------------------------- |
+| **buds** | `cd ~/Projects/buds/app && flutter run …` | `./gradlew`, `:androidApp:installDebug`, `app.toebeans.android`, `~/Projects/toebeans` (shared AVD name `toebeans-pixel7` is OK) |
+| **toebeans** | `cd ~/Projects/toebeans && ./gradlew :androidApp:installDebug` + `adb shell am start -n app.toebeans.android/.MainActivity` | `flutter run`, `~/Projects/buds`, `verify_buds.sh` |
+
+- Generate snippets with `trainer_manual_test_block.sh <repo>` from that product repo’s git root; the script **errors** if the stack argument does not match the checkout.
+- `trainer_pr_review_post.sh` **rejects** cross-repo launch commands before POST/PATCH.
+
 ---
 
 ## Two surfaces on GitHub
@@ -199,6 +209,24 @@ Minimum merge bar: cold start + scenario(s) {A, B} checked.
 
 Snippet: `bash ~/Projects/trainer.skill/scripts/trainer_manual_test_block.sh buds|toebeans`
 
+### Sign-off (automated vs manual — required in PR comment)
+
+Separate **CI-automated** verification from **operator manual** work. Do not leave automated unchecked when the matching CI job is **SUCCESS** on current PR HEAD.
+
+```markdown
+### Sign-off
+
+- [x] **Automated tests (CI)** — [{job name}]({link to passing Actions run on this PR HEAD}) green on `{short_sha}`
+- [ ] **Manual testing** — operator: PR body scenarios (+ comment `### Manual QA` when device QA applies)
+```
+
+| Repo | CI job to link when green | Leave manual unchecked until |
+| ---- | ------------------------- | ------------------------------ |
+| **buds** | `Flutter analyze + test` | Operator runs PR body / comment manual steps |
+| **toebeans** | `Gradle build + shared tests` | Operator runs PR body / comment manual steps |
+
+**Agent rule:** Before POST/PATCH, read PR `statusCheckRollup` (or Actions UI). If the repo’s automated test job above is **SUCCESS** on HEAD, the automated line **must** be `[x]` with a link to that run. Never `[ ]` automated when CI already passed. Manual stays `[ ]` until the operator completes hands-on checks.
+
 ---
 
 *Trainer routes form-check for findings; this comment adds teaching + links hands-on QA.*
@@ -234,11 +262,13 @@ Update the **same** comment; do not leave a stale round-1 verdict at the top.
 
 ## Self-check before posting
 
+- [ ] Manual QA / test plan uses **this PR’s repo only** (buds → Flutter; toebeans → Gradle + `app.toebeans.android`; no cross-repo paths).
 - [ ] PR body test plan has emulator cold-start shell commands, numbered in-app steps, repo paths, reset/clear when needed, expected copy or routes.
 - [ ] PR comment `### Manual QA` repeats the cold-start shell block (not “see PR body” only).
 - [ ] PR comment has `### Trainer notes` with **Program notes**, **Your form**, **Next session** (not Pedagogy).
 - [ ] Every P1+ finding has Status column or explicit waive with reason.
 - [ ] Remediate round updates `head=` sha in comment meta.
+- [ ] PR comment `### Sign-off`: automated line `[x]` with CI run link when test job green on HEAD; manual `[ ]` until operator sign-off.
 
 ---
 
