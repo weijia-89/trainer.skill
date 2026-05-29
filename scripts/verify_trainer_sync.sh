@@ -11,6 +11,9 @@
 #
 # Run from anywhere. Exits 0 on success, nonzero on any invariant violation.
 # Prints concrete failure detail. Syncs canonical SKILL.md + references/ into ~/.cursor/skills/trainer/, then asserts invariants.
+# Troubleshooting: if ~/.cursor is a dangling symlink (e.g. target volume removed), local mirror sync fails.
+#   Use GITHUB_ACTIONS=true GITHUB_WORKSPACE=$REPO_ROOT bash scripts/verify_trainer_sync.sh for repo-only checks,
+#   or repoint ~/.cursor to a live directory before local verify (do not auto-repoint in CI/agents).
 # Invariant 1b byte-identity (references/ mirror) is local-only; CI checks references/ presence + gate files.
 # Authoritative 1b regression gate: full local verify here, or tests/trainer_sync/test_invariant_1b_references_mirror.sh.
 
@@ -28,6 +31,14 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
   fi
   echo "PASS  canonical SKILL.md present"
 
+  CANONICAL_PROMPT="$REPO_ROOT/prompts/trainer-codereview.txt"
+  if [[ ! -f "$CANONICAL_PROMPT" ]]; then
+    echo "FAIL  missing canonical agent prompt: $CANONICAL_PROMPT"
+    FAIL=1
+  else
+    echo "PASS  canonical prompts/trainer-codereview.txt present"
+  fi
+
   # sdk-review F1: CI repo-only path must guard references/ + mandatory gate files (Invariant 1b is local-only)
   CANONICAL_REFS="$REPO_ROOT/references"
   REQUIRED_REF_GATES=(
@@ -36,6 +47,7 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     trainer-runtime-compactness.md  # sdk-review F1: SKILL.md lazy-load target; CI must fail if deleted
     trainer-github-pr-commentary.md  # PR body test plans + Trainer notes on comments
     trainer-codereview.md
+    trainer-contract-surfaces.md
     trainer-codereview-gate.md
   )
   if [[ ! -d "$CANONICAL_REFS" ]]; then
@@ -148,6 +160,13 @@ CURSOR_SKILL="$HOME/.cursor/skills/trainer/SKILL.md"
 CURSOR="$HOME/Projects/.cursor/rules/trainer.mdc"
 WINDSURF_MIRROR="$REPO_ROOT/mirrors/windsurf-trainer.md"
 WINDSURF_INSTALL="${WINDSURF_INSTALL:-$HOME/Projects/.windsurf/rules/trainer.md}"
+
+if [[ -L "$HOME/.cursor" ]] && [[ ! -e "$HOME/.cursor" ]]; then
+  echo "FAIL  ~/.cursor is a dangling symlink (target missing); cannot sync Cursor mirror"
+  echo "      Repoint ~/.cursor to a live directory, or run repo-only verify:"
+  echo "      GITHUB_ACTIONS=true GITHUB_WORKSPACE=$REPO_ROOT bash scripts/verify_trainer_sync.sh"
+  exit 1
+fi
 
 FAIL=0
 CANONICAL_REFS="$REPO_ROOT/references"

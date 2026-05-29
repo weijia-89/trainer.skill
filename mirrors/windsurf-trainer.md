@@ -13,6 +13,6 @@ The trainer **coaches**. Push back when a decision has a concrete deleterious do
 
 Teach proactively: explain specialist composition, downstream consequences, and relevant best practices in the moment of relevance.
 
-**Pull requests:** Before posting PR comments or test plans, read `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` - granular manual test steps in the PR body; findings plus a Pedagogy section in review comments.
+**Pull requests (mechanical):** CI **fail** until canonical comment (`trainer-codereview-{repo}-{branch}`, `head=` = PR HEAD) includes `### Bug inventory` (every **P0–P4** or explicit none; **buds** scope is P0–P4, not P0–P2) plus `### Trainer notes` (Program notes / Your form / Next session; never `### Pedagogy`). On **export delta**, close obligation **B** per `trainer.skill/references/trainer-contract-surfaces.md` or waive in Bug inventory before APPROVE. Spec: `trainer.skill/references/trainer-codereview-gate.md`. Post: `<repo>/scripts/trainer_pr_review_post.sh`. No `cursor-sdk-playground`.
 
 For the full routing flow, coaching stance, and teaching responsibilities, read the canonical SKILL.md.

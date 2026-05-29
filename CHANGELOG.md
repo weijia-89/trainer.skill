@@ -14,9 +14,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ### Added
 
+- **`references/trainer-contract-surfaces.md`** — export delta gate; obligations A (diff-primary), B (contract-surface closure in declared surfaces only), C (verify via Inputs row); routing step 3 in `trainer-codereview.md` and `prompts/trainer-codereview.txt`.
 - **`references/trainer-github-pr-commentary.md`** — mandatory PR body test-plan granularity and PR comment **`### Trainer notes`** (Program notes · Your form · Next session); forbids Pedagogy heading.
 - **`references/trainer-codereview.md`**, **`references/trainer-codereview-gate.md`**, **`prompts/trainer-codereview.txt`** — canonical PR review (migrated off `cursor-sdk-playground`).
 - **`scripts/ci-trainer-pr-review-gate.sh`**, **`scripts/trainer_pr_review_post.sh`**, **`scripts/trainer_pr_review_gate_rerun.sh`**, **`scripts/test_ci_trainer_pr_review_gate.sh`**, **`scripts/test_trainer_pr_review_gate_rerun.sh`** — canonical mechanical PR review gate + idempotent gate job rerun after POST/PATCH (copy into product repos).
+
+### Fixed
+
+- **`references/trainer-github-pr-commentary.md`** — comment meta `head=` template aligned to `{7-char-sha}` (matches `trainer_pr_review_post.sh` and `ci-trainer-pr-review-gate.sh`; was `{full_sha}`).
+- **`references/trainer-github-pr-commentary.md`** — buds Flutter template example leads with iOS Simulator cold-start (Android block optional); matches iOS-first prose and `trainer_manual_test_block.sh`.
+- **`prompts/trainer-codereview.txt`** — Task steps label obligations A/B/C; obligation B waive row requirements; review-rigor scorecard step; Forbidden mirrors `trainer-codereview.md` (export-delta B, review-rigor P1/P2, launch-shell test plans).
+- **`references/trainer-contract-surfaces.md`** — typo `undecared` → `undeclared`.
+- **`scripts/verify_trainer_sync.sh`** — dangling-`~/.cursor` troubleshooting note; early fail with repo-only fallback hint; CI repo-only path checks `prompts/trainer-codereview.txt` presence.
 
 ### Changed
 

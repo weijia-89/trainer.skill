@@ -11,7 +11,7 @@ If a change is going to **merge into `buds` or `toebeans`**, it must have a **fr
 ## Pipeline (product PR)
 
 1. Implement on feature branch; run repo verify.
-2. **trainer** → **form-check** `code-review` per `trainer-codereview.md` (real review body — never empty/stub).
+2. **trainer** → **form-check** `code-review` per `trainer-codereview.md` (real review body — never empty/stub). On **export delta**, also close obligation **B** per `trainer-contract-surfaces.md` or waive in Bug inventory before APPROVE.
 3. Post canonical PR comment: `bash scripts/trainer_pr_review_post.sh <pr#> <verdict> <round> review.md`
 4. **Push order (critical):**
    - **Round 1 (preferred):** post comment with `head=` = local `HEAD`, **then** push so the first CI run sees a matching comment.
@@ -40,11 +40,13 @@ TRAINER_GATE_RERUN_DRY_RUN=1 bash scripts/trainer_pr_review_gate_rerun.sh <pr#> 
 | File | Role |
 |------|------|
 | `references/trainer-codereview.md` | Review routing, verdicts, findings shape |
+| `references/trainer-contract-surfaces.md` | Export delta; obligations A/B/C; contract-surface closure bounds |
 | `references/trainer-github-pr-commentary.md` | PR body test plan + Trainer notes comment template |
 | `scripts/trainer_manual_test_block.sh` | Canonical device cold-start + launch (`buds` iOS-first from `localonly/trainer/` when present; `toebeans` Gradle); `--scenario` for in-app paths; errors on stack vs git-root mismatch. See `references/buds-manual-testing.md`. |
 | `scripts/ci-trainer-pr-review-gate.sh` | Copy to product repo `scripts/` |
 | `scripts/ci-trainer-pr-review-gate-exempt.sh` | Docs/research text-only exempt check |
 | `scripts/trainer_pr_review_post.sh` | Rejects cross-repo launch commands before POST/PATCH; copy to product repo `scripts/` |
+| `scripts/trainer_review_bug_inventory_validate.py` | P0–P4 declaration checks (buds forbids P0–P2-only caps); copy beside gate/post scripts |
 | `scripts/trainer_pr_review_gate_rerun.sh` | Copy to product repo `scripts/` |
 | `scripts/test_ci_trainer_pr_review_gate.sh` | Copy to product repo `scripts/` |
 | `scripts/test_trainer_pr_review_gate_rerun.sh` | Optional smoke test (skip/dry-run) |

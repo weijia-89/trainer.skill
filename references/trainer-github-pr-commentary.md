@@ -27,15 +27,14 @@ Load this file whenever the trainer routes **form-check code-review** (or SDK me
 - Generate snippets with `trainer_manual_test_block.sh <repo>` from that product repo’s git root; the script **errors** if the stack argument does not match the checkout.
 - `trainer_pr_review_post.sh` **rejects** cross-repo launch commands before POST/PATCH.
 
-### Repo detection (buds vs toebeans) — mandatory
+### Severity remediate scope (merge bar)
 
-| PR repo | Launch block | Forbidden in Manual QA / test plan |
-| ------- | ------------ | ---------------------------------- |
-| **buds** | `cd ~/Projects/buds/app && flutter run …` | `./gradlew`, `:androidApp:installDebug`, `app.toebeans.android`, `~/Projects/toebeans` (shared AVD name `toebeans-pixel7` is OK) |
-| **toebeans** | `cd ~/Projects/toebeans && ./gradlew :androidApp:installDebug` + `adb shell am start -n app.toebeans.android/.MainActivity` | `flutter run`, `~/Projects/buds`, `verify_buds.sh` |
+| Repo | Fix or explicit waive before merge | Do not use |
+| ---- | ----------------------------------- | ---------- |
+| **buds** | **P0–P4** (every ranked finding) | “P0–P2 only”, “no P0–P2 blockers” without P3/P4 rows |
+| **toebeans** | **P0–P3** | Same cap shorthand |
 
-- Generate snippets with `trainer_manual_test_block.sh <repo>` from that product repo’s git root; the script **errors** if the stack argument does not match the checkout.
-- `trainer_pr_review_post.sh` **rejects** cross-repo launch commands before POST/PATCH.
+P3/P4 may be **waived** with reason and follow-up hook; they must still appear in **Bug inventory**, not omitted.
 
 ---
 
@@ -44,7 +43,7 @@ Load this file whenever the trainer routes **form-check code-review** (or SDK me
 | Surface | Audience | Content |
 | -------- | -------- | ------- |
 | **PR body — Test plan** | Merger / QA doing hands-on checks | Granular, checkbox steps the human runs locally. Not agent shorthand. |
-| **PR comment — Code review** | Reviewer + future you | Findings table + **Trainer notes** + link to test plan in body. PATCH same comment on remediate rounds (`sdk-codereview` marker). |
+| **PR comment — Code review** | Reviewer + future you | **Bug inventory** (all P0–P4) + **Trainer notes** + link to test plan in body. PATCH same comment on remediate rounds (`trainer-codereview` marker). |
 
 ---
 
@@ -116,20 +115,29 @@ Copy and adapt; replace bracketed placeholders. **Always** lead with the **iOS S
 
 **Goal:** Prove `first_run_gate_completed` and `onboarding_completed` in `app/lib/core/routing.dart` match real navigation.
 
-#### Emulator — cold start (no device booted)
+#### iOS Simulator — cold start (no Simulator booted)
+
+1. Open Simulator and boot **iPhone 17 Pro** (`C2787FD6-4302-4598-89CB-5B5902AA17A5`):
+   `open -a Simulator`
+   `xcrun simctl boot C2787FD6-4302-4598-89CB-5B5902AA17A5`
+   `xcrun simctl bootstatus C2787FD6-4302-4598-89CB-5B5902AA17A5 -b`
+2. `cd ~/Projects/buds/app && flutter devices`
+3. `flutter run -d C2787FD6-4302-4598-89CB-5B5902AA17A5`
+
+#### Android emulator — optional (PR is Android-specific only)
 
 1. `export PATH="$HOME/Library/Android/sdk/platform-tools:$HOME/Library/Android/sdk/emulator:$PATH"`
-2. `flutter emulators --launch toebeans-pixel7` **or** `~/Library/Android/sdk/emulator/emulator -avd toebeans-pixel7 &`
+2. `flutter emulators --launch buds-pixel7` **or** `~/Library/Android/sdk/emulator/emulator -avd buds-pixel7 &`
 3. Wait until ready: `adb devices` → `emulator-5554`; `flutter devices` lists the emulator
-4. `cd ~/Projects/buds/app && flutter run -d emulator-5554` (or `-d toebeans-pixel7`)
+4. `cd ~/Projects/buds/app && flutter run -d emulator-5554`
 
 #### In-app — fresh install
 
 5. **Verify once (repo root, separate terminal):** `cd ~/Projects/buds && bash scripts/verify_buds.sh`
 6. **Clean app state (required for “fresh install”):**
-   - **iOS Simulator:** Long-press the Buds icon → Remove App → Delete App.
-   - **Android emulator:** Settings → Apps → Buds → Storage → Clear storage (or `adb shell pm clear com.example.buds` — confirm `applicationId` in `app/android/app/build.gradle`).
-7. **Relaunch** from the emulator app drawer if you cleared storage while the app was installed (or stop `flutter run` and re-run step 4).
+   - **iOS Simulator:** Long-press the Buds icon → Remove App → Delete App (or `xcrun simctl uninstall C2787FD6-4302-4598-89CB-5B5902AA17A5 io.github.weijia89.buds`).
+   - **Android emulator:** Settings → Apps → Buds → Storage → Clear storage (or `adb shell pm clear io.github.weijia_89.buds` — confirm `applicationId` in `app/android/app/build.gradle`).
+7. **Relaunch** from the Simulator home screen (iOS) or emulator app drawer (Android) if you cleared storage while the app was installed (or stop `flutter run` and re-run step 3 for iOS, or step 4 for Android).
 8. **Expect — S13 splash (~300ms):** Full-screen “buds” wordmark + tagline. Code: `app/lib/features/onboarding/first_run_page.dart` (`_SplashView`). HTML reference: `docs/mocks/explorations/s13-first-run.html`.
 9. **Expect — path question:** Copy “welcome.” and planks “new garden” / “i have a .buds file”. Privacy line at bottom. Do **not** skip; spec has no skip on this screen.
 10. **Tap “new garden”.** Expect navigation to onboarding welcome: headline “a garden, not a CRM”. Code: `app/lib/features/onboarding/welcome_page.dart`.
@@ -193,17 +201,23 @@ Post **one canonical comment** per PR (PATCH on remediate). Structure:
 
 ```markdown
 <!-- trainer-codereview-{repo}-{branch} -->
-<!-- head={full_sha} verdict={APPROVE|REQUEST_CHANGES|BLOCK} round={1|2} -->
+<!-- head={7-char-sha} verdict={APPROVE|REQUEST_CHANGES|BLOCK} round={1|2} -->
 
 ## Trainer / form-check code review (round {N})
 
 **Stakes:** {vibe-safe|vibe-careful|vibe-dangerous} · **Verdict:** {APPROVE|REQUEST_CHANGES|BLOCK}
 
-### Findings
+### Bug inventory
+
+Declare **every** ranked defect P0–P4 from form-check (or explicit zero with evidence). Legacy heading `### Findings` is accepted by CI; prefer **Bug inventory**.
 
 | ID | Sev | Finding | Status |
 |----|-----|---------|--------|
-| … | P0–P4 | … | fixed in `{sha}` / waived / open |
+| B-01 | P2 | … | fixed in `{sha}` / waived: … / open |
+
+**Zero findings (example):** `No P0–P4 findings — full diff read; verify green; see Manual QA.`
+
+**buds:** never summarize as “no P0–P2 blockers”; P3/P4 must appear here or in the zero-finding line.
 
 ### Trainer notes
 
@@ -287,9 +301,20 @@ Update the **same** comment; do not leave a stale round-1 verdict at the top.
 - [ ] PR body test plan has emulator cold-start shell commands, numbered in-app steps, repo paths, reset/clear when needed, expected copy or routes.
 - [ ] PR comment `### Manual QA` repeats the cold-start shell block (not “see PR body” only).
 - [ ] PR comment has `### Trainer notes` with **Program notes**, **Your form**, **Next session** (not Pedagogy).
-- [ ] Every P1+ finding has Status column or explicit waive with reason.
+- [ ] **Bug inventory** lists every P0–P4 (or explicit `No P0–P4 findings` with evidence); buds has no P0–P2-only cap language.
+- [ ] Every P1+ row has Status `fixed` / `waived` / `open` (open P3/P4 on buds needs waive reason before APPROVE).
 - [ ] Remediate round updates `head=` sha in comment meta.
 - [ ] PR comment `### Sign-off`: automated line `[x]` with CI run link when test job green on HEAD; manual `[ ]` until operator sign-off.
+- [ ] Export delta: obligation **B** closed in declared contract surfaces, or Bug inventory **waive** row with Status, reason, and **file list** of unchecked surfaces (toebeans P0–P3; buds P0–P4).
+- [ ] No APPROVE on export delta with silent B skip (no closure, no waive row).
+
+### Export-delta B waiver row (Bug inventory)
+
+When waiving contract-surface closure, add a row (severity per repo tier):
+
+| ID | Sev | Finding | Status |
+|----|-----|---------|--------|
+| B-CS | P3 | Contract-surface B waived: `{old_symbol}` — surfaces not checked: `AGENTS.md`, `scripts/foo.sh` | waived: {reason}; follow-up {hook} |
 
 ---
 
