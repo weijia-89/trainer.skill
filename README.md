@@ -68,16 +68,17 @@ Full SKILL.md body: [`./SKILL.md`](./SKILL.md).
 
 ## Install / use
 
-### As a Claude / Cursor / Windsurf skill
+### As a Cursor skill (local `~/.cursor` mirror)
 
 ```bash
 git clone https://github.com/weijia-89/trainer.skill ~/Projects/trainer.skill
-mkdir -p ~/.claude/skills/trainer
-ln -s ~/Projects/trainer.skill/SKILL.md ~/.claude/skills/trainer/SKILL.md
-bash ~/Projects/trainer.skill/scripts/verify_trainer_sync.sh  # syncs references/ → Claude mirror (Invariant 1b)
+SYNC_DEV_CREATE=1 ~/Projects/scripts/onboard/sync-dev-skills.sh  # overlays ~/Projects/*.skill → ~/.cursor/skills/
+bash ~/Projects/trainer.skill/scripts/verify_trainer_sync.sh     # syncs references/ → ~/.cursor/skills/trainer/
 ```
 
-The skill triggers loading on every coding / prompt-engineering / agent-skill session. Mandatory `file_read` overlays live under `~/Projects/trainer.skill/references/` (absolute paths in `SKILL.md`); `verify_trainer_sync.sh` keeps the Claude mirror byte-identical. The 9 specialists at `./specialists/` are available to the trainer once they're either symlinked into the agent's skill directory or copied alongside.
+**Windsurf (optional):** copy `mirrors/windsurf-trainer.md` into your Windsurf rules directory. Verify checks the repo template only, not `~/.windsurf/`.
+
+The skill triggers on every coding / prompt-engineering / agent-skill session. Mandatory `file_read` overlays live under `~/Projects/trainer.skill/references/` (absolute paths in `SKILL.md`); `verify_trainer_sync.sh` keeps the `~/.cursor/skills/trainer/` mirror byte-identical to the canonical repo. Product repos also load `~/Projects/.cursor/rules/trainer.mdc` when globs match.
 
 ### As a reference / methodology read
 
@@ -89,7 +90,7 @@ Read `SKILL.md` for the routing flow and coaching stance. Read each specialist's
 
 ```
 trainer.skill/
-├── SKILL.md                            # canonical trainer body (~141 lines / ~2166 est tokens as of v0.11.0 compact router)
+├── SKILL.md                            # canonical trainer body (~164 lines / ~2706 est tokens as of v0.12.0)
 ├── README.md                           # this file
 ├── CHANGELOG.md                        # version history per SemVer below
 ├── SECURITY.md                         # vulnerability reporting and supported versions
@@ -151,7 +152,7 @@ See [`SECURITY.md`](./SECURITY.md) for vulnerability reporting, supported versio
 - **`weijia-89/palamedes`**: rigorous-research skill plus multi-agent synthesis prompt. The trainer's routing logic loads `palamedes/skill/SKILL.md` whenever the agent hits research triggers (`research`, `investigate`, `audit`, `fact-check`).
 - **`weijia-89/playwrighter`**: production Playwright pattern library. The trainer loads it on Playwright file triggers; the `form-check` specialist references its quality scorecard.
 - **`weijia-89/vibe-check`**: PR diff scanner for LLM-tell patterns. Composes with this repo's `form-check` specialist during code-review and adversarial-review modes.
-- **`weijia-89/skill-sync`**: cross-IDE sync utility; see `SKILL.md` and `scripts/verify_trainer_sync.sh` for mirror targets.
+- **`scripts/onboard/sync-dev-skills.sh`**: overlays `~/Projects/*.skill` → `~/.cursor/skills/` (replaces `skill-sync` for Cursor-only install).
 
 ---
 

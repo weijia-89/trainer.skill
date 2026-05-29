@@ -10,12 +10,19 @@ Renamed from `ancillary` to `superset` at v0.3.0 for trainer-family coherence (a
 - **MINOR:** new falsifiers, new role archetypes, new templates, new references, new cross-cutting concerns, new patterns borrowed from the public ecosystem; pure renames at the skill level (since `name:` frontmatter changes break existing `Skill: <name>` invocations even if the body is unchanged).
 - **PATCH:** wording, citation updates, example refinements, falsifier rewordings without semantic change.
 
+## [0.8.6], 2026-05-28, Stacked PR merge-train iron law (MINOR)
+
+### Added
+
+- **§ Iron law: stacked PRs and merge train** in `SKILL.md` — one slice per landing on `main` (or single `integrate/*` PR); no parallel hot-file edits without phased `depends_on`; after each merge, rebase remaining PRs, verify `mergeable`, refresh trainer `head=`. Anchored to toebeans 2026-05-28 PRs #74–#79.
+- **H17** and open-PR merge-train cross-cutting concern in `references/falsifier-checklist.md`.
+
 ## [0.8.5], 2026-05-23, Closeout roadmap alignment (PATCH)
 
 ### Changed
 
 - **§ Status check + changelog/README iron law** — closeout (status check, EOD, job complete) now requires each touched repo's roadmap doc(s) aligned with **shipped vs planned**, alongside `CHANGELOG.md` and `README.md`. Per-repo discovery via grep; workers propose roadmap deltas in daily log; orch publishes on status check/closeout.
-- **`templates/status-check-changelog.md`** — operator checklist for status refresh and EOD doc hygiene.
+- **`templates/status-check-changelog.md`** and `cursor-sdk-playground/prompts/superset-status-check-changelog.md` mirrored.
 
 ## [0.8.4], 2026-05-23, Same-repo main integration gate (MINOR)
 
@@ -35,13 +42,13 @@ Renamed from `ancillary` to `superset` at v0.3.0 for trainer-family coherence (a
 ### Added
 
 - `prompts/status-check-changelog-iron-law.md` — short excerpt for orch paste.
-- SKILL.md cross-ref to optional Palamedes UI (no fixed repo path).
+- SKILL.md cross-ref to `cursor-sdk-playground/palamedes-ui/` and `palamedes_serve.sh`.
 
 ## [0.8.2], 2026-05-23, Status check + changelog/README iron law (MINOR)
 
 ### Added
 
-- **§ Status check + changelog/README iron law** in `SKILL.md`. Orch must update coordination SSOT, product `CHANGELOG.md` / `README.md`, and changelog-source blocks on every status check; chat replies point to SSOT only (no rehash). deai prose gate; accomplishment note shape (behavior / scope / verification).
+- **§ Status check + changelog/README iron law** in `SKILL.md`. Orch must update coordination SSOT, product `CHANGELOG.md` / `README.md`, and queue changelog-source blocks on every status check; chat replies point to SSOT only (no rehash). deai prose gate; accomplishment note shape (behavior / scope / verification). SDK weekend binding to `cursor-sdk-playground/weekend-queue.md`.
 - **`templates/status-check-changelog.md`** — operator checklist for status refresh and EOD doc hygiene.
 
 ### Changed

@@ -67,6 +67,19 @@ git merge-tree $(git merge-base <branch-a> <branch-b>) <branch-a> <branch-b>
 
 If any PR is `CONFLICTING` or merge-tree shows `changed in both` on shared parents (changelog, calibration JSONL, lockfiles), **stop** — rebase the later branch onto `origin/main` after the first PR lands, or resolve conflicts before merging either to `main`. Do not assume disjoint module paths make merge order irrelevant.
 
+## Step 2c: After each merge to `main` (open PR stack)
+
+When **multiple PRs stay open** on one repo (merge train), after merge N is confirmed on `origin/main`:
+
+```bash
+git fetch origin main
+# per remaining PR branch / worktree:
+git rebase origin/main   # or: git merge origin/main
+gh pr view <n> --json mergeable,headRefOid
+```
+
+Re-run CI; repost trainer codereview with `head=` = new SHA. Do not open PR N+1 until PR N is `MERGEABLE` or merged. See `SKILL.md` § Iron law: stacked PRs and merge train.
+
 ## Step 3: Merge-order decision
 
 For agents with overlapping or adjacent file sets:

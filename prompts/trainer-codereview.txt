@@ -5,18 +5,20 @@ GitHub shape: ~/Projects/trainer.skill/references/trainer-github-pr-commentary.m
 
 ## Trainer routing (mandatory)
 
-1. trainer — coach; no scope creep beyond the diff.
+1. trainer — coach; no scope creep beyond the diff except contract-surface closure per step 3 when export delta (trainer-contract-surfaces.md).
 2. form-check — code-review / adversarial-review on the PR diff; stakes from repo AGENTS.md.
-3. review-rigor — rubric + scorecard on P1/P2.
+3. contract surfaces — when export delta: obligation B in trainer-contract-surfaces.md (declared surfaces only; OLD symbol grep/read).
+4. review-rigor — rubric + scorecard (P1+; buds through P4).
 
 ## Task
 
-1. Read the full PR diff and every load-bearing changed file (not grep-only for COR/TST).
-2. Classify stakes; run verify command from repo root.
-3. Produce findings ranked P0–P4 (repo policy for merge bar).
+1a. Obligation A (diff-primary): Read the full PR diff and every load-bearing changed file (not grep-only for COR/TST); in-diff callers only beyond changed bodies.
+1b. If export delta (trainer-contract-surfaces.md): obligation B — bounded search for OLD public symbols in declared contract surfaces only; fix each hit or add Bug inventory waive row (Status `waived`, reason, file list of unchecked surfaces; tier: toebeans P0–P3, buds P0–P4) before APPROVE.
+2. Classify stakes; run review-rigor scorecard on P1+ (SEC, COR, ARC, PRF, TST). Obligation C: run verify command from repo root (Inputs Verify row in trainer-codereview.md; note if none).
+3. Produce findings ranked P0–P4 with rubric tags (buds: fix/waive all P0–P4 before merge; toebeans: P0–P3).
 4. Post GitHub:
    - PR comment via: bash scripts/trainer_pr_review_post.sh <PR_NUM> <VERDICT> <ROUND> <review.md>
-   - review.md must include ### Findings and ### Trainer notes (Program notes, Your form, Next session).
+   - review.md must include ### Bug inventory (every P0–P4 or explicit none), ### Trainer notes (Program notes, Your form, Next session).
    - Never ### Pedagogy.
 5. Ensure PR body ## Test plan and comment ### Manual QA include full emulator cold-start shell (PATH, launch AVD, adb/flutter devices, flutter run or gradlew+adb start) then in-app steps. Use trainer_manual_test_block.sh when helpful.
 6. PR comment must include ### Sign-off with automated vs manual checkboxes (trainer-github-pr-commentary.md). If CI automated test job is green on HEAD, check [x] automated with link to that run; leave manual [ ] for operator.
@@ -29,5 +31,8 @@ TRAINER_CODEREVIEW_VERDICT=APPROVE|REQUEST_CHANGES|BLOCK
 ## Forbidden
 
 - Approving without reading changed Dart/Kotlin/Python bodies on behavior PRs.
+- APPROVE on export delta without obligation B closure or explicit Bug inventory waive row (file list per trainer-contract-surfaces.md).
+- Skipping review-rigor scorecard on P1/P2 findings.
 - PR comments without Trainer notes on buds/toebeans.
+- Test plans or Manual QA that only say "cold start" without copy-paste launch shell (PATH, AVD, adb/flutter devices, flutter run or gradlew+adb start).
 - Routing through cursor-sdk-playground for normal product PRs.

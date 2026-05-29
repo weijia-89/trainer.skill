@@ -14,14 +14,21 @@ good="$FIXTURE_DIR/good.json"
 cat >"$good" <<'JSON'
 [
   {
-    "body": "<!-- trainer-codereview-toebeans-feat-style-lab-compose-alignment -->\n<!-- head=805402b verdict=APPROVE round=1 -->\n\n### Trainer notes\n\n1. **Program notes:** test\n2. **Your form:** test\n3. **Next session:** test\n"
+    "body": "<!-- trainer-codereview-toebeans-feat-style-lab-compose-alignment -->\n<!-- head=805402b verdict=APPROVE round=1 -->\n\n### Bug inventory\n\nNo P0–P4 findings — fixture self-test.\n\n### Trainer notes\n\n1. **Program notes:** test\n2. **Your form:** test\n3. **Next session:** test\n"
   }
 ]
 JSON
 
 TRAINER_PR_REVIEW_FIXTURE="$good" \
   bash "$GATE" 99 805402b886b160d3acaf9130cba1363edb1a4d7e feat/style-lab-compose-alignment weijia-89/toebeans \
-  && pass "valid marker + head + trainer notes"
+  || fail "valid marker + head + trainer notes + bug inventory should pass"
+pass "valid marker + head + trainer notes + bug inventory"
+
+bad_inv="$FIXTURE_DIR/bad-inventory.json"
+echo '[{"body": "<!-- trainer-codereview-toebeans-feat-x -->\n<!-- head=abcdef0 verdict=APPROVE -->\n### Trainer notes\n1. **Program notes:** x\n2. **Your form:** x\n3. **Next session:** x\n"}]' >"$bad_inv"
+TRAINER_PR_REVIEW_FIXTURE="$bad_inv" \
+  bash "$GATE" 1 abcdef0123456789abcdef0123456789abcdef0 feat/x weijia-89/toebeans \
+  && fail "missing Bug inventory should fail" || pass "missing Bug inventory rejected"
 
 bad_ped="$FIXTURE_DIR/bad-pedagogy.json"
 echo '[{"body": "<!-- trainer-codereview-toebeans-feat-x -->\n<!-- head=abcdef0 verdict=APPROVE -->\n### Pedagogy\n\n1. x\n"}]' >"$bad_ped"

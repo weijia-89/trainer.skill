@@ -212,15 +212,7 @@ Run **3 phases × 4 lenses**, then synthesize.
 - Supply-chain hygiene: deps pinned with hashes, `pip-audit`/`npm audit`/`govulncheck`, SBOM (CycloneDX or SPDX), SLSA target met
 - **Agent-runtime contract**: harness allowlist, ledger, rollback, prompt-injection scan (`agent-runtime/`)
 
-### Synthesis. Compile P0/P1/P2; score per **proposed change**, not per project; iterate to tier-floor before applying.
-
-### GitHub output (trainer-owned)
-
-When findings ship on a pull request, **form-check supplies the ranked findings**; **trainer** formats GitHub per `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md`:
-
-- PR **body:** granular manual test plan (numbered steps, repo paths, launch/reset instructions, expected UI).
-- PR **comment:** findings table + `### Trainer notes` (Program notes · Your form · Next session) + remediate-round meta (`head=`, verdict).
-- Re-review after fixes; PATCH the same canonical comment (do not leave stale round-1 verdict).
+### Synthesis. Compile P0/P1/P2; score per **proposed change**, not per project; iterate to tier-floor before applying. **PR reviews on trainer-gated repos (buds, toebeans):** form-check ranks findings; trainer owns GitHub shape — read `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` and `~/Projects/trainer.skill/references/trainer-codereview.md` before posting; on export delta, close obligation **B** per `~/Projects/trainer.skill/references/trainer-contract-surfaces.md`.
 
 ## Section 8. Posture rules
 

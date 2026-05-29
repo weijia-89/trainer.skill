@@ -121,15 +121,9 @@ Multi-option decisions with tradeoffs: use decision-presentation template in `~/
 
 ## GitHub PR commentary (all code reviews)
 
-When routing **form-check** for a pull request (buds, toebeans, SDK merge gate, or any review that posts on GitHub):
+When routing **form-check** for a pull request on **buds** or **toebeans**, read `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` in full before writing the PR body or comment. Post via `<repo>/scripts/trainer_pr_review_post.sh`; gate: `trainer-codereview-gate.md`.
 
-1. **Read** `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` in full before writing the PR body or PR comment.
-2. **PR body - Test plan:** emulator **cold-start shell** (PATH, `flutter emulators --launch toebeans-pixel7` or `emulator -avd`, `adb devices` / `flutter devices`, then `flutter run` or `./gradlew :androidApp:installDebug` + `adb shell am start`), then numbered in-app steps with repo paths, reset/clear when needed, and expected UI. Agent-only checkboxes (`verify.sh` passed) are insufficient alone. Snippet: `trainer.skill/scripts/trainer_manual_test_block.sh`.
-3. **PR comment - `### Manual QA`:** same cold-start shell block inline (not “see PR body” only), then in-app steps.
-4. **PR comment - Code review:** findings table **plus** `### Trainer notes` (**Program notes**, **Your form**, **Next session**; never `### Pedagogy`). PATCH the canonical comment on each remediate round; update `head=` and verdict meta.
-5. **Remediate loops:** buds fix **P0–P4** then re-review; toebeans **P0–P3** then re-review (same two-round minimum as merge gate). Trainer stays on routing and teaching; form-check supplies ranked findings.
-
-form-check does not replace this layer; it delivers the rep. Trainer delivers the coach on the GitHub surface.
+**Mechanical:** PR body needs device cold-start shell + in-app steps; PR comment needs `### Bug inventory` (every **P0–P4** row or explicit none), `### Manual QA`, `### Trainer notes` (never `### Pedagogy`). **Remediate:** buds **P0–P4** fix/waive; toebeans **P0–P3**; PATCH same comment each round with fresh `head=`. form-check ranks findings; trainer owns GitHub shape and teaching.
 
 ## Red flags (stop and re-route)
 
@@ -142,10 +136,6 @@ form-check does not replace this layer; it delivers the rep. Trainer delivers th
 - "User said continue; status report replaces routing."
 
 Re-read the relevant section above. Expanded list: `~/Projects/trainer.skill/references/trainer-runtime-compactness.md`. Coaching without named consequence is disapproval, not pushback.
-
-## During form-check adversarial-review
-
-Trainer steps back on **finding ranking and tier floors** (form-check owns the rep). Trainer stays on **GitHub surfaces**: granular test plan in the PR body, Trainer notes in the PR comment, remediate-round PATCH discipline. Load `trainer-github-pr-commentary.md` before posting.
 
 ## Opt-out
 
@@ -168,6 +158,7 @@ All `references/*` paths below use canonical prefix `~/Projects/trainer.skill/re
 | GitHub PR body test plans + Trainer notes on review comments | `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` |
 | PR codereview gate (product repos) | `~/Projects/trainer.skill/references/trainer-codereview-gate.md` |
 | Code review routing + verdicts | `~/Projects/trainer.skill/references/trainer-codereview.md` |
+| Export delta + contract-surface closure (obligation B) | `~/Projects/trainer.skill/references/trainer-contract-surfaces.md` |
 | Repo operations, security, branch protection | `README.md`, `SECURITY.md` |
 
 Verify sync: `scripts/verify_trainer_sync.sh`. Context budget (warn): `tests/context_budget/check_context_budget.py`.

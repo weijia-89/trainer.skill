@@ -2,7 +2,7 @@
 name: superset
 description: Use when spawning 2+ fresh-context agents on the same git repo for isolated parallel work; symptoms include same-tree shared-state risk (.pytest_cache / pyproject collisions), agents overstepping scope, intermediate commits pushed by accident, session learnings lost between iterations, prompt quality drifting between agents.
 type: project-skill
-version: 0.8.5
+version: 0.8.6
 authors: Wei Jia (2026-05-19)
 license: MIT
 composes:
@@ -275,7 +275,7 @@ sources, two primary, all pointing at: track was never live in buds
 context. The orch's correct conclusion: "Track A was undispatched and
 out of scope for buds-orch. Surfacing for drop, not for check-in."
 
-## Status check + changelog/README iron law (added 2026-05-23)
+## Status check + changelog/README iron law (added 2026-05-23, SDK weekend orch)
 
 Every orch **status check** updates contributor-facing docs in the same turn as the coordination SSOT. The operator should not have to ask twice for README/CHANGELOG hygiene at end of day.
 
@@ -289,7 +289,7 @@ Every orch **status check** updates contributor-facing docs in the same turn as 
 ### Iron law (orch)
 
 1. **Evidence first.** Per repo in the active set: `git fetch`, `git status -sb`, `git log origin/main -1`, `gh pr view` when a PR row exists. Same bar as [Status-claim evidence](#status-claim-evidence-iron-law-added-2026-05-19-post-buds-orch-handoff-incident); no narrative without primary sources.
-2. **Coordination SSOT.** Write the full status picture to the project's `localonly/daily/<YYYY-MM-DD>.md` or repo-specific queue doc. Include § **Changelog source** blocks with deai-quality prose: behavior, file scope, verification, ready-made changelog bullets, and explicit "do not claim" lines where scope is easy to overstate.
+2. **Coordination SSOT.** Write the full status picture to the project's queue or daily log (SDK weekend: `cursor-sdk-playground/sdk-ssot-1.md` only for queue state; push playground). Include § **Changelog source** blocks with deai-quality prose: behavior, file scope, verification, ready-made changelog bullets, and explicit "do not claim" lines where scope is easy to overstate.
 3. **Product docs + roadmap per repo touched.** For every repo whose merge or review-ready commit changed since the last check (status check or job closeout), edit in the same session:
    - `CHANGELOG.md` — Keep a Changelog shape; user-facing bullets tied to merge evidence.
    - `README.md` — short "Recent work" / "Development status" stanza (≤8 lines) matching the changelog entry.
@@ -308,19 +308,15 @@ For each queue row or track that merged or reached review-ready, record:
 | Scope | Primary paths/modules; what is explicitly out of scope |
 | Verification | Commands that passed before merge or before review |
 
-### Product PR codereview (default — not SDK playground)
+### SDK weekend binding
 
 | Artifact | Path |
 | -------- | ---- |
-| Review spec | `~/Projects/trainer.skill/references/trainer-codereview.md` |
-| GitHub shape | `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` |
-| Gate + scripts | `~/Projects/trainer.skill/references/trainer-codereview-gate.md` |
-| Agent prompt | `~/Projects/trainer.skill/prompts/trainer-codereview.txt` |
+| Queue SSOT | `~/Projects/cursor-sdk-playground/sdk-ssot-1.md` |
 | Checklist template | `templates/status-check-changelog.md` (this repo) |
+| Ops script | `cursor-sdk-playground/scripts/queue_status.sh` |
 
-**Merge gate (product PRs):** trainer → form-check `code-review` → post canonical PR comment (`trainer_pr_review_post.sh` in product repo) → CI `ci-trainer-pr-review-gate.sh` must pass. **Do not** route daily buds/toebeans PRs through `cursor-sdk-playground`.
-
-Orchestrator brief may restate paths; **Product PR codereview** above is canonical for status-check + merge discipline.
+Orchestrator brief may restate paths; **this section is canonical** for status-check + changelog discipline.
 
 ### What this prevents
 
@@ -329,11 +325,11 @@ Orchestrator brief may restate paths; **Product PR codereview** above is canonic
 - Roadmap still listing merged work as planned (or marking shipped without merge evidence).
 - Long status dumps in chat that duplicate SSOT and burn context.
 
-**Anchor:** 2026-05-23 — operator asked for changelog-ready queue notes and iron-law adoption in superset, not trainer-only.
+**Anchor:** 2026-05-23 SDK weekend — operator asked for changelog-ready queue notes and iron-law adoption in superset, not trainer-only.
 
-**Palamedes UI (optional):** local research UI may live under a project repo; not required for product PR codereview. Iron-law excerpt: `prompts/status-check-changelog-iron-law.md`.
+**SDK affordances (same iron law):** `cursor-sdk-playground/palamedes-ui/` + `scripts/palamedes_serve.sh` for local palamedes research UI; queue SSOT `sdk-ssot-1.md` · kickoffs `sdk-ssot-2.md`. Iron-law excerpt: `prompts/status-check-changelog-iron-law.md`.
 
-**Second agent on same repo:** Before spawning a parallel agent, run the [pre-spawn gate](#pre-spawn-gate-second-agent-same-repo) below and confirm the first PR is **mergeable** into `origin/main`.
+**Weekend queue (slot 2 on same repo):** Before spawning a second SDK worker on a repo that already has an in-flight agent, run the [pre-spawn gate](#pre-spawn-gate-second-agent-same-repo) below and confirm the first agent's PR is **mergeable** into `origin/main` (or schedule serial merge-back). See `cursor-sdk-playground/sdk-ssot-1.md` § Spawn capacity — cross-ref this section.
 
 ## Same-repo parallel agents: main integration gate (added v0.8.4)
 
@@ -366,7 +362,7 @@ Before dispatching agent 2 on a repo that already has agent 1 in flight:
    - If branch 1 has no commits yet, compare branch 2 against `origin/main` only.
 4. **Decision:** spawn agent 2 only if merge-tree is clean **or** the manifest schedules **serial merge-back** (agent 2 `depends_on` agent 1, phase strictly later, agent 2 starts only after agent 1 PR merged and agent 2 rebases on updated `origin/main`).
 
-Do not rely on "disjoint owned_paths" alone when the cap allows ≤2 agents per repo.
+Do not rely on "disjoint owned_paths" alone when the cap allows ≤2 agents per repo (SDK weekend queue policy).
 
 ### Post-agent gate (before PR or right after worker return)
 
@@ -387,6 +383,22 @@ Equivalent: `git merge-tree $(git merge-base HEAD origin/main) HEAD origin/main`
 3. **If conflicting:** do not open a second PR on the same repo until the first lands or the branch rebases; log in daily log / weekend queue status row.
 
 Falsifier **H16** in `references/falsifier-checklist.md` encodes both gates.
+
+## Iron law: stacked PRs and merge train (added v0.8.6)
+
+**Trigger:** 2+ open PRs on one repo whose branches all diverged from a stale `main`, or parallel work touched the same hot files (shell entrypoints, `ROADMAP`/`CHANGELOG`, calibration JSONL, version catalogs). **Worked example (toebeans 2026-05-28):** PRs #74–#79 / #75–#78 stacked on overlapping edits to `ToebeansAppShell.kt`, roadmap docs, and `.codeit/calibration.jsonl` — merging one into another re-conflicted every sibling.
+
+**Iron law (orch + operator):**
+
+1. **Stack discipline.** Land **one merge slice at a time** on `main`: either **one PR per slice** (merge, then cut the next branch from fresh `origin/main`) **or** one **`integrate/<batch-slug>`** branch with a single PR to `main`. Never open N feature PRs from the same stale `main` tip and expect GitHub to stack-merge without a merge train.
+2. **File ownership.** Do not parallel-edit the same hot file across branches. Treat hot paths like implicit `owned_paths` (see [shared parent files](#shared-parent-files-always-check)); if they must change in parallel, use phased manifest rows (`depends_on`, later `phase`) — slot 2 does not start until slot 1 is on `main`.
+3. **After merge N is confirmed on `main`** (`git fetch origin` shows the merge on `origin/main`):
+   - For **each remaining open PR** on that repo (worktree or branch checkout): `git fetch origin main && git rebase origin/main` (preferred) or `git merge origin/main`; resolve conflicts; push; re-run CI.
+   - `gh pr view <n> --json mergeable,headRefOid` until `mergeable` is `MERGEABLE` or the operator parks the PR.
+   - Product repos with trainer codereview gate: repost review with `head=` = new PR HEAD (never leave `head=` on a superseded SHA).
+4. **Worktree + branch naming (extends [Worktree discipline](#worktree-discipline)).** Worker branch slug matches worktree dir `.worktrees/<task-slug>/` and manifest `name`. Integration batches use `integrate/<batch-slug>`. Do not reuse a merged branch name for a new slice.
+
+Orchestrator records merge-train order in the daily log / queue SSOT before opening PR 2+. **H17** in `references/falsifier-checklist.md` encodes open-PR stack checks.
 
 ## Hand-off summary schema (token-optimized)
 
@@ -647,6 +659,7 @@ The prompt template assumes Cascade-on-Windsurf tool semantics (`run_command`, `
 - The agent must make a judgment call the prompt does not preauthorize. (Add explicit authorization or stop-and-report.)
 - Two agents' file sets overlap by any file. (Collision risk; pick one or use worktrees.)
 - Two agents on the **same repo** with only disjoint module paths but no merge-tree / mergeable check. (Integration conflict on shared parents; see same-repo main integration gate.)
+- **N open PRs** on one repo from the same stale `main` without merge-train order in SSOT. (Stacked-merge conflict loop; see stacked PRs iron law.)
 - The verification step does not test the work product (only tests adjacent state).
 - The session-log instructions are absent or vague. (Defeats the iteration loop.)
 - The prompt doesn't specify worktree setup or document the same-tree exception. (Default missing.)

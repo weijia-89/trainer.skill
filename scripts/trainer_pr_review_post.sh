@@ -25,6 +25,7 @@ BODY_FILE=$4
 [[ -f "$BODY_FILE" ]] || { echo "missing body file: $BODY_FILE" >&2; exit 2; }
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$ROOT"
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -52,7 +53,7 @@ _validate_review_body_for_repo() {
     buds)
       if printf '%s\n' "$launch_lines" | grep -qE '\./gradlew|:androidApp:installDebug|app\.toebeans\.android|cd ~/Projects/toebeans|cd /Projects/toebeans'; then
         echo "trainer_pr_review_post: buds PR Manual QA lists toebeans-only launch commands" >&2
-        echo "  Use: cd ~/Projects/buds/app && flutter run (AVD toebeans-pixel7 is OK)" >&2
+        echo "  Use: cd ~/Projects/buds/app && flutter run (AVD buds-pixel7 is OK)" >&2
         exit 1
       fi
       if ! printf '%s' "$body" | grep -qE 'Projects/buds.*flutter run|flutter run.*Projects/buds'; then
@@ -74,6 +75,13 @@ _validate_review_body_for_repo() {
 }
 
 _validate_review_body_for_repo "$BODY_FILE" "$REPO_SLUG"
+
+BUG_INV="${SCRIPT_DIR}/trainer_review_bug_inventory_validate.py"
+if [[ ! -f "$BUG_INV" ]]; then
+  echo "trainer_pr_review_post: missing $BUG_INV" >&2
+  exit 1
+fi
+python3 "$BUG_INV" "$REPO_SLUG" "$BODY_FILE" || exit 1
 
 MARKER="<!-- trainer-codereview-${REPO_SLUG}-${BRANCH_SLUG} -->"
 META="<!-- head=${HEAD_SHORT} verdict=${VERDICT} round=${ROUND} -->"
@@ -99,7 +107,6 @@ fi
 
 rm -f "$OUT"
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 RERUN="${SCRIPT_DIR}/trainer_pr_review_gate_rerun.sh"
 if [[ -f "$RERUN" ]]; then
   bash "$RERUN" "$PR_NUM" "$GH_REPO" || {

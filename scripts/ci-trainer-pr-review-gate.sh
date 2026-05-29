@@ -43,9 +43,13 @@ else
   COMMENTS_JSON=$(gh api "repos/${GH_REPO}/issues/${PR_NUM}/comments" --paginate 2>/dev/null || echo "[]")
 fi
 
-export COMMENTS_JSON HEAD_SHORT BRANCH_SLUG GH_REPO PR_NUM
+export COMMENTS_JSON HEAD_SHORT BRANCH_SLUG GH_REPO PR_NUM GATE_DIR
 python3 - <<'PY'
-import json, os, re, sys
+import importlib.util
+import json
+import os
+import re
+import sys
 
 comments = json.loads(os.environ["COMMENTS_JSON"])
 head_short = os.environ["HEAD_SHORT"].lower()
@@ -107,6 +111,18 @@ if missing:
     sys.exit(1)
 if not meta_verdict.search(body):
     print(f"FAIL  PR #{pr}: review comment missing verdict= in meta line")
+    sys.exit(1)
+
+gate_dir = os.environ.get("GATE_DIR", ".")
+val_path = os.path.join(gate_dir, "trainer_review_bug_inventory_validate.py")
+spec = importlib.util.spec_from_file_location("trainer_bug_inv", val_path)
+if spec is None or spec.loader is None:
+    print(f"FAIL  missing validator script: {val_path}")
+    sys.exit(1)
+mod = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(mod)
+for err in mod.validate_bug_inventory(body, repo):
+    print(f"FAIL  PR #{pr}: {err}")
     sys.exit(1)
 
 verdict = meta_verdict.search(body).group(1)

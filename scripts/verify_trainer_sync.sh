@@ -4,13 +4,16 @@
 # Asserts trainer skill sync targets (canonical SKILL.md + references/, Claude/Cursor/Windsurf mirrors):
 #
 #   1. ~/Projects/trainer.skill/SKILL.md           (canonical)
-#   2. ~/.claude/skills/trainer/SKILL.md            (Claude mirror, byte-identical to canonical)
-#   2b. ~/.claude/skills/trainer/references/     (Claude mirror, byte-identical to canonical references/)
+#   2. ~/.cursor/skills/trainer/SKILL.md            (Cursor mirror, byte-identical to canonical)
+#   2b. ~/.cursor/skills/trainer/references/     (Cursor mirror, byte-identical to canonical references/)
 #   3. ~/Projects/.cursor/rules/trainer.mdc         (Cursor trigger, references canonical path)
-#   4. ~/Projects/.windsurf/rules/trainer.md        (Windsurf trigger, references canonical path)
+#   4. ~/Projects/trainer.skill/mirrors/windsurf-trainer.md  (Windsurf trigger template; optional install elsewhere)
 #
 # Run from anywhere. Exits 0 on success, nonzero on any invariant violation.
-# Prints concrete failure detail. Syncs canonical SKILL.md + references/ into Claude mirror, then asserts invariants.
+# Prints concrete failure detail. Syncs canonical SKILL.md + references/ into ~/.cursor/skills/trainer/, then asserts invariants.
+# Troubleshooting: if ~/.cursor is a dangling symlink (e.g. target volume removed), local mirror sync fails.
+#   Use GITHUB_ACTIONS=true GITHUB_WORKSPACE=$REPO_ROOT bash scripts/verify_trainer_sync.sh for repo-only checks,
+#   or repoint ~/.cursor to a live directory before local verify (do not auto-repoint in CI/agents).
 # Invariant 1b byte-identity (references/ mirror) is local-only; CI checks references/ presence + gate files.
 # Authoritative 1b regression gate: full local verify here, or tests/trainer_sync/test_invariant_1b_references_mirror.sh.
 
@@ -28,6 +31,14 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
   fi
   echo "PASS  canonical SKILL.md present"
 
+  CANONICAL_PROMPT="$REPO_ROOT/prompts/trainer-codereview.txt"
+  if [[ ! -f "$CANONICAL_PROMPT" ]]; then
+    echo "FAIL  missing canonical agent prompt: $CANONICAL_PROMPT"
+    FAIL=1
+  else
+    echo "PASS  canonical prompts/trainer-codereview.txt present"
+  fi
+
   # sdk-review F1: CI repo-only path must guard references/ + mandatory gate files (Invariant 1b is local-only)
   CANONICAL_REFS="$REPO_ROOT/references"
   REQUIRED_REF_GATES=(
@@ -36,6 +47,7 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     trainer-runtime-compactness.md  # sdk-review F1: SKILL.md lazy-load target; CI must fail if deleted
     trainer-github-pr-commentary.md  # PR body test plans + Trainer notes on comments
     trainer-codereview.md
+    trainer-contract-surfaces.md
     trainer-codereview-gate.md
   )
   if [[ ! -d "$CANONICAL_REFS" ]]; then
@@ -142,16 +154,23 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
   exit 0
 fi
 
-CANONICAL="$HOME/Projects/trainer.skill/SKILL.md"
-CLAUDE="$HOME/.claude/skills/trainer/SKILL.md"
+REPO_ROOT="$HOME/Projects/trainer.skill"
+CANONICAL="$REPO_ROOT/SKILL.md"
+CURSOR_SKILL="$HOME/.cursor/skills/trainer/SKILL.md"
 CURSOR="$HOME/Projects/.cursor/rules/trainer.mdc"
-WINDSURF="$HOME/Projects/.windsurf/rules/trainer.md"
+WINDSURF_MIRROR="$REPO_ROOT/mirrors/windsurf-trainer.md"
+WINDSURF_INSTALL="${WINDSURF_INSTALL:-$HOME/Projects/.windsurf/rules/trainer.md}"
+
+if [[ -L "$HOME/.cursor" ]] && [[ ! -e "$HOME/.cursor" ]]; then
+  echo "FAIL  ~/.cursor is a dangling symlink (target missing); cannot sync Cursor mirror"
+  echo "      Repoint ~/.cursor to a live directory, or run repo-only verify:"
+  echo "      GITHUB_ACTIONS=true GITHUB_WORKSPACE=$REPO_ROOT bash scripts/verify_trainer_sync.sh"
+  exit 1
+fi
 
 FAIL=0
-
-REPO_ROOT="$HOME/Projects/trainer.skill"
 CANONICAL_REFS="$REPO_ROOT/references"
-CLAUDE_REFS="$HOME/.claude/skills/trainer/references"
+CURSOR_REFS="$HOME/.cursor/skills/trainer/references"
 
 # sdk-review F1: guard canonical references/ before rsync; set -e aborts on missing source otherwise
 if [[ ! -d "$CANONICAL_REFS" ]]; then
@@ -159,15 +178,15 @@ if [[ ! -d "$CANONICAL_REFS" ]]; then
   exit 1
 fi
 
-# Mirror sync: Claude skill tree must include references/ for mandatory file_read overlays (post #4 P2)
-mkdir -p "$(dirname "$CLAUDE")" "$CLAUDE_REFS"
-rsync -a --delete "$CANONICAL_REFS/" "$CLAUDE_REFS/"
-if ! diff -q "$CANONICAL" "$CLAUDE" >/dev/null 2>&1; then
-  cp "$CANONICAL" "$CLAUDE"
+# Mirror sync: Cursor skill tree must include references/ for mandatory file_read overlays (post #4 P2)
+mkdir -p "$(dirname "$CURSOR_SKILL")" "$CURSOR_REFS"
+rsync -a --delete "$CANONICAL_REFS/" "$CURSOR_REFS/"
+if ! diff -q "$CANONICAL" "$CURSOR_SKILL" >/dev/null 2>&1; then
+  cp "$CANONICAL" "$CURSOR_SKILL"
 fi
 
 # Existence checks
-for path in "$CANONICAL" "$CLAUDE" "$CURSOR" "$WINDSURF"; do
+for path in "$CANONICAL" "$CURSOR_SKILL" "$CURSOR" "$WINDSURF_MIRROR"; do
   if [[ ! -f "$path" ]]; then
     echo "FAIL  missing: $path"
     FAIL=1
@@ -178,28 +197,28 @@ if [[ "$FAIL" -ne 0 ]]; then
   exit 1
 fi
 
-# Invariant 1: canonical and Claude mirror are byte-identical
-if ! diff -q "$CANONICAL" "$CLAUDE" >/dev/null; then
-  echo "FAIL  canonical and Claude mirror diverge:"
+# Invariant 1: canonical and Cursor skills mirror are byte-identical
+if ! diff -q "$CANONICAL" "$CURSOR_SKILL" >/dev/null; then
+  echo "FAIL  canonical and Cursor skills mirror diverge:"
   echo "      $CANONICAL"
-  echo "      $CLAUDE"
-  diff "$CANONICAL" "$CLAUDE" | head -40 | sed 's/^/        /'
+  echo "      $CURSOR_SKILL"
+  diff "$CANONICAL" "$CURSOR_SKILL" | head -40 | sed 's/^/        /'
   FAIL=1
 else
-  echo "PASS  canonical ≡ Claude mirror (byte-identical)"
+  echo "PASS  canonical ≡ Cursor skills mirror (byte-identical)"
 fi
 
-# Invariant 1b: canonical references/ ≡ Claude mirror (byte-identical per file)
+# Invariant 1b: canonical references/ ≡ Cursor skills mirror (byte-identical per file)
 # sdk-review F4: canonical refs guard runs once before rsync (lines 152–156 above); no duplicate check here
-if [[ ! -d "$CLAUDE_REFS" ]]; then
-  echo "FAIL  missing Claude references mirror: $CLAUDE_REFS"
+if [[ ! -d "$CURSOR_REFS" ]]; then
+  echo "FAIL  missing Cursor references mirror: $CURSOR_REFS"
   FAIL=1
 else
   REF_FAIL=0
   while IFS= read -r -d '' ref_file; do
     rel="${ref_file#"$CANONICAL_REFS"/}"
-    claude_file="$CLAUDE_REFS/$rel"
-    if [[ ! -f "$claude_file" ]] || ! diff -q "$ref_file" "$claude_file" >/dev/null; then
+    cursor_file="$CURSOR_REFS/$rel"
+    if [[ ! -f "$cursor_file" ]] || ! diff -q "$ref_file" "$cursor_file" >/dev/null; then
       echo "FAIL  references mirror diverge: $rel"
       REF_FAIL=1
     fi
@@ -207,7 +226,7 @@ else
   if [[ "$REF_FAIL" -ne 0 ]]; then
     FAIL=1
   else
-    echo "PASS  canonical references/ ≡ Claude mirror (byte-identical)"
+    echo "PASS  canonical references/ ≡ Cursor skills mirror (byte-identical)"
   fi
 fi
 
@@ -220,23 +239,35 @@ else
   echo "PASS  Cursor trigger references canonical path"
 fi
 
-# Invariant 3: Windsurf trigger references the canonical absolute path
-if ! grep -q "$CANONICAL" "$WINDSURF"; then
-  echo "FAIL  Windsurf trigger does not reference canonical path: $CANONICAL"
-  echo "      (checked in $WINDSURF)"
+# Invariant 3: Windsurf template references the canonical path (absolute or ~/Projects/)
+if ! grep -qE '(~/Projects/trainer\.skill/SKILL\.md|/Projects/trainer\.skill/SKILL\.md)' "$WINDSURF_MIRROR"; then
+  echo "FAIL  Windsurf template does not reference canonical trainer.skill/SKILL.md"
+  echo "      (checked in $WINDSURF_MIRROR)"
   FAIL=1
 else
-  echo "PASS  Windsurf trigger references canonical path"
+  echo "PASS  Windsurf template references canonical path"
+fi
+
+if [[ -f "$WINDSURF_INSTALL" ]]; then
+  if ! diff -q "$WINDSURF_MIRROR" "$WINDSURF_INSTALL" >/dev/null 2>&1; then
+    echo "WARN  optional Windsurf install diverges from mirrors/windsurf-trainer.md"
+    echo "      install: $WINDSURF_INSTALL"
+    echo "      fix: cp \"$WINDSURF_MIRROR\" \"$WINDSURF_INSTALL\""
+  else
+    echo "PASS  optional Windsurf install matches template"
+  fi
+else
+  echo "PASS  no Windsurf install at $WINDSURF_INSTALL (template-only OK)"
 fi
 
 # Invariant 4: SKILL.md + IDE triggers agree on version string (not references/ tree; see header 2b)
 CANONICAL_VERSION=$(grep -m1 '^version:' "$CANONICAL" | awk '{print $2}')
-CLAUDE_VERSION=$(grep -m1 '^version:' "$CLAUDE" | awk '{print $2}')
+CURSOR_SKILL_VERSION=$(grep -m1 '^version:' "$CURSOR_SKILL" | awk '{print $2}')
 CURSOR_VERSION=$(grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' "$CURSOR" | head -1 | tr -d 'v')
-WINDSURF_VERSION=$(grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' "$WINDSURF" | head -1 | tr -d 'v')
+WINDSURF_VERSION=$(grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' "$WINDSURF_MIRROR" | head -1 | tr -d 'v')
 
-if [[ "$CANONICAL_VERSION" != "$CLAUDE_VERSION" ]]; then
-  echo "FAIL  version mismatch canonical=$CANONICAL_VERSION claude=$CLAUDE_VERSION"
+if [[ "$CANONICAL_VERSION" != "$CURSOR_SKILL_VERSION" ]]; then
+  echo "FAIL  version mismatch canonical=$CANONICAL_VERSION cursor_skill=$CURSOR_SKILL_VERSION"
   FAIL=1
 fi
 if [[ "$CANONICAL_VERSION" != "$CURSOR_VERSION" ]]; then
@@ -260,7 +291,7 @@ fi
 
 # Invariant 6: zero em-dashes (Wei's writing-style hard rule, 2026-05-15)
 EMDASH_FAIL=0
-for path in "$CANONICAL" "$CLAUDE" "$CURSOR" "$WINDSURF"; do
+for path in "$CANONICAL" "$CURSOR_SKILL" "$CURSOR" "$WINDSURF_MIRROR"; do
   count=$(grep -c "—" "$path" 2>/dev/null) || count=0
   if [[ "$count" -gt 0 ]]; then
     echo "FAIL  $count em-dash(es) found in $path (hard rule: zero em-dashes)"
@@ -279,11 +310,11 @@ if ! grep -q "^alwaysApply: true" "$CURSOR"; then
 else
   echo "PASS  Cursor trigger is alwaysApply: true"
 fi
-if ! grep -q "^trigger: always_on" "$WINDSURF"; then
-  echo "FAIL  Windsurf trigger missing 'trigger: always_on' (trainer must be always-on)"
+if ! grep -q "^trigger: always_on" "$WINDSURF_MIRROR"; then
+  echo "FAIL  Windsurf template missing 'trigger: always_on' (trainer must be always-on)"
   FAIL=1
 else
-  echo "PASS  Windsurf trigger is always_on"
+  echo "PASS  Windsurf template is always_on"
 fi
 
 # Invariant 8: zero private-path leaks in the trainer.skill repo (everything that
@@ -291,7 +322,6 @@ fi
 # private review docs, career-help workspace (renamed to toren/ 2026-05-19, both
 # names kept in pattern for transition safety), or local-only directories before
 # they ship. Added 2026-05-16 after two consecutive sanitization passes.
-REPO_ROOT="$HOME/Projects/trainer.skill"
 LEAK_PATTERN='(/Users/wjia/|~/Projects/(reviews|career-help|toren|local[-_]?only)/)'
 SELF_BASENAME="$(basename "${BASH_SOURCE[0]}")"
 
