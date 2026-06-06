@@ -26,6 +26,8 @@ BODY_FILE=$4
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=trainer_gh_repo.sh
+source "$SCRIPT_DIR/trainer_gh_repo.sh"
 cd "$ROOT"
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
@@ -33,9 +35,7 @@ HEAD_SHA=$(git rev-parse HEAD)
 HEAD_SHORT=${HEAD_SHA:0:7}
 BRANCH_SLUG=${BRANCH//\//-}
 REMOTE=$(git remote get-url origin 2>/dev/null || true)
-if [[ "$REMOTE" =~ github\.com[:/]([^/]+/[^/.]+) ]]; then
-  GH_REPO="${BASH_REMATCH[1]%.git}"
-else
+if ! GH_REPO=$(trainer_gh_repo_from_remote "$REMOTE"); then
   echo "cannot infer gh repo from origin: $REMOTE" >&2
   exit 2
 fi
