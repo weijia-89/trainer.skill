@@ -27,13 +27,14 @@ PR_NUM=${1:-}
 GH_REPO=${2:-}
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=trainer_gh_repo.sh
+source "$SCRIPT_DIR/trainer_gh_repo.sh"
 cd "$ROOT"
 
 if [[ -z "$GH_REPO" ]]; then
   REMOTE=$(git remote get-url origin 2>/dev/null || true)
-  if [[ "$REMOTE" =~ github\.com[:/]([^/]+/[^/.]+) ]]; then
-    GH_REPO="${BASH_REMATCH[1]%.git}"
-  else
+  if ! GH_REPO=$(trainer_gh_repo_from_remote "$REMOTE"); then
     echo "trainer_pr_review_gate_rerun: cannot infer gh repo from origin" >&2
     exit 0
   fi
