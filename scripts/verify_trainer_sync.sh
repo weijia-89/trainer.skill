@@ -19,6 +19,17 @@
 
 set -euo pipefail
 
+# Portable tracked-file list (macOS default bash 3.2 lacks mapfile).
+collect_tracked_files() {
+  local repo_root="$1" self_basename="$2"
+  TRACKED_FILES=()
+  while IFS= read -r relpath; do
+    [[ -n "$relpath" ]] && TRACKED_FILES+=("$repo_root/$relpath")
+  done < <(
+    git -C "$repo_root" ls-files | grep -v "^scripts/$self_basename\$"
+  )
+}
+
 # GitHub Actions has no local Claude/Cursor/Windsurf mirrors; run repo-only checks.
 if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
   REPO_ROOT="${GITHUB_WORKSPACE:?GITHUB_WORKSPACE unset in CI}"
@@ -49,6 +60,7 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     trainer-codereview.md
     trainer-contract-surfaces.md
     trainer-codereview-gate.md
+    trainer-epistemic-layers.md
   )
   if [[ ! -d "$CANONICAL_REFS" ]]; then
     echo "FAIL  missing canonical references/: $CANONICAL_REFS"
@@ -67,11 +79,7 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
   fi
 
   SELF_BASENAME="$(basename "${BASH_SOURCE[0]}")"
-  mapfile -t TRACKED_FILES < <(
-    git -C "$REPO_ROOT" ls-files \
-      | grep -v "^scripts/$SELF_BASENAME\$" \
-      | sed "s|^|$REPO_ROOT/|"
-  )
+  collect_tracked_files "$REPO_ROOT" "$SELF_BASENAME"
   LEAK_PATTERN='(/Users/wjia/|~/Projects/(reviews|career-help|toren|local[-_]?only)/)'
   if [[ ${#TRACKED_FILES[@]} -gt 0 ]]; then
     LEAK_REPORT=$(grep -HnE "$LEAK_PATTERN" "${TRACKED_FILES[@]}" 2>/dev/null || true)
@@ -326,14 +334,7 @@ LEAK_PATTERN='(/Users/wjia/|~/Projects/(reviews|career-help|toren|local[-_]?only
 SELF_BASENAME="$(basename "${BASH_SOURCE[0]}")"
 
 if command -v git >/dev/null 2>&1 && [[ -d "$REPO_ROOT/.git" ]]; then
-  # Collect tracked files, excluding this verify script (which contains the
-  # patterns by necessity) and the CHANGELOG (which documents past sanitization
-  # work and may reference the patterns in prose).
-  mapfile -t TRACKED_FILES < <(
-    git -C "$REPO_ROOT" ls-files \
-      | grep -v "^scripts/$SELF_BASENAME\$" \
-      | sed "s|^|$REPO_ROOT/|"
-  )
+  collect_tracked_files "$REPO_ROOT" "$SELF_BASENAME"
   if [[ ${#TRACKED_FILES[@]} -gt 0 ]]; then
     LEAK_REPORT=$(grep -HnE "$LEAK_PATTERN" "${TRACKED_FILES[@]}" 2>/dev/null || true)
     if [[ -n "$LEAK_REPORT" ]]; then

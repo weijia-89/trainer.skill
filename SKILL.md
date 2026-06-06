@@ -3,7 +3,7 @@ name: trainer
 description: |
   Loaded first on every coding / prompt-engineering / agent-skill session, always on. The trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer coaches: it pushes back when user decisions have deleterious downstream consequences or veer from best practices without articulated reason. Routes to form-check / recovery / gymbuddy / safetybar / diet / pr / program / warmup / superset at the right moment. Triggers: code review, adversarial review, plan a new app, harden, refactor, recover from incident, pair-coding, training program, personal record, context priming, parallel agent dispatch, orchestrator handoff, gym-skill, gym-skills.
 type: project-skill
-version: 0.12.0
+version: 0.13.0
 authors: Wei Jia (2026-05-18)
 license: LicenseRef-IronLaw-NC-1.0
 required_tools: [file_read]
@@ -69,6 +69,8 @@ When a task involves *workflow disciplines* (planning, debugging, TDD, finishing
 - Before claiming “done”: `verification-before-completion`
 - Parallel work with isolation: `using-git-worktrees` (or `superset` when dispatching 2+ agents)
 
+**Epistemic layers (research vs RAG eval vs code QA):** When the task mixes Palamedes-style research, LLM/RAG metrics, or release gates, load `~/Projects/trainer.skill/references/trainer-epistemic-layers.md` and assign primary layer before dispatch. Palamedes does **not** own eval-corpus tiers or CI harness config.
+
 Full examples and violation coaching: `~/Projects/trainer.skill/references/trainer-runtime-compactness.md`. Mechanical pre-action detail: `~/Projects/trainer.skill/references/trainer-pre-action-gates.md`.
 
 ## Mechanical pre-action gate
@@ -105,7 +107,7 @@ Procedure, incidents, three-layer orch/meta/worker, status-check closeout: `~/Pr
 
 ## Routing decision flow
 
-1. **Activity:** plan new code → `form-check plan-new-app`; review diff → `form-check code-review`; post-incident → `recovery`; pair → `gymbuddy`; multi-week plan → `program`; workspace open → `warmup`; 2+ parallel agents same repo → `superset`.
+1. **Activity:** plan new code → `form-check plan-new-app`; review diff → `form-check code-review`; post-incident → `recovery`; pair → `gymbuddy`; multi-week plan → `program`; workspace open → `warmup`; 2+ parallel agents same repo → `superset`; research vs RAG-eval vs code-QA layer mix → `trainer-epistemic-layers.md` then route primary layer.
 2. **Stakes:** vibe-safe / vibe-careful / vibe-dangerous (`form-check` Section 5). Vibe-dangerous → `safetybar`; post-incident plus dangerous → `recovery`; tight tokens → `diet`; parallel dispatch at any tier → `superset` for isolation and prompts.
 3. **Evolve:** routing may change mid-session (review finds incident → `recovery`; context pressure → `superset` handoff).
 
@@ -159,6 +161,7 @@ All `references/*` paths below use canonical prefix `~/Projects/trainer.skill/re
 | PR codereview gate (product repos) | `~/Projects/trainer.skill/references/trainer-codereview-gate.md` |
 | Code review routing + verdicts | `~/Projects/trainer.skill/references/trainer-codereview.md` |
 | Export delta + contract-surface closure (obligation B) | `~/Projects/trainer.skill/references/trainer-contract-surfaces.md` |
+| Epistemic layers (research vs eval vs code QA) | `~/Projects/trainer.skill/references/trainer-epistemic-layers.md` |
 | Repo operations, security, branch protection | `README.md`, `SECURITY.md` |
 
 Verify sync: `scripts/verify_trainer_sync.sh`. Context budget (warn): `tests/context_budget/check_context_budget.py`.
