@@ -262,6 +262,21 @@ Separate **CI-automated** verification from **operator manual** work. Do not lea
 
 **Agent rule:** Before POST/PATCH, read PR `statusCheckRollup` (or Actions UI). If the repo’s automated test job above is **SUCCESS** on HEAD, the automated line **must** be `[x]` with a link to that run. Never `[ ]` automated when CI already passed. Manual stays `[ ]` until the operator completes hands-on checks.
 
+### Post-comment automated verify loop (all repos — mandatory)
+
+Order is **not** optional:
+
+1. **POST or PATCH** the canonical trainer comment (Bug inventory + Trainer notes; automated may start `[ ]` if not run yet).
+2. **Run** the PR test plan’s automated commands from repo root (`bash scripts/smoke_test.sh`, `python3 -m unittest …`, `./gradlew …`, `flutter test`, etc.). Do not claim pass without executing.
+3. **PATCH** the same canonical comment (same marker, fresh `head=`):
+   - Add or update `### Automated verification` with each command `[x]` and one-line result (`PASS`, test count, short SHA).
+   - Update `### Sign-off`: automated `[x]`; manual stays `[ ]`.
+4. **PATCH PR body** `## Test plan` → `### Automated (agent / CI)` checkboxes to `[x]` when step 2 passed (use `gh pr edit`).
+
+Skill/script repos without a device QA gate (e.g. **opacite**): local automated run + CI link satisfies the automated sign-off; manual remains operator-owned.
+
+**Forbidden:** APPROVE comment with automated lines still `[ ]` after you had time to run the repo verify commands in-session.
+
 ---
 
 *Trainer routes form-check for findings; this comment adds teaching + links hands-on QA.*
@@ -304,7 +319,8 @@ Update the **same** comment; do not leave a stale round-1 verdict at the top.
 - [ ] **Bug inventory** lists every P0–P4 (or explicit `No P0–P4 findings` with evidence); buds has no P0–P2-only cap language.
 - [ ] Every P1+ row has Status `fixed` / `waived` / `open` (open P3/P4 on buds needs waive reason before APPROVE).
 - [ ] Remediate round updates `head=` sha in comment meta.
-- [ ] PR comment `### Sign-off`: automated line `[x]` with CI run link when test job green on HEAD; manual `[ ]` until operator sign-off.
+- [ ] Post-comment loop done: automated commands **run** in-session, then comment `### Automated verification` + `### Sign-off` automated `[x]` PATCHed; PR body automated boxes checked.
+- [ ] PR comment `### Sign-off`: automated line `[x]` with local result and/or CI run link on HEAD; manual `[ ]` until operator sign-off.
 - [ ] Export delta: obligation **B** closed in declared contract surfaces, or Bug inventory **waive** row with Status, reason, and **file list** of unchecked surfaces (toebeans P0–P3; buds P0–P4).
 - [ ] No APPROVE on export delta with silent B skip (no closure, no waive row).
 

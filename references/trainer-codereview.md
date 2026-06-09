@@ -45,6 +45,7 @@ Use ranked findings `### T{n} · P{0-4} · {rubric} · conf N%`. **buds:** fix o
    - `### Bug inventory` (every P0–P4 row or explicit none) + `### Trainer notes` (**Program notes**, **Your form**, **Next session**)
    - Never `### Pedagogy` or `### Cool-down`
 3. **Post / PATCH:** `<repo>/scripts/trainer_pr_review_post.sh` (copy from `trainer.skill/scripts/`).
+4. **Post-comment verify (after step 3):** Run automated commands from the PR test plan; **PATCH** the same comment with `### Automated verification` checked + `### Sign-off` automated `[x]`; check off PR body automated boxes. Detail: `trainer-github-pr-commentary.md` § Post-comment automated verify loop.
 
 ## Mechanical enforcement
 
