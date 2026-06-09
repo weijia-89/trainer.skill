@@ -38,7 +38,7 @@ Use ranked findings `### T{n} · P{0-4} · {rubric} · conf N%`. **buds:** fix o
 
 ## GitHub surfaces (mandatory for buds / toebeans)
 
-1. **PR body** — granular `## Test plan` (numbered manual steps: repo path, launch, cold start, expected UI). See `trainer-github-pr-commentary.md`.
+1. **PR body (at open)** — granular `## Test plan`: setup commands + scenario checkboxes. See `trainer-github-pr-commentary.md` and `templates/buds-pr-test-surfaces.md`.
 2. **PR comment** — one canonical comment per PR:
    - Marker: `<!-- trainer-codereview-{repo}-{branch-slug} -->`
    - Meta: `<!-- head={7-char-sha} verdict=… round={N} -->`
@@ -53,11 +53,13 @@ Product repos wire `scripts/ci-trainer-pr-review-gate.sh` in CI. Detail: `traine
 
 ## Forbidden
 
+- Test plans or manual QA that name UI states demo/fixtures cannot reach (see `trainer-test-data.md`).
 - Approving without reading changed bodies for behavior PRs.
 - **APPROVE** on export delta without obligation **B** closure or explicit Bug inventory waive row (file list per `trainer-contract-surfaces.md`).
 - Skipping review-rigor on P1/P2.
 - Drive-by refactors or new deps.
-- Test plans that only say "cold start" without launch steps.
+- Device-touching PRs whose **initial body** says "cold start" without copy-paste setup commands.
+- Trainer remediate comments that repeat full launch boilerplate without a testing reason.
 - PR comments without Trainer notes on trainer-gated repos.
 
 ## Agent prompt template

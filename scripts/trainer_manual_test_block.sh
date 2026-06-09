@@ -112,22 +112,39 @@ _buds_fallback_ios() {
   cat <<'EOF'
 #### iOS Simulator — cold start (buds; copy-paste)
 
-Assume **no** Simulator booted and **no** `flutter run` session.
+Assume **no** Simulator booted and **no** `flutter run` session. Default device: **iPhone 13** via in-repo scripts (see `.cursor/rules/ios-test-device.mdc`).
 
-1. Open Simulator and boot **iPhone 17 Pro** (`C2787FD6-4302-4598-89CB-5B5902AA17A5`):
-   ```bash
-   open -a Simulator
-   xcrun simctl boot C2787FD6-4302-4598-89CB-5B5902AA17A5
-   xcrun simctl bootstatus C2787FD6-4302-4598-89CB-5B5902AA17A5 -b
-   ```
-2. **Run Buds:**
-   ```bash
-   cd ~/Projects/buds/app
-   flutter devices
-   flutter run -d C2787FD6-4302-4598-89CB-5B5902AA17A5
-   ```
-3. **Fresh install:** `xcrun simctl uninstall C2787FD6-4302-4598-89CB-5B5902AA17A5 io.github.weijia89.buds` then repeat step 2.
-4. **Verify:** `cd ~/Projects/buds && bash scripts/verify_buds.sh`
+**Checkout + verify**
+
+```bash
+cd ~/Projects/buds
+git checkout {branch}
+git pull --ff-only origin {branch}
+bash scripts/verify_buds.sh
+```
+
+**Cold start**
+
+```bash
+cd ~/Projects/buds/app
+flutter pub get
+UDID="$(bash scripts/boot_ios_test_sim.sh)"
+flutter devices
+flutter run -d "${UDID}"
+```
+
+One-liner: `cd ~/Projects/buds/app && bash scripts/run_ios.sh`
+
+**Fresh install (before each scenario)**
+
+```bash
+cd ~/Projects/buds/app
+UDID="$(bash scripts/boot_ios_test_sim.sh)"
+xcrun simctl uninstall "${UDID}" io.github.weijia89.buds
+flutter run -d "${UDID}"
+```
+
+Then numbered **in-app** steps (routes, expected copy).
 
 **Forbidden on buds PRs:** `./gradlew`, `:androidApp:installDebug`, `app.toebeans.android`, toebeans launch paths.
 EOF
@@ -165,40 +182,52 @@ _emulator_block_toebeans() {
   cat <<'EOF'
 #### Emulator — cold start (no device booted)
 
-Assume **no** emulator running.
+Assume **no** emulator running. Copy-paste **all** of steps 1–6 before in-app scenarios.
 
-1. **PATH (Android SDK tools):**
+1. **JDK 17** (required for `./gradlew`; Homebrew is not visible to `/usr/libexec/java_home` unless symlinked):
    ```bash
-   export PATH="$HOME/Library/Android/sdk/platform-tools:$HOME/Library/Android/sdk/emulator:$PATH"
+   for _jdk in \
+     /opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home \
+     /usr/local/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home; do
+     [[ -x "$_jdk/bin/java" ]] && export JAVA_HOME="$_jdk" && break
+   done
+   if [[ -z "${JAVA_HOME:-}" ]]; then
+     echo "JDK 17 not found. Run: brew install openjdk@17" >&2
+     exit 1
+   fi
+   export PATH="$JAVA_HOME/bin:$PATH"
    ```
-2. **Launch AVD** (pick one):
+2. **Android SDK** (`adb` + emulator; fixes `command not found: adb`):
+   ```bash
+   export ANDROID_HOME="$HOME/Library/Android/sdk"
+   export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+   ```
+3. **Launch AVD** (pick one):
    ```bash
    flutter emulators --launch toebeans-pixel7
    ```
    ```bash
    ~/Library/Android/sdk/emulator/emulator -avd toebeans-pixel7 &
    ```
-3. **Wait until device is ready** (repeat until a device line appears):
+4. **Wait until device is ready** (repeat until a device line appears):
    ```bash
    adb devices
-   flutter devices
    ```
-   Expect `emulator-5554` (or device id `toebeans-pixel7` in `flutter devices`).
-EOF
-}
-
-_toebeans_launch() {
-  cat <<'EOF'
-4. **Install debug APK** (from repo root):
+   Expect `emulator-5554` with state `device`.
+5. **Install debug APK** (from repo root):
    ```bash
    cd ~/Projects/toebeans
    ./gradlew :androidApp:installDebug
    ```
-5. **Launch main activity:**
+6. **Launch main activity:**
    ```bash
    adb shell am start -n app.toebeans.android/.MainActivity
    ```
 EOF
+}
+
+_toebeans_launch() {
+  : # steps 5–6 merged into _emulator_block_toebeans for one copy-paste block
 }
 
 case "$STACK" in

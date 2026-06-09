@@ -12,7 +12,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ## [Unreleased]
 
-_(none)_
+### Added
+
+- **`references/templates/buds-pr-test-surfaces.md`** — setup on **initial PR body**; trainer/cycle comments include shell only when testing needs it.
+- Tracked mirror: `buds/docs/trainer/pr-test-plan-template.md`.
+
+### Changed
+
+- **`references/trainer-github-pr-commentary.md`** — PR-body-first layout; iPhone 13 via `boot_ios_test_sim.sh`; no full boilerplate on every remediate PATCH.
+- **`scripts/trainer_manual_test_block.sh`** — buds iOS fallback uses script-based iPhone 13 blocks.
+- **`references/buds-manual-testing.md`**, **`prompts/trainer-codereview.txt`**, **`SKILL.md`** — PR-body-first, comment-on-demand.
+
 
 ## [0.13.0] — 2026-06-05
 
