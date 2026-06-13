@@ -38,26 +38,41 @@ Use ranked findings `### T{n} · P{0-4} · {rubric} · conf N%`. **buds:** fix o
 
 ## GitHub surfaces (mandatory for buds / toebeans)
 
-1. **PR body** — granular `## Test plan` (numbered manual steps: repo path, launch, cold start, expected UI). See `trainer-github-pr-commentary.md`.
+1. **PR body (at open)** — granular `## Test plan`: setup commands + scenario checkboxes. See `trainer-github-pr-commentary.md` and `templates/buds-pr-test-surfaces.md`.
 2. **PR comment** — one canonical comment per PR:
    - Marker: `<!-- trainer-codereview-{repo}-{branch-slug} -->`
    - Meta: `<!-- head={7-char-sha} verdict=… round={N} -->`
    - `### Bug inventory` (every P0–P4 row or explicit none) + `### Trainer notes` (**Program notes**, **Your form**, **Next session**)
    - Never `### Pedagogy` or `### Cool-down`
 3. **Post / PATCH:** `<repo>/scripts/trainer_pr_review_post.sh` (copy from `trainer.skill/scripts/`).
+4. **Post-comment verify (after step 3):** Run automated commands from the PR test plan; **PATCH** the same comment with `### Automated verification` checked + `### Sign-off` automated `[x]`; check off PR body automated boxes. Detail: `trainer-github-pr-commentary.md` § Post-comment automated verify loop.
 
 ## Mechanical enforcement
 
 Product repos wire `scripts/ci-trainer-pr-review-gate.sh` in CI. Detail: `trainer-codereview-gate.md`.
 
+## Artifact vs product code (R-5)
+
+| PR touches | Route | Codereview rubric (SEC/COR/ARC/PRF/TST) |
+|------------|-------|----------------------------------------|
+| Product code (with or without skill files) | `form-check code-review` on **code diff**; explicit **phylax** on skill/prompt/packet diff if present | Yes — on product code |
+| **Only** skill/prompt/packet paths (`.cursor/skills/`, `*.skill/`, piranesi packets) | Explicit **phylax** artifact review — load `~/Projects/phylax.skill/references/trainer-routing.md` | **No** — phylax deliverable replaces product rubric on skill-only diffs |
+| `AGENTS.md` / `CLAUDE.md` | `form-check` + gate comment still required (`ci-trainer-pr-review-gate-exempt.sh` never exempts these) | Yes |
+
+Mixed PRs: one trainer PR comment + separate phylax output when skill files change; do not apply SEC/COR rubric to YAML frontmatter in skill trees.
+
 ## Forbidden
 
+- Test plans or manual QA that name UI states demo/fixtures cannot reach (see `trainer-test-data.md`).
 - Approving without reading changed bodies for behavior PRs.
 - **APPROVE** on export delta without obligation **B** closure or explicit Bug inventory waive row (file list per `trainer-contract-surfaces.md`).
 - Skipping review-rigor on P1/P2.
 - Drive-by refactors or new deps.
-- Test plans that only say "cold start" without launch steps.
+- Device-touching PRs whose **initial body** says "cold start" without copy-paste setup commands.
+- Trainer remediate comments that repeat full launch boilerplate without a testing reason.
 - PR comments without Trainer notes on trainer-gated repos.
+- Applying product codereview rubric (SEC/COR/ARC) to **skill-only** PRs without explicit phylax artifact review (R-5).
+- Routing context-budget or runtime context-% questions to `diet` — use `check_context_budget.py` (build-time) or Cursor native breakdown.
 
 ## Agent prompt template
 

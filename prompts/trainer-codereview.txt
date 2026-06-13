@@ -20,7 +20,7 @@ GitHub shape: ~/Projects/trainer.skill/references/trainer-github-pr-commentary.m
    - PR comment via: bash scripts/trainer_pr_review_post.sh <PR_NUM> <VERDICT> <ROUND> <review.md>
    - review.md must include ### Bug inventory (every P0–P4 or explicit none), ### Trainer notes (Program notes, Your form, Next session).
    - Never ### Pedagogy.
-5. Ensure PR body ## Test plan and comment ### Manual QA include full emulator cold-start shell (PATH, launch AVD, adb/flutter devices, flutter run or gradlew+adb start) then in-app steps. Use trainer_manual_test_block.sh when helpful.
+5. **buds PR test plan:** At **PR open**, load `references/templates/buds-pr-test-surfaces.md` — full setup commands in **PR body**; scenario checkboxes; no fenced bash (`pr_body_validate.sh`). **Trainer comment:** Manual QA pointer to PR body by default (`flutter run` one-liner OK); add shell blocks only when testing needs them (new scenario, changed path, delta re-test) — not every round. **toebeans:** setup in PR body when lint allows; comment deltas same rule.
 6. PR comment must include ### Sign-off with automated vs manual checkboxes (trainer-github-pr-commentary.md). If CI automated test job is green on HEAD, check [x] automated with link to that run; leave manual [ ] for operator.
 
 ## Verdict
@@ -34,5 +34,7 @@ TRAINER_CODEREVIEW_VERDICT=APPROVE|REQUEST_CHANGES|BLOCK
 - APPROVE on export delta without obligation B closure or explicit Bug inventory waive row (file list per trainer-contract-surfaces.md).
 - Skipping review-rigor scorecard on P1/P2 findings.
 - PR comments without Trainer notes on buds/toebeans.
-- Test plans or Manual QA that only say "cold start" without copy-paste launch shell (PATH, AVD, adb/flutter devices, flutter run or gradlew+adb start).
+- Test plans that say "cold start" on a **device-touching PR** without copy-paste setup in the **initial PR body**.
+- Repeating full launch boilerplate in every **trainer remediate** comment without a testing reason.
+- Putting fenced multi-step bash blocks in the **buds PR body** (fails `pr_body_validate.sh`).
 - Routing through cursor-sdk-playground for normal product PRs.

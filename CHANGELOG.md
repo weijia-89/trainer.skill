@@ -30,6 +30,32 @@ _(none)_
 
 ### Added
 
+- **`references/templates/buds-pr-test-surfaces.md`** — setup on **initial PR body**; trainer/cycle comments include shell only when testing needs it.
+- Tracked mirror: `buds/docs/trainer/pr-test-plan-template.md`.
+
+### Changed
+
+- **`references/trainer-github-pr-commentary.md`** — PR-body-first layout; iPhone 13 via `boot_ios_test_sim.sh`; no full boilerplate on every remediate PATCH.
+- **`scripts/trainer_manual_test_block.sh`** — buds iOS fallback uses script-based iPhone 13 blocks.
+- **`references/buds-manual-testing.md`**, **`prompts/trainer-codereview.txt`**, **`SKILL.md`** — PR-body-first, comment-on-demand.
+
+
+## [0.13.0] — 2026-06-05
+
+### Added
+
+- **`references/trainer-epistemic-layers.md`** — L1/L2/L3 epistemic routing (research vs trace QA vs structured truth); §TRIGGER load gate; TR-1 primary-layer rule; E-T1/E-T2/E-T3 eval-corpus implementation plan (trainer/form-check, not Palamedes); coached pushback triggers; cross-links to palamedes eval literacy + architecture.
+
+### Changed
+
+- **`SKILL.md` v0.13.0** — integrations paragraph + routing-flow step for epistemic layer mix; references table row.
+- **`scripts/verify_trainer_sync.sh`** — `trainer-epistemic-layers.md` in CI required gate files; portable tracked-file collection (replaces `mapfile` for macOS bash 3.2).
+- **`mirrors/windsurf-trainer.md`**, **`.cursor/rules/trainer.mdc`** — version pointer 0.13.0 (Projects tree; sync via `verify_trainer_sync.sh`).
+
+## [0.12.0] — 2026-05-25
+
+### Added
+
 - **`references/trainer-contract-surfaces.md`** — export delta gate; obligations A (diff-primary), B (contract-surface closure in declared surfaces only), C (verify via Inputs row); routing step 3 in `trainer-codereview.md` and `prompts/trainer-codereview.txt`.
 - **`references/trainer-github-pr-commentary.md`** — mandatory PR body test-plan granularity and PR comment **`### Trainer notes`** (Program notes · Your form · Next session); forbids Pedagogy heading.
 - **`references/trainer-codereview.md`**, **`references/trainer-codereview-gate.md`**, **`prompts/trainer-codereview.txt`** — canonical PR review (migrated off `cursor-sdk-playground`).

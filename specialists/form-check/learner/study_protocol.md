@@ -249,6 +249,14 @@ This paradox is not unique to coding. The same design failure shows up in langua
 
 ---
 
+## 10. Timed assessment prep
+
+Palamedes study-guide / tisarwat / Codility cram with pedagogy appendix → **`~/Projects/trainer.skill/references/assessment-prep-pedagogy.md`** (tiers, TAP, abort, IA). Example HTML study guide: `codility_train_study_guide.html` (private ref impl; see assessment-prep-pedagogy.md).
+
+Habits map: cold naming + 90s predict (1,5,7) · spacing (2) · interleave after blocks (3, moderate/`[inferred]` coding) · subgoal examples (4,9) · productive-fail after schema (6) · timed IDE mocks (TAP) · AI as checker (paradox above).
+
+---
+
 ## What does NOT work (the literature is clear)
 
 Three things commonly claimed in coding pedagogy that the research doesn't support — don't waste your study time:
@@ -334,5 +342,6 @@ To test whether *this* file stuck, close it and answer (write the answers, then 
 8. When does interleaving *not* work?
 9. Why is direct instruction with worked examples *better* than discovery learning for novices, and what's the citation?
 10. Why does this skill not anchor on Dunning-Kruger, even though novice overconfidence is real?
+11. For timed exam prep, which file owns adversarial tier labels and what is the abort rule?
 
 If you missed more than two, re-read the section. Then come back in three days.

@@ -27,6 +27,8 @@ composes:
 
 Always-on bootstrap for coding, prompt-engineering, and agent-skill sessions. Routes to specialists, coaches with audit trail, teaches at moment of relevance. **Does not do the work.** Specialists execute; trainer routes, gates, and steps back.
 
+**Research doc hygiene:** Any write under `applications/*/research/` → load `research-doc-style/SKILL.md` + rule `research-doc-token-style.mdc`; shape from `research-doc-template.md` (Operator now · Heuristics · token budgets).
+
 ## Coaching stance
 
 **Iron law:** coach, do not do. Push back when warranted; defer when understanding is demonstrated; log coached overrides.
@@ -101,14 +103,14 @@ Procedure, incidents, three-layer orch/meta/worker, status-check closeout: `~/Pr
 | `safetybar` | runtime guardrails | vibe-dangerous runtime, allow-list, ledger |
 | `recovery` | post-incident | bad ship, regression, audit block |
 | `gymbuddy` | pairing | co-coding, walkthroughs |
-| `diet` | context diet | token or volume constraint |
+| `diet` | incident response / production ops | production broken, alarms, post-mortem |
 | `pr` | milestone | retros, achievements |
 | `superset` | parallel dispatch | 2+ fresh-context agents on same repo; orch handoff under pressure |
 
 ## Routing decision flow
 
-1. **Activity:** plan new code → `form-check plan-new-app`; review diff → `form-check code-review`; post-incident → `recovery`; pair → `gymbuddy`; multi-week plan → `program`; workspace open → `warmup`; 2+ parallel agents same repo → `superset`; research vs RAG-eval vs code-QA layer mix → `trainer-epistemic-layers.md` then route primary layer.
-2. **Stakes:** vibe-safe / vibe-careful / vibe-dangerous (`form-check` Section 5). Vibe-dangerous → `safetybar`; post-incident plus dangerous → `recovery`; tight tokens → `diet`; parallel dispatch at any tier → `superset` for isolation and prompts.
+1. **Activity:** plan new code → `form-check plan-new-app`; review diff → `form-check code-review`; post-incident → `recovery`; pair → `gymbuddy`; multi-week plan → `program`; workspace open → `warmup`; 2+ parallel agents same repo → `superset`; **skill / prompt / packet audit** → `phylax` (explicit invoke; load `~/Projects/phylax.skill/references/trainer-routing.md`); **NotebookLM notebook create/refresh** → `~/Projects/.cursor/skills/notebooklm-prep/SKILL.md`; research vs RAG-eval vs code-QA layer mix → `trainer-epistemic-layers.md` then route primary layer; exam-prep study guide → `study-guide-site.md` + `assessment-prep-pedagogy.md`.
+2. **Stakes:** vibe-safe / vibe-careful / vibe-dangerous (`form-check` Section 5). Vibe-dangerous → `safetybar`; post-incident plus dangerous → `recovery`; root SKILL.md file-size budget → `tests/context_budget/check_context_budget.py` (build-time linter, not runtime %); parallel dispatch at any tier → `superset` for isolation and prompts.
 3. **Evolve:** routing may change mid-session (review finds incident → `recovery`; context pressure → `superset` handoff).
 
 ## Load specialist leaf content before acting
@@ -125,7 +127,7 @@ Multi-option decisions with tradeoffs: use decision-presentation template in `~/
 
 When routing **form-check** for a pull request on **buds** or **toebeans**, read `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` in full before writing the PR body or comment. Post via `<repo>/scripts/trainer_pr_review_post.sh`; gate: `trainer-codereview-gate.md`.
 
-**Mechanical:** PR body needs device cold-start shell + in-app steps; PR comment needs `### Bug inventory` (every **P0–P4** row or explicit none), `### Manual QA`, `### Trainer notes` (never `### Pedagogy`). **Remediate:** buds **P0–P4** fix/waive; toebeans **P0–P3**; PATCH same comment each round with fresh `head=`. form-check ranks findings; trainer owns GitHub shape and teaching.
+**Mechanical:** At **PR open**, buds body gets setup commands + scenario checkboxes (`docs/trainer/pr-test-plan-template.md`). Trainer comment Manual QA **points at PR body** by default; add shell only when testing needs it. `### Bug inventory`, `### Trainer notes` (never `### Pedagogy`). **Remediate:** buds **P0–P4** fix/waive; PATCH same comment with fresh `head=`.
 
 ## Red flags (stop and re-route)
 
@@ -158,10 +160,13 @@ All `references/*` paths below use canonical prefix `~/Projects/trainer.skill/re
 | Dispatch manifest, layers, status closeout | `~/Projects/trainer.skill/references/trainer-dispatch-gates.md` |
 | Private-path leak scan (pre-commit, bundle, push) | `~/Projects/trainer.skill/references/trainer-runtime-compactness.md` § Private-path leak scan |
 | GitHub PR body test plans + Trainer notes on review comments | `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` |
+| Buds PR test plan split template (body vs comment) | `~/Projects/trainer.skill/references/templates/buds-pr-test-surfaces.md` |
+| Test data matrix (seeds/fixtures vs scenarios) | `~/Projects/trainer.skill/references/trainer-test-data.md` |
 | PR codereview gate (product repos) | `~/Projects/trainer.skill/references/trainer-codereview-gate.md` |
 | Code review routing + verdicts | `~/Projects/trainer.skill/references/trainer-codereview.md` |
 | Export delta + contract-surface closure (obligation B) | `~/Projects/trainer.skill/references/trainer-contract-surfaces.md` |
 | Epistemic layers (research vs eval vs code QA) | `~/Projects/trainer.skill/references/trainer-epistemic-layers.md` |
+| Assessment-prep pedagogy | `~/Projects/trainer.skill/references/assessment-prep-pedagogy.md` |
 | Repo operations, security, branch protection | `README.md`, `SECURITY.md` |
 
-Verify sync: `scripts/verify_trainer_sync.sh`. Context budget (warn): `tests/context_budget/check_context_budget.py`.
+Verify sync: `scripts/verify_trainer_sync.sh`. Context budget (warn, build-time root SKILL.md linter): `tests/context_budget/check_context_budget.py`. Runtime context % → Cursor 3.3+ native breakdown, not diet.

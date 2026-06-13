@@ -12,7 +12,7 @@ Load this file whenever the trainer routes **form-check code-review** (or SDK me
 - **Product PRs (default):** post via `<repo>/scripts/trainer_pr_review_post.sh`; CI gate `ci-trainer-pr-review-gate.sh`. Spec: `trainer-codereview-gate.md`.
 - Manual reviews: same structure; do not route through `cursor-sdk-playground`.
 
-**Forbidden:** findings-only tables with no teaching block; test plans or `### Manual QA` sections that only say "cold start" or "launch simulator" **without copy-paste shell** to boot the emulator, wait for `adb`/`flutter devices`, and `flutter run` / `gradlew installDebug` + `adb shell am start`; heading `### Pedagogy` or `### Cool-down` (use `### Trainer notes` only).
+**Forbidden:** findings-only tables with no teaching block; **initial PR body** test plans that say "cold start" without copy-paste setup when the PR needs device QA; trainer **remediate** comments that repeat the full launch boilerplate without a testing reason; heading `### Pedagogy` or `### Cool-down` (use `### Trainer notes` only).
 
 **Snippet helper:** `trainer_manual_test_block.sh` — **buds:** iOS-first (`--platform ios` default); reads `~/Projects/buds/localonly/trainer/manual-testing-buds.md` when present (see `references/buds-manual-testing.md`). **toebeans:** Android Gradle block only.
 
@@ -20,7 +20,7 @@ Load this file whenever the trainer routes **form-check code-review** (or SDK me
 
 | PR repo | Launch block | Forbidden in Manual QA / test plan |
 | ------- | ------------ | ---------------------------------- |
-| **buds** | **Primary:** iOS sim → `open -a Simulator`, `xcrun simctl boot`, `cd ~/Projects/buds/app && flutter run -d <udid>`. **Optional:** Android AVD `buds-pixel7` + `flutter run`. | `./gradlew`, `:androidApp:installDebug`, `app.toebeans.android`, `~/Projects/toebeans` as launch path; toebeans Gradle blocks as primary QA |
+| **buds** | **Primary:** iPhone 13 sim → `bash scripts/boot_ios_test_sim.sh` + `flutter run -d "${UDID}"` from `~/Projects/buds/app` (or `bash scripts/run_ios.sh`). **Optional:** Android AVD `buds-pixel7`. | `./gradlew`, `:androidApp:installDebug`, `app.toebeans.android`, `~/Projects/toebeans` as launch path; toebeans Gradle blocks as primary QA |
 | **toebeans** | `cd ~/Projects/toebeans && ./gradlew :androidApp:installDebug` + `adb shell am start -n app.toebeans.android/.MainActivity` | `flutter run`, `~/Projects/buds`, `verify_buds.sh` |
 
 - **buds PRs:** load `~/Projects/buds/localonly/trainer/INDEX.md`; embed iOS block from `manual-testing-buds.md` (or `bash scripts/trainer_manual_test_block.sh` from buds root).
@@ -42,12 +42,29 @@ P3/P4 may be **waived** with reason and follow-up hook; they must still appear i
 
 | Surface | Audience | Content |
 | -------- | -------- | ------- |
-| **PR body — Test plan** | Merger / QA doing hands-on checks | Granular, checkbox steps the human runs locally. Not agent shorthand. |
-| **PR comment — Code review** | Reviewer + future you | **Bug inventory** (all P0–P4) + **Trainer notes** + link to test plan in body. PATCH same comment on remediate rounds (`trainer-codereview` marker). |
+| **PR body — Test plan** (at **PR open**) | Merger / QA | Automated verify checkboxes; **full setup** commands (prose + inline backticks); **scenario checkboxes**. |
+| **PR comment — Code review** | Reviewer + future you | **Bug inventory** + **Trainer notes**; **Manual QA** = pointer to PR body by default, shell blocks only when testing needs them. PATCH same comment on remediate rounds. |
+
+### Default buds layout (2026-06)
+
+**Template:** `~/Projects/trainer.skill/references/templates/buds-pr-test-surfaces.md`
+
+| When | Shell commands |
+| ---- | ---------------- |
+| **PR open (body)** | Full setup once (checkout, cold start, fresh install, optional kill/relaunch) |
+| **Trainer round 1** | Usually **none** — “see PR body test plan” + one-liner launch |
+| **Trainer round 2+** | **Delta only** — new scenario, changed path, or targeted re-test after fix |
+| **Cycle comments** | **When appropriate** — assist testing that round; no boilerplate repeat |
+
+**Why PR body for setup:** `pr_body_validate.sh` rejects fenced bash; use labeled bullets with inline `\`commands\``. Scenario checkboxes stay `- [ ]`.
+
+**Why not every comment:** Operator reads setup once on the PR; remediate rounds PATCH inventory/notes without duplicating cold-start blocks unless the diff changes how you test.
 
 ---
 
 ## PR body — Test plan (mandatory sections)
+
+**buds default:** load `references/templates/buds-pr-test-surfaces.md` and adapt placeholders. **toebeans:** keep emulator Gradle block in body when lint allows, or mirror the split if a body linter is added later.
 
 Use these headings in every buds/toebeans (and SDK-gated) PR:
 
@@ -56,25 +73,46 @@ Use these headings in every buds/toebeans (and SDK-gated) PR:
 
 ### Automated (agent / CI)
 
-- [ ] `<exact verify command from repo root>`
-- [ ] SDK trainer codereview gate (if applicable)
+- [ ] `cd ~/Projects/buds && git checkout <branch>`
+- [ ] `git pull --ff-only origin <branch>`
+- [ ] `bash scripts/verify_buds.sh`
 
-### Manual — prerequisites
+### Manual — setup (copy-paste at PR open)
 
-- **Repo path:** `~/Projects/<repo>` (or active worktree path)
-- **Branch:** `<branch-name>` checked out
-- **Tooling:** list JDK / Flutter / Android SDK versions if non-default
+- **Repo / branch:** `~/Projects/buds`, `<branch>`
+- **Device:** iPhone 13 sim — `app/scripts/boot_ios_test_sim.sh`
+- **Bundle id:** `io.github.weijia89.buds`
+- **Checkout + verify:** `cd ~/Projects/buds && git checkout <branch> && git pull --ff-only origin <branch> && bash scripts/verify_buds.sh`
+- **Cold start:** `cd ~/Projects/buds/app && flutter pub get && UDID="$(bash scripts/boot_ios_test_sim.sh)" && flutter run -d "${UDID}"`
+- **One-liner launch:** `cd ~/Projects/buds/app && bash scripts/run_ios.sh`
+- **Fresh install:** `cd ~/Projects/buds/app && UDID="$(bash scripts/boot_ios_test_sim.sh)" && xcrun simctl uninstall "${UDID}" io.github.weijia89.buds && flutter run -d "${UDID}"`
 
-### Manual — device cold start (required when QA needs a device)
+Add kill/relaunch or integration-test bullets only when this PR needs them.
 
-Every manual scenario that touches the app **starts** with the repo-appropriate block (assume **no** device booted). Copy from `trainer_manual_test_block.sh` or buds `localonly/trainer/manual-testing-buds.md`.
+### Manual — test cases
 
-**buds (default — iOS):**
+- [ ] **Scenario A (<name>):** <in-app path + expected outcome>
+- [ ] **Scenario B (<name>):** …
 
-1. `open -a Simulator`
-2. `xcrun simctl boot C2787FD6-4302-4598-89CB-5B5902AA17A5` (iPhone 17 Pro; skip if Booted)
-3. `cd ~/Projects/buds/app && flutter run -d C2787FD6-4302-4598-89CB-5B5902AA17A5`
-4. Fresh install: `xcrun simctl uninstall … io.github.weijia89.buds` before re-run
+### Sign-off
+
+- [ ] CI green on PR HEAD
+- [ ] Operator manual scenarios checked
+```
+
+### buds — PR body lint (`pr_body_validate.sh`)
+
+- Requires `## Summary` and `## Test plan`.
+- **Forbidden:** captured CI/log output; literal `\n`; fenced bash blocks with `flutter` / `bash scripts/` lines.
+- **Allowed:** `- [ ] \`command\`` checklist items; `-` prerequisite bullets with inline backticks (line must not *start* with `flutter` or `bash scripts/`).
+
+### Manual — device setup (reference)
+
+Full blocks for **PR body at open** or **on-demand** generation — not repeated every trainer comment:
+
+```bash
+bash ~/Projects/trainer.skill/scripts/trainer_manual_test_block.sh buds --platform ios
+```
 
 **buds (optional — Android):** AVD `buds-pixel7` → `flutter run -d emulator-5554` (see `localonly/process/android-emulator.md`).
 
@@ -85,11 +123,19 @@ Every manual scenario that touches the app **starts** with the repo-appropriate 
 3. Wait: `adb devices` / `flutter devices` show `emulator-5554`
 4. `cd ~/Projects/toebeans && ./gradlew :androidApp:installDebug` then `adb shell am start -n app.toebeans.android/.MainActivity`
 
-Then numbered **in-app** steps (navigation, expected copy/routes).
+Then **in-app** steps under **Manual QA** in the trainer comment (navigation, expected copy/routes).
+
+### Manual — test data matrix (required when scenarios need pre-seeded state)
+
+| Scenario | State needed | Data source |
+|----------|--------------|-------------|
+| A: … | … | demo id / fixture / create steps below |
+
+Load `trainer-test-data.md` for repo minimum rows. **Rule:** if a scenario needs a state demo does not provide, extend `loadDemoData`/fixtures in the same PR or document exact create steps.
 
 ### Manual — scenario A: <name>
 
-Number every step after the cold-start block. Each in-app step states **where to tap / route** and **what you should see**.
+Number every step after the cold-start block. Each in-app step states **where to tap / route** and **what you should see**. Name **data source** (e.g. `loadDemoData` → `med-luna-eye-drops` for unscheduled med).
 
 ### Manual — scenario B: <name>
 
@@ -238,11 +284,15 @@ One short paragraph: what would have broken in production or in the next PR if w
 
 ### Manual QA
 
-**Required:** paste the full **emulator cold-start** shell block (PATH → launch AVD → `adb devices` / `flutter devices` → `flutter run` or `gradlew installDebug` + `adb shell am start`), then numbered **in-app** steps with expected UI. Do **not** defer launch commands to the PR body only — reviewers must copy-paste from this section.
+**Default (round 1):** point at PR body — `**Manual QA:** PR body test plan; device via \`cd ~/Projects/buds/app && bash scripts/run_ios.sh\`` (satisfies `trainer_pr_review_post.sh`).
 
-Minimum merge bar: cold start + scenario(s) {A, B} checked.
+**Add full shell blocks** only when: PR body lacks setup; new/changed test path in this round; operator needs a **delta** re-test command after a fix.
 
-Snippet: `bash ~/Projects/trainer.skill/scripts/trainer_manual_test_block.sh buds|toebeans`
+**Round 2+ remediate:** update Bug inventory + Trainer notes; keep Manual QA to one line unless the diff changes how you test.
+
+Minimum merge bar: operator runs PR body scenarios on device when the PR touches UI/crypto/routing.
+
+Snippet (on demand): `bash ~/Projects/trainer.skill/scripts/trainer_manual_test_block.sh buds|toebeans`
 
 ### Sign-off (automated vs manual — required in PR comment)
 
@@ -262,6 +312,21 @@ Separate **CI-automated** verification from **operator manual** work. Do not lea
 
 **Agent rule:** Before POST/PATCH, read PR `statusCheckRollup` (or Actions UI). If the repo’s automated test job above is **SUCCESS** on HEAD, the automated line **must** be `[x]` with a link to that run. Never `[ ]` automated when CI already passed. Manual stays `[ ]` until the operator completes hands-on checks.
 
+### Post-comment automated verify loop (all repos — mandatory)
+
+Order is **not** optional:
+
+1. **POST or PATCH** the canonical trainer comment (Bug inventory + Trainer notes; automated may start `[ ]` if not run yet).
+2. **Run** the PR test plan’s automated commands from repo root (`bash scripts/smoke_test.sh`, `python3 -m unittest …`, `./gradlew …`, `flutter test`, etc.). Do not claim pass without executing.
+3. **PATCH** the same canonical comment (same marker, fresh `head=`):
+   - Add or update `### Automated verification` with each command `[x]` and one-line result (`PASS`, test count, short SHA).
+   - Update `### Sign-off`: automated `[x]`; manual stays `[ ]`.
+4. **PATCH PR body** `## Test plan` → `### Automated (agent / CI)` checkboxes to `[x]` when step 2 passed (use `gh pr edit`).
+
+Skill/script repos without a device QA gate (e.g. **opacite**): local automated run + CI link satisfies the automated sign-off; manual remains operator-owned.
+
+**Forbidden:** APPROVE comment with automated lines still `[ ]` after you had time to run the repo verify commands in-session.
+
 ---
 
 *Trainer routes form-check for findings; this comment adds teaching + links hands-on QA.*
@@ -279,9 +344,9 @@ Separate **CI-automated** verification from **operator manual** work. Do not lea
 
 ## Remediate loop (buds P0–P4, toebeans P0–P3)
 
-1. **Round 1:** Post comment with findings; fix all in-scope severities; push; run verify.
-2. **Round 2:** Re-read full diff + call graph; PATCH comment (new `head=`, update table, refresh Trainer notes for *new* lessons); fix any new P0–P(n); push; verify.
-3. **Round 3 (optional):** Repeat only if round 2 introduced regressions or verdict not APPROVE.
+1. **Round 1:** Post comment with findings; PR body already has setup commands; Manual QA pointer unless body is incomplete.
+2. **Round 2:** Re-read full diff; PATCH comment (new `head=`, update table, refresh Trainer notes); add Manual QA shell **only if** test path changed; push; verify.
+3. **Round 3 (optional):** Same — no boilerplate shell repeat.
 
 Update the **same** comment; do not leave a stale round-1 verdict at the top.
 
@@ -297,14 +362,16 @@ Update the **same** comment; do not leave a stale round-1 verdict at the top.
 
 ## Self-check before posting
 
-- [ ] Manual QA / test plan uses **this PR’s repo only** (buds → Flutter; toebeans → Gradle + `app.toebeans.android`; no cross-repo paths).
-- [ ] PR body test plan has emulator cold-start shell commands, numbered in-app steps, repo paths, reset/clear when needed, expected copy or routes.
-- [ ] PR comment `### Manual QA` repeats the cold-start shell block (not “see PR body” only).
+- [ ] Manual QA / test plan uses **this PR’s repo only** (buds → Flutter + `boot_ios_test_sim.sh`; toebeans → Gradle + `app.toebeans.android`; no cross-repo paths).
+- [ ] **buds PR body (at open):** setup commands + scenario checkboxes; no fenced bash blocks (`pr_body_validate.sh`).
+- [ ] **Trainer comment Manual QA:** PR body pointer by default; shell blocks only when testing needs them (not full boilerplate every PATCH).
+- [ ] **Test data matrix:** each scenario maps to seed id, fixture, or documented create steps (`trainer-test-data.md`).
 - [ ] PR comment has `### Trainer notes` with **Program notes**, **Your form**, **Next session** (not Pedagogy).
 - [ ] **Bug inventory** lists every P0–P4 (or explicit `No P0–P4 findings` with evidence); buds has no P0–P2-only cap language.
 - [ ] Every P1+ row has Status `fixed` / `waived` / `open` (open P3/P4 on buds needs waive reason before APPROVE).
 - [ ] Remediate round updates `head=` sha in comment meta.
-- [ ] PR comment `### Sign-off`: automated line `[x]` with CI run link when test job green on HEAD; manual `[ ]` until operator sign-off.
+- [ ] Post-comment loop done: automated commands **run** in-session, then comment `### Automated verification` + `### Sign-off` automated `[x]` PATCHed; PR body automated boxes checked.
+- [ ] PR comment `### Sign-off`: automated line `[x]` with local result and/or CI run link on HEAD; manual `[ ]` until operator sign-off.
 - [ ] Export delta: obligation **B** closed in declared contract surfaces, or Bug inventory **waive** row with Status, reason, and **file list** of unchecked surfaces (toebeans P0–P3; buds P0–P4).
 - [ ] No APPROVE on export delta with silent B skip (no closure, no waive row).
 
