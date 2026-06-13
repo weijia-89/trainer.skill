@@ -25,7 +25,7 @@ If a change is going to **merge into `buds` or `toebeans`**, it must have a **fr
 | Mechanism | When |
 |-----------|------|
 | `trainer_pr_review_post.sh` → `trainer_pr_review_gate_rerun.sh` | After every successful POST/PATCH; reruns **only** job `Trainer PR review comment gate` if not already green (idempotent). |
-| `.github/workflows/trainer-gate-rerun.yml` | On PR `issue_comment` create/edit containing `trainer-codereview-{repo}-`; belt-and-suspenders when comment is edited in the UI. Uses workflow file on **default branch** once merged. |
+| `.github/workflows/trainer-gate-rerun.yml` | On PR `issue_comment` create/edit containing `trainer-codereview-{repo}-`; belt-and-suspenders when comment is edited in the UI. Uses workflow file on **default branch** once merged. **Security:** `author_association` OWNER\|MEMBER only; wait loop keyed to PR `headRefOid` (SHA), not branch — template `references/templates/trainer-gate-rerun.yml`. |
 
 **Manual dry-run (no API rerun):**
 
@@ -50,6 +50,7 @@ TRAINER_GATE_RERUN_DRY_RUN=1 bash scripts/trainer_pr_review_gate_rerun.sh <pr#> 
 | `scripts/trainer_pr_review_gate_rerun.sh` | Copy to product repo `scripts/` |
 | `scripts/test_ci_trainer_pr_review_gate.sh` | Copy to product repo `scripts/` |
 | `scripts/test_trainer_pr_review_gate_rerun.sh` | Optional smoke test (skip/dry-run) |
+| `references/templates/trainer-gate-rerun.yml` | Hardened workflow template (P1-2: author_association + SHA pin) |
 
 ## Reference install
 
