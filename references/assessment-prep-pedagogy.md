@@ -2,7 +2,7 @@
 
 **Load when:** exam/cram study guide with pedagogy appendix (Palamedes `study-guide-site.md`, tisarwat, Codility).
 
-**Ref impl:** `~/Projects/toren/applications/codility-train/` (`research_brief_learning_pedagogy.md`, `piranesi/outputs/playbook-adversarial-synthesis.md`, `codility_train_study_guide.html`).
+**Ref impl:** private codility-train engagement bundle (`research_brief_learning_pedagogy.md`, `piranesi/outputs/playbook-adversarial-synthesis.md`, `codility_train_study_guide.html` — not in public mirror).
 
 **Split:** Palamedes → corpus + Appendix D tiers. Trainer → coach voice, TAP/IDE, abort gates, pushback on passive cram.
 

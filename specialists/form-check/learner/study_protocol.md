@@ -251,7 +251,7 @@ This paradox is not unique to coding. The same design failure shows up in langua
 
 ## 10. Timed assessment prep
 
-Palamedes study-guide / tisarwat / Codility cram with pedagogy appendix → **`~/Projects/trainer.skill/references/assessment-prep-pedagogy.md`** (tiers, TAP, abort, IA). Ref: `~/Projects/toren/applications/codility-train/codility_train_study_guide.html`.
+Palamedes study-guide / tisarwat / Codility cram with pedagogy appendix → **`~/Projects/trainer.skill/references/assessment-prep-pedagogy.md`** (tiers, TAP, abort, IA). Example HTML study guide: `codility_train_study_guide.html` (private ref impl; see assessment-prep-pedagogy.md).
 
 Habits map: cold naming + 90s predict (1,5,7) · spacing (2) · interleave after blocks (3, moderate/`[inferred]` coding) · subgoal examples (4,9) · productive-fail after schema (6) · timed IDE mocks (TAP) · AI as checker (paradox above).
 
