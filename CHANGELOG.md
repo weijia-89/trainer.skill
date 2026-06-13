@@ -12,6 +12,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ## [Unreleased]
 
+_(none)_
+
+## [0.13.0] — 2026-06-05
+
+### Added
+
+- **`references/trainer-epistemic-layers.md`** — L1/L2/L3 epistemic routing (research vs trace QA vs structured truth); §TRIGGER load gate; TR-1 primary-layer rule; E-T1/E-T2/E-T3 eval-corpus implementation plan (trainer/form-check, not Palamedes); coached pushback triggers; cross-links to palamedes eval literacy + architecture.
+
+### Changed
+
+- **`SKILL.md` v0.13.0** — integrations paragraph + routing-flow step for epistemic layer mix; references table row.
+- **`scripts/verify_trainer_sync.sh`** — `trainer-epistemic-layers.md` in CI required gate files; portable tracked-file collection (replaces `mapfile` for macOS bash 3.2).
+- **`mirrors/windsurf-trainer.md`**, **`.cursor/rules/trainer.mdc`** — version pointer 0.13.0 (Projects tree; sync via `verify_trainer_sync.sh`).
+
+## [0.12.0] — 2026-05-25
+
 ### Added
 
 - **`references/templates/buds-pr-test-surfaces.md`** — setup on **initial PR body**; trainer/cycle comments include shell only when testing needs it.
