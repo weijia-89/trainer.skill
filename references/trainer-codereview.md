@@ -51,6 +51,16 @@ Use ranked findings `### T{n} · P{0-4} · {rubric} · conf N%`. **buds:** fix o
 
 Product repos wire `scripts/ci-trainer-pr-review-gate.sh` in CI. Detail: `trainer-codereview-gate.md`.
 
+## Artifact vs product code (R-5)
+
+| PR touches | Route | Codereview rubric (SEC/COR/ARC/PRF/TST) |
+|------------|-------|----------------------------------------|
+| Product code (with or without skill files) | `form-check code-review` on **code diff**; explicit **phylax** on skill/prompt/packet diff if present | Yes — on product code |
+| **Only** skill/prompt/packet paths (`.cursor/skills/`, `*.skill/`, piranesi packets) | Explicit **phylax** artifact review — load `~/Projects/phylax.skill/references/trainer-routing.md` | **No** — phylax deliverable replaces product rubric on skill-only diffs |
+| `AGENTS.md` / `CLAUDE.md` | `form-check` + gate comment still required (`ci-trainer-pr-review-gate-exempt.sh` never exempts these) | Yes |
+
+Mixed PRs: one trainer PR comment + separate phylax output when skill files change; do not apply SEC/COR rubric to YAML frontmatter in skill trees.
+
 ## Forbidden
 
 - Test plans or manual QA that name UI states demo/fixtures cannot reach (see `trainer-test-data.md`).
@@ -61,6 +71,8 @@ Product repos wire `scripts/ci-trainer-pr-review-gate.sh` in CI. Detail: `traine
 - Device-touching PRs whose **initial body** says "cold start" without copy-paste setup commands.
 - Trainer remediate comments that repeat full launch boilerplate without a testing reason.
 - PR comments without Trainer notes on trainer-gated repos.
+- Applying product codereview rubric (SEC/COR/ARC) to **skill-only** PRs without explicit phylax artifact review (R-5).
+- Routing context-budget or runtime context-% questions to `diet` — use `check_context_budget.py` (build-time) or Cursor native breakdown.
 
 ## Agent prompt template
 

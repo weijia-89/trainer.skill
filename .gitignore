@@ -30,3 +30,6 @@ tests/scenarios/harness/runs/
 
 # Parallel-agent worktrees (per superset SKILL.md Worktree discipline)
 .worktrees/
+
+# mashit output (local-only)
+localonly/

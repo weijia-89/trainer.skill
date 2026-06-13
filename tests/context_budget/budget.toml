@@ -8,7 +8,7 @@ root_skill_max_est_tokens = 5500
 max_section_est_tokens = 900
 
 # Recorded at v0.13.0 + epistemic-layers routing; validated by check_context_budget.py (sdk-review F1)
-current_lines = 170
-current_est_tokens = 2941
+current_lines = 172
+current_est_tokens = 3109
 target_lines = 180
 target_est_tokens = 4500

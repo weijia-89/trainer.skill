@@ -1,5 +1,7 @@
 # Context budget (trainer root SKILL.md)
 
+**Scope:** build-time linter on root `trainer.skill/SKILL.md` file size — **not** runtime context %, **not** `diet` routing. For runtime skills % in chat, use Cursor 3.3+ native context breakdown; for phylax pre-audit budget, use `phylax.skill/scripts/token_budget_audit.sh` (operator paste).
+
 ## Why this exists
 
 Broad always-loaded context often increases cost and steps without improving outcomes (AGENTS.md synthesis; SkillsBench paired-treatment critique; SMART overuse measurement). Root `SKILL.md` must stay **route and gate** content only; operational depth belongs in specialist leaf files loaded on demand.
