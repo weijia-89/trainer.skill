@@ -6,7 +6,7 @@
 #   1. ~/Projects/trainer.skill/SKILL.md           (canonical)
 #   2. ~/.cursor/skills/trainer/SKILL.md            (Cursor mirror, byte-identical to canonical)
 #   2b. ~/.cursor/skills/trainer/references/     (Cursor mirror, byte-identical to canonical references/)
-#   3. ~/Projects/.cursor/rules/trainer.mdc         (Cursor trigger, references canonical path)
+#   3. ~/.cursor/rules/trainer.mdc                  (Cursor user trigger, references canonical path)
 #   4. ~/Projects/trainer.skill/mirrors/windsurf-trainer.md  (Windsurf trigger template; optional install elsewhere)
 #
 # Run from anywhere. Exits 0 on success, nonzero on any invariant violation.
@@ -61,6 +61,7 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     trainer-contract-surfaces.md
     trainer-codereview-gate.md
     trainer-epistemic-layers.md
+    trainer-autonomous-code-review.md
   )
   if [[ ! -d "$CANONICAL_REFS" ]]; then
     echo "FAIL  missing canonical references/: $CANONICAL_REFS"
@@ -151,6 +152,39 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     echo "WARN  skipping invariant 1b fixture (missing $INVARIANT_1B_TEST)"
   fi
 
+  # Invariant 12: autonomous code review routes to form-check code-review (not theater)
+  AUTONOMOUS_REVIEW="$REPO_ROOT/scripts/verify_autonomous_code_review.py"
+  if [[ -f "$AUTONOMOUS_REVIEW" ]]; then
+    set +e
+    ACR_OUT=$(python3 "$AUTONOMOUS_REVIEW" --repo-root "$REPO_ROOT" 2>&1)
+    ACR_EXIT=$?
+    set -e
+    if [[ $ACR_EXIT -ne 0 ]]; then
+      echo "FAIL  autonomous code review contract gate exited $ACR_EXIT:"
+      printf '%s\n' "$ACR_OUT" | sed 's/^/        /'
+      FAIL=1
+    else
+      echo "PASS  autonomous code review contract gate (form-check routing)"
+    fi
+  else
+    echo "WARN  skipping autonomous code review gate (missing $AUTONOMOUS_REVIEW)"
+  fi
+
+  AUTONOMOUS_REVIEW_TEST="$REPO_ROOT/tests/trainer_routing/test_verify_autonomous_code_review.py"
+  if [[ -f "$AUTONOMOUS_REVIEW_TEST" ]]; then
+    set +e
+    ACRT_OUT=$(python3 "$AUTONOMOUS_REVIEW_TEST" 2>&1)
+    ACRT_EXIT=$?
+    set -e
+    if [[ $ACRT_EXIT -ne 0 ]]; then
+      echo "FAIL  autonomous code review unit tests exited $ACRT_EXIT:"
+      printf '%s\n' "$ACRT_OUT" | sed 's/^/        /'
+      FAIL=1
+    else
+      echo "PASS  autonomous code review unit tests"
+    fi
+  fi
+
   if [[ "$FAIL" -ne 0 ]]; then
     echo ""
     echo "VERDICT: FAIL (CI repo-only checks)"
@@ -165,7 +199,7 @@ fi
 REPO_ROOT="$HOME/Projects/trainer.skill"
 CANONICAL="$REPO_ROOT/SKILL.md"
 CURSOR_SKILL="$HOME/.cursor/skills/trainer/SKILL.md"
-CURSOR="$HOME/Projects/.cursor/rules/trainer.mdc"
+CURSOR="$HOME/.cursor/rules/trainer.mdc"
 WINDSURF_MIRROR="$REPO_ROOT/mirrors/windsurf-trainer.md"
 WINDSURF_INSTALL="${WINDSURF_INSTALL:-$HOME/Projects/.windsurf/rules/trainer.md}"
 
@@ -454,6 +488,39 @@ if [[ -f "$INVARIANT_1B_TEST" ]]; then
   fi
 else
   echo "WARN  skipping invariant 1b fixture (missing $INVARIANT_1B_TEST)"
+fi
+
+# Invariant 12: autonomous code review routes to form-check code-review (not theater)
+AUTONOMOUS_REVIEW="$REPO_ROOT/scripts/verify_autonomous_code_review.py"
+if [[ -f "$AUTONOMOUS_REVIEW" ]]; then
+  set +e
+  ACR_OUT=$(python3 "$AUTONOMOUS_REVIEW" --repo-root "$REPO_ROOT" 2>&1)
+  ACR_EXIT=$?
+  set -e
+  if [[ $ACR_EXIT -ne 0 ]]; then
+    echo "FAIL  autonomous code review contract gate exited $ACR_EXIT:"
+    printf '%s\n' "$ACR_OUT" | sed 's/^/        /'
+    FAIL=1
+  else
+    echo "PASS  autonomous code review contract gate (form-check routing)"
+  fi
+else
+  echo "WARN  skipping autonomous code review gate (missing $AUTONOMOUS_REVIEW)"
+fi
+
+AUTONOMOUS_REVIEW_TEST="$REPO_ROOT/tests/trainer_routing/test_verify_autonomous_code_review.py"
+if [[ -f "$AUTONOMOUS_REVIEW_TEST" ]]; then
+  set +e
+  ACRT_OUT=$(python3 "$AUTONOMOUS_REVIEW_TEST" 2>&1)
+  ACRT_EXIT=$?
+  set -e
+  if [[ $ACRT_EXIT -ne 0 ]]; then
+    echo "FAIL  autonomous code review unit tests exited $ACRT_EXIT:"
+    printf '%s\n' "$ACRT_OUT" | sed 's/^/        /'
+    FAIL=1
+  else
+    echo "PASS  autonomous code review unit tests"
+  fi
 fi
 
 if [[ "$FAIL" -ne 0 ]]; then

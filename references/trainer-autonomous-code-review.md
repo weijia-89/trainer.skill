@@ -7,8 +7,8 @@ Default behavior for this phrase — not a single-pass skim. Trainer routes; age
 ## Routing (mandatory)
 
 1. **trainer** — coach stance; scope = PR diff + contract surfaces if export delta (`trainer-contract-surfaces.md`).
-2. **form-check** — `code-review` / `adversarial-review` on the diff.
-3. **review-rigor** — SEC, COR, ARC, PRF, TST scorecard per finding.
+2. **form-check** — **`file_read` `~/Projects/trainer.skill/specialists/form-check/SKILL.md`** before reviewing; run **`code-review`** or **`adversarial-review`** on the diff per form-check Section 7. Naming form-check without loading the specialist leaf is theater.
+3. **review-rigor** — SEC, COR, ARC, PRF, TST scorecard per finding (`~/Projects/trainer.skill/references/trainer-codereview.md` routing).
 4. **Skill-only / artifact PRs** — explicit **phylax** per `trainer-codereview.md` R-5.
 
 Read `trainer-codereview.md` + `trainer-github-pr-commentary.md` before posting on GitHub.
@@ -56,6 +56,9 @@ Meta: `<!-- head={7-char-sha} verdict=APPROVE|REQUEST_CHANGES|BLOCK round={N} --
 Run all that apply to the repo:
 
 ```bash
+# Trainer autonomous code review contract (form-check routing wired)
+python3 ~/Projects/trainer.skill/scripts/verify_autonomous_code_review.py
+
 # Python harness repos (*.skill)
 python3 scripts/test_*.py
 bash scripts/test_*.sh
