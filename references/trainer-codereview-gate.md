@@ -46,7 +46,11 @@ TRAINER_GATE_RERUN_DRY_RUN=1 bash scripts/trainer_pr_review_gate_rerun.sh <pr#> 
 | `scripts/ci-trainer-pr-review-gate.sh` | Copy to product repo `scripts/` |
 | `scripts/ci-trainer-pr-review-gate-exempt.sh` | Docs/research text-only exempt check |
 | `scripts/trainer_pr_review_post.sh` | Rejects cross-repo launch commands before POST/PATCH; copy to product repo `scripts/` |
-| `scripts/trainer_review_bug_inventory_validate.py` | P0–P4 declaration checks (buds forbids P0–P2-only caps); copy beside gate/post scripts |
+| `scripts/trainer_review_bug_inventory_validate.py` | P0–P4 + full comment contract via `--full`; copy beside gate/post scripts |
+| `scripts/trainer_review_comment_validate.py` | Local validate review comment file |
+| `scripts/trainer_pr_body_validate.py` | PR body Test plan gate |
+| `scripts/verify_trainer_codereview.sh` | Self-test: round-1 theater fixture must FAIL |
+| `.github/workflows/trainer-pr-review-gate.yml` | trainer.skill PR CI gate |
 | `scripts/trainer_pr_review_gate_rerun.sh` | Copy to product repo `scripts/` |
 | `scripts/test_ci_trainer_pr_review_gate.sh` | Copy to product repo `scripts/` |
 | `scripts/test_trainer_pr_review_gate_rerun.sh` | Optional smoke test (skip/dry-run) |

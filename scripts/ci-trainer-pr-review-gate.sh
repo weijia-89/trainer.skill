@@ -43,7 +43,17 @@ else
   COMMENTS_JSON=$(gh api "repos/${GH_REPO}/issues/${PR_NUM}/comments" --paginate 2>/dev/null || echo "[]")
 fi
 
-export COMMENTS_JSON HEAD_SHORT BRANCH_SLUG GH_REPO PR_NUM GATE_DIR
+PR_BODY_FILE="${TRAINER_PR_BODY_FILE:-}"
+if [[ -z "$PR_BODY_FILE" ]] && command -v gh >/dev/null 2>&1; then
+  PR_BODY_FILE=$(mktemp)
+  gh pr view "$PR_NUM" --repo "$GH_REPO" --json body -q .body >"$PR_BODY_FILE" 2>/dev/null || true
+  if [[ ! -s "$PR_BODY_FILE" ]]; then
+    rm -f "$PR_BODY_FILE"
+    PR_BODY_FILE=""
+  fi
+fi
+
+export COMMENTS_JSON HEAD_SHORT BRANCH_SLUG GH_REPO PR_NUM GATE_DIR TRAINER_PR_BODY_FILE="$PR_BODY_FILE"
 python3 - <<'PY'
 import importlib.util
 import json
@@ -121,10 +131,23 @@ if spec is None or spec.loader is None:
     sys.exit(1)
 mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)
-for err in mod.validate_bug_inventory(body, repo):
+for err in mod.validate_review_comment(body, repo):
     print(f"FAIL  PR #{pr}: {err}")
     sys.exit(1)
 
 verdict = meta_verdict.search(body).group(1)
+if verdict.upper() == "APPROVE":
+    pr_body_path = os.environ.get("TRAINER_PR_BODY_FILE", "")
+    contract_path = os.path.join(gate_dir, "lib", "trainer_codereview_contract.py")
+    if pr_body_path and os.path.isfile(pr_body_path) and os.path.isfile(contract_path):
+        spec2 = importlib.util.spec_from_file_location("trainer_contract", contract_path)
+        if spec2 and spec2.loader:
+            mod2 = importlib.util.module_from_spec(spec2)
+            spec2.loader.exec_module(mod2)
+            pr_body = open(pr_body_path, encoding="utf-8").read()
+            for err in mod2.validate_pr_test_plan_body(pr_body, require_checked=True):
+                print(f"FAIL  PR #{pr}: PR body: {err}")
+                sys.exit(1)
+
 print(f"PASS  trainer PR review gate: PR #{pr} head={head_short} verdict={verdict}")
 PY

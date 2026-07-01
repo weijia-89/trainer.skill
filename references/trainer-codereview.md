@@ -2,6 +2,8 @@
 
 Canonical spec for **all** trainer-routed PR reviews (Cursor sessions, product repos, CI-gated PRs). **Not** tied to `cursor-sdk-playground`.
 
+**Default loop:** also load `trainer-autonomous-code-review.md` — explore callers, trace logic, run harnesses, fix until clean (not single-pass skim).
+
 ## Routing (mandatory)
 
 1. **trainer** — coach stance; do not expand scope beyond the diff **except** contract-surface closure per step 3 when export delta (see `trainer-contract-surfaces.md`).

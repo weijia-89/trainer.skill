@@ -14,7 +14,7 @@ good="$FIXTURE_DIR/good.json"
 cat >"$good" <<'JSON'
 [
   {
-    "body": "<!-- trainer-codereview-toebeans-feat-style-lab-compose-alignment -->\n<!-- head=805402b verdict=APPROVE round=1 -->\n\n### Bug inventory\n\nNo P0–P4 findings — fixture self-test.\n\n### Trainer notes\n\n1. **Program notes:** test\n2. **Your form:** test\n3. **Next session:** test\n"
+    "body": "<!-- trainer-codereview-toebeans-feat-style-lab-compose-alignment -->\n<!-- head=805402b verdict=APPROVE round=1 -->\n\n### Bug inventory\n\nNo P0–P4 findings — fixture self-test with verify harness.\n\n### Automated verification\n\n- [x] `bash scripts/verify_toebeans.sh` — exit 0\n\n### Trainer notes\n\n1. **Program notes:** test\n2. **Your form:** test\n3. **Next session:** test\n"
   }
 ]
 JSON
@@ -47,5 +47,12 @@ echo '[]' >"$empty"
 TRAINER_PR_REVIEW_FIXTURE="$empty" \
   bash "$GATE" 1 abcdef0 feat/x weijia-89/toebeans \
   && fail "missing comment should fail" || pass "missing comment rejected"
+
+theater="$FIXTURE_DIR/theater.json"
+theater_body=$(cat "$ROOT/tests/trainer_codereview/fixtures/round1_theater_bad.md" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read()))')
+echo "[{\"body\": $theater_body}]" >"$theater"
+TRAINER_PR_REVIEW_FIXTURE="$theater" \
+  bash "$GATE" 20 1d6ed94c335fb32197c75fef5c34c163a95c09e4 feature/autonomous-code-review weijia-89/trainer.skill \
+  && fail "round1 theater APPROVE should fail" || pass "round1 theater APPROVE rejected"
 
 echo "All ci-trainer-pr-review-gate self-tests passed."

@@ -27,7 +27,9 @@ composes:
 
 Always-on bootstrap for coding, prompt-engineering, and agent-skill sessions. Routes to specialists, coaches with audit trail, teaches at moment of relevance. **Does not do the work.** Specialists execute; trainer routes, gates, and steps back.
 
-**Research doc hygiene:** Any write under `applications/*/research/` → load `research-doc-style/SKILL.md` + rule `research-doc-token-style.mdc`; shape from `research-doc-template.md` (Operator now · Heuristics · token budgets).
+**Research doc hygiene:** Any write under `applications/*/research/` → load `research-doc-style/SKILL.md` + rule `research-doc-token-style.mdc`; shape from `research-doc-template.md` (Operator now · Heuristics · token budgets). Verify: `validate_research_doc_shape.py --slug <slug>`.
+
+**Workflow routing (replaces agent-requestable .mdc rules):** On interview prep, research, review, piranesi, engram, etc. → `file_read` `/Users/dubs/Projects/trainer.skill/references/workflow-skill-router.md` and load the **Skill canon** row before acting. Superset workers: embed canon in prompt per that file.
 
 ## Coaching stance
 
@@ -54,6 +56,8 @@ Map the lay of the land before implementation. Plans revise with evidence; journ
 3. New dependency: failure modes plus rollback.
 4. Route-correction on "quick sketch in code", "refactor later", "small change no plan", multi-component day-one without contracts.
 
+**ChatPRD Opus 4.6 plan gate (significant work):** Refactors, rewrites, >5-file patches, or canon→template implementation → **export implementation plan to ChatPRD Opus 4.6 first** (mash repos, attach mash, handoff packet). Cursor implements only after operator saves `implementation_plan_*_ingest.md`. Spec: `~/Projects/trainer.skill/references/chatprd-opus-implementation-plan-gate.md`. Waive: `waive-chatprd-plan` (coached override).
+
 ## Integrations stance (MCP / plugins)
 
 When a task involves external tools (PostHog, Linear, Supabase, Playwright MCP, tldraw), the trainer should:
@@ -73,6 +77,8 @@ When a task involves *workflow disciplines* (planning, debugging, TDD, finishing
 
 **Epistemic layers (research vs RAG eval vs code QA):** When the task mixes Palamedes-style research, LLM/RAG metrics, or release gates, load `~/Projects/trainer.skill/references/trainer-epistemic-layers.md` and assign primary layer before dispatch. Palamedes does **not** own eval-corpus tiers or CI harness config.
 
+**Path output (iron law):** When routing to skills that emit documents, prompts, handoffs, or file links for the operator, enforce `~/Projects/trainer.skill/references/operator-path-output.md` - full absolute paths as plain text; no `file://` hyperlinks for local files.
+
 Full examples and violation coaching: `~/Projects/trainer.skill/references/trainer-runtime-compactness.md`. Mechanical pre-action detail: `~/Projects/trainer.skill/references/trainer-pre-action-gates.md`.
 
 ## Mechanical pre-action gate
@@ -91,7 +97,9 @@ Multi-agent intent ("spawn agents", "parallel wave", "kick off batch") requires 
 **Do not:** dispatch without manifest, skip manifest for "only two agents", assume prompts detect collisions.
 Before dispatch, `file_read` `~/Projects/trainer.skill/references/trainer-dispatch-gates.md`.
 
-Procedure, incidents, three-layer orch/meta/worker, status-check closeout: `~/Projects/trainer.skill/references/trainer-dispatch-gates.md` and `superset/SKILL.md`.
+Procedure, incidents, three-layer orch/meta/worker, status-check closeout: `~/Projects/trainer.skill/references/trainer-dispatch-gates.md` and `superset/SKILL.md`. Per-phase MASTER slices: `trainer-phase-implementation-gate.md`.
+
+**Implementation babysitter:** when executing a merged ChatPRD plan, load `~/Projects/trainer.skill/references/trainer-implementation-babysitter.md` - trainer specialist gates every plan row before the next slice ships.
 
 ## The 9 specialist gym-skills
 
@@ -109,7 +117,7 @@ Procedure, incidents, three-layer orch/meta/worker, status-check closeout: `~/Pr
 
 ## Routing decision flow
 
-1. **Activity:** plan new code → `form-check plan-new-app`; review diff → `form-check code-review`; post-incident → `recovery`; pair → `gymbuddy`; multi-week plan → `program`; workspace open → `warmup`; 2+ parallel agents same repo → `superset`; **skill / prompt / packet audit** → `phylax` (explicit invoke; load `~/Projects/phylax.skill/references/trainer-routing.md`); **NotebookLM notebook create/refresh** → `~/Projects/.cursor/skills/notebooklm-prep/SKILL.md`; research vs RAG-eval vs code-QA layer mix → `trainer-epistemic-layers.md` then route primary layer; exam-prep study guide → `study-guide-site.md` + `assessment-prep-pedagogy.md`.
+1. **Activity:** plan new code → `form-check plan-new-app`; **significant refactor/rewrite/canon patch** → `chatprd-opus-implementation-plan-gate.md` (mash + ChatPRD Opus 4.6 before code); **code review / review diff / PR review** → `trainer-codereview.md` + `trainer-autonomous-code-review.md` + `form-check code-review` (default loop: explore → trace → test → fix until clean; PR comment each round); post-incident → `recovery`; pair → `gymbuddy`; multi-week plan → `program`; workspace open → `warmup`; 2+ parallel agents same repo → `superset`; **skill / prompt / packet audit** → `phylax` (explicit invoke; load `~/Projects/phylax.skill/references/trainer-routing.md`); **context economy / token audit / alwaysApply budget** → `@tokenopt` (`~/Projects/tokenopt.skill/SKILL.md`; audit mode via `@tokenopt audit`); **NotebookLM notebook create/refresh** → `~/Projects/.cursor/skills/notebooklm-prep/SKILL.md`; research vs RAG-eval vs code-QA layer mix → `trainer-epistemic-layers.md` then route primary layer; exam-prep study guide → `study-guide-site.md` + `assessment-prep-pedagogy.md`.
 2. **Stakes:** vibe-safe / vibe-careful / vibe-dangerous (`form-check` Section 5). Vibe-dangerous → `safetybar`; post-incident plus dangerous → `recovery`; root SKILL.md file-size budget → `tests/context_budget/check_context_budget.py` (build-time linter, not runtime %); parallel dispatch at any tier → `superset` for isolation and prompts.
 3. **Evolve:** routing may change mid-session (review finds incident → `recovery`; context pressure → `superset` handoff).
 
@@ -158,15 +166,22 @@ All `references/*` paths below use canonical prefix `~/Projects/trainer.skill/re
 | Communication, rationalizations, decision template, bundle/sync | `~/Projects/trainer.skill/references/trainer-runtime-compactness.md` |
 | Pre-action and adversarial-review pass | `~/Projects/trainer.skill/references/trainer-pre-action-gates.md` |
 | Dispatch manifest, layers, status closeout | `~/Projects/trainer.skill/references/trainer-dispatch-gates.md` |
+| Phase implementation gate (MASTER / multi-phase slices) | `~/Projects/trainer.skill/references/trainer-phase-implementation-gate.md` |
+| Implementation babysitter (plan row → trainer gate loop) | `~/Projects/trainer.skill/references/trainer-implementation-babysitter.md` |
 | Private-path leak scan (pre-commit, bundle, push) | `~/Projects/trainer.skill/references/trainer-runtime-compactness.md` § Private-path leak scan |
 | GitHub PR body test plans + Trainer notes on review comments | `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` |
 | Buds PR test plan split template (body vs comment) | `~/Projects/trainer.skill/references/templates/buds-pr-test-surfaces.md` |
 | Test data matrix (seeds/fixtures vs scenarios) | `~/Projects/trainer.skill/references/trainer-test-data.md` |
 | PR codereview gate (product repos) | `~/Projects/trainer.skill/references/trainer-codereview-gate.md` |
 | Code review routing + verdicts | `~/Projects/trainer.skill/references/trainer-codereview.md` |
+| Code review loop (default) | `~/Projects/trainer.skill/references/trainer-autonomous-code-review.md` |
 | Export delta + contract-surface closure (obligation B) | `~/Projects/trainer.skill/references/trainer-contract-surfaces.md` |
 | Epistemic layers (research vs eval vs code QA) | `~/Projects/trainer.skill/references/trainer-epistemic-layers.md` |
+| Operator path output (handoffs, prompts, docs) | `~/Projects/trainer.skill/references/operator-path-output.md` |
+| ChatPRD Opus 4.6 implementation plan gate | `~/Projects/trainer.skill/references/chatprd-opus-implementation-plan-gate.md` |
+| ChatPRD plan adversarial (mash-grounded) | `~/Projects/trainer.skill/references/chatprd-plan-adversarial-template.md` |
+| Context economy / token audit (`@tokenopt`) | `~/Projects/tokenopt.skill/SKILL.md` |
 | Assessment-prep pedagogy | `~/Projects/trainer.skill/references/assessment-prep-pedagogy.md` |
 | Repo operations, security, branch protection | `README.md`, `SECURITY.md` |
 
-Verify sync: `scripts/verify_trainer_sync.sh`. Context budget (warn, build-time root SKILL.md linter): `tests/context_budget/check_context_budget.py`. Runtime context % → Cursor 3.3+ native breakdown, not diet.
+Verify sync: `scripts/verify_trainer_sync.sh` (Invariant 12 code-review loop routing · Invariant 13 codereview anti-theater). Code review PRs: `scripts/trainer_pr_review_post.sh` + `scripts/verify_trainer_codereview.sh`.

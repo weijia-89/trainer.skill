@@ -390,7 +390,7 @@ When waiving contract-surface closure, add a row (severity per repo tier):
 **toebeans** ships a CI job that **fails** open PRs until the canonical comment exists with `head=` = current PR HEAD and `### Trainer notes` (forbids `### Pedagogy`):
 
 - Gate: `scripts/ci-trainer-pr-review-gate.sh`
-- Post/PATCH: `scripts/trainer_pr_review_post.sh`
+- Post/PATCH: `scripts/trainer_pr_review_post.sh` — **never** `gh pr comment` for canonical trainer reviews (bypasses marker PATCH + spawns duplicate comments).
 - Workflow job: `Trainer PR review comment gate` in `.github/workflows/ci.yml`
 
 **buds:** copy the same two scripts + CI job when enabling the gate there.
