@@ -6,7 +6,7 @@ An entrypoint and coaching skill for a 9-specialist agent toolkit. The trainer i
 
 This repo distributes `trainer` together with the 9 specialist skill directories at `./specialists/`. Each specialist is independently usable. The trainer is the routing prose that connects them; it does not make the specialists work together at runtime, and it does not do the specialists' work itself.
 
-**Honest scope (per an internal audit and the context-free adversarial review at v0.4.0):** as of v0.4.0 the trainer is a *documentation skill* with discipline scaffolding (Iron Law, Red Flags, Rationalizations, three doc-only pressure scenarios). It is not yet a *behavioral* skill in the sense that no runnable harness measures whether an agent loaded with the trainer actually behaves differently. A Phase 11 validation-infrastructure plan exists in private working notes and covers building that harness; this skill is not yet a portfolio claim that the harness exists.
+**Honest scope (per internal audit, adversarial review at v0.4.0, and Phase 11 Layer A ship):** as of v0.15.0 the trainer ships a **runnable Layer A falsifiability suite** in its own tree (`scripts/run.sh`, `scripts/harness_adapters/`, `tests/scenarios/harness/` with `pass_criteria.py` graders). The suite validates transcript-gradable behavior against a **named dated model** on a **named scenario set** under a **pass^k stability gate** and **reproducibility protocol** (`_repro.py`, Invariant 16). It is **not** a measured behavioral-delta claim: blind audit, Layer B calibration at scale, and Layer C mutation heat maps remain pending until operator runs them with `ANTHROPIC_API_KEY`.
 
 ---
 
@@ -109,11 +109,17 @@ trainer.skill/
 ├── scripts/
 │   ├── apply_branch_protection.sh      # idempotent protection PUT (DRY_RUN=1 default)
 │   ├── bundle_specialists.sh           # refreshes ./specialists/ from sibling-dir canonicals
+│   ├── calibration_analyze.py          # Phase 11 Layer B (honest-empty at trainer N)
+│   ├── harness_adapters/anthropic_opus.py  # Phase 11 live/offline adapter
+│   ├── mutation_test_skill.py          # Phase 11 Layer C mutation heat map
+│   ├── phase11_report.py               # Phase 11 combined report driver
+│   ├── run.sh                          # Phase 11 scenario driver (--k pass-rate)
 │   ├── trainer_pr_review_post.sh       # POST/PATCH canonical PR review comment (never gh pr comment)
+│   ├── verify_phase11_isolation.sh       # RULE #4 prod-tree isolation around suite run
 │   ├── verify_trainer_codereview.sh    # anti-theater self-test + contract validators
 │   ├── verify_autonomous_code_review.py  # Invariant 12 code-review loop routing
 │   ├── verify_github_hardening.sh      # SECURITY.md layout + apply script dry-run smoke
-│   └── verify_trainer_sync.sh          # syncs SKILL.md + references/; Invariants 1–13
+│   └── verify_trainer_sync.sh          # syncs SKILL.md + references/; Invariants 1–16
 ├── tests/
 │   ├── context_budget/                 # root SKILL.md size gate (Invariant 11)
 │   │   ├── budget.toml
@@ -124,8 +130,9 @@ trainer.skill/
 │   ├── trainer_routing/                # Invariant 12 verify_autonomous_code_review tests
 │   ├── trainer_sync/                   # Invariant 1b references mirror regression fixture
 │   │   └── test_invariant_1b_references_mirror.sh
-│   └── scenarios/                      # doc-only pressure scenarios (v0.4.0)
+│   └── scenarios/                      # pressure scenarios + harness (Layer A)
 │       ├── README.md
+│       ├── harness/                    # pass_criteria.py graders + run.sh outputs
 │       ├── S01_ceremonial_routing.md
 │       ├── S02_coaching_collapse_on_i_know.md
 │       └── S03_bypass_for_small_task.md

@@ -1,6 +1,6 @@
 # trainer.skill ROADMAP
 
-**Current version:** v0.14.0 (2026-06-28)
+**Current version:** v0.15.0 (2026-07-01)
 **Status:** active development. Trainer routing logic plus nine specialist
 gym-family skills bundled under `specialists/`.
 
@@ -27,16 +27,22 @@ their behavior claims. Phase 11 is building that evidence layer.
 - Eight verification invariants in `scripts/verify_trainer_sync.sh`,
   including the private-path leak scanner added 2026-05-16.
 
+### Done in v0.15.0 (Layer A driver — 2026-07-01)
+
+- `scripts/run.sh` with `--k` pass-rate stability gate and RULE #4 isolation.
+- `scripts/harness_adapters/anthropic_opus.py` (dated snapshot fails closed; USER-DATA fence).
+- `scripts/phase11_report.py` (trainer pass-rate summary parser).
+- `scripts/calibration_analyze.py` (Layer B honest-empty; no mSPRT).
+- `scripts/mutation_test_skill.py` (Layer C tiny-N noise band).
+- `scripts/verify_phase11_isolation.sh` + Invariants 15/16 in `verify_trainer_sync.sh`.
+- README honest-scope updated: falsifiability suite, not measured delta.
+
 ### Deferred
 
-- **Blind audit cycle.** Run all 37 pressure scenarios (34 form-check + 3
-  trainer) against a live Anthropic Opus call. Needs an `ANTHROPIC_API_KEY`
-  and roughly $3-5 per full run.
+- **Blind audit cycle.** Run the 3 trainer scenarios against a live dated Opus call (`ANTHROPIC_MODEL` + `ANTHROPIC_API_KEY`). Indicative cost ~$3-5 per full k-repeat run; unverified.
 - **Cross-model run.** Same scenarios against a second vendor for
-  pass-rate delta. Surfaces whether a scenario tests skill behavior or
-  model behavior.
-- **Combined report driver for trainer-side scenarios.** form-check.skill
-  has `scripts/phase11_report.py`; trainer needs the equivalent.
+  pass-rate delta. Harness-parity confound: compare like adapters only.
+- ~~**Combined report driver for trainer-side scenarios.**~~ Shipped v0.15.0: `scripts/phase11_report.py`.
 
 ## Out of scope
 

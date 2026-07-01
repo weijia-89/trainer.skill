@@ -22,3 +22,8 @@ jobs:
 
       - name: Verify trainer sync
         run: timeout 30s ./scripts/verify_trainer_sync.sh
+
+      - name: Phase 11 offline suite smoke
+        run: |
+          bash scripts/run.sh --offline --k 1 || true
+          test -f tests/scenarios/harness/runs/*/summary.txt

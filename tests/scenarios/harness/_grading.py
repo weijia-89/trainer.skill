@@ -83,5 +83,15 @@ class Transcript(str):
         m = marker.lower()
         return any(m in s for s in self.substantive_sentences)
 
+    def with_floor(self, min_words: int) -> "Transcript":
+        """Return a new Transcript over the same text at a different word floor.
+
+        Use for criteria where the legitimate answer is enumerated short items
+        (e.g. "Commit 1: test", "Commit 2: fix") that fall below the default
+        10-word floor. Keyword-soup is still blocked because conjunctive
+        pass_criteria require earlier strict-floor criteria to also pass.
+        """
+        return Transcript(str.__str__(self), min_words=min_words)
+
 
 __all__ = ["Transcript"]
