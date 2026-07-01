@@ -117,14 +117,14 @@ if [[ -f "$R6_VALIDATE" ]]; then
   CHANGED_FILES=$(mktemp)
   if [[ -n "${TRAINER_R6_FILES_FIXTURE:-}" ]]; then
     cp "$TRAINER_R6_FILES_FIXTURE" "$CHANGED_FILES"
-  elif command -v gh >/dev/null 2>&1; then
-    gh api "repos/${GH_REPO}/pulls/${PR_NUM}/files" --paginate \
-      --jq '.[].filename' >"$CHANGED_FILES" 2>/dev/null || true
-  fi
-  if [[ ! -s "$CHANGED_FILES" ]]; then
+  else
     git diff --name-only origin/main...HEAD >"$CHANGED_FILES" 2>/dev/null \
       || git diff --name-only main...HEAD >"$CHANGED_FILES" 2>/dev/null \
       || true
+  fi
+  if [[ ! -s "$CHANGED_FILES" ]] && command -v gh >/dev/null 2>&1; then
+    gh api "repos/${GH_REPO}/pulls/${PR_NUM}/files" --paginate \
+      --jq '.[].filename' >"$CHANGED_FILES" 2>/dev/null || true
   fi
   if [[ -s "$CHANGED_FILES" ]]; then
     python3 "$R6_VALIDATE" --files-file "$CHANGED_FILES" \
