@@ -39,6 +39,93 @@ STRONG_AUTO = re.compile(
 PR_TEST_PLAN = re.compile(r"^##\s+Test plan\b", re.M | re.I)
 PR_AUTO_SECTION = re.compile(r"^###\s+Automated\b", re.M | re.I)
 
+# R-6 user-facing docs gate (operator prose must track code changes)
+R6_CODE_EXACT = frozenset({"SKILL.md", "mirrors/windsurf-trainer.md"})
+R6_CODE_PREFIXES = (
+    "scripts/",
+    "references/",
+    "prompts/",
+    ".github/",
+    "specialists/",
+    "mirrors/",
+)
+R6_DOC_EXACT = frozenset({"CHANGELOG.md", "README.md", "ROADMAP.md", "SECURITY.md"})
+R6_DOC_PREFIXES = ("docs/",)
+R6_WAIVE = re.compile(
+    r"(R-6|user-facing doc).{0,120}waived|waived.{0,120}(R-6|user-facing doc)",
+    re.I | re.S,
+)
+R6_CLOSURE = re.compile(
+    r"\bR-6\b|deai|CHANGELOG\.md|README\.md|ROADMAP\.md|SECURITY\.md|user-facing doc",
+    re.I,
+)
+
+
+def is_r6_code_path(path: str) -> bool:
+    p = path.strip().replace("\\", "/")
+    if not p or p.startswith("tests/"):
+        return False
+    if p in R6_CODE_EXACT:
+        return True
+    return any(p.startswith(prefix) for prefix in R6_CODE_PREFIXES)
+
+
+def is_r6_doc_path(path: str) -> bool:
+    p = path.strip().replace("\\", "/")
+    if not p:
+        return False
+    if p in R6_DOC_EXACT:
+        return True
+    return any(p.startswith(prefix) for prefix in R6_DOC_PREFIXES)
+
+
+def classify_r6_files(changed_files: list[str]) -> tuple[list[str], list[str]]:
+    code_paths: list[str] = []
+    doc_paths: list[str] = []
+    for raw in changed_files:
+        p = raw.strip()
+        if not p:
+            continue
+        if is_r6_code_path(p):
+            code_paths.append(p)
+        if is_r6_doc_path(p):
+            doc_paths.append(p)
+    return code_paths, doc_paths
+
+
+def validate_r6_user_facing_docs(
+    changed_files: list[str],
+    review_body: str = "",
+    *,
+    verdict: str | None = None,
+) -> list[str]:
+    """R-6: operator-facing code changes require doc updates or explicit waive."""
+    code_paths, doc_paths = classify_r6_files(changed_files)
+    if not code_paths:
+        return []
+
+    errors: list[str] = []
+    sample = ", ".join(code_paths[:4])
+    if len(code_paths) > 4:
+        sample += f", +{len(code_paths) - 4} more"
+
+    if not doc_paths and not R6_WAIVE.search(review_body):
+        errors.append(
+            "R-6: PR changes operator-facing code "
+            f"({sample}) without CHANGELOG.md, README.md, ROADMAP.md, SECURITY.md, "
+            "or docs/ update — add doc deltas or Bug inventory waive row citing R-6"
+        )
+
+    if verdict and verdict.upper() == "APPROVE" and review_body:
+        if doc_paths and not R6_CLOSURE.search(review_body) and not R6_WAIVE.search(
+            review_body
+        ):
+            errors.append(
+                "APPROVE requires R-6 closure in review comment "
+                "(name updated doc paths, deai pass, or explicit R-6 waive row)"
+            )
+    return errors
+
 
 def extract_verdict(body: str) -> str | None:
     m = VERDICT_META.search(body)

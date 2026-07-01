@@ -20,8 +20,10 @@ This repository distributes the `trainer` entrypoint skill and nine bundled spec
 
 | Version | Status | Notes |
 | ------- | ------ | ----- |
-| 0.10.x | supported | Current line; see `CHANGELOG.md` |
-| 0.9.x | security-only | Critical doc or script fixes at maintainer discretion |
+| 0.14.x | supported | Current line; code-review loop + Invariants 12–13; see `CHANGELOG.md` |
+| 0.13.x | supported | Epistemic layers routing |
+| 0.10.x | security-only | Critical doc or script fixes at maintainer discretion |
+| 0.9.x | unsupported | Upgrade recommended |
 | < 0.9 | unsupported | Upgrade recommended |
 
 We tag releases on GitHub when the maintainer cuts a version. The `SKILL.md` frontmatter `version` field tracks trainer skill SemVer.
@@ -52,4 +54,4 @@ Skill Markdown often lands in agent context. Do not commit live credentials to t
 
 See `docs/BRANCH_PROTECTION.md` and `scripts/apply_branch_protection.sh`. Force-push and branch deletion on `main` are blocked for normal pushes once protection is applied; repo admins can bypass unless `enforce_admins` is enabled (see policy table in the branch-protection doc).
 
-Owner: repo maintainers. Last reviewed: 2026-05-25.
+Owner: repo maintainers. Last reviewed: 2026-06-28.

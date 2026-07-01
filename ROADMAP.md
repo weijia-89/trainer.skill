@@ -1,9 +1,14 @@
 # trainer.skill ROADMAP
 
-**Current version:** v0.5.0 (2026-05-16)
-**Status:** active development. Trainer routing logic plus eight specialist
-gym-family skills (form-check, recovery, gymbuddy, safetybar, diet, pr,
-program, warmup) bundled under `specialists/`.
+**Current version:** v0.14.0 (2026-06-28)
+**Status:** active development. Trainer routing logic plus nine specialist
+gym-family skills bundled under `specialists/`.
+
+## Shipped in v0.14.0
+
+- Default **code review** loop (`references/trainer-autonomous-code-review.md`) with mechanical routing gate (Invariant 12) and anti-theater PR comment harness (Invariant 13).
+- `trainer_pr_review_post.sh` PATCH-only canonical comment; strips duplicate HTML markers; deletes stray duplicates.
+- User-facing docs gate (R-6): PRs that change operator prose run the full **deai** skill before merge.
 
 ## Phase 11 (empirical validation infrastructure)
 
@@ -22,7 +27,7 @@ their behavior claims. Phase 11 is building that evidence layer.
 - Eight verification invariants in `scripts/verify_trainer_sync.sh`,
   including the private-path leak scanner added 2026-05-16.
 
-### Deferred to v0.6.0
+### Deferred
 
 - **Blind audit cycle.** Run all 37 pressure scenarios (34 form-check + 3
   trainer) against a live Anthropic Opus call. Needs an `ANTHROPIC_API_KEY`
@@ -42,8 +47,9 @@ their behavior claims. Phase 11 is building that evidence layer.
 
 ## Open questions
 
-- Should the eight gym standalones get their own GitHub mirrors, or stay
+- Should the nine gym standalones get their own GitHub mirrors, or stay
   bundle-only? Currently the standalones at `$HOME/Projects/<name>.skill/`
   are local-only git repos.
 - Whether to gate `git push` on `verify_trainer_sync.sh` by default
   (currently opt-in via `scripts/install_hooks.sh`).
+- Mechanical CHANGELOG drift check in CI when `SKILL.md` or `scripts/` change without `CHANGELOG.md` update.

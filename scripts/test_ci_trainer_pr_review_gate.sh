@@ -55,4 +55,22 @@ TRAINER_PR_REVIEW_FIXTURE="$theater" \
   bash "$GATE" 20 1d6ed94c335fb32197c75fef5c34c163a95c09e4 feature/autonomous-code-review weijia-89/trainer.skill \
   && fail "round1 theater APPROVE should fail" || pass "round1 theater APPROVE rejected"
 
+r6_bad_comment_fixed="$FIXTURE_DIR/r6-bad.json"
+python3 - "$ROOT" "$r6_bad_comment_fixed" <<'PY'
+import json, pathlib, sys
+root = pathlib.Path(sys.argv[1])
+out = pathlib.Path(sys.argv[2])
+review = (root / "tests/trainer_codereview/fixtures/r6_review_no_closure.md").read_text()
+body = (
+    "<!-- trainer-codereview-trainer.skill-feature-autonomous-code-review -->\n"
+    "<!-- head=abcdef0 verdict=APPROVE round=1 -->\n"
+    + review
+)
+out.write_text(json.dumps([{"body": body}]), encoding="utf-8")
+PY
+TRAINER_PR_REVIEW_FIXTURE="$r6_bad_comment_fixed" \
+TRAINER_PR_REVIEW_FILES_FIXTURE="$ROOT/tests/trainer_codereview/fixtures/r6_files_code_no_docs.txt" \
+  bash "$GATE" 20 abcdef0123456789abcdef0123456789abcdef0 feature/autonomous-code-review weijia-89/trainer.skill \
+  && fail "R-6 code without docs should fail APPROVE" || pass "R-6 code without docs rejected"
+
 echo "All ci-trainer-pr-review-gate self-tests passed."

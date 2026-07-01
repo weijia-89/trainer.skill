@@ -197,7 +197,7 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
       printf '%s\n' "$CR_OUT" | sed 's/^/        /'
       FAIL=1
     else
-      echo "PASS  trainer codereview anti-theater contract"
+      echo "PASS  trainer codereview anti-theater contract (Invariant 13–14)"
     fi
   fi
 
@@ -551,7 +551,7 @@ if [[ -f "$CODEREVIEW_VERIFY" ]]; then
     printf '%s\n' "$CR_OUT" | sed 's/^/        /'
     FAIL=1
   else
-    echo "PASS  trainer codereview anti-theater contract"
+    echo "PASS  trainer codereview anti-theater contract (Invariant 13–14)"
   fi
 fi
 

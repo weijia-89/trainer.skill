@@ -3,7 +3,7 @@ name: trainer
 description: |
   Loaded first on every coding / prompt-engineering / agent-skill session, always on. The trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer coaches: it pushes back when user decisions have deleterious downstream consequences or veer from best practices without articulated reason. Routes to form-check / recovery / gymbuddy / safetybar / diet / pr / program / warmup / superset at the right moment. Triggers: code review, adversarial review, plan a new app, harden, refactor, recover from incident, pair-coding, training program, personal record, context priming, parallel agent dispatch, orchestrator handoff, gym-skill, gym-skills.
 type: project-skill
-version: 0.13.0
+version: 0.14.0
 authors: Wei Jia (2026-05-18)
 license: LicenseRef-IronLaw-NC-1.0
 required_tools: [file_read]
@@ -184,4 +184,4 @@ All `references/*` paths below use canonical prefix `~/Projects/trainer.skill/re
 | Assessment-prep pedagogy | `~/Projects/trainer.skill/references/assessment-prep-pedagogy.md` |
 | Repo operations, security, branch protection | `README.md`, `SECURITY.md` |
 
-Verify sync: `scripts/verify_trainer_sync.sh` (Invariant 12 code-review loop routing · Invariant 13 codereview anti-theater). Code review PRs: `scripts/trainer_pr_review_post.sh` + `scripts/verify_trainer_codereview.sh`.
+Verify sync: `scripts/verify_trainer_sync.sh` (Invariant 12 code-review loop routing · Invariant 13 codereview anti-theater · Invariant 14 R-6 user-facing docs). Code review PRs: `scripts/trainer_pr_review_post.sh` + `scripts/verify_trainer_codereview.sh` + `scripts/trainer_pr_r6_validate.py`.

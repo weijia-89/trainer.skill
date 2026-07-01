@@ -31,7 +31,7 @@ Validator: every worker with `role` matching a row must cite canon path; missing
 | Interview prep router; post-apply pipeline | `/Users/dubs/Projects/toren/justice-of-toren.skill/SKILL.md` | — | Routes anaander / tisarwat / breq |
 | Recruiter screen; TA call; Calendly | `/Users/dubs/.cursor/skills/anaander/SKILL.md` | — | Alias: startup-recruiter-prep |
 | Tech assessment; take-home; Stage A–D cram | `/Users/dubs/Projects/toren/tisarwat.skill/SKILL.md` | `python3 /Users/dubs/Projects/toren/applications/.scripts/validate_prep_layout_v2.py --slug <slug>` | HTML via assessment-prep-site |
-| Code review; PR review; review diff; audit; @review-rigor | `/Users/dubs/Projects/trainer.skill/references/trainer-codereview.md` + `/Users/dubs/Projects/trainer.skill/references/trainer-autonomous-code-review.md` | `bash /Users/dubs/Projects/trainer.skill/scripts/verify_trainer_codereview.sh` | Default loop until clean; **`file_read` form-check** leaf |
+| Code review; PR review; review diff; audit; @review-rigor | `/Users/dubs/Projects/trainer.skill/references/trainer-codereview.md` + `/Users/dubs/Projects/trainer.skill/references/trainer-autonomous-code-review.md` | `bash /Users/dubs/Projects/trainer.skill/scripts/verify_trainer_codereview.sh` | Default loop until clean; **`file_read` form-check** leaf; R-6 deai when README/CHANGELOG/ROADMAP/SECURITY change |
 | Research; investigate; fact-check; lit review | `/Users/dubs/Projects/palamedes/skill/SKILL.md` | — | Also `palamedes.mdc` requestable pointer |
 | Piranesi export; ChatPRD Opus 4.8; NotebookLM packet | `/Users/dubs/Projects/piranesi.skill/SKILL.md` | `bash …/verify_piranesi_export.sh --dir … --strict` + `python3 …/verify_prompts_md.py --project-dir …` (PIR-20) | Export-only · one sequenced `prompts.md` |
 | Full research; deep dive; persona ILS/JFS | `/Users/dubs/Projects/toren/breq.skill/workflows/full_research.md` | — | After pre-assessment |
@@ -40,7 +40,7 @@ Validator: every worker with `role` matching a row must cite canon path; missing
 | Significant refactor; >5-file canon | `/Users/dubs/Projects/trainer.skill/references/chatprd-opus-implementation-plan-gate.md` | — | ChatPRD Opus plan before code |
 | Epistemic planning; stakes L0–L4 | `/Users/dubs/.cursor/skills/epistemic-planning/SKILL.md` | — | Before large initiatives |
 | Skill audit; slopsquat; fitness | `/Users/dubs/.cursor/skills/skill-fitness/SKILL.md` | `bash /Users/dubs/Projects/scholia/scripts/verify_skill_fitness.sh` (if present) | Explicit invoke |
-| README/CHANGELOG user docs | `/Users/dubs/Projects/deai.skill/SKILL.md` | — | Voice prime before ship |
+| README/CHANGELOG/ROADMAP/SECURITY user docs | `/Users/dubs/Projects/deai.skill/SKILL.md` | — | Full deai skill (voice-prime → restructure → re-scan); required in PR pipeline step 0 / R-6 |
 | FOSS tool pick | `/Users/dubs/Projects/trainer.skill/references/trainer-runtime-compactness.md` + form-check | — | Security > stars |
 | Application index KPI / channel rows | `/Users/dubs/Projects/toren/applications/_guides/INDEX_HTML_VERIFY.md` | `python3 /Users/dubs/Projects/toren/scripts/verify_application_index_html.py` | Glob: `applications-index-html.mdc` |
 | Materials prep; story elicitation | `/Users/dubs/Projects/toren/breq.skill/references/materials-prep-workflow.md` | `python3 /Users/dubs/Projects/toren/applications/.scripts/validate_materials_prep.py --slug <slug>` | Glob: `career-materials-prep.mdc` |

@@ -14,6 +14,30 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 _(none)_
 
+## [0.14.0] — 2026-06-28
+
+### Added
+
+- **`references/trainer-autonomous-code-review.md`** — default **code review** loop (explore → trace → test → fix until two clean passes). Operator trigger is **code review**, not a separate phrase.
+- **`scripts/verify_autonomous_code_review.py`** — Invariant 12: routes code review to form-check `file_read` + `code-review`; rejects `autonomous code review` as operator trigger text.
+- **Invariant 13 anti-theater harness** — `scripts/lib/trainer_codereview_contract.py`, `trainer_review_comment_validate.py`, `trainer_pr_body_validate.py`, `scripts/verify_trainer_codereview.sh`, `tests/trainer_codereview/fixtures/round1_theater_bad.md`, `.github/workflows/trainer-pr-review-gate.yml`.
+- **User-facing docs gate (R-6)** in `trainer-codereview.md` / `trainer-codereview-gate.md` — when a PR touches `README.md`, `CHANGELOG.md`, `ROADMAP.md`, `SECURITY.md`, or other operator prose, agent runs the **full deai skill** (voice-prime → restructure → re-scan), not `deai-scan.py` alone.
+
+### Changed
+
+- **`SKILL.md` v0.14.0** — code review / PR review routes to `trainer-codereview.md` + loop doc + form-check `code-review`; Invariants 12–13 in verify footer.
+- **`references/trainer-codereview.md`**, **`prompts/trainer-codereview.txt`** — default loop doc; R-6 user-facing docs + deai.
+- **`references/workflow-skill-router.md`** — single code-review row; verify `verify_trainer_codereview.sh`.
+- **`scripts/trainer_pr_review_post.sh`** — strip pasted HTML markers before prepend; validate assembled body; PATCH oldest canonical comment and delete marker duplicates; forbid `gh pr comment` for trainer reviews (`trainer-github-pr-commentary.md`).
+- **`scripts/verify_trainer_sync.sh`** — Invariant 12 (code-review loop) + Invariant 13 (anti-theater).
+- **`README.md`**, **`ROADMAP.md`**, **`SECURITY.md`** — v0.14.0 line, code-review harness layout, supported version table.
+
+### Fixed
+
+- Round-1 theater APPROVE on PR #20 (placeholder Bug inventory + grep-only verify) is now a failing fixture in CI.
+- Duplicate trainer PR comments from raw `gh pr comment` bypass; duplicate HTML markers that could collapse the GitHub UI.
+- **Invariant 14 (R-6 harness):** `trainer_pr_r6_validate.py` + CI gate block APPROVE when operator-facing code changes lack doc deltas or R-6 closure in the canonical comment.
+
 ## [0.13.0] — 2026-06-05
 
 ### Added

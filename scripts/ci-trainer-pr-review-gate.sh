@@ -136,9 +136,10 @@ for err in mod.validate_review_comment(body, repo):
     sys.exit(1)
 
 verdict = meta_verdict.search(body).group(1)
+contract_path = os.path.join(gate_dir, "lib", "trainer_codereview_contract.py")
+
 if verdict.upper() == "APPROVE":
     pr_body_path = os.environ.get("TRAINER_PR_BODY_FILE", "")
-    contract_path = os.path.join(gate_dir, "lib", "trainer_codereview_contract.py")
     if pr_body_path and os.path.isfile(pr_body_path) and os.path.isfile(contract_path):
         spec2 = importlib.util.spec_from_file_location("trainer_contract", contract_path)
         if spec2 and spec2.loader:
@@ -147,6 +148,49 @@ if verdict.upper() == "APPROVE":
             pr_body = open(pr_body_path, encoding="utf-8").read()
             for err in mod2.validate_pr_test_plan_body(pr_body, require_checked=True):
                 print(f"FAIL  PR #{pr}: PR body: {err}")
+                sys.exit(1)
+
+    changed_files: list[str] = []
+    files_fixture = os.environ.get("TRAINER_PR_REVIEW_FILES_FIXTURE", "")
+    if files_fixture and os.path.isfile(files_fixture):
+        changed_files = [
+            ln.strip()
+            for ln in open(files_fixture, encoding="utf-8")
+            if ln.strip()
+        ]
+    elif not os.environ.get("TRAINER_PR_REVIEW_FIXTURE"):
+        import subprocess
+
+        gh_repo = os.environ["GH_REPO"]
+        pr_num = os.environ["PR_NUM"]
+        try:
+            out = subprocess.check_output(
+                [
+                    "gh",
+                    "api",
+                    f"repos/{gh_repo}/pulls/{pr_num}/files",
+                    "--paginate",
+                    "--jq",
+                    ".[].filename",
+                ],
+                text=True,
+                stderr=subprocess.DEVNULL,
+            )
+            changed_files = [ln.strip() for ln in out.splitlines() if ln.strip()]
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            changed_files = []
+
+    if changed_files and os.path.isfile(contract_path):
+        spec3 = importlib.util.spec_from_file_location("trainer_contract_r6", contract_path)
+        if spec3 and spec3.loader:
+            mod3 = importlib.util.module_from_spec(spec3)
+            spec3.loader.exec_module(mod3)
+            for err in mod3.validate_r6_user_facing_docs(
+                changed_files,
+                body,
+                verdict=verdict,
+            ):
+                print(f"FAIL  PR #{pr}: {err}")
                 sys.exit(1)
 
 print(f"PASS  trainer PR review gate: PR #{pr} head={head_short} verdict={verdict}")

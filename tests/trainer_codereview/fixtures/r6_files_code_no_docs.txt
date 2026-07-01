@@ -1,0 +1,3 @@
+scripts/verify_autonomous_code_review.py
+references/trainer-autonomous-code-review.md
+SKILL.md

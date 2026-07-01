@@ -10,6 +10,7 @@ If a change is going to **merge into `buds` or `toebeans`**, it must have a **fr
 
 ## Pipeline (product PR)
 
+0. **User-facing docs (R-6):** If the diff touches `README.md`, `CHANGELOG.md`, `ROADMAP.md`, `SECURITY.md`, or other operator prose, load **`~/Projects/deai.skill/SKILL.md`** and run the full deai loop (voice-prime → restructure → re-scan) on each touched file. Update version tables and layout diagrams to match shipped behavior. `deai-scan.py` alone does not satisfy this step.
 1. Implement on feature branch; run repo verify.
 2. **trainer** → **form-check** `code-review` per `trainer-codereview.md` (real review body — never empty/stub). On **export delta**, also close obligation **B** per `trainer-contract-surfaces.md` or waive in Bug inventory before APPROVE.
 3. Post canonical PR comment: `bash scripts/trainer_pr_review_post.sh <pr#> <verdict> <round> review.md`
@@ -50,6 +51,7 @@ TRAINER_GATE_RERUN_DRY_RUN=1 bash scripts/trainer_pr_review_gate_rerun.sh <pr#> 
 | `scripts/trainer_review_comment_validate.py` | Local validate review comment file |
 | `scripts/trainer_pr_body_validate.py` | PR body Test plan gate |
 | `scripts/verify_trainer_codereview.sh` | Self-test: round-1 theater fixture must FAIL |
+| `scripts/trainer_pr_r6_validate.py` | R-6 user-facing docs coverage (code diff vs CHANGELOG/README/ROADMAP/SECURITY) |
 | `.github/workflows/trainer-pr-review-gate.yml` | trainer.skill PR CI gate |
 | `scripts/trainer_pr_review_gate_rerun.sh` | Copy to product repo `scripts/` |
 | `scripts/test_ci_trainer_pr_review_gate.sh` | Copy to product repo `scripts/` |
