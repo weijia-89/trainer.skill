@@ -76,30 +76,60 @@ _validate_review_body_for_repo() {
 
 _validate_review_body_for_repo "$BODY_FILE" "$REPO_SLUG"
 
-BUG_INV="${SCRIPT_DIR}/trainer_review_bug_inventory_validate.py"
-if [[ ! -f "$BUG_INV" ]]; then
-  echo "trainer_pr_review_post: missing $BUG_INV" >&2
-  exit 1
-fi
-python3 "$BUG_INV" "$REPO_SLUG" "$BODY_FILE" --full || exit 1
-
 MARKER="<!-- trainer-codereview-${REPO_SLUG}-${BRANCH_SLUG} -->"
 META="<!-- head=${HEAD_SHORT} verdict=${VERDICT} round=${ROUND} -->"
+
+# Body file must not include markers (script owns them); strip if pasted from a prior round.
+STRIPPED=$(mktemp)
+python3 - "$BODY_FILE" "$STRIPPED" <<'PY'
+import re
+import sys
+from pathlib import Path
+
+src, dst = Path(sys.argv[1]), Path(sys.argv[2])
+lines = src.read_text(encoding="utf-8").splitlines()
+while lines and re.match(
+    r"^\s*<!--\s*(trainer-codereview-|head=)", lines[0], re.I
+):
+    lines.pop(0)
+while lines and lines[0].strip() == "":
+    lines.pop(0)
+dst.write_text("\n".join(lines) + ("\n" if lines else ""), encoding="utf-8")
+PY
 
 OUT=$(mktemp)
 {
   echo "$MARKER"
   echo "$META"
-  cat "$BODY_FILE"
+  cat "$STRIPPED"
 } >"$OUT"
+rm -f "$STRIPPED"
 
-COMMENT_ID=$(gh api "repos/${GH_REPO}/issues/${PR_NUM}/comments" --paginate \
-  --jq ".[] | select(.body | contains(\"trainer-codereview-${REPO_SLUG}-${BRANCH_SLUG}\")) | .id" 2>/dev/null | head -1)
+BUG_INV="${SCRIPT_DIR}/trainer_review_bug_inventory_validate.py"
+if [[ ! -f "$BUG_INV" ]]; then
+  echo "trainer_pr_review_post: missing $BUG_INV" >&2
+  exit 1
+fi
+python3 "$BUG_INV" "$REPO_SLUG" "$OUT" --full || exit 1
+
+MARKER_NEEDLE="trainer-codereview-${REPO_SLUG}-${BRANCH_SLUG}"
+COMMENT_IDS=$(gh api "repos/${GH_REPO}/issues/${PR_NUM}/comments" --paginate \
+  --jq ".[] | select(.body | contains(\"${MARKER_NEEDLE}\")) | .id" 2>/dev/null | sort -n)
+
+COMMENT_ID=$(printf '%s\n' "$COMMENT_IDS" | head -1)
+DUPLICATE_IDS=$(printf '%s\n' "$COMMENT_IDS" | tail -n +2)
 
 if [[ -n "$COMMENT_ID" ]]; then
   jq -n --rawfile b "$OUT" '{body: $b}' \
     | gh api -X PATCH "repos/${GH_REPO}/issues/comments/${COMMENT_ID}" --input - >/dev/null
   echo "PATCHED comment id=${COMMENT_ID} on PR #${PR_NUM} (${GH_REPO}) head=${HEAD_SHORT} verdict=${VERDICT}"
+  if [[ -n "$DUPLICATE_IDS" ]]; then
+    while IFS= read -r dup_id; do
+      [[ -z "$dup_id" ]] && continue
+      gh api -X DELETE "repos/${GH_REPO}/issues/comments/${dup_id}" >/dev/null
+      echo "DELETED duplicate trainer comment id=${dup_id} (canonical id=${COMMENT_ID})"
+    done <<<"$DUPLICATE_IDS"
+  fi
 else
   gh pr comment "$PR_NUM" --repo "$GH_REPO" --body-file "$OUT"
   echo "POSTED new comment on PR #${PR_NUM} (${GH_REPO}) head=${HEAD_SHORT} verdict=${VERDICT}"
