@@ -201,6 +201,28 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     fi
   fi
 
+  # Invariant 15: scenario reference_response passes its own pass_criteria.
+  for s in "$REPO_ROOT"/tests/scenarios/harness/*/; do
+    [[ -f "$s/pass_criteria.py" && -f "$s/reference_response.md" ]] || continue
+    if ! python3 "$s/pass_criteria.py" < "$s/reference_response.md" >/dev/null 2>&1; then
+      echo "FAIL Invariant 15: $(basename "$s") reference_response fails its own pass_criteria"
+      FAIL=1
+    fi
+  done
+  [[ "$FAIL" -eq 0 ]] && echo "PASS Invariant 15 (scenario self-pass)"
+
+  # Invariant 16: any committed run meta.json carries a dated snapshot + seed.
+  while IFS= read -r meta; do
+    python3 - "$meta" <<'PY' || FAIL=1
+import json,re,sys
+m=json.load(open(sys.argv[1])).get("meta",{})
+snap=m.get("model_snapshot",""); seed=m.get("seed")
+ok=bool(re.match(r".+-\d{4}-?\d{2}-?\d{2}$",snap)) and seed is not None
+sys.exit(0 if ok else 1)
+PY
+  done < <(git -C "$REPO_ROOT" ls-files '*/runs/*/*.json' 2>/dev/null | sed "s#^#$REPO_ROOT/#")
+  [[ "$FAIL" -eq 0 ]] && echo "PASS Invariant 16 (committed runs reproducible)"
+
   if [[ "$FAIL" -ne 0 ]]; then
     echo ""
     echo "VERDICT: FAIL (CI repo-only checks)"
@@ -554,6 +576,28 @@ if [[ -f "$CODEREVIEW_VERIFY" ]]; then
     echo "PASS  trainer codereview anti-theater contract (Invariant 13–14)"
   fi
 fi
+
+# Invariant 15: scenario reference_response passes its own pass_criteria.
+for s in "$REPO_ROOT"/tests/scenarios/harness/*/; do
+  [[ -f "$s/pass_criteria.py" && -f "$s/reference_response.md" ]] || continue
+  if ! python3 "$s/pass_criteria.py" < "$s/reference_response.md" >/dev/null 2>&1; then
+    echo "FAIL Invariant 15: $(basename "$s") reference_response fails its own pass_criteria"
+    FAIL=1
+  fi
+done
+[[ "$FAIL" -eq 0 ]] && echo "PASS Invariant 15 (scenario self-pass)"
+
+# Invariant 16: any committed run meta.json carries a dated snapshot + seed.
+while IFS= read -r meta; do
+  python3 - "$meta" <<'PY' || FAIL=1
+import json,re,sys
+m=json.load(open(sys.argv[1])).get("meta",{})
+snap=m.get("model_snapshot",""); seed=m.get("seed")
+ok=bool(re.match(r".+-\d{4}-?\d{2}-?\d{2}$",snap)) and seed is not None
+sys.exit(0 if ok else 1)
+PY
+done < <(git -C "$REPO_ROOT" ls-files '*/runs/*/*.json' 2>/dev/null | sed "s#^#$REPO_ROOT/#")
+[[ "$FAIL" -eq 0 ]] && echo "PASS Invariant 16 (committed runs reproducible)"
 
 if [[ "$FAIL" -ne 0 ]]; then
   echo ""

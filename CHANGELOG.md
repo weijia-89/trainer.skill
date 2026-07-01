@@ -14,6 +14,19 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 _(none)_
 
+## [0.15.0] — 2026-07-01
+
+### Added
+
+- **Phase 11 Layer A driver** — `scripts/run.sh` (`--k` pass-rate stability, RULE #4 isolation), `scripts/harness_adapters/anthropic_opus.py` (dated snapshot fails closed; USER-DATA fence), `scripts/phase11_report.py`, `scripts/calibration_analyze.py` (Layer B honest-empty), `scripts/mutation_test_skill.py` (Layer C tiny-N), `scripts/verify_phase11_isolation.sh`, `tests/scenarios/harness/_repro.py`, `Transcript.with_floor()` in `tests/scenarios/harness/_grading.py`.
+- **Invariants 15–16** in `scripts/verify_trainer_sync.sh` — scenario reference self-pass; committed run meta reproducibility.
+- **CI smoke** — offline `run.sh` + `summary.txt` existence in `python-package-conda.yml`.
+
+### Changed
+
+- **`README.md`**, **`tests/scenarios/README.md`**, **`ROADMAP.md`** — honest-scope: falsifiability suite for a named dated model, not measured behavioral delta.
+- **`SKILL.md` v0.15.0** — version bump only; routing unchanged.
+
 ## [0.14.0] — 2026-06-28
 
 ### Added

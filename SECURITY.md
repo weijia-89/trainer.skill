@@ -20,7 +20,8 @@ This repository distributes the `trainer` entrypoint skill and nine bundled spec
 
 | Version | Status | Notes |
 | ------- | ------ | ----- |
-| 0.14.x | supported | Current line; code-review loop + Invariants 12–13; see `CHANGELOG.md` |
+| 0.15.x | supported | Current line; Phase 11 Layer A driver + Invariants 15–16; see `CHANGELOG.md` |
+| 0.14.x | supported | Code-review loop + Invariants 12–14 (R-6 user-facing docs) |
 | 0.13.x | supported | Epistemic layers routing |
 | 0.10.x | security-only | Critical doc or script fixes at maintainer discretion |
 | 0.9.x | unsupported | Upgrade recommended |
