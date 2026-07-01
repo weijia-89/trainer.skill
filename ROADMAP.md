@@ -1,6 +1,6 @@
 # trainer.skill ROADMAP
 
-**Current version:** v0.15.0 (2026-07-01)
+**Current version:** v0.15.1 (2026-07-01)
 **Status:** active development. Trainer routing logic plus nine specialist
 gym-family skills bundled under `specialists/`.
 
@@ -36,10 +36,13 @@ their behavior claims. Phase 11 is building that evidence layer.
 - `scripts/mutation_test_skill.py` (Layer C tiny-N noise band).
 - `scripts/verify_phase11_isolation.sh` + Invariants 15/16 in `verify_trainer_sync.sh`.
 - README honest-scope updated: falsifiability suite, not measured delta.
+- Offline synthesis gates (`scripts/verify_phase11_synthesis_gates.sh`) — WP-0..WP-5 mechanical completion.
+- Implementation babysitter ref for ChatPRD plan-row execution.
+- Layer C mutation heat map run (offline) — no load-bearing section drops at trainer N.
 
-### Deferred
+### Deferred / operator-opt-in
 
-- **Blind audit cycle.** Run the 3 trainer scenarios against a live dated Opus call (`ANTHROPIC_MODEL` + `ANTHROPIC_API_KEY`). Indicative cost ~$3-5 per full k-repeat run; unverified.
+- **Blind audit cycle.** Run the 3 trainer scenarios against a live dated Opus call (`ANTHROPIC_MODEL` + `ANTHROPIC_API_KEY`). Indicative cost ~$3-5 per full k-repeat run; **waived for offline synthesis close-out** — falsifiers remain in `verify_phase11_synthesis_gates.sh` NOTE.
 - **Cross-model run.** Same scenarios against a second vendor for
   pass-rate delta. Harness-parity confound: compare like adapters only.
 - ~~**Combined report driver for trainer-side scenarios.**~~ Shipped v0.15.0: `scripts/phase11_report.py`.

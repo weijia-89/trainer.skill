@@ -14,6 +14,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 _(none)_
 
+## [0.15.1] — 2026-07-01
+
+### Added
+
+- **`references/trainer-implementation-babysitter.md`** — plan-row gate loop (H1–H7) for ChatPRD implementation execution; pairs with piranesi PIR-26 handoff.
+- **`scripts/verify_phase11_synthesis_gates.sh`** — offline WP-0..WP-5 falsifier bundle from S4e synthesis plan (live blind audit operator-opt-in).
+
+### Fixed
+
+- **`tests/context_budget/budget.toml`** — snapshot drift after SKILL footer references (Inv context budget).
+
+### Verified (offline synthesis close-out)
+
+- Layer C `mutation_test_skill.py` — no load-bearing section drops at trainer N.
+- `verify_phase11_synthesis_gates.sh` — VERDICT PASS (offline).
+
 ## [0.15.0] — 2026-07-01
 
 ### Added
