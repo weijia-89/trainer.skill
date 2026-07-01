@@ -112,6 +112,30 @@ if [[ ! -f "$BUG_INV" ]]; then
 fi
 python3 "$BUG_INV" "$REPO_SLUG" "$OUT" --full || exit 1
 
+R6_VALIDATE="${SCRIPT_DIR}/trainer_pr_r6_validate.py"
+if [[ -f "$R6_VALIDATE" ]]; then
+  CHANGED_FILES=$(mktemp)
+  if [[ -n "${TRAINER_R6_FILES_FIXTURE:-}" ]]; then
+    cp "$TRAINER_R6_FILES_FIXTURE" "$CHANGED_FILES"
+  elif command -v gh >/dev/null 2>&1; then
+    gh api "repos/${GH_REPO}/pulls/${PR_NUM}/files" --paginate \
+      --jq '.[].filename' >"$CHANGED_FILES" 2>/dev/null || true
+  fi
+  if [[ ! -s "$CHANGED_FILES" ]]; then
+    git diff --name-only origin/main...HEAD >"$CHANGED_FILES" 2>/dev/null \
+      || git diff --name-only main...HEAD >"$CHANGED_FILES" 2>/dev/null \
+      || true
+  fi
+  if [[ -s "$CHANGED_FILES" ]]; then
+    python3 "$R6_VALIDATE" --files-file "$CHANGED_FILES" \
+      --review-file "$OUT" --verdict "$VERDICT" || {
+      rm -f "$CHANGED_FILES"
+      exit 1
+    }
+  fi
+  rm -f "$CHANGED_FILES"
+fi
+
 MARKER_NEEDLE="trainer-codereview-${REPO_SLUG}-${BRANCH_SLUG}"
 COMMENT_IDS=$(gh api "repos/${GH_REPO}/issues/${PR_NUM}/comments" --paginate \
   --jq ".[] | select(.body | contains(\"${MARKER_NEEDLE}\")) | .id" 2>/dev/null | sort -n)

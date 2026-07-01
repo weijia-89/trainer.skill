@@ -184,4 +184,4 @@ All `references/*` paths below use canonical prefix `~/Projects/trainer.skill/re
 | Assessment-prep pedagogy | `~/Projects/trainer.skill/references/assessment-prep-pedagogy.md` |
 | Repo operations, security, branch protection | `README.md`, `SECURITY.md` |
 
-Verify sync: `scripts/verify_trainer_sync.sh` (Invariant 12 code-review loop routing · Invariant 13 codereview anti-theater). Code review PRs: `scripts/trainer_pr_review_post.sh` + `scripts/verify_trainer_codereview.sh`.
+Verify sync: `scripts/verify_trainer_sync.sh` (Invariant 12 code-review loop routing · Invariant 13 codereview anti-theater · Invariant 14 R-6 user-facing docs). Code review PRs: `scripts/trainer_pr_review_post.sh` + `scripts/verify_trainer_codereview.sh` + `scripts/trainer_pr_r6_validate.py`.

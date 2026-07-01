@@ -53,6 +53,8 @@ Use ranked findings `### T{n} · P{0-4} · {rubric} · conf N%`. **buds:** fix o
 
 Product repos wire `scripts/ci-trainer-pr-review-gate.sh` in CI. Detail: `trainer-codereview-gate.md`.
 
+**R-6 (user-facing docs):** On APPROVE, `ci-trainer-pr-review-gate.sh` and `trainer_pr_review_post.sh` call `trainer_pr_r6_validate.py`. If the PR diff touches `SKILL.md`, `scripts/`, `references/`, `prompts/`, `.github/`, `specialists/`, or `mirrors/` (excluding `tests/` only), at least one of `CHANGELOG.md`, `README.md`, `ROADMAP.md`, `SECURITY.md`, or `docs/` must change, or the review comment must include an explicit R-6 waive row. APPROVE with doc updates requires R-6/deai closure text in the canonical comment.
+
 ## Artifact vs product code (R-5)
 
 | PR touches | Route | Codereview rubric (SEC/COR/ARC/PRF/TST) |

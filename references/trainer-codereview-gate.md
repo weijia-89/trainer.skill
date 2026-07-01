@@ -51,6 +51,7 @@ TRAINER_GATE_RERUN_DRY_RUN=1 bash scripts/trainer_pr_review_gate_rerun.sh <pr#> 
 | `scripts/trainer_review_comment_validate.py` | Local validate review comment file |
 | `scripts/trainer_pr_body_validate.py` | PR body Test plan gate |
 | `scripts/verify_trainer_codereview.sh` | Self-test: round-1 theater fixture must FAIL |
+| `scripts/trainer_pr_r6_validate.py` | R-6 user-facing docs coverage (code diff vs CHANGELOG/README/ROADMAP/SECURITY) |
 | `.github/workflows/trainer-pr-review-gate.yml` | trainer.skill PR CI gate |
 | `scripts/trainer_pr_review_gate_rerun.sh` | Copy to product repo `scripts/` |
 | `scripts/test_ci_trainer_pr_review_gate.sh` | Copy to product repo `scripts/` |

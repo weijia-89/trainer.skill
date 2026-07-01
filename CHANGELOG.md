@@ -36,6 +36,7 @@ _(none)_
 
 - Round-1 theater APPROVE on PR #20 (placeholder Bug inventory + grep-only verify) is now a failing fixture in CI.
 - Duplicate trainer PR comments from raw `gh pr comment` bypass; duplicate HTML markers that could collapse the GitHub UI.
+- **Invariant 14 (R-6 harness):** `trainer_pr_r6_validate.py` + CI gate block APPROVE when operator-facing code changes lack doc deltas or R-6 closure in the canonical comment.
 
 ## [0.13.0] — 2026-06-05
 
