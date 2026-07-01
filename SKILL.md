@@ -3,7 +3,7 @@ name: trainer
 description: |
   Loaded first on every coding / prompt-engineering / agent-skill session, always on. The trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer coaches: it pushes back when user decisions have deleterious downstream consequences or veer from best practices without articulated reason. Routes to form-check / recovery / gymbuddy / safetybar / diet / pr / program / warmup / superset at the right moment. Triggers: code review, adversarial review, plan a new app, harden, refactor, recover from incident, pair-coding, training program, personal record, context priming, parallel agent dispatch, orchestrator handoff, gym-skill, gym-skills.
 type: project-skill
-version: 0.13.0
+version: 0.14.0
 authors: Wei Jia (2026-05-18)
 license: LicenseRef-IronLaw-NC-1.0
 required_tools: [file_read]

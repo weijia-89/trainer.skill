@@ -61,6 +61,22 @@ Product repos wire `scripts/ci-trainer-pr-review-gate.sh` in CI. Detail: `traine
 | **Only** skill/prompt/packet paths (`.cursor/skills/`, `*.skill/`, piranesi packets) | Explicit **phylax** artifact review — load `~/Projects/phylax.skill/references/trainer-routing.md` | **No** — phylax deliverable replaces product rubric on skill-only diffs |
 | `AGENTS.md` / `CLAUDE.md` | `form-check` + gate comment still required (`ci-trainer-pr-review-gate-exempt.sh` never exempts these) | Yes |
 
+## User-facing docs (R-6)
+
+When the PR diff touches operator prose, update and deai-edit **before** APPROVE:
+
+| Path (typical) | Required action |
+|----------------|-----------------|
+| `README.md` | Routing table, layout diagram, install steps match shipped behavior |
+| `CHANGELOG.md` | `[Unreleased]` or version section documents every user-visible change |
+| `ROADMAP.md` | Current version + shipped vs deferred items |
+| `SECURITY.md` | Supported version table when the release line moves |
+| Other operator-facing Markdown at repo root or `docs/` | Same bar when the diff changes how operators install, verify, or report issues |
+
+**deai (full skill, iron law):** `file_read` `~/Projects/deai.skill/SKILL.md` (or `~/.cursor/skills/deai/` after sync). Run voice-prime → restructure → re-scan until voice holds. Running `deai-scan.py` alone is **not** sufficient and does not satisfy R-6.
+
+**PR workflow:** step 1 in `trainer-codereview-gate.md` pipeline. List updated doc paths in the PR comment Bug inventory or Trainer notes when non-obvious.
+
 Mixed PRs: one trainer PR comment + separate phylax output when skill files change; do not apply SEC/COR rubric to YAML frontmatter in skill trees.
 
 ## Forbidden

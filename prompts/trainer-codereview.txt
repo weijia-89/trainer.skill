@@ -13,6 +13,7 @@ GitHub shape: ~/Projects/trainer.skill/references/trainer-github-pr-commentary.m
 
 ## Task
 
+0. **User-facing docs (R-6):** When the PR diff touches README, CHANGELOG, ROADMAP, SECURITY, or other operator prose — `file_read` `~/Projects/deai.skill/SKILL.md`; voice-prime → restructure → re-scan on each file; align version tables and routing copy with shipped behavior. Scan-only is theater.
 1a. Obligation A (diff-primary): Read the full PR diff and every load-bearing changed file (not grep-only for COR/TST); in-diff callers only beyond changed bodies.
 1b. If export delta (trainer-contract-surfaces.md): obligation B — bounded search for OLD public symbols in declared contract surfaces only; fix each hit or add Bug inventory waive row (Status `waived`, reason, file list of unchecked surfaces; tier: toebeans P0–P3, buds P0–P4) before APPROVE.
 2. Classify stakes; run review-rigor scorecard on P1+ (SEC, COR, ARC, PRF, TST). Obligation C: run verify command from repo root (Inputs Verify row in trainer-codereview.md; note if none).
@@ -39,3 +40,5 @@ TRAINER_CODEREVIEW_VERDICT=APPROVE|REQUEST_CHANGES|BLOCK
 - Repeating full launch boilerplate in every **trainer remediate** comment without a testing reason.
 - Putting fenced multi-step bash blocks in the **buds PR body** (fails `pr_body_validate.sh`).
 - Routing through cursor-sdk-playground for normal product PRs.
+- Shipping code changes without updating `CHANGELOG.md` / `README.md` / `ROADMAP.md` / `SECURITY.md` when the diff changes operator-visible behavior (R-6).
+- Running `deai-scan.py` only and claiming R-6 done without loading the full deai skill.

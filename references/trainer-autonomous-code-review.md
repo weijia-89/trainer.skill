@@ -44,6 +44,7 @@ PASS N:
 | Artifact | When |
 |----------|------|
 | **PR** | Operator asked for PR — create branch, commit, push, `gh pr create` |
+| **User-facing docs** | Diff touches README / CHANGELOG / ROADMAP / SECURITY / operator `docs/` — full **deai** pass (R-6) before APPROVE |
 | **PR comment** | Canonical trainer format — `trainer-github-pr-commentary.md`; PATCH on each remediate round |
 | **Bug inventory** | Every round; final round lists **fixed in HEAD** with commit or file refs |
 | **Automated verification** | `### Automated verification` section with command output summaries |

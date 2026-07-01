@@ -40,7 +40,7 @@ Sibling-directory canonicals at `~/Projects/<name>.skill/` remain the editing ho
 
 ## How the routing decision works
 
-1. **What is the user doing right now?** Planning new code → `form-check plan-new-app`. Reviewing a diff → `form-check code-review`. Fixing after a bad ship → `recovery`. Pairing → `gymbuddy`. Multi-week plan → `program`. Just opened the workspace → `warmup`. Spawning 2+ parallel agents on the same repo → `superset`.
+1. **What is the user doing right now?** Planning new code → `form-check plan-new-app`. **Code review / PR review / review diff** → `trainer-codereview.md` + `trainer-autonomous-code-review.md` + `form-check code-review` (loop until clean). Fixing after a bad ship → `recovery`. Pairing → `gymbuddy`. Multi-week plan → `program`. Just opened the workspace → `warmup`. Spawning 2+ parallel agents on the same repo → `superset`.
 2. **What is the stakes tier?** Vibe-safe / vibe-careful / vibe-dangerous, classified per `form-check` Section 5. Vibe-dangerous → also load `safetybar`. Vibe-dangerous AND post-incident → also load `recovery`. Token budget tight → load `diet`. Parallel-agent dispatch at any tier → load `superset`.
 3. **Adapt as the session evolves.** A planning session that uncovers an incident routes to `recovery` mid-session. A review that surfaces a runtime concern routes to `safetybar`. A multi-day push that hits IDE-slow or accumulated-context routes to `superset` for an orchestrator-handoff. Routing is not locked at start.
 
@@ -78,7 +78,7 @@ bash ~/Projects/trainer.skill/scripts/verify_trainer_sync.sh     # syncs referen
 
 **Windsurf (optional):** copy `mirrors/windsurf-trainer.md` into your Windsurf rules directory. Verify checks the repo template only, not `~/.windsurf/`.
 
-The skill triggers on every coding / prompt-engineering / agent-skill session. Mandatory `file_read` overlays live under `~/Projects/trainer.skill/references/` (absolute paths in `SKILL.md`); `verify_trainer_sync.sh` keeps the `~/.cursor/skills/trainer/` mirror byte-identical to the canonical repo. Product repos also load `~/Projects/.cursor/rules/trainer.mdc` when globs match.
+The skill triggers on every coding / prompt-engineering / agent-skill session. Mandatory `file_read` overlays live under `~/Projects/trainer.skill/references/` (absolute paths in `SKILL.md`); `verify_trainer_sync.sh` keeps the `~/.cursor/skills/trainer/` mirror byte-identical to the canonical repo. Cursor loads `~/.cursor/rules/trainer.mdc` (SSOT: `~/Projects/.cursor/rules-user/trainer.mdc`; deploy via `tokenopt.skill/scripts/sync_user_iron_laws.sh`).
 
 ### As a reference / methodology read
 
@@ -90,28 +90,38 @@ Read `SKILL.md` for the routing flow and coaching stance. Read each specialist's
 
 ```
 trainer.skill/
-├── SKILL.md                            # canonical trainer body (~164 lines / ~2706 est tokens as of v0.12.0)
+├── SKILL.md                            # canonical trainer body (~187 lines as of v0.14.0)
 ├── README.md                           # this file
 ├── CHANGELOG.md                        # version history per SemVer below
 ├── SECURITY.md                         # vulnerability reporting and supported versions
+├── ROADMAP.md                          # phase status and open questions
 ├── LICENSE                             # PolyForm NC 1.0.0 + Iron Law
 ├── docs/
 │   └── BRANCH_PROTECTION.md            # main branch protection policy and gh api commands
 ├── references/
+│   ├── trainer-codereview.md           # PR review routing + verdicts
+│   ├── trainer-autonomous-code-review.md  # default code review loop (explore until clean)
+│   ├── trainer-codereview-gate.md      # CI gate + POST/PATCH pipeline
+│   ├── trainer-github-pr-commentary.md # PR body test plan + comment shape
 │   ├── trainer-runtime-compactness.md  # communication, rationalizations, decision template, coached-override shape
 │   ├── trainer-pre-action-gates.md     # mechanical three-facts gate, triggers, adversarial-review pass
 │   └── trainer-dispatch-gates.md       # dispatch manifest, three-layer orch/meta/worker, status closeout
 ├── scripts/
 │   ├── apply_branch_protection.sh      # idempotent protection PUT (DRY_RUN=1 default)
 │   ├── bundle_specialists.sh           # refreshes ./specialists/ from sibling-dir canonicals
+│   ├── trainer_pr_review_post.sh       # POST/PATCH canonical PR review comment (never gh pr comment)
+│   ├── verify_trainer_codereview.sh    # anti-theater self-test + contract validators
+│   ├── verify_autonomous_code_review.py  # Invariant 12 code-review loop routing
 │   ├── verify_github_hardening.sh      # SECURITY.md layout + apply script dry-run smoke
-│   └── verify_trainer_sync.sh          # syncs SKILL.md + references/ to Claude mirror; asserts cross-IDE consistency
+│   └── verify_trainer_sync.sh          # syncs SKILL.md + references/; Invariants 1–13
 ├── tests/
 │   ├── context_budget/                 # root SKILL.md size gate (Invariant 11)
 │   │   ├── budget.toml
 │   │   ├── check_context_budget.py
 │   │   ├── measure_context.py
 │   │   └── README.md
+│   ├── trainer_codereview/             # Invariant 13 fixtures + contract unit tests
+│   ├── trainer_routing/                # Invariant 12 verify_autonomous_code_review tests
 │   ├── trainer_sync/                   # Invariant 1b references mirror regression fixture
 │   │   └── test_invariant_1b_references_mirror.sh
 │   └── scenarios/                      # doc-only pressure scenarios (v0.4.0)
@@ -138,6 +148,16 @@ trainer.skill/
 - **MAJOR**: routing decision flow changes; specialist list gains or loses entries; coaching-stance criteria change.
 - **MINOR**: new sync target added; specialist invocation pattern updated; new teaching responsibility added; bundle mechanic introduced.
 - **PATCH**: typo fix; clarification without semantic change; sync-mechanic improvement.
+
+---
+
+## Authoring discipline
+
+Shipped prose in this repo passes three gates before merge:
+
+1. **Em-dash zero** - mechanical; `scripts/verify_trainer_sync.sh` Invariant 6 fails on Unicode em dashes and `--` in tracked Markdown.
+2. **deai (full skill)** - mandatory for `README.md`, `CHANGELOG.md`, `ROADMAP.md`, `SECURITY.md`, and other operator-facing copy. Load `~/Projects/deai.skill/SKILL.md` (or `~/.cursor/skills/deai/` after sync). Run voice-prime, restructure, re-scan. A scan-only pass does not count. Wired into PR code review as R-6 in `references/trainer-codereview.md`.
+3. **Wei voice iron rules** - no theatrical mic-drops at paragraph end; no tricolon-after-colon; active voice with the author as agent.
 
 ---
 
