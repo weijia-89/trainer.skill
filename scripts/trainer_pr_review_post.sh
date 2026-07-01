@@ -81,7 +81,7 @@ if [[ ! -f "$BUG_INV" ]]; then
   echo "trainer_pr_review_post: missing $BUG_INV" >&2
   exit 1
 fi
-python3 "$BUG_INV" "$REPO_SLUG" "$BODY_FILE" || exit 1
+python3 "$BUG_INV" "$REPO_SLUG" "$BODY_FILE" --full || exit 1
 
 MARKER="<!-- trainer-codereview-${REPO_SLUG}-${BRANCH_SLUG} -->"
 META="<!-- head=${HEAD_SHORT} verdict=${VERDICT} round=${ROUND} -->"

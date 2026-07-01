@@ -70,6 +70,13 @@ bash scripts/verify_<repo>.sh
 
 Record exit codes in PR comment **Automated verification** block.
 
+**Mechanical gate (anti-theater):** before POST/PATCH use `bash ~/Projects/trainer.skill/scripts/trainer_pr_review_post.sh` (runs full contract). Self-test: `bash ~/Projects/trainer.skill/scripts/verify_trainer_codereview.sh`. CI: `ci-trainer-pr-review-gate.sh` on product repos and trainer.skill PRs.
+
+APPROVE is **rejected** when:
+- Bug inventory uses placeholder `—` rows + "no defects"
+- Automated verification is grep/`test -f` only (no `verify_*` / `test_*.py` harness)
+- PR body Test plan lacks checked harness rows (when gate fetches PR body)
+
 ## Severity / merge bar
 
 Per `trainer-github-pr-commentary.md`: buds P0–P4 fix or waive; toebeans P0–P3. Skill/artifact repos: same discipline; no rubber-stamp on harness gaps.

@@ -185,6 +185,22 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     fi
   fi
 
+  # Invariant 13: code-review anti-theater contract
+  CODEREVIEW_VERIFY="$REPO_ROOT/scripts/verify_trainer_codereview.sh"
+  if [[ -f "$CODEREVIEW_VERIFY" ]]; then
+    set +e
+    CR_OUT=$(bash "$CODEREVIEW_VERIFY" 2>&1)
+    CR_EXIT=$?
+    set -e
+    if [[ $CR_EXIT -ne 0 ]]; then
+      echo "FAIL  verify_trainer_codereview.sh exited $CR_EXIT:"
+      printf '%s\n' "$CR_OUT" | sed 's/^/        /'
+      FAIL=1
+    else
+      echo "PASS  trainer codereview anti-theater contract"
+    fi
+  fi
+
   if [[ "$FAIL" -ne 0 ]]; then
     echo ""
     echo "VERDICT: FAIL (CI repo-only checks)"
@@ -520,6 +536,22 @@ if [[ -f "$AUTONOMOUS_REVIEW_TEST" ]]; then
     FAIL=1
   else
     echo "PASS  autonomous code review unit tests"
+  fi
+fi
+
+# Invariant 13: code-review anti-theater contract
+CODEREVIEW_VERIFY="$REPO_ROOT/scripts/verify_trainer_codereview.sh"
+if [[ -f "$CODEREVIEW_VERIFY" ]]; then
+  set +e
+  CR_OUT=$(bash "$CODEREVIEW_VERIFY" 2>&1)
+  CR_EXIT=$?
+  set -e
+  if [[ $CR_EXIT -ne 0 ]]; then
+    echo "FAIL  verify_trainer_codereview.sh exited $CR_EXIT:"
+    printf '%s\n' "$CR_OUT" | sed 's/^/        /'
+    FAIL=1
+  else
+    echo "PASS  trainer codereview anti-theater contract"
   fi
 fi
 

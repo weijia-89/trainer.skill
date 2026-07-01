@@ -184,4 +184,4 @@ All `references/*` paths below use canonical prefix `~/Projects/trainer.skill/re
 | Assessment-prep pedagogy | `~/Projects/trainer.skill/references/assessment-prep-pedagogy.md` |
 | Repo operations, security, branch protection | `README.md`, `SECURITY.md` |
 
-Verify sync: `scripts/verify_trainer_sync.sh` (includes `scripts/verify_autonomous_code_review.py` invariant 12). Context budget (warn, build-time root SKILL.md linter): `tests/context_budget/check_context_budget.py`. Runtime context % → Cursor 3.3+ native breakdown, not diet.
+Verify sync: `scripts/verify_trainer_sync.sh` (Invariant 12 autonomous routing · Invariant 13 codereview anti-theater). Code review PRs: `scripts/trainer_pr_review_post.sh` + `scripts/verify_trainer_codereview.sh`.
