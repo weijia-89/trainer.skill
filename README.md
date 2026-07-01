@@ -115,6 +115,7 @@ trainer.skill/
 │   ├── phase11_report.py               # Phase 11 combined report driver
 │   ├── run.sh                          # Phase 11 scenario driver (--k pass-rate)
 │   ├── trainer_pr_review_post.sh       # POST/PATCH canonical PR review comment (never gh pr comment)
+│   ├── trainer_pr_r6_validate.py       # Invariant 14 R-6 user-facing docs gate
 │   ├── verify_phase11_isolation.sh       # RULE #4 prod-tree isolation around suite run
 │   ├── verify_trainer_codereview.sh    # anti-theater self-test + contract validators
 │   ├── verify_autonomous_code_review.py  # Invariant 12 code-review loop routing
