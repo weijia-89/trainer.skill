@@ -32,6 +32,7 @@ Validator: every worker with `role` matching a row must cite canon path; missing
 | Recruiter screen; TA call; Calendly | `/Users/dubs/.cursor/skills/anaander/SKILL.md` | — | Alias: startup-recruiter-prep |
 | Tech assessment; take-home; Stage A–D cram | `/Users/dubs/Projects/toren/tisarwat.skill/SKILL.md` | `python3 /Users/dubs/Projects/toren/applications/.scripts/validate_prep_layout_v2.py --slug <slug>` | HTML via assessment-prep-site |
 | Code review; audit; remediation plan; @review-rigor | `/Users/dubs/.cursor/skills/review-rigor/SKILL.md` | — | Pair with form-check on PRs |
+| **autonomous code review**; review until clean | `/Users/dubs/Projects/trainer.skill/references/trainer-autonomous-code-review.md` | `python3 /Users/dubs/Projects/trainer.skill/scripts/verify_autonomous_code_review.py` | **`file_read` form-check** leaf; loop until clean |
 | Research; investigate; fact-check; lit review | `/Users/dubs/Projects/palamedes/skill/SKILL.md` | — | Also `palamedes.mdc` requestable pointer |
 | Piranesi export; ChatPRD Opus 4.8; NotebookLM packet | `/Users/dubs/Projects/piranesi.skill/SKILL.md` | `bash …/verify_piranesi_export.sh --dir … --strict` + `python3 …/verify_prompts_md.py --project-dir …` (PIR-20) | Export-only · one sequenced `prompts.md` |
 | Full research; deep dive; persona ILS/JFS | `/Users/dubs/Projects/toren/breq.skill/workflows/full_research.md` | — | After pre-assessment |

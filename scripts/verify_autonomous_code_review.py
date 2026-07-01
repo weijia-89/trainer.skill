@@ -19,6 +19,7 @@ FORM_CHECK_SKILL = REPO_ROOT / "specialists" / "form-check" / "SKILL.md"
 CODEREVIEW_PROMPT = REPO_ROOT / "prompts" / "trainer-codereview.txt"
 
 FORM_CHECK_SKILL_CANON = "~/Projects/trainer.skill/specialists/form-check/SKILL.md"
+ROUTER_REF = REPO_ROOT / "references" / "workflow-skill-router.md"
 
 
 def _fail(errors: list[str], msg: str) -> None:
@@ -90,6 +91,15 @@ def verify_codereview_prompt(text: str, errors: list[str]) -> None:
         _fail(errors, f"{CODEREVIEW_PROMPT.name}: must reference form-check routing")
 
 
+def verify_workflow_router(text: str, errors: list[str]) -> None:
+    if "autonomous code review" not in text.lower():
+        _fail(errors, f"{ROUTER_REF.name}: missing autonomous code review router row")
+    if "trainer-autonomous-code-review.md" not in text:
+        _fail(errors, f"{ROUTER_REF.name}: must route to trainer-autonomous-code-review.md")
+    if "verify_autonomous_code_review.py" not in text:
+        _fail(errors, f"{ROUTER_REF.name}: must list verify_autonomous_code_review.py in Verify column")
+
+
 def verify_repo(repo_root: Path | None = None) -> list[str]:
     root = repo_root or REPO_ROOT
     errors: list[str] = []
@@ -99,8 +109,16 @@ def verify_repo(repo_root: Path | None = None) -> list[str]:
     codereview_path = root / "references" / "trainer-codereview.md"
     form_check_path = root / "specialists" / "form-check" / "SKILL.md"
     prompt_path = root / "prompts" / "trainer-codereview.txt"
+    router_path = root / "references" / "workflow-skill-router.md"
 
-    for path in (skill_path, autonomous_path, codereview_path, form_check_path, prompt_path):
+    for path in (
+        skill_path,
+        autonomous_path,
+        codereview_path,
+        form_check_path,
+        prompt_path,
+        router_path,
+    ):
         if not path.is_file():
             errors.append(f"missing required file: {path}")
             return errors
@@ -110,6 +128,7 @@ def verify_repo(repo_root: Path | None = None) -> list[str]:
     verify_codereview_ref(codereview_path.read_text(encoding="utf-8"), errors)
     verify_form_check_skill(form_check_path.read_text(encoding="utf-8"), errors)
     verify_codereview_prompt(prompt_path.read_text(encoding="utf-8"), errors)
+    verify_workflow_router(router_path.read_text(encoding="utf-8"), errors)
 
     return errors
 

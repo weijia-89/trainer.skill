@@ -56,6 +56,7 @@ class TestVerifyAutonomousCodeReviewFixtures(unittest.TestCase):
             "SKILL.md",
             "references/trainer-autonomous-code-review.md",
             "references/trainer-codereview.md",
+            "references/workflow-skill-router.md",
             "specialists/form-check/SKILL.md",
             "prompts/trainer-codereview.txt",
         ):
