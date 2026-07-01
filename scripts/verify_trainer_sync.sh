@@ -152,7 +152,7 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     echo "WARN  skipping invariant 1b fixture (missing $INVARIANT_1B_TEST)"
   fi
 
-  # Invariant 12: autonomous code review routes to form-check code-review (not theater)
+  # Invariant 12: code review loop routes to form-check code-review (not theater)
   AUTONOMOUS_REVIEW="$REPO_ROOT/scripts/verify_autonomous_code_review.py"
   if [[ -f "$AUTONOMOUS_REVIEW" ]]; then
     set +e
@@ -160,14 +160,14 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     ACR_EXIT=$?
     set -e
     if [[ $ACR_EXIT -ne 0 ]]; then
-      echo "FAIL  autonomous code review contract gate exited $ACR_EXIT:"
+      echo "FAIL  code review loop contract gate exited $ACR_EXIT:"
       printf '%s\n' "$ACR_OUT" | sed 's/^/        /'
       FAIL=1
     else
-      echo "PASS  autonomous code review contract gate (form-check routing)"
+      echo "PASS  code review loop contract gate (form-check routing)"
     fi
   else
-    echo "WARN  skipping autonomous code review gate (missing $AUTONOMOUS_REVIEW)"
+    echo "WARN  skipping code review loop gate (missing $AUTONOMOUS_REVIEW)"
   fi
 
   AUTONOMOUS_REVIEW_TEST="$REPO_ROOT/tests/trainer_routing/test_verify_autonomous_code_review.py"
@@ -177,11 +177,11 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     ACRT_EXIT=$?
     set -e
     if [[ $ACRT_EXIT -ne 0 ]]; then
-      echo "FAIL  autonomous code review unit tests exited $ACRT_EXIT:"
+      echo "FAIL  code review loop unit tests exited $ACRT_EXIT:"
       printf '%s\n' "$ACRT_OUT" | sed 's/^/        /'
       FAIL=1
     else
-      echo "PASS  autonomous code review unit tests"
+      echo "PASS  code review loop unit tests"
     fi
   fi
 
@@ -506,7 +506,7 @@ else
   echo "WARN  skipping invariant 1b fixture (missing $INVARIANT_1B_TEST)"
 fi
 
-# Invariant 12: autonomous code review routes to form-check code-review (not theater)
+# Invariant 12: code review loop routes to form-check code-review (not theater)
 AUTONOMOUS_REVIEW="$REPO_ROOT/scripts/verify_autonomous_code_review.py"
 if [[ -f "$AUTONOMOUS_REVIEW" ]]; then
   set +e
@@ -514,14 +514,14 @@ if [[ -f "$AUTONOMOUS_REVIEW" ]]; then
   ACR_EXIT=$?
   set -e
   if [[ $ACR_EXIT -ne 0 ]]; then
-    echo "FAIL  autonomous code review contract gate exited $ACR_EXIT:"
+    echo "FAIL  code review loop contract gate exited $ACR_EXIT:"
     printf '%s\n' "$ACR_OUT" | sed 's/^/        /'
     FAIL=1
   else
-    echo "PASS  autonomous code review contract gate (form-check routing)"
+    echo "PASS  code review loop contract gate (form-check routing)"
   fi
 else
-  echo "WARN  skipping autonomous code review gate (missing $AUTONOMOUS_REVIEW)"
+  echo "WARN  skipping code review loop gate (missing $AUTONOMOUS_REVIEW)"
 fi
 
 AUTONOMOUS_REVIEW_TEST="$REPO_ROOT/tests/trainer_routing/test_verify_autonomous_code_review.py"
@@ -531,11 +531,11 @@ if [[ -f "$AUTONOMOUS_REVIEW_TEST" ]]; then
   ACRT_EXIT=$?
   set -e
   if [[ $ACRT_EXIT -ne 0 ]]; then
-    echo "FAIL  autonomous code review unit tests exited $ACRT_EXIT:"
+    echo "FAIL  code review loop unit tests exited $ACRT_EXIT:"
     printf '%s\n' "$ACRT_OUT" | sed 's/^/        /'
     FAIL=1
   else
-    echo "PASS  autonomous code review unit tests"
+    echo "PASS  code review loop unit tests"
   fi
 fi
 

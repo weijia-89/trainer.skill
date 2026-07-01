@@ -1,8 +1,8 @@
-# Trainer — autonomous code review
+# Trainer — code review loop (default)
 
-**Trigger:** operator says **autonomous code review** (or **autonomous review**, **review until clean**).
+**When:** operator requests **code review** (PR review, review the diff, review before merge, adversarial review on a branch).
 
-Default behavior for this phrase — not a single-pass skim. Trainer routes; agent executes the loop until the stop condition.
+This is the **default** trainer behavior for code review — not a separate mode. Trainer routes; agent executes the loop until the stop condition.
 
 ## Routing (mandatory)
 
@@ -13,7 +13,7 @@ Default behavior for this phrase — not a single-pass skim. Trainer routes; age
 
 Read `trainer-codereview.md` + `trainer-github-pr-commentary.md` before posting on GitHub.
 
-## Autonomous loop (iron law)
+## Review loop (iron law)
 
 Repeat until **no new P0–P4 findings** in a full pass:
 
@@ -33,7 +33,7 @@ PASS N:
 
 **Forbidden:**
 
-- Single-pass review when operator said autonomous.
+- Single-pass review when operator asked for code review.
 - Findings without file:line or runnable falsifier.
 - Approving with failing verify scripts.
 - Stopping at "no issues in the diff" without exploring new code paths (step 2).
@@ -56,24 +56,21 @@ Meta: `<!-- head={7-char-sha} verdict=APPROVE|REQUEST_CHANGES|BLOCK round={N} --
 Run all that apply to the repo:
 
 ```bash
-# Trainer autonomous code review contract (form-check routing wired)
-python3 ~/Projects/trainer.skill/scripts/verify_autonomous_code_review.py
+# Code review contract (form-check routing + anti-theater)
+bash ~/Projects/trainer.skill/scripts/verify_trainer_codereview.sh
 
-# Python harness repos (*.skill)
+# Per-repo harness
 python3 scripts/test_*.py
 bash scripts/test_*.sh
 bash scripts/verify_*.sh --strict   # when present
-
-# Product repos
-bash scripts/verify_<repo>.sh
 ```
 
 Record exit codes in PR comment **Automated verification** block.
 
-**Mechanical gate (anti-theater):** before POST/PATCH use `bash ~/Projects/trainer.skill/scripts/trainer_pr_review_post.sh` (runs full contract). Self-test: `bash ~/Projects/trainer.skill/scripts/verify_trainer_codereview.sh`. CI: `ci-trainer-pr-review-gate.sh` on product repos and trainer.skill PRs.
+**Mechanical gate (anti-theater):** before POST/PATCH use `bash ~/Projects/trainer.skill/scripts/trainer_pr_review_post.sh` (runs full contract). CI: `ci-trainer-pr-review-gate.sh` on product repos and trainer.skill PRs.
 
 APPROVE is **rejected** when:
-- Bug inventory uses placeholder `—` rows + "no defects"
+- Bug inventory uses placeholder `—` rows + vacuous findings
 - Automated verification is grep/`test -f` only (no `verify_*` / `test_*.py` harness)
 - PR body Test plan lacks checked harness rows (when gate fetches PR body)
 
@@ -81,11 +78,10 @@ APPROVE is **rejected** when:
 
 Per `trainer-github-pr-commentary.md`: buds P0–P4 fix or waive; toebeans P0–P3. Skill/artifact repos: same discipline; no rubber-stamp on harness gaps.
 
-## Relation to other triggers
+## Related triggers
 
 | Operator says | Behavior |
 |---------------|----------|
-| code review | Single rigorous pass; fix if asked |
-| **autonomous code review** | Full loop until clean + PR comment updates |
-| @review-rigor | Rubric only; compose with autonomous loop when both named |
-| Bugbot / security review | Additive pass; autonomous loop still owns merge bar |
+| code review / review PR / review the diff | **This loop** (default) + PR comment updates |
+| @review-rigor | Rubric emphasis; still run full loop for merge bar |
+| Bugbot / security review | Additive pass; trainer loop still owns merge bar |

@@ -1,6 +1,7 @@
 # Trainer code review — product PR (canonical)
 
 Invoke for PR review before merge. Canonical spec: ~/Projects/trainer.skill/references/trainer-codereview.md
+Default loop: ~/Projects/trainer.skill/references/trainer-autonomous-code-review.md (explore → trace → test → fix until clean)
 GitHub shape: ~/Projects/trainer.skill/references/trainer-github-pr-commentary.md
 
 ## Trainer routing (mandatory)

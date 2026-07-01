@@ -6,6 +6,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+import re
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -46,10 +47,10 @@ class TestVerifyAutonomousCodeReviewFixtures(unittest.TestCase):
             root = Path(tmp)
             self._copy_minimal_tree(root)
             skill = (root / "SKILL.md").read_text()
-            skill = skill.replace("autonomous code review", "auto review")
+            skill = re.sub(r"code review", "review work", skill, flags=re.I)
             (root / "SKILL.md").write_text(skill)
             errors = vacr.verify_repo(root)
-            self.assertTrue(any("autonomous code review" in e for e in errors))
+            self.assertTrue(any("code review" in e.lower() for e in errors))
 
     def _copy_minimal_tree(self, root: Path) -> None:
         for rel in (

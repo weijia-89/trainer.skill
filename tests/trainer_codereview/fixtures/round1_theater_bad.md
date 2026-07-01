@@ -14,7 +14,7 @@
 ### Automated verification
 
 - [x] `test -f /Users/dubs/Projects/trainer.skill/references/trainer-autonomous-code-review.md`
-- [x] `grep -q 'autonomous code review' /Users/dubs/Projects/trainer.skill/SKILL.md`
+- [x] `grep -q 'code review' /Users/dubs/Projects/trainer.skill/SKILL.md`
 
 ### Trainer notes
 

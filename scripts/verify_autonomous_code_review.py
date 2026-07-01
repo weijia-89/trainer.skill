@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""verify_autonomous_code_review.py — contract gate for autonomous code review routing.
+"""verify_autonomous_code_review.py — contract gate for default code review loop routing.
 
-Ensures trainer SKILL + trainer-autonomous-code-review.md wire the trigger to
+Ensures trainer SKILL + trainer-autonomous-code-review.md wire **code review** to
 form-check code-review (specialist leaf load), not documentation-only theater.
 """
 from __future__ import annotations
@@ -21,38 +21,57 @@ CODEREVIEW_PROMPT = REPO_ROOT / "prompts" / "trainer-codereview.txt"
 FORM_CHECK_SKILL_CANON = "~/Projects/trainer.skill/specialists/form-check/SKILL.md"
 ROUTER_REF = REPO_ROOT / "references" / "workflow-skill-router.md"
 
+FORBIDDEN_OPERATOR_PHRASES = (
+    "operator says autonomous code review",
+    "operator says **autonomous code review**",
+    "say autonomous code review",
+)
+
 
 def _fail(errors: list[str], msg: str) -> None:
     errors.append(msg)
 
 
 def verify_skill_md(text: str, errors: list[str]) -> None:
-    if "autonomous code review" not in text:
-        _fail(errors, "SKILL.md description missing trigger 'autonomous code review'")
+    lower = text.lower()
+    if "autonomous code review" in lower:
+        _fail(
+            errors,
+            "SKILL.md must not list 'autonomous code review' as an operator trigger "
+            "(use code review only)",
+        )
+    if "code review" not in lower:
+        _fail(errors, "SKILL.md description missing trigger 'code review'")
     if "trainer-autonomous-code-review.md" not in text:
         _fail(errors, "SKILL.md missing route to trainer-autonomous-code-review.md")
     if not re.search(
-        r"\*\*autonomous code review\*\*.*trainer-autonomous-code-review\.md",
+        r"code review.*trainer-autonomous-code-review\.md",
         text,
         re.I | re.S,
     ):
         _fail(
             errors,
-            "SKILL.md Activity table must route **autonomous code review** → trainer-autonomous-code-review.md",
+            "SKILL.md Activity must route code review → trainer-autonomous-code-review.md",
         )
     if not re.search(
-        r"Autonomous code review.*trainer-autonomous-code-review\.md",
+        r"Code review loop.*trainer-autonomous-code-review\.md",
         text,
         re.I,
     ):
         _fail(
             errors,
-            "SKILL.md reference map missing Autonomous code review → trainer-autonomous-code-review.md",
+            "SKILL.md reference map missing Code review loop → trainer-autonomous-code-review.md",
         )
 
 
 def verify_autonomous_ref(text: str, errors: list[str]) -> None:
-    if "form-check" not in text.lower():
+    lower = text.lower()
+    for phrase in FORBIDDEN_OPERATOR_PHRASES:
+        if phrase in lower:
+            _fail(errors, f"{AUTONOMOUS_REF.name}: forbidden operator phrase: {phrase!r}")
+    if "operator requests **code review**" not in text and "operator requests code review" not in lower:
+        _fail(errors, f"{AUTONOMOUS_REF.name}: must trigger on operator code review request")
+    if "form-check" not in lower:
         _fail(errors, f"{AUTONOMOUS_REF.name}: missing form-check routing")
     if not re.search(r"code-review|adversarial-review", text):
         _fail(errors, f"{AUTONOMOUS_REF.name}: missing form-check mode (code-review / adversarial-review)")
@@ -66,15 +85,17 @@ def verify_autonomous_ref(text: str, errors: list[str]) -> None:
             f"{AUTONOMOUS_REF.name}: must require file_read form-check SKILL "
             f"({FORM_CHECK_SKILL_CANON})",
         )
-    if "file_read" not in text.lower():
+    if "file_read" not in lower:
         _fail(errors, f"{AUTONOMOUS_REF.name}: must mandate file_read before form-check review")
-    if "two consecutive" not in text.lower() and "zero new findings" not in text.lower():
-        _fail(errors, f"{AUTONOMOUS_REF.name}: missing autonomous loop stop condition")
+    if "two consecutive" not in lower and "zero new findings" not in lower:
+        _fail(errors, f"{AUTONOMOUS_REF.name}: missing code review loop stop condition")
 
 
 def verify_codereview_ref(text: str, errors: list[str]) -> None:
     if "form-check" not in text.lower():
         _fail(errors, f"{CODEREVIEW_REF.name}: missing form-check in routing")
+    if "trainer-autonomous-code-review.md" not in text:
+        _fail(errors, f"{CODEREVIEW_REF.name}: must reference default loop doc")
 
 
 def verify_form_check_skill(text: str, errors: list[str]) -> None:
@@ -89,15 +110,23 @@ def verify_codereview_prompt(text: str, errors: list[str]) -> None:
         _fail(errors, f"{CODEREVIEW_PROMPT.name}: must reference trainer-codereview.md")
     if "form-check" not in text.lower():
         _fail(errors, f"{CODEREVIEW_PROMPT.name}: must reference form-check routing")
+    if "trainer-autonomous-code-review.md" not in text:
+        _fail(errors, f"{CODEREVIEW_PROMPT.name}: must reference default code review loop doc")
 
 
 def verify_workflow_router(text: str, errors: list[str]) -> None:
-    if "autonomous code review" not in text.lower():
-        _fail(errors, f"{ROUTER_REF.name}: missing autonomous code review router row")
+    lower = text.lower()
+    if "autonomous code review" in lower:
+        _fail(
+            errors,
+            f"{ROUTER_REF.name}: must not use 'autonomous code review' as router trigger",
+        )
+    if "code review" not in lower:
+        _fail(errors, f"{ROUTER_REF.name}: missing code review router row")
     if "trainer-autonomous-code-review.md" not in text:
         _fail(errors, f"{ROUTER_REF.name}: must route to trainer-autonomous-code-review.md")
-    if "verify_autonomous_code_review.py" not in text:
-        _fail(errors, f"{ROUTER_REF.name}: must list verify_autonomous_code_review.py in Verify column")
+    if "verify_trainer_codereview.sh" not in text:
+        _fail(errors, f"{ROUTER_REF.name}: must list verify_trainer_codereview.sh in Verify column")
 
 
 def verify_repo(repo_root: Path | None = None) -> list[str]:
@@ -134,7 +163,7 @@ def verify_repo(repo_root: Path | None = None) -> list[str]:
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Verify autonomous code review trainer contract")
+    ap = argparse.ArgumentParser(description="Verify default code review loop trainer contract")
     ap.add_argument("--repo-root", type=Path, default=REPO_ROOT)
     args = ap.parse_args()
 
@@ -146,7 +175,7 @@ def main() -> int:
         return 1
 
     print(f"# verify_autonomous_code_review: PASS — {args.repo_root.resolve()}")
-    print("  form-check code-review routing: OK")
+    print("  code review loop + form-check routing: OK")
     return 0
 
 
