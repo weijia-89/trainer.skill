@@ -26,6 +26,14 @@ WEAK_AUTO_ONLY = re.compile(
     r"^- \[x\][^\n]*(grep\s+-q|test\s+-f)\b",
     re.M | re.I,
 )
+# Verbatim shell output dumped into PR comments (anti-theater)
+VERBOSITY_DUMP = re.compile(
+    r"(zsh:\d+:|command not found|FAIL:.*verify_|"
+    r"^rm\s+'|^delete mode |^create mode |^\+\+\+ |^--- |"
+    r"Ran \d+ tests? in|OK\s*$|PASS\s+user-facing docs|"
+    r"# verify_source_ingest_contract summary|^# /Users/)",
+    re.M | re.I,
+)
 STRONG_AUTO = re.compile(
     r"^- \[x\][^\n]*("
     r"verify_[\w./-]+\.(py|sh)|"
@@ -179,6 +187,14 @@ def validate_review_comment(body: str, repo: str) -> list[str]:
         for label in ("Program notes", "Your form", "Next session"):
             if label not in body:
                 errors.append(f"Trainer notes missing label: {label}")
+
+    # Anti-theater: verbatim shell output dumps (zsh errors, rm logs, test output)
+    if VERBOSITY_DUMP.search(body):
+        errors.append(
+            "PR comment contains verbatim shell output / command-not-found errors / "
+            "CI log dumps. Summarize at high level only. "
+            "See trainer-github-pr-commentary.md self-check #1."
+        )
 
     verdict = extract_verdict(body)
     if not verdict:
