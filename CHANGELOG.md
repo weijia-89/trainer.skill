@@ -16,10 +16,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 - **`scripts/reviewer_surface_tracker.py`** — per-pass surface manifest tracker for the autonomous code-review loop; gates each pass on novelty (≥50% previously-unseen surface) so the stop condition is not reachable by re-trace. Stdlib only, read-only under `--check`.
 - **`scripts/test_reviewer_surface_tracker.py`** — 7 tests: novelty threshold pass/fail, empty-surface rejection (no div-by-zero), idempotent check, CLI arg parsing, manifest roundtrip.
+- **`specialists/cruft/`** — new specialist: tags session/scratchpad artifacts with the `.cruft.md` slug + a `# META:` purpose/date header (the staleness assessment made explicit); defines the deterministic cleanup convention and its iron law (no deletion unless the adversarial-review gate is GREEN AND a PR merges or the session closes).
+- **`scripts/prune_cruft.sh`** — deterministic `*.cruft.md` cleanup. Refuses deletion unless the review gate is GREEN (`.trainer/reviews-complete` sentinel OR `verify_trainer_codereview.sh` exits 0) or `--force-after-review` is passed; scans by suffix only; handles any filename safely (`-print0` + array); never prunes inside trainer.skill.
 
 ### Changed
 
 - **`references/trainer-autonomous-code-review.md`** — Review loop now requires the surface tracker `--record`/`--check` each pass; stop condition redefined to terminate only on `unexplored == 0` OR two consecutive passes each satisfying novelty ≥ 50% + zero findings + all verify exit 0; Forbidden list extended to bar passes that skip `--check` and STOP claims without tracker evidence.
+- **`specialists/pr/SKILL.md`** — composed the new `cruft` specialist; added **§8 Post-merge cruft cleanup**: after a PR merges and the review gate is GREEN, writes `.trainer/reviews-complete` then runs `prune_cruft.sh --apply`; documents the session-close variant (superset of the request-cap R4c webfetch-cache cleanup for `.cruft.md` scratchpads).
 
 ### R-6
 

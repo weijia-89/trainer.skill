@@ -19,6 +19,9 @@ composes:
   - skill: safetybar
     version: ">=1.1.0,<2.0.0"
     role: routed-to when a deploy needs a code-level rollback (revert vs reset)
+  - skill: cruft
+    version: ">=1.0.0,<2.0.0"
+    role: post-merge deterministic cleanup of session scratchpads (`.cruft.md`), gated on review completion
 ---
 
 # PR, max-effort day; passes-tests → in-production
@@ -231,6 +234,17 @@ Common failure modes and the recovery path for each:
 - ❌ **Skipping the smoke test because "the platform said it was deployed."** The platform's health check only knows your app responds to `/health`. The smoke test is *you* exercising a real user path.
 - ❌ **Putting secrets in environment variables in the platform UI and then committing a `.env` file with placeholders.** Either approach is fine alone; mixing them produces "which one is real?" confusion. Pick one source of truth.
 - ❌ **Deploying without knowing the rollback path.** Before pressing the deploy button, you should be able to answer: "If this breaks, what command / button do I use to undo it?" If you can't answer, don't deploy yet.
+
+## §8, Post-merge cruft cleanup (the close-out gate)
+
+After a PR merges to `main` and the code-review verification has passed:
+
+1. **Verify the review gate is GREEN** — `scripts/verify_trainer_codereview.sh` exits 0 (or a human has signed off). If RED, do not proceed; cruft is evidence until the finding is resolved.
+2. **Write the sentinel:** `mkdir -p .trainer && touch .trainer/reviews-complete` (this is the deterministic signal `cruft`'s `prune_cruft.sh` trusts).
+3. **Run the cleanup:** `bash "<trainer.skill root>/scripts/prune_cruft.sh" --root "$(git rev-parse --show-toplevel)" --apply` (TRAINER_ROOT resolves to the trainer.skill repo root via the script's own location). It deletes only `*.cruft.md` files and only because the gate is GREEN.
+4. **Session-close variant:** on opencode "clean cruft" / close-session, run the same `prune_cruft.sh --apply` (the gate still applies). This is the superset of the request-cap contract's R4c webfetch-cache cleanup for `.cruft.md` session scratchpads.
+
+The point: cleanup is **deterministic and gated**, never a hand-wave. See `cruft` specialist for the slug + header convention.
 
 ## Composition with other skills
 
