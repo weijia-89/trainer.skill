@@ -20,6 +20,9 @@ Thumbs.db
 # Calibration logs (per-user runtime artifacts; not committed)
 .recovery/
 
+# Agent scratch notes (local-only working memory) — generated artifacts are cruft, always ignored
+.agent/
+
 # Python bytecode (harness scripts; never committed)
 __pycache__/
 *.pyc
