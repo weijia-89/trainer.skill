@@ -25,6 +25,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 - Autonomous code-review loop logic violation closed: spec previously trusted self-reported exploration with no mechanical novelty gate; the tracker enforces ≥50% new exploration per pass before a STOP can be claimed.
 
+### Fixed
+
+- **`references/operator-path-output.md`** — scrubbed the operator's real private project name from all example paths; replaced with the neutral placeholder `~/Projects/<project>/`. The private-path leak scanner (`verify_trainer_sync.sh` CI repo-only checks) flags real private project layouts in tracked files, so a public reference doc must not embed the real path. Verified: `GITHUB_ACTIONS=true ... verify_trainer_sync.sh` now returns `VERDICT: PASS`. (Separate from the cruft-specialist PR; kept focused per single-concern branch discipline.)
+
 ## [0.15.1] — 2026-07-01
 
 ### Added
