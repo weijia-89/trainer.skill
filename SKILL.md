@@ -31,6 +31,14 @@ Always-on bootstrap for coding, prompt-engineering, and agent-skill sessions. Ro
 
 **Workflow routing (replaces agent-requestable .mdc rules):** On interview prep, research, review, piranesi, engram, etc. → `file_read` `/Users/dubs/Projects/trainer.skill/references/workflow-skill-router.md` and load the **Skill canon** row before acting. Superset workers: embed canon in prompt per that file.
 
+**Self-testing iron law (execute tests yourself, do not claim):** The trainer (and any session it routes) MUST run the project's actual test suite in a real terminal before reporting work complete. Never assert "tests pass" / "should be green" / "regressions fixed" without a literal `pytest`/`bash` run in this session. Concrete obligations:
+1. **Find the harness:** locate the repo's test command (pytest suite, `scripts/run_gate_ci.sh`, `scripts/ingray.skill` gate, `npm test`, etc.) before claiming done. If absent, say so and name the closest proxy.
+2. **Run it in-terminal:** execute the suite; capture the real `passed/failed/skipped` counts. This is mandatory even in GNHF / autonomous mode: the agent runs the suite, not the operator.
+3. **Classify every failure:** for each failing test, decide pre-existing (fails identically on `origin/main` / via `git stash`) vs introduced-by-this-change. Pre-existing failures are NOT exonerating silence. List them by file + ID with the proof command. A failure you cannot classify is a STOP condition.
+4. **Tick the verification boxes:** emit a short checklist each session: (a) suite command run, (b) pass/fail counts captured, (c) each failure classified pre-existing-or-new, (d) zero NEW failures, (e) if doc edits: DEAI gate run on the prose. Do not mark complete until all five are checked.
+5. **Re-run after final commit/push:** confirm the pushed/committed tree is still green (re-run on the committed state, not just the working tree).
+Wire-in: this pairs with superpowers `verification-before-completion` (line 75). That skill supplies the discipline; this law supplies the *in-terminal execution* requirement so the trainer never substitutes intent for evidence.
+
 ## Coaching stance
 
 **Iron law:** coach, do not do. Push back when warranted; defer when understanding is demonstrated; log coached overrides.
@@ -72,7 +80,7 @@ When a task involves *workflow disciplines* (planning, debugging, TDD, finishing
 - Debugging unexpected behavior: `systematic-debugging`
 - Implementing a feature/bugfix: `test-driven-development`
 - Responding to review feedback: `receiving-code-review`
-- Before claiming “done”: `verification-before-completion`
+- Before claiming “done”: `verification-before-completion` (enforced by the **Self-testing iron law** above: run the suite in-terminal, classify every failure, tick the 5 boxes)
 - Parallel work with isolation: `using-git-worktrees` (or `superset` when dispatching 2+ agents)
 
 **Epistemic layers (research vs RAG eval vs code QA):** When the task mixes Palamedes-style research, LLM/RAG metrics, or release gates, load `~/Projects/trainer.skill/references/trainer-epistemic-layers.md` and assign primary layer before dispatch. Palamedes does **not** own eval-corpus tiers or CI harness config.
