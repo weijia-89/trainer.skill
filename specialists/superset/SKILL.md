@@ -6,11 +6,11 @@ version: 0.8.6
 authors: Wei Jia (2026-05-19)
 license: MIT
 composes:
-  - dispatching-parallel-agents
-  - using-git-worktrees
-  - requesting-code-review
-  - safe-terminal
-  - trainer
+  - safe-terminal           # real Hermes-bundled skill at gym-skills/safe-terminal
+  - trainer                 # real Hermes skill at gym-skills/trainer
+# documenting phylax-flow-only deps inline below (not skill loads):
+# - parallel agent isolation model: see references/parallel-agent-isolation.md (code-side contract, not a separate skill)
+# - git worktree discipline: see references/git-worktree-isolation.md (operator-side procedure)
 ---
 
 # superset
@@ -607,6 +607,63 @@ End of batch:
 git -C <project> merge <agent-branch>
 git -C <project> worktree remove <project>/.worktrees/<task-slug>
 ```
+
+### Treehouse integration (v0.9.0+, agent-workflows-20260703 C-011 ADAPT)
+
+**Canon:** `/Users/dubs/Projects/.opencode/rules/agent-workflows-kunchenguid.mdc` — treehouse is the KEEP-pattern worktree pool provider. It is the **default worktree backend** for superset dispatch, replacing raw `git worktree add` for any batch of ≥2 agents or any unattended run.
+
+**Why treehouse over raw `git worktree add`:** treehouse preserves deps/build cache across the pool (faster agent cold-starts), owns in-use detection + durable leases, and its `destroy` is safe-by-default (C-012). It lives OUTSIDE the repo (`~/.treehouse/<repo-hash>/<n>/<repo>` by default), so the `.gitignore` preflight in [Directory-selection priority](#directory-selection-priority) does **not** apply — the pool is never inside the project tree.
+
+**Per-agent worktree acquisition (first-steps block replacement):**
+
+```bash
+WORKTREE_PATH=$(treehouse get --lease --lease-holder "superset:<agent-name>:$(date +%F)")
+cd "$WORKTREE_PATH"
+# Auto-detect install (see Project-setup auto-detect) — treehouse preserves venv/cache
+# Run baseline tests; report count + failing-test names
+```
+
+All subsequent commands run with `Cwd=$WORKTREE_PATH`.
+
+**Merge-back (treehouse variant) — operator:**
+
+```bash
+# <agent-branch> is the branch name captured in the worker's baseline step
+# (five-pillar: git -C "$WORKTREE_PATH" branch --show-current), recorded in the daily log.
+git -C <project> merge <agent-branch>
+treehouse return "$WORKTREE_PATH"              # clears lease, terminates lingering procs, returns to pool
+```
+
+**Pruning discipline (replaces `git worktree prune` for treehouse pools):**
+
+```bash
+treehouse status                               # inspect pool, highlights leased/in-use
+treehouse prune --all --yes                    # remove stale idle worktrees whose HEAD is merged to default
+# NEVER: treehouse destroy --all (without --yes); always preview first
+```
+
+**Daily-log manifest extension:** add a `worktrees:` front-matter section per agent:
+
+```yaml
+worktrees:
+    - agent: agent-name-1
+    path: /absolute/path/from/treehouse/get
+    lease_holder: "superset:agent-name-1:$(date +%F)"
+    status: acquired | released
+```
+
+**Containment note (WORKTREES — not a sandbox):** treehouse isolation is workspace-state only. For unattended batches, pair with ≥L1 container + credential brokering + deny-by-default egress per `agent-workflows-kunchenguid.mdc` REJECT. The containment falsifier (`h7_containment_falsifier.sh`) must pass before leaving a batch unattended.
+
+**Reconciliation with existing discipline:** when treehouse is the backend, the [Gitignore pre-flight](#gitignore-pre-flight-project-local-only) step is skipped (pool is out-of-tree), and merge-back uses `treehouse return` instead of `git worktree remove`. The same-repo integration gate, stacked-PR iron law, and five-pillar prompt still apply unchanged.
+
+### Post-session export hygiene (operator)
+
+After merge-back or when winding down a superset batch before laptop export:
+
+1. **Push** any agent branches still `[ahead]` of origin (`git -C <worktree> push -u origin <branch>`).
+2. **Prune** stale worktrees: `git -C <project> worktree prune` (removes missing/prunable entries like `/private/tmp/*`).
+3. **Optional remove** merged sandboxes: `git -C <project> worktree remove <project>/.worktrees/<task-slug>` for branches already on GitHub.
+4. **Export note:** laptop migration rsync excludes `.worktrees/` (`rsync-stale-junk-excludes.txt`); branches must be pushed first. Policy: [`EXPORT_POLICY.md`](../scripts/laptop-migration/docs/EXPORT_POLICY.md) § Worktrees.
 
 ## Race-condition reference
 

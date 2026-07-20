@@ -15,7 +15,19 @@ Read `trainer-codereview.md` + `trainer-github-pr-commentary.md` before posting 
 
 ## Review loop (iron law)
 
-Repeat until **no new P0–P4 findings** in a full pass:
+**Novelty gate (mandatory):** every pass MUST call the surface tracker. Before
+POST/PATCH and before claiming a stop, run:
+
+```bash
+python3 ~/Projects/trainer.skill/scripts/reviewer_surface_tracker.py \
+    --branch <branch-slug> --pass N check --novelty-min 0.50
+```
+
+and `--record` a manifest of the surface touched (paths, `path:symbol`,
+`verify_exit_codes`) each pass. The gate fails (exit 2) if the pass re-traces
+≥50% already-seen surface. A pass that does not call `--check` is not a pass.
+
+Repeat until the stop condition below is explicitly satisfied:
 
 ```
 PASS N:
@@ -23,13 +35,22 @@ PASS N:
   2. EXPLORE — grep/codebase_search for callers, mirrors, scripts, tests of new symbols
   3. TRACE  — follow new logic paths; list falsifiers and bypass routes
   4. TEST   — run repo verify scripts + new/changed unit tests
-  5. FIND   — ranked Bug inventory (P0–P4); no "LGTM" without evidence
-  6. FIX    — fix every non-waived finding in-tree; add tests for bug classes found
-  7. VERIFY — re-run tests; confirm fixes on disk
-  8. STOP?  — if PASS N found zero new issues → exit loop; else PASS N+1
+  5. RECORD — reviewer_surface_tracker.py --record (surface touched this pass)
+  6. CHECK  — reviewer_surface_tracker.py --check (novelty >= 0.50 else re-trace)
+  7. FIND   — ranked Bug inventory (P0–P4); no "LGTM" without evidence
+  8. FIX    — fix every non-waived finding in-tree; add tests for bug classes found
+  9. VERIFY — re-run tests; confirm fixes on disk
+ 10. STOP?  — evaluate stop condition below; else PASS N+1
 ```
 
-**Stop condition:** two consecutive passes with **zero new findings** after fixes, and all verify commands exit 0.
+**Stop condition:** terminate ONLY when the tracker reports
+`unexplored == 0` (the union of all pass surfaces covers the diff+seed
+universe — requires each `record` to pass `--seed` from `git diff --name-only`
+so the universe is known), OR two consecutive passes each satisfy ALL of:
+(a) tracker `--check` novelty ≥ 0.50, (b) zero new findings, (c) all verify
+commands exit 0. A STOP claimed without the tracker reporting
+novelty-satisfied + zero findings is invalid. Without `--seed` the `unexplored`
+branch is unreachable and the loop falls back to the two-consecutive-pass bar.
 
 **Forbidden:**
 
@@ -38,6 +59,8 @@ PASS N:
 - Approving with failing verify scripts.
 - Stopping at "no issues in the diff" without exploring new code paths (step 2).
 - Posting APPROVE before fixes land on the branch when REQUEST_CHANGES items remain.
+- A PASS that does not call the tracker `--check`.
+- A STOP claimed without the tracker reporting novelty-satisfied + zero findings.
 
 ## Deliverables
 

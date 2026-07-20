@@ -85,7 +85,7 @@ When a task involves *workflow disciplines* (planning, debugging, TDD, finishing
 
 **Epistemic layers (research vs RAG eval vs code QA):** When the task mixes Palamedes-style research, LLM/RAG metrics, or release gates, load `~/Projects/trainer.skill/references/trainer-epistemic-layers.md` and assign primary layer before dispatch. Palamedes does **not** own eval-corpus tiers or CI harness config.
 
-**Path output (iron law):** When routing to skills that emit documents, prompts, handoffs, or file links for the operator, enforce `~/Projects/trainer.skill/references/operator-path-output.md` - full absolute paths as plain text; no `file://` hyperlinks for local files.
+**Path output (iron law):** When routing to skills that emit documents, prompts, handoffs, or file links for the operator, enforce `~/Projects/trainer.skill/references/operator-path-output.md` - operator-facing file references use inline-code `~/path/to/file.md` (opencode renders these as clickable links); no `file://` hyperlinks, no bare `/Users/...` plain-text paths.
 
 Full examples and violation coaching: `~/Projects/trainer.skill/references/trainer-runtime-compactness.md`. Mechanical pre-action detail: `~/Projects/trainer.skill/references/trainer-pre-action-gates.md`.
 

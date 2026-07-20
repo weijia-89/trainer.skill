@@ -12,7 +12,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ## [Unreleased]
 
-_(none)_
+### Added
+
+- **`scripts/reviewer_surface_tracker.py`** — per-pass surface manifest tracker for the autonomous code-review loop; gates each pass on novelty (≥50% previously-unseen surface) so the stop condition is not reachable by re-trace. Stdlib only, read-only under `--check`.
+- **`scripts/test_reviewer_surface_tracker.py`** — 7 tests: novelty threshold pass/fail, empty-surface rejection (no div-by-zero), idempotent check, CLI arg parsing, manifest roundtrip.
+
+### Changed
+
+- **`references/trainer-autonomous-code-review.md`** — Review loop now requires the surface tracker `--record`/`--check` each pass; stop condition redefined to terminate only on `unexplored == 0` OR two consecutive passes each satisfying novelty ≥ 50% + zero findings + all verify exit 0; Forbidden list extended to bar passes that skip `--check` and STOP claims without tracker evidence.
+
+### R-6
+
+- Autonomous code-review loop logic violation closed: spec previously trusted self-reported exploration with no mechanical novelty gate; the tracker enforces ≥50% new exploration per pass before a STOP can be claimed.
 
 ## [0.15.1] — 2026-07-01
 
