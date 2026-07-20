@@ -20,7 +20,8 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Never let the script eat its own skill tree.
-TRAINER_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." 2>/dev/null && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)"
+TRAINER_ROOT="$(cd "$SCRIPT_DIR/.." 2>/dev/null && pwd)"
 if [[ "$ROOT" == "$TRAINER_ROOT"* ]]; then
   echo "REFUSED: will not prune inside trainer.skill ($ROOT)" >&2
   exit 2
