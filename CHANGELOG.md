@@ -31,6 +31,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 ### Fixed
 
 - **`references/operator-path-output.md`** — scrubbed the operator's real private project name from all example paths; replaced with the neutral placeholder `~/Projects/<project>/`. The private-path leak scanner (`verify_trainer_sync.sh` CI repo-only checks) flags real private project layouts in tracked files, so a public reference doc must not embed the real path. Verified: `GITHUB_ACTIONS=true ... verify_trainer_sync.sh` now returns `VERDICT: PASS`. (Separate from the cruft-specialist PR; kept focused per single-concern branch discipline.)
+- **`scripts/prune_cruft.sh`** — corrected `TRAINER_ROOT` path resolution: `dirname(BASH_SOURCE)/../..` overshot to `/Users/dubs/Projects` (prefix of every sibling repo), so the self-guard refused to prune cruft in any repo other than `trainer.skill`. Now resolves `SCRIPT_DIR` to an absolute path and steps up one level (one level, not two) to get the correct `trainer.skill` root. Found during session-close use on the toren repo.
 
 ## [0.15.1] — 2026-07-01
 
