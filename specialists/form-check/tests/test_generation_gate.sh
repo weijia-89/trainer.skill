@@ -157,17 +157,29 @@ cd - >/dev/null
 # Test 10: No test file warning (not critical)
 echo "Test 10: No test file is warning, not critical"
 cd "$TMPDIR"
-cat > no_test.sh <<'EOF'
+cat > no_test.sh <<'INNER_EOF'
 #!/bin/bash
 set -euo pipefail
 echo "hello"
-EOF
+INNER_EOF
 exit_code=0
 bash "$GATE_SCRIPT" no_test.sh >/dev/null 2>&1 || exit_code=$?
 if [[ "$exit_code" -eq 0 ]]; then
     pass "No test file is warning-only"
 else
     fail "No test file should not fail in default mode"
+fi
+cd - >/dev/null
+
+# Test 11: Strict mode fails on warnings
+echo "Test 11: Strict mode fails on warnings"
+cd "$TMPDIR"
+exit_code=0
+bash "$GATE_SCRIPT" --strict no_test.sh >/dev/null 2>&1 || exit_code=$?
+if [[ "$exit_code" -eq 1 ]]; then
+    pass "Strict mode fails on warnings"
+else
+    fail "Strict mode should fail when warnings present"
 fi
 cd - >/dev/null
 

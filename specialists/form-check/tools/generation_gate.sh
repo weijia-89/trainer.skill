@@ -86,7 +86,7 @@ done
 # Bypass
 if [[ "$BYPASS" -eq 1 ]]; then
     warn "GENERATION_GATE_BYPASS=1 — skipping all checks"
-    echo "$(date -Iseconds) GENERATION_GATE_BYPASS" >> .recovery/calibration.jsonl 2>/dev/null || true
+    echo "$(date '+%Y-%m-%dT%H:%M:%S%z') GENERATION_GATE_BYPASS" >> .recovery/calibration.jsonl 2>/dev/null || true
     exit 0
 fi
 
