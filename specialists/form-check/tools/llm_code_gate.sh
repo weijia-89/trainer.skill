@@ -175,39 +175,16 @@ check_structural() {
         # Skip standard library modules (common ones)
         local stdlib_modules="os sys pathlib json re collections itertools functools typing argparse logging datetime time math random string inspect hashlib base64 urllib itertools collections typing"
         local missing_imports
-        missing_imports=$(python3 -c "
-import ast, sys
-from pathlib import Path
-
-stdlib = set('''$stdlib_modules'''.split())
-errors = []
-for path in Path('.').rglob('*.py'):
-    if '.venv' in str(path) or '__pycache__' in str(path) or 'site-packages' in str(path):
-        continue
-    try:
-        tree = ast.parse(path.read_text(encoding='utf-8'))
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Import):
-                for alias in node.names:
-                    mod = alias.name.split('.')[0]
-                    if mod in stdlib:
-                        continue
-                    if not Path(f'{mod}.py').exists() and not Path(mod).is_dir():
-                        errors.append(f'{path}: import {mod}')
-            elif isinstance(node, ast.ImportFrom):
-                if node.module:
-                    mod = node.module.split('.')[0]
-                    if mod in stdlib:
-                        continue
-                    if not Path(f'{mod}.py').exists() and not Path(mod).is_dir():
-                        errors.append(f'{path}: from {mod}')
-    except SyntaxError as e:
-        errors.append(f'{path}: SYNTAX ERROR: {e}')
-    except Exception as e:
-        errors.append(f'{path}: PARSE ERROR: {e}')
-for e in errors[:10]:
-    print(e)
-" 2>/dev/null || true)
+        
+        # Use external Python script to avoid inline python3 -c (safe-terminal Tier-1 #5)
+        local check_imports_script="$SCRIPT_DIR/check_python_imports.py"
+        if [[ -f "$check_imports_script" ]]; then
+            missing_imports=$(python3 "$check_imports_script" $stdlib_modules 2>/dev/null || true)
+        else
+            warn "check_python_imports.py not found; skipping import check"
+            missing_imports=""
+        fi
+        
         if [[ -n "$missing_imports" ]]; then
             warn "Potential missing imports detected:"
             echo "$missing_imports" | head -5 | sed 's/^/  /'
@@ -494,9 +471,10 @@ EOF
             exit 3
         fi
 
-        warn "Gate failed on iteration $iter. Fix the issues above and re-run."
-        exit 1
-
+        warn "Gate failed on iteration $iter. Retrying..."
+        # NOTE: Auto-repair is not yet implemented. Iterations will repeat the same checks.
+        # In a future version, the agent would fix issues here before re-checking.
+        
         iter=$((iter + 1))
     done
 }

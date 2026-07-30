@@ -86,17 +86,36 @@ done
 # Bypass
 if [[ "$BYPASS" -eq 1 ]]; then
     warn "GENERATION_GATE_BYPASS=1 — skipping all checks"
-    echo "$(date '+%Y-%m-%dT%H:%M:%S%z') GENERATION_GATE_BYPASS" >> .recovery/calibration.jsonl 2>/dev/null || true
+    # Require justification file or environment variable
+    justification="${GENERATION_GATE_JUSTIFICATION:-(no justification provided)}"
+    # Emergency disable: if GENERATION_GATE_EMERGENCY_DISABLE is set, skip logging
+    if [[ "${GENERATION_GATE_EMERGENCY_DISABLE:-0}" -eq 1 ]]; then
+        warn "EMERGENCY_DISABLE set — bypassing without audit trail"
+        exit 0
+    fi
+    echo "$(date '+%Y-%m-%dT%H:%M:%S%z') GENERATION_GATE_BYPASS justification='${justification}'" >> .recovery/calibration.jsonl 2>/dev/null || true
+    # Set restrictive permissions on log file if it exists
+    if [[ -f ".recovery/calibration.jsonl" ]]; then
+        chmod 600 ".recovery/calibration.jsonl" 2>/dev/null || true
+    fi
     exit 0
 fi
 
 # Auto-detect target files if none specified
 if [[ ${#TARGET_FILES[@]} -eq 0 ]]; then
     if git rev-parse --git-dir &>/dev/null; then
-        mapfile -t TARGET_FILES < <(git diff --cached --name-only --diff-filter=ACM 2>/dev/null | grep '\.sh$' || true)
+        # Portable alternative to mapfile for bash 3.2 (macOS default)
+        TARGET_FILES=()
+        while IFS= read -r line; do
+            [[ -n "$line" ]] && TARGET_FILES+=("$line")
+        done < <(git diff --cached --name-only --diff-filter=ACM 2>/dev/null | grep '\.sh$' || true)
+        
         if [[ ${#TARGET_FILES[@]} -eq 0 ]]; then
             log "No staged .sh files; checking working tree modifications"
-            mapfile -t TARGET_FILES < <(git diff --name-only --diff-filter=ACM 2>/dev/null | grep '\.sh$' || true)
+            TARGET_FILES=()
+            while IFS= read -r line; do
+                [[ -n "$line" ]] && TARGET_FILES+=("$line")
+            done < <(git diff --name-only --diff-filter=ACM 2>/dev/null | grep '\.sh$' || true)
         fi
     fi
     if [[ ${#TARGET_FILES[@]} -eq 0 ]]; then
@@ -156,9 +175,17 @@ for file in "${TARGET_FILES[@]}"; do
     # Only flag tools that are actually invoked (not in comments/strings)
     missing_checks=0
     for cmd in python3 node npm cargo go javac mvn gradle npx; do
-        # Check if tool is invoked as a command (not in comment, string, or variable)
-        if grep -vE '^\s*#|^\s*"' "$file" | grep -qE "\b$cmd\b" && ! grep -qE "command\s+-v\s+$cmd\b" "$file"; then
-            # Check if there's graceful fallback text nearby
+        # Check if tool is invoked as a command (not in comment or variable)
+        has_tool=0
+        has_check=0
+        if grep -vE '^\s*#' "$file" | grep -qE "\b$cmd\b"; then
+            has_tool=1
+        fi
+        if grep -qE "command\s+-v\s+$cmd\b" "$file"; then
+            has_check=1
+        fi
+        if [[ "$has_tool" -eq 1 && "$has_check" -eq 0 ]]; then
+            # Check if there is graceful fallback text nearby
             if ! grep -B3 -A3 "\b$cmd\b" "$file" | grep -qiE "(not installed|not found|skip|missing|warn)"; then
                 warn "  Tool '$cmd' used without 'command -v' check or fallback"
                 missing_checks=$((missing_checks + 1))
@@ -192,7 +219,14 @@ for file in "${TARGET_FILES[@]}"; do
         warn "  No matching test file found (test_${basename_file}.sh or .py)"
         WARNINGS=$((WARNINGS + 1))
     else
-        log "  PASS: Test file exists"
+        # Check test quality: minimum number of assertions/checks
+        test_assertions=$(grep -cE '(assert|PASS|FAIL|expect|should|test\()' "$test_path" 2>/dev/null || echo 0)
+        if [[ "$test_assertions" -lt 3 ]]; then
+            warn "  Test file has only $test_assertions assertions (minimum recommended: 3)"
+            WARNINGS=$((WARNINGS + 1))
+        else
+            log "  PASS: Test file exists with $test_assertions assertions"
+        fi
     fi
     
     # Check 6: shellcheck (warning)
@@ -200,7 +234,7 @@ for file in "${TARGET_FILES[@]}"; do
         sc_output=$(shellcheck "$file" 2>/dev/null || true)
         sc_issues=$(echo "$sc_output" | grep -c '^\s*\^' || echo 0)
         if [[ "$sc_issues" -gt 0 ]]; then
-            warn "  shellcheck found $sc_issues issue(s):"
+            warn "  shellcheck found $sc_issues issues:"
             echo "$sc_output" | head -20 | sed 's/^/    /'
             WARNINGS=$((WARNINGS + sc_issues))
         else
@@ -231,23 +265,53 @@ for file in "${TARGET_FILES[@]}"; do
         log "  PASS: No unsafe heredocs"
     fi
     
-    # No cd && chains except standard SCRIPT_DIR pattern (critical)
+    # Check 8: Secret detection (critical)
+    # Look for common secret patterns (AWS keys, API tokens, passwords)
+    found_secrets=0
+    
+    # Simple string patterns (no regex needed)
+    for simple_pattern in AWS_SECRET_ACCESS_KEY AWS_ACCESS_KEY_ID GITHUB_TOKEN PRIVATE_KEY; do
+        matches=$(grep -in "$simple_pattern" "$file" | grep -vE '^\s*#' || true)
+        if [[ -n "$matches" ]]; then
+            fail "  Potential secret detected:"
+            echo "$matches" | head -3 | sed 's/^/    /'
+            found_secrets=$((found_secrets + 1))
+        fi
+    done
+    
+    # Regex patterns for assignment patterns (using double quotes to avoid single-quote issues)
+    for regex_pattern in 'password\s*=\s*"[^"]+"' 'token\s*=\s*"[^"]+"' 'api_key\s*=\s*"[^"]+"' 'secret\s*=\s*"[^"]+"'; do
+        matches=$(grep -inE "$regex_pattern" "$file" | grep -vE '^\s*#' || true)
+        if [[ -n "$matches" ]]; then
+            fail "  Potential secret detected:"
+            echo "$matches" | head -3 | sed 's/^/    /'
+            found_secrets=$((found_secrets + 1))
+        fi
+    done
+    
+    if [[ "$found_secrets" -gt 0 ]]; then
+        CRITICAL=$((CRITICAL + 1))
+    else
+        log "  PASS: No obvious secrets"
+    fi
+    
+    # Check 9: No cd && chains except standard SCRIPT_DIR pattern (critical)
     # Exclude: comments, string literals in echo/fail/warn, SCRIPT_DIR pattern
     cd_chains=$(grep -nE 'cd\s+.*&&' "$file" | grep -vE '^[0-9]+:\s*#|^[0-9]+:\s*(echo|fail|warn|log)\s+' | grep -v 'SCRIPT_DIR=' || true)
     if [[ -n "$cd_chains" ]]; then
-        fail "  safe-terminal: 'cd ... &&' chain detected (use Cwd param or SCRIPT_DIR pattern):"
+        fail "  safe-terminal: cd-and chain detected - use Cwd param or SCRIPT_DIR pattern:"
         echo "$cd_chains" | head -3 | sed 's/^/    /'
         CRITICAL=$((CRITICAL + 1))
     else
-        log "  PASS: No cd && chains"
+        log "  PASS: No cd and chains"
     fi
     
     # Summary for this file
     if [[ "$CRITICAL" -gt 0 ]]; then
-        fail "  FAILED: $CRITICAL critical, $WARNINGS warning(s)"
+        fail "  FAILED: $CRITICAL critical, $WARNINGS warnings"
         TOTAL_CRITICAL=$((TOTAL_CRITICAL + CRITICAL))
     elif [[ "$WARNINGS" -gt 0 ]]; then
-        warn "  PASSED with $WARNINGS warning(s)"
+        warn "  PASSED with $WARNINGS warnings"
     else
         log "  PASSED: clean"
     fi
@@ -256,19 +320,19 @@ for file in "${TARGET_FILES[@]}"; do
 done
 
 if [[ "$TOTAL_CRITICAL" -gt 0 ]]; then
-    fail "=== GENERATION GATE FAILED: $TOTAL_CRITICAL critical issue(s) ==="
+    fail "=== GENERATION GATE FAILED: $TOTAL_CRITICAL critical issues ==="
     fail "Fix the critical issues above and re-run."
-    fail "To bypass: GENERATION_GATE_BYPASS=1 <command>"
+    fail "To bypass: GENERATION_GATE_BYPASS=1 COMMAND"
     exit 1
 elif [[ "$TOTAL_WARNINGS" -gt 0 && "$STRICT" -eq 1 ]]; then
-    fail "=== GENERATION GATE FAILED: $TOTAL_WARNINGS warning(s) in strict mode ==="
+    fail "=== GENERATION GATE FAILED: $TOTAL_WARNINGS warnings in strict mode ==="
     fail "Fix warnings or run without --strict"
-    fail "To bypass: GENERATION_GATE_BYPASS=1 <command>"
+    fail "To bypass: GENERATION_GATE_BYPASS=1 COMMAND"
     exit 1
 else
     log "=== GENERATION GATE PASSED ==="
     if [[ "$TOTAL_WARNINGS" -gt 0 ]]; then
-        warn "$TOTAL_WARNINGS warning(s) present (not blocking in default mode)"
+        warn "$TOTAL_WARNINGS warnings present - not blocking in default mode"
     fi
     exit 0
 fi

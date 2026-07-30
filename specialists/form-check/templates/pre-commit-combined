@@ -29,7 +29,12 @@ if [[ -n "$SH_FILES" ]]; then
     GATE_SCRIPT="${GATE_SCRIPT:-${HOME}/Projects/trainer.skill/specialists/form-check/tools/generation_gate.sh}"
     if [[ -f "$GATE_SCRIPT" ]]; then
         echo "=== Running generation gate ==="
-        if bash "$GATE_SCRIPT" $SH_FILES; then
+        # Pass files safely using array to prevent word-splitting
+        file_args=()
+        while IFS= read -r f; do
+            [[ -n "$f" ]] && file_args+=("$f")
+        done <<< "$SH_FILES"
+        if bash "$GATE_SCRIPT" "${file_args[@]}"; then
             echo "=== Generation gate PASSED ==="
         else
             echo ""
