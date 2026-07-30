@@ -64,6 +64,7 @@ The gate is **environment-space, not prompt-space** (`PIRANESI-UU1`: prose instr
 - **LM-2:** Compilation passing is necessary, not sufficient. A green compile is not a correctness signal (`PIRANESI-C02`).
 - **LM-3:** Do not generalize to app-scale / long-horizon code. All verified figures are short self-contained tasks.
 - **LM-4:** Do not claim the gate improves correctness. It improves compilation only (`PIRANESI-C01`, `PIRANESI-C02`).
+- **LM-5:** Monorepos with multiple languages: the gate auto-detects the dominant language only. Run the gate per-language or per-package for polyglot projects.
 
 ## Falsifiers (what would flip the verdict)
 

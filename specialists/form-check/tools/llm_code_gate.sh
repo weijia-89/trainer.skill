@@ -23,6 +23,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MAX_ITER="${MAX_ITER:-3}"
 STRICT="${STRICT:-0}"
 GATE_LANG="${GATE_LANG:-auto}"
+GATE_ARTIFACT="${GATE_ARTIFACT:-.llm-gate-passed}"
 
 # Colors for output (disable if not tty)
 if [[ -t 1 ]]; then
@@ -475,6 +476,14 @@ main() {
         if [[ "$gate_passed" -eq 1 ]]; then
             log "=== GATE PASSED on iteration $iter ==="
             log "All 4 layers passed. Code is mechanically correct."
+            # Write gate-pass artifact for audit trail (NP4-3)
+            cat > "$GATE_ARTIFACT" <<EOF
+# LLM-code gate passed
+# timestamp: $(date -Iseconds)
+# language: $GATE_LANG
+# iterations: $iter
+# strict: $STRICT
+EOF
             exit 0
         fi
 
