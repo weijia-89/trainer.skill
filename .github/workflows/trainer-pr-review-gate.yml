@@ -32,3 +32,25 @@ jobs:
             "${{ github.event.pull_request.head.sha }}" \
             "${{ github.event.pull_request.head.ref }}" \
             "${{ github.repository }}"
+
+  generation-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: |
+          if ! command -v shellcheck &>/dev/null; then
+            sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+          fi
+          shellcheck --version
+
+      - name: Generation gate
+        run: |
+          echo "=== Running generation gate on modified .sh files ==="
+          changed=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep '\.sh$' || true)
+          if [[ -z "$changed" ]]; then
+            echo "SKIP  no .sh files modified"
+            exit 0
+          fi
+          bash specialists/form-check/tools/generation_gate.sh --strict $changed

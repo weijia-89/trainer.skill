@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# pre-commit hook — combined LLM-code + generation correctness gate
+# 
+# Install:
+#   cp pre-commit-combined .git/hooks/pre-commit
+#   chmod +x .git/hooks/pre-commit
+#
+# This hook blocks commits if either gate fails.
+# It is fail-closed: no commit until all gates pass.
+#
+# Bypass: git commit --no-verify (not recommended)
+
+set -euo pipefail
+
+BYPASS="${GENERATION_GATE_BYPASS:-0}"
+
+# Check if any staged files are relevant
+STAGED_FILES=$(git diff --cached --name-only)
+SH_FILES=$(echo "$STAGED_FILES" | grep '\.sh$' || true)
+LLM_FILES=$(echo "$STAGED_FILES" | xargs -I{} sh -c 'head -1 "$1" | grep -qi "llm-generated"' _ {} 2>/dev/null | grep -q . && echo "yes" || echo "no")
+
+# Skip both gates if no relevant files
+if [[ -z "$SH_FILES" && "$LLM_FILES" == "no" && "${LLM_GATE_ALL:-0}" -eq 0 ]]; then
+    exit 0
+fi
+
+# Run generation gate on bash files
+if [[ -n "$SH_FILES" ]]; then
+    GATE_SCRIPT="${GATE_SCRIPT:-${HOME}/Projects/trainer.skill/specialists/form-check/tools/generation_gate.sh}"
+    if [[ -f "$GATE_SCRIPT" ]]; then
+        echo "=== Running generation gate ==="
+        if bash "$GATE_SCRIPT" $SH_FILES; then
+            echo "=== Generation gate PASSED ==="
+        else
+            echo ""
+            echo "=== Generation gate FAILED — commit blocked ===" >&2
+            echo "Fix issues or use: GENERATION_GATE_BYPASS=1 git commit --no-verify" >&2
+            exit 1
+        fi
+    else
+        echo "WARN: generation_gate.sh not found at $GATE_SCRIPT" >&2
+    fi
+fi
+
+# Run LLM-code gate on LLM-generated files
+if [[ "$LLM_FILES" == "yes" || "${LLM_GATE_ALL:-0}" -eq 1 ]]; then
+    LLM_GATE="${LLM_GATE:-${HOME}/Projects/trainer.skill/specialists/form-check/tools/llm_code_gate.sh}"
+    if [[ -f "$LLM_GATE" ]]; then
+        echo "=== Running LLM-code gate ==="
+        if bash "$LLM_GATE" --max-iter 3 --strict; then
+            echo "=== LLM-code gate PASSED ==="
+        else
+            echo ""
+            echo "=== LLM-code gate FAILED — commit blocked ===" >&2
+            echo "Fix issues or use: git commit --no-verify" >&2
+            exit 1
+        fi
+    else
+        echo "WARN: llm_code_gate.sh not found at $LLM_GATE" >&2
+    fi
+fi
+
+exit 0

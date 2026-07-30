@@ -21,7 +21,8 @@ What are you doing?
 │   ├─ Touches LLM / agent?
 │   │   ├─ → owasp_llm_top10.md
 │   │   ├─ → references/llm_code_correctness_gate.md  (mechanical gate for LLM-generated code)
-│   │   └─ → templates/structural_semantic_trigger.md  (when to apply the gate)
+│   │   ├─ → templates/structural_semantic_trigger.md  (when to apply the gate)
+│   │   └─ → tools/generation_gate.sh  (validate bash scripts at generation time)
 │   ├─ Web app / public API?
 │   │   ├─ → owasp_web_top10.md
 │   │   └─ → owasp_api_top10.md
