@@ -183,6 +183,55 @@ else
 fi
 cd - >/dev/null
 
+# Test 12: --no-shellcheck flag works
+if command -v shellcheck &>/dev/null; then
+    echo "Test 12: --no-shellcheck skips shellcheck"
+    cd "$TMPDIR"
+    cat > has_shellcheck_issue.sh <<'EOF'
+#!/bin/bash
+set -euo pipefail
+echo $UNDEFINED_VAR
+EOF
+    exit_code=0
+    bash "$GATE_SCRIPT" --no-shellcheck has_shellcheck_issue.sh >/dev/null 2>&1 || exit_code=$?
+    if [[ "$exit_code" -eq 0 ]]; then
+        pass "--no-shellcheck works"
+    else
+        fail "--no-shellcheck should skip shellcheck errors"
+    fi
+    cd - >/dev/null
+fi
+
+# Test 13: Secret detection works
+echo "Test 13: Secret detection finds hardcoded secrets"
+cd "$TMPDIR"
+cat > has_secret.sh <<'EOF'
+#!/bin/bash
+set -euo pipefail
+AWS_SECRET_ACCESS_KEY=abc123
+echo "done"
+EOF
+exit_code=0
+bash "$GATE_SCRIPT" has_secret.sh >/dev/null 2>&1 || exit_code=$?
+if [[ "$exit_code" -eq 1 ]]; then
+    pass "Secret detection works"
+else
+    fail "Secret detection should fail on hardcoded secrets"
+fi
+cd - >/dev/null
+
+# Test 14: Bypass mechanism works
+echo "Test 14: GENERATION_GATE_BYPASS=1 skips checks"
+cd "$TMPDIR"
+exit_code=0
+GENERATION_GATE_BYPASS=1 bash "$GATE_SCRIPT" has_secret.sh >/dev/null 2>&1 || exit_code=$?
+if [[ "$exit_code" -eq 0 ]]; then
+    pass "Bypass works"
+else
+    fail "Bypass should skip all checks"
+fi
+cd - >/dev/null
+
 echo ""
 echo "=== Results: $PASS passed, $FAIL failed ==="
 

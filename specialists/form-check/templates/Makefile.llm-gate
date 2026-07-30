@@ -14,7 +14,8 @@
 # The gate is fail-closed: it returns non-zero on failure.
 
 # Configuration
-GATE_SCRIPT ?= $(HOME)/Projects/trainer.skill/specialists/form-check/tools/llm_code_gate.sh
+# Auto-discover gate script location
+GATE_SCRIPT ?= $(shell command -v llm_code_gate.sh 2>/dev/null || echo $(HOME)/Projects/trainer.skill/specialists/form-check/tools/llm_code_gate.sh)
 MAX_ITER ?= 3
 
 # Default target

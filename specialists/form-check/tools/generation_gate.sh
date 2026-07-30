@@ -244,7 +244,9 @@ for file in "${TARGET_FILES[@]}"; do
         warn "  shellcheck not installed; skipping"
     fi
     
-    # Check 7: safe-terminal compliance
+    # Check 7: safe-terminal partial compliance (2/12 Tier-1 rules enforced)
+    # NOTE: This is a subset check. Full safe-terminal compliance requires
+    # reviewing all 12 Tier-1 rules manually. See safe-terminal skill for details.
     # No heredocs outside usage/help functions (critical)
     heredocs_outside_usage=0
     while IFS= read -r line; do

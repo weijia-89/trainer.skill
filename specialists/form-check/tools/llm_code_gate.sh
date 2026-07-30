@@ -84,7 +84,17 @@ while [[ $# -gt 0 ]]; do
             shift 2
             ;;
         --strict) STRICT=1; shift ;;
-        --lang) GATE_LANG="$2"; shift 2 ;;
+        --lang)
+            if [[ -z "${2:-}" ]]; then
+                fail "--lang requires an argument"
+                usage >&2
+                exit 2
+            fi
+            case "$2" in
+                python|go|typescript|rust|java|auto) GATE_LANG="$2"; shift 2 ;;
+                *) fail "Unsupported language: $2"; fail "Supported: python, go, typescript, rust, java, auto"; exit 2 ;;
+            esac
+            ;;
         --help) usage; exit 0 ;;
         *) fail "Unknown option: $1"; usage >&2; exit 2 ;;
     esac
