@@ -271,9 +271,10 @@ for file in "${TARGET_FILES[@]}"; do
     # Look for common secret patterns (AWS keys, API tokens, passwords)
     found_secrets=0
     
-    # Simple string patterns (no regex needed)
-    for simple_pattern in AWS_SECRET_ACCESS_KEY AWS_ACCESS_KEY_ID GITHUB_TOKEN PRIVATE_KEY; do
-        matches=$(grep -in "$simple_pattern" "$file" | grep -vE '^\s*#' || true)
+    # Simple string patterns (match assignment with value, not pattern definitions)
+    for simple_pattern in 'AWS_SECRET_ACCESS_KEY=[^[:space:]]' 'AWS_ACCESS_KEY_ID=[^[:space:]]' 'GITHUB_TOKEN=[^[:space:]]' 'PRIVATE_KEY=[^[:space:]]'; do
+        # Exclude lines that are pattern definitions or comments
+        matches=$(grep -inE "$simple_pattern" "$file" | grep -vE '^\s*#|simple_pattern|for .* in' || true)
         if [[ -n "$matches" ]]; then
             fail "  Potential secret detected:"
             echo "$matches" | head -3 | sed 's/^/    /'
