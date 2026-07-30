@@ -16,10 +16,12 @@ What are you doing?
 
 ├─ Reviewing existing code?
 │   ├─ → codebase_scan.md             (cross-cutting comprehension protocol, run FIRST for unfamiliar code)
-│   ├─ → bug_class_audit.md           (CWE Top-25 + AI-PR shapes)
+│   ├─ → bug_class_audit.md           (CWE Top-25 + AI-PR shapes + LLM-specific bug classes)
 │   ├─ → smell_catalog.md             (month-3 failure modes per archetype)
 │   ├─ Touches LLM / agent?
-│   │   └─ → owasp_llm_top10.md
+│   │   ├─ → owasp_llm_top10.md
+│   │   ├─ → references/llm_code_correctness_gate.md  (mechanical gate for LLM-generated code)
+│   │   └─ → templates/structural_semantic_trigger.md  (when to apply the gate)
 │   ├─ Web app / public API?
 │   │   ├─ → owasp_web_top10.md
 │   │   └─ → owasp_api_top10.md

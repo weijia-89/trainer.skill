@@ -6,6 +6,10 @@ parent_skill: form-check
 
 # Rust, tooling depth
 
+## Anti-fixation clause
+
+This file is tooling guidance, not a mandate. Trainer does not enforce any single language. Language selection is domain-conditional (web/client → TypeScript; ML/data/eval → type-checked Python; simple servers → Go; correctness/perf/FFI → Rust). A mechanical correctness gate, not the language name, is the lever that reduces silent-bug surface in LLM-generated code. See `references/llm_code_correctness_gate.md`.
+
 ## Tooling matrix
 
 | Concern | Tool |

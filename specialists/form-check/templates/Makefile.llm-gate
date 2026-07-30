@@ -1,0 +1,51 @@
+# Makefile — LLM-code correctness gate targets
+# 
+# Copy this Makefile into your project root and uncomment the targets
+# for your language.
+#
+# Usage:
+#   make gate        — run all 4 layers
+#   make gate-strict — run in strict mode (warnings as errors)
+#   make gate-python — force Python mode
+#   make gate-go     — force Go mode
+#   make gate-ts     — force TypeScript mode
+#   make gate-rust   — force Rust mode
+#
+# The gate is fail-closed: it returns non-zero on failure.
+
+# Configuration
+GATE_SCRIPT ?= $(HOME)/Projects/trainer.skill/specialists/form-check/tools/llm_code_gate.sh
+MAX_ITER ?= 3
+
+# Default target
+.PHONY: gate gate-strict gate-python gate-go gate-ts gate-rust help
+
+help:
+	@echo "LLM-code correctness gate targets:"
+	@echo "  make gate        — run gate (auto-detect language)"
+	@echo "  make gate-strict — strict mode (warnings as errors)"
+	@echo "  make gate-python — force Python"
+	@echo "  make gate-go     — force Go"
+	@echo "  make gate-ts     — force TypeScript"
+	@echo "  make gate-rust   — force Rust"
+	@echo ""
+	@echo "Override gate script:"
+	@echo "  make GATE_SCRIPT=/path/to/llm_code_gate.sh gate"
+
+gate:
+	bash "$(GATE_SCRIPT)" --max-iter $(MAX_ITER)
+
+gate-strict:
+	bash "$(GATE_SCRIPT)" --max-iter $(MAX_ITER) --strict
+
+gate-python:
+	bash "$(GATE_SCRIPT)" --max-iter $(MAX_ITER) --lang python
+
+gate-go:
+	bash "$(GATE_SCRIPT)" --max-iter $(MAX_ITER) --lang go
+
+gate-ts:
+	bash "$(GATE_SCRIPT)" --max-iter $(MAX_ITER) --lang typescript
+
+gate-rust:
+	bash "$(GATE_SCRIPT)" --max-iter $(MAX_ITER) --lang rust

@@ -14,7 +14,7 @@ Answer **before any code is written**. Each unanswered question is a slot for a 
 4. **What's the data model?** Tables + key relationships, no ORM yet. **Plus data classification** (public / internal / confidential / PII / PHI / PCI / NPI / regulated).
 5. **Where does it run?** One PaaS, one region, one DB. **Default mode**; if scale-up, name the forcing constraint and write the ADR (`templates/forcing_constraint_adr.md`).
 6. **Where do secrets live?** Per env: dev / staging / prod. (Env-only / KMS / Vault / cloud secrets manager.) **Never in CLAUDE.md, never committed, never in prompts.**
-7. **What's the LLM contract?** Provider, model (pinned, no "latest"), prompt template versioning (`templates/prompt_versioning.md`), eval gate, agent capability allowlist (`agent-runtime/harness_contract.md`). Or "no LLM", Q7 is `n/a`.
+7. **What's the LLM contract?** Provider, model (pinned, no "latest"), prompt template versioning (`templates/prompt_versioning.md`), eval gate, agent capability allowlist (`agent-runtime/harness_contract.md`). Or "no LLM", Q7 is `n/a`. **If LLM-generated code: is there a mechanical correctness gate?** (`references/llm_code_correctness_gate.md`)
 8. **What's the rollback plan?** One paragraph. (Git revert is not a rollback for migrations or external side-effects.) **Plus deprecation policy** if any public surface.
 9. **What's the eval baseline?** How will we know we regressed? Golden dataset (50–100 minimum, 200–500 prod-ready). Plus **CI fitness functions** baseline (≥3 lint-class).
 10. **What is *not* in scope?** Three things minimum, named explicitly. (Anti-scope is more useful than scope.) **Plus** the won't-do list of vibe-impossible items (`rubrics/vibe_safety_map.md` Bucket 4).

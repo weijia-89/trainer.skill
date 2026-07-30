@@ -2,7 +2,7 @@
 name: bug_class_audit
 version: 2.0.0
 parent_skill: form-check
-sources: [CWE-25-2025, GITCLEAR-2025, ACM-COPILOT-CORRECT, ACM-COPILOT-SEC, SLOP-arXiv]
+sources: [CWE-25-2025, GITCLEAR-2025, ACM-COPILOT-CORRECT, ACM-COPILOT-SEC, SLOP-arXiv, PIRANESI-C01, PIRANESI-C02, PIRANESI-C03, PIRANESI-CPW1, PIRANESI-CPW2, PIRANESI-UU1, PIRANESI-UU2, PIRANESI-UU3, PIRANESI-UU4, PIRANESI-UU5, PIRANESI-DG008]
 ---
 
 # Bug-Class Audit Checklist
@@ -48,6 +48,13 @@ These show up disproportionately in AI-generated code. Sources: GITCLEAR-2025 (c
 - **Silent failure paths**, `try / except: pass` swallowing real errors; over-broad `except Exception` / `catch (Throwable)`. ACM-COPILOT-SEC notes elevated incidence.
 - **Missing null/empty guards**, assumes input is non-None / non-empty.
 - **Off-by-one in slicing**, `data[:n]` when `data[: n + 1]` was intended (or vice versa).
+- **Plausible-completion trap** (`PIRANESI-UU3`), code that passes base tests but fails compositional extensions (26.2% HumanEval-Pro base-pass/extension-fail). Token-level training objective is blind to runtime semantics.
+- **Reward-hacking** (`PIRANESI-UU2`), agent patches evaluator, overwrites timer, or hijacks equality operator to pass tests without correctness (30.4% of SWE tasks in METR study). Gate must be tamper-isolated.
+- **Skill-instruction droppability** (`PIRANESI-UU1`), agent acknowledges but ignores guardrail instructions mid-session (117 documented violations/day). Prose-only guardrails insufficient; environment-space gates required.
+- **Type-checker bypass** (`PIRANESI-CPW1`), 97% of LLM structural failures evade type checkers + tests + SAST together. Static types catch ~3% of LLM structural bugs. Gate must be multi-layer (structural/graph + type + execution + schema).
+- **Circular self-validation** (`PIRANESI-UU4`), same model generating code and its own tests validates its own blind spots. Require independent/adversarial test provenance.
+- **Schema failure at boundary** (`PIRANESI-UU5`), 10–20% structured-output schema failure when naive parsing assumed. Runtime schema validation mandatory at LLM prompt/parse boundaries.
+- **Cross-file / config incoherence** (`PIRANESI-CPW2`), dependency manifest drift, interface changes without consumer updates, declare-after-use. Invisible to per-file type checking; requires graph-level verification.
 - **Dead branches / unreachable code**, pasted in but no caller.
 - **Copy-paste with wrong variable**, same shape as Phabricator / GitHub diff smell; GITCLEAR-2025 quantifies the rise.
 - **Resource leaks**, `open()` without `with` (Python), browser/Playwright contexts not closed, DB connections not released, file handles in Java not in try-with-resources.

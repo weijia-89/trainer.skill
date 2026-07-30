@@ -27,9 +27,9 @@ A 1-line auth change ≠ a 100-line formatting change. Same rubric numbers, diff
 | # | Component | Weight | Full credit (100) | Half credit (50) | Zero credit |
 |---|---|---|---|---|---|
 | 1 | Code-read depth | 15 | every changed file end-to-end + every direct caller | skimmed touched files; trusted docstrings | did not open |
-| 2 | Test verification | 20 | tests run + assertion density target met + mutation score ≥ tier-target on touched code | tests written but not run, OR run but no before/after / no mutation score | no test, no run |
+| 2 | Test verification | 20 | tests run + assertion density target met + mutation score ≥ tier-target on touched code + **mechanical correctness gate passed for LLM-generated code** | tests written but not run, OR run but no before/after / no mutation score / **gate skipped without justification** | no test, no run |
 | 3 | Hallucination check | 15 | every dep + API + flag + env var verified (registry, author, first-seen ≥30d, current docs) | spot-checked a few | none checked |
-| 4 | Bug-class coverage | 12 | CWE Top-25 + applicable OWASP Top 10 (LLM/API/Web) + AI-PR shapes | covered the obvious 3–4 | did not consider |
+| 4 | Bug-class coverage | 12 | CWE Top-25 + applicable OWASP Top 10 (LLM/API/Web) + AI-PR shapes + **LLM-specific bug classes for LLM-generated code** (`bug_class_audit.md` § B) | covered the obvious 3–4 | did not consider |
 | 5 | Adversarial pass | 10 | ≥3 weakest assumptions identified + falsifier per assumption + each resolved | identified weaknesses but didn't resolve | did not self-attack |
 | 6 | Reversibility | 8 | irreversible ops gated; rollback documented + dry-run executed | some gates; partial rollback | free-hand destructive ops |
 | 7 | Doc accuracy | 8 | CLAUDE.md / AGENTS.md / README / ADRs / fitness functions match new state | partial doc update | doc drift |
