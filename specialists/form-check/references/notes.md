@@ -181,8 +181,8 @@ Findings from Piranesi pipeline `0729-trainer-language-enforcement` (L3, S1→S2
 - `PIRANESI-C01` `[T1-verified]`, arXiv 2601.12146: compile/repair loops raise compile-success +5.3–79.4 pp but do NOT improve functional correctness. Post-generation gate fixes compilation, not semantics.
 - `PIRANESI-C02` `[T1-verified]`, arXiv 2601.12146: semantic correctness unchanged while compile-rate climbs. Gate is necessary-not-sufficient.
 - `PIRANESI-C03` `[T1-verified]`, arXiv 2601.12146: compile gains plateau by iteration 3; cap repairs at ~3 iterations.
-- `PIRANESI-CPW1` `[T1-verified]`, arXiv 2607.08981-class (via secondary codex.danielvaughan.com): type checkers caught 2/67 (~3%) structural failures in LLM-generated code; 65/67 evaded types+tests+SAST. Directly measured against typed-language mandate.
-- `PIRANESI-CPW2` `[T1-verified]`, arXiv 2607.08981-class: eight-category structural-failure taxonomy (SRF, PIA, DHI, BCI, RCF, CFC, CCV, SSR) — all cross-file/config/contract invariants invisible to per-file type checking.
+- `PIRANESI-CPW1` `[T2-secondary]`, secondary source codex.danielvaughan.com summarizing arXiv structural-failure literature: type checkers caught 2/67 (~3%) structural failures in LLM-generated code; 65/67 evaded types+tests+SAST. Treat as illustrative, not primary evidence. See also `ACM-COPILOT-CORRECT` for peer-reviewed primary.
+- `PIRANESI-CPW2` `[T2-secondary]`, same secondary source: eight-category structural-failure taxonomy (SRF, PIA, DHI, BCI, RCF, CFC, CCV, SSR) — all cross-file/config/contract invariants invisible to per-file type checking.
 - `PIRANESI-CG001` `[T1-verified]`, arXiv 2512.18131: model choice dominates language choice; functional failure ~flat across languages within a model.
 - `PIRANESI-CG002` `[T1-verified, direction-only]`, arXiv 2512.18131: typed languages raise LLM compile-error rate (direction confirmed; per-model decimals withdrawn — bar-chart only, no readable numeric table).
 - `PIRANESI-CG004` `[T1-verified]`, arXiv 2606.21619: constraining/typing generally lowers functional correctness in general case (incomplete constrainer hurts more than helps).
