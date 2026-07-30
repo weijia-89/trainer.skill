@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+# pre-commit hook — LLM-code correctness gate
+# 
+# Install:
+#   cp pre-commit .git/hooks/pre-commit
+#   chmod +x .git/hooks/pre-commit
+#
+# Or use with husky / pre-commit framework:
+#   pre-commit install --hook-type pre-commit
+#
+# This hook blocks commits if the mechanical correctness gate fails.
+# It is fail-closed: no commit until the gate passes.
+# It is language-agnostic: auto-detects language from staged files.
+
+set -euo pipefail
+
+# Only run on LLM-generated files ( heuristic: files with specific markers )
+# If you want to gate ALL commits, remove this check.
+# To mark a file as LLM-generated, add "# llm-generated" or "// llm-generated"
+# as the first line, or set LLM_GATE_ALL=1 to gate everything.
+
+LLM_GATE_ALL="${LLM_GATE_ALL:-0}"
+
+if [[ "$LLM_GATE_ALL" -eq 0 ]]; then
+    # Check if any staged file has the llm-generated marker
+    if ! git diff --cached --name-only | xargs -I{} sh -c 'head -1 "$1" | grep -qi "llm-generated"' _ {} 2>/dev/null | grep -q .; then
+        # No LLM-generated files staged; skip gate
+        exit 0
+    fi
+fi
+
+# Find the gate script
+GATE_SCRIPT="${GATE_SCRIPT:-}"
+
+if [[ -z "$GATE_SCRIPT" ]]; then
+    # Search common locations
+    for path in \
+        "./scripts/llm_code_gate.sh" \
+        "./tools/llm_code_gate.sh" \
+        "./.githooks/llm_code_gate.sh" \
+        "${HOME}/Projects/trainer.skill/specialists/form-check/tools/llm_code_gate.sh"
+    do
+        if [[ -f "$path" ]]; then
+            GATE_SCRIPT="$path"
+            break
+        fi
+    done
+fi
+
+if [[ -z "$GATE_SCRIPT" || ! -f "$GATE_SCRIPT" ]]; then
+    echo "ERROR: llm_code_gate.sh not found." >&2
+    echo "Install from trainer.skill: specialists/form-check/tools/llm_code_gate.sh" >&2
+    echo "Or set GATE_SCRIPT=/path/to/llm_code_gate.sh" >&2
+    exit 1
+fi
+
+echo "=== Running LLM-code correctness gate ==="
+echo "Script: $GATE_SCRIPT"
+echo ""
+
+# Run the gate
+if bash "$GATE_SCRIPT" --max-iter 3 --strict; then
+    echo ""
+    echo "=== GATE PASSED — commit allowed ==="
+    exit 0
+else
+    echo ""
+    echo "=== GATE FAILED — commit blocked ===" >&2
+    echo "Fix the issues above, stage the fixes, and try again." >&2
+    echo "To bypass (not recommended): git commit --no-verify" >&2
+    exit 1
+fi

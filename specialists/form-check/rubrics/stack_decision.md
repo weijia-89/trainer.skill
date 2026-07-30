@@ -13,13 +13,17 @@ Always state **chosen + rejected alternative + 1-sentence why each**, anchored t
 ```text
 Is this a single binary or CLI tool?
   └─ yes → Go (stdlib + chi or cobra) OR Rust (clap + std).
-        Go default unless memory/perf budget is the spec; then Rust.
+        Go is common but not mandated; default to whichever the team owns.
+        Mechanical correctness gate matters more than language name.
+        Rust only if memory/perf budget is the spec.
         [normative, operator wisdom]
 
 Is the team Python-comfortable or is this data/ML-adjacent?
   └─ yes → Python + FastAPI + Postgres + Next.js (only if web UI).
-        Reject Django **unless** the team values batteries-included admin/ORM more than async-first contracts.
-        [normative, operator wisdom + FastAPI vs Django stylistic call]
+         **Mandatory:** mypy or pyright in strict mode for all LLM-generated Python.
+         Untyped Python in an agent loop is asking for trouble — every type bug becomes a round-trip cost.
+         Reject Django **unless** the team values batteries-included admin/ORM more than async-first contracts.
+         [normative, operator wisdom + PIRANESI-C01/02/03]
 
 Is the team JS-comfortable, or is this a one-person greenfield?
   └─ yes → TS everywhere (Next.js App Router + Drizzle + Postgres via Neon/Supabase + Tailwind).

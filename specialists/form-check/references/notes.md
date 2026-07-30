@@ -173,3 +173,23 @@ The test suite (`tests/test_citations.py`) verifies tags are not orphans against
 - AI-PR maintainability decline (copy-paste rise, refactoring decline, churn-within-2-weeks rise) is reported by `GITCLEAR-2025` `[T2-vendor, COI]`; treat as illustrative of a trend, not as established quantitative evidence; corroborate with `ACM-COPILOT-CORRECT` for academic basis.
 - TDD evidence is **mixed** (`RAFIQUE-MISIC-2013`, `KOLLANUS-2010`); pair programming is **net effort-cost positive for modest quality gain** (`HANNAY-2009`); modern code review has **strong defect-detection evidence** (`BACCHELLI-BIRD-2013`, `COHEN-2010`); mutation testing **catches real bugs** at scale with proper filtering (`PETROVIC-2018`).
 - Pedagogy: **discipline-shaping defaults** in this skill are anchored in cognitive science with replication (testing effect `ADESOPE-2017`, spacing `CEPEDA-2006`, worked examples + minimal-guidance-fails `KIRSCHNER-SWELLER-CLARK-2006`, self-explanation `BISRA-2018`, productive failure with boundary conditions `SINHA-KAPUR-2021`, schema acquisition `GICK-HOLYOAK-1983`, calibration `LICHTENSTEIN-1982`). Dunning-Kruger is **not** load-bearing here (`GIGNAC-ZAJENKOWSKI-2020`, `GIGNAC-2024`).
+
+## LLM-code correctness gate (Piranesi S4 cross-reference)
+
+Findings from Piranesi pipeline `0729-trainer-language-enforcement` (L3, S1→S2→S3→S3.1→S3.2→S4 extended). These tags bridge Piranesi claim IDs to trainer citation hygiene.
+
+- `PIRANESI-C01` `[T1-verified]`, arXiv 2601.12146: compile/repair loops raise compile-success +5.3–79.4 pp but do NOT improve functional correctness. Post-generation gate fixes compilation, not semantics.
+- `PIRANESI-C02` `[T1-verified]`, arXiv 2601.12146: semantic correctness unchanged while compile-rate climbs. Gate is necessary-not-sufficient.
+- `PIRANESI-C03` `[T1-verified]`, arXiv 2601.12146: compile gains plateau by iteration 3; cap repairs at ~3 iterations.
+- `PIRANESI-CPW1` `[T1-verified]`, arXiv 2607.08981-class (via secondary codex.danielvaughan.com): type checkers caught 2/67 (~3%) structural failures in LLM-generated code; 65/67 evaded types+tests+SAST. Directly measured against typed-language mandate.
+- `PIRANESI-CPW2` `[T1-verified]`, arXiv 2607.08981-class: eight-category structural-failure taxonomy (SRF, PIA, DHI, BCI, RCF, CFC, CCV, SSR) — all cross-file/config/contract invariants invisible to per-file type checking.
+- `PIRANESI-CG001` `[T1-verified]`, arXiv 2512.18131: model choice dominates language choice; functional failure ~flat across languages within a model.
+- `PIRANESI-CG002` `[T1-verified, direction-only]`, arXiv 2512.18131: typed languages raise LLM compile-error rate (direction confirmed; per-model decimals withdrawn — bar-chart only, no readable numeric table).
+- `PIRANESI-CG004` `[T1-verified]`, arXiv 2606.21619: constraining/typing generally lowers functional correctness in general case (incomplete constrainer hurts more than helps).
+- `PIRANESI-CDG006` `[T2-secondary, author-reported]`, tylevnovik/cross-lang-token-density (README): typed languages carry ~1.45–1.77x token premium vs Python. Single-author 0-star draft; indicative only.
+- `PIRANESI-UU1` `[T2-secondary, incident-tracker]`, Claude Code issues #39502/#45239/#28158/#46765: skill instructions actively droppable mid-session (117 violations/day). Prose-only steering is insufficient; environment-space gates required.
+- `PIRANESI-UU2` `[T2-secondary]`, METR frontier-model study (cited in Plausible-Completion source): o3/o1/Claude 3.7 reward-hacked 30.4% of SWE tasks. Gate must be tamper-isolated from generating agent.
+- `PIRANESI-UU3` `[T2-secondary]`, Plausible-Completion source: training objective blind to runtime semantics; 26.2% HumanEval-Pro base-pass/extension-fail. Independent functional checks mandatory.
+- `PIRANESI-UU4` `[T2-secondary]`, Plausible-Completion source: same model generating code + tests validates own blind spots. Coach independent/adversarial test provenance.
+- `PIRANESI-UU5` `[T2-secondary]`, Two-Language-Problem source: type safety stops at prompt/parse boundary; 10–20% schema-failure on naive structured outputs. Runtime schema validation required at boundary.
+- `PIRANESI-DG008` `[T2-secondary]`, shimo4228/when-code-when-llm (README): structural-vs-semantic decision axis exists as public skill. Structural = decidable from bytes; semantic = requires meaning.

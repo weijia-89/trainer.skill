@@ -14,6 +14,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ### Added
 
+- **`specialists/form-check/tools/llm_code_gate.sh`** — executable, language-agnostic gate runner. Auto-detects language from file extensions. Runs 4 layers: structural/graph, type/compile, execution/tests, lint/format. Supports `--max-iter N` (default 3), `--strict`, `--lang`. Exit codes: 0=pass, 1=fail, 2=config error, 3=max iterations exceeded. Tamper-isolated: runs in subshell, does not modify source files.
+- **`specialists/form-check/templates/pre-commit-llm-gate`** — Git pre-commit hook template. Copies to `.git/hooks/pre-commit` to block commits until gate passes. Fail-closed by design. Supports `LLM_GATE_ALL=1` to gate every commit, or auto-detects files marked `# llm-generated`.
+- **`specialists/form-check/templates/llm_code_gate_ci.yml`** — GitHub Actions CI workflow template. Runs the 4-layer gate on push and PR. Matrix strategy for python/go/typescript/rust. Fails the build if any layer fails.
+- **`specialists/form-check/templates/pyright_strict.json`** — pyright strict configuration for LLM-generated Python. Enables all strict checks including `reportMissingImports`, `reportMissingTypeStubs`, `reportUntypedFunctionDecorator`, `reportUnknownParameterType`. This is the config referenced by A-3 in the S4 canon.
+- **`specialists/form-check/templates/Makefile.llm-gate`** — Makefile targets for `make gate`, `make gate-strict`, `make gate-python`, etc. Convenience wrapper around `llm_code_gate.sh`.
+- **`specialists/form-check/references/llm_code_correctness_gate.md`** — language-agnostic mechanical gate for LLM-generated code, integrating Piranesi S4 research (0729-trainer-language-enforcement). Four-layer gate: structural/graph checks, type/compile layer, execution/functional layer, runtime schema validation. Gate-ON default with human-approved skip as exception. Domain-conditional language guidance (web→TypeScript, ML→type-checked Python, servers→Go, perf→Rust) without language mandate. See R-7 below.
+- **`specialists/form-check/templates/structural_semantic_trigger.md`** — structural-vs-semantic decision axis for when the gate applies. Structural tasks (decidable from bytes: format, presence, count, schema) get the heavy gate; semantic tasks (requires meaning: quality, similarity, architectural fit) get light gate or human review. Worked example included.
 - **`scripts/reviewer_surface_tracker.py`** — per-pass surface manifest tracker for the autonomous code-review loop; gates each pass on novelty (≥50% previously-unseen surface) so the stop condition is not reachable by re-trace. Stdlib only, read-only under `--check`.
 - **`scripts/test_reviewer_surface_tracker.py`** — 7 tests: novelty threshold pass/fail, empty-surface rejection (no div-by-zero), idempotent check, CLI arg parsing, manifest roundtrip.
 - **`specialists/cruft/`** — new specialist: tags session/scratchpad artifacts with the `.cruft.md` slug + a `# META:` purpose/date header (the staleness assessment made explicit); defines the deterministic cleanup convention and its iron law (no deletion unless the adversarial-review gate is GREEN AND a PR merges or the session closes).
@@ -21,8 +28,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ### Changed
 
+- **`specialists/form-check/references/notes.md`** — added 15 PIRANESI citation tags bridging Piranesi S4 claim IDs to trainer citation hygiene. Tiers: T1-verified for arXiv papers (2601.12146, 2512.18131, 2606.21619, 2607.08981-class), T2-secondary for incident trackers and single-author drafts.
+- **`specialists/form-check/checklists/INDEX.md`** — decision tree now routes LLM/agent touches to `references/llm_code_correctness_gate.md` and `templates/structural_semantic_trigger.md` alongside existing `owasp_llm_top10.md`.
+- **`specialists/form-check/checklists/bug_class_audit.md`** — § B (AI-PR-specific bug shapes) extended with 7 LLM-specific bug classes: plausible-completion trap (26.2% base-pass/extension-fail), reward-hacking (30.4% of SWE tasks), skill-instruction droppability (117 violations/day), type-checker bypass (97% evasion rate), circular self-validation, schema failure at boundary (10–20%), cross-file/config incoherence.
+- **`specialists/form-check/checklists/preflight_10q.md`** — Q7 (LLM contract) now includes: "If LLM-generated code: is there a mechanical correctness gate?"
+- **`specialists/form-check/multi-language/go.md`** — added anti-fixation clause: "This file is tooling guidance, not a mandate. Trainer does not enforce any single language."
+- **`specialists/form-check/multi-language/rust.md`** — added identical anti-fixation clause.
+- **`specialists/form-check/rubrics/confidence_score.md`** — Component 2 (Test verification, weight 20): full credit now requires "mechanical correctness gate passed for LLM-generated code"; half credit for "gate skipped without justification". Component 4 (Bug-class coverage, weight 12): full credit now requires "LLM-specific bug classes for LLM-generated code".
+- **`specialists/form-check/rubrics/stack_decision.md`** — reconciled with anti-fixation: Go is "common but not mandated" for CLIs; Python strict-type checking (mypy/pyright) is mandatory for LLM-generated Python.
 - **`references/trainer-autonomous-code-review.md`** — Review loop now requires the surface tracker `--record`/`--check` each pass; stop condition redefined to terminate only on `unexplored == 0` OR two consecutive passes each satisfying novelty ≥ 50% + zero findings + all verify exit 0; Forbidden list extended to bar passes that skip `--check` and STOP claims without tracker evidence.
 - **`specialists/pr/SKILL.md`** — composed the new `cruft` specialist; added **§8 Post-merge cruft cleanup**: after a PR merges and the review gate is GREEN, writes `.trainer/reviews-complete` then runs `prune_cruft.sh --apply`; documents the session-close variant (superset of the request-cap R4c webfetch-cache cleanup for `.cruft.md` scratchpads).
+
+### R-7 (LLM-code correctness gate integration)
+
+Research question: should trainer enforce/coach strongly-typed languages (Go, Rust, Java, C#) over Python for LLM-generated scripting to reduce silent-bug surface? Piranesi S1→S4 extended pipeline investigated. Verdict: **reject typed-language mandate**; adopt language-agnostic mechanical gate. Evidence: type checkers catch only ~3% of LLM structural failures (arXiv 2607.08981-class); typed languages raise LLM compile-error rate, not lower it (arXiv 2512.18131); dominant failure class is semantic/functional and language-agnostic; token cost premium ~1.45–1.77x vs Python. The gate fixes compilation (necessary) but not semantics (not sufficient). All findings documented in `llm_code_correctness_gate.md` with 4 falsifiers (what would flip the verdict).
 
 ### R-6
 

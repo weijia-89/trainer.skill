@@ -66,6 +66,44 @@ Full SKILL.md body: [`./SKILL.md`](./SKILL.md).
 
 ---
 
+## LLM-generated code correctness gate
+
+When a session produces LLM-authored scripting or automation, trainer coaches a **language-agnostic, fail-closed mechanical gate** — not a language mandate.
+
+**Why:** Piranesi S4 research (0729-trainer-language-enforcement) found type checkers catch only ~3% of LLM structural failures. The dominant failure class is semantic/functional and language-agnostic. Typed languages raise LLM compile-error rates, not lower them. The gate is the lever; the language name is not.
+
+**The gate (4 layers):**
+1. **Structural/graph** — manifest validation, declare-before-use, consumer-update-on-interface-change
+2. **Type/compile** — pyright/mypy strict for Python; go vet; tsc --noEmit; cargo check
+3. **Execution/tests** — pytest; go test; npm test; cargo test
+4. **Lint/format** — ruff; golangci-lint; biome; clippy
+
+**Executable files:**
+- [`specialists/form-check/tools/llm_code_gate.sh`](./specialists/form-check/tools/llm_code_gate.sh) — auto-detects language, runs all 4 layers
+- [`specialists/form-check/templates/pre-commit-llm-gate`](./specialists/form-check/templates/pre-commit-llm-gate) — blocks commits until gate passes
+- [`specialists/form-check/templates/llm_code_gate_ci.yml`](./specialists/form-check/templates/llm_code_gate_ci.yml) — CI workflow for push/PR
+- [`specialists/form-check/templates/pyright_strict.json`](./specialists/form-check/templates/pyright_strict.json) — pyright strict config for Python
+
+**Quick start:**
+```bash
+# One-command gate
+bash ~/Projects/trainer.skill/specialists/form-check/tools/llm_code_gate.sh
+
+# Pre-commit hook (fail-closed)
+cp ~/Projects/trainer.skill/specialists/form-check/templates/pre-commit-llm-gate .git/hooks/pre-commit
+chmod +x .git/hooks/pre-commit
+```
+
+**Domain-conditional guidance (not mandate):**
+- web/client → TypeScript
+- ML/data/eval → type-checked Python (mypy/pyright strict)
+- simple servers → Go
+- correctness/perf/FFI → Rust (with retry-cost caveat)
+
+Full spec: [`specialists/form-check/references/llm_code_correctness_gate.md`](./specialists/form-check/references/llm_code_correctness_gate.md)
+
+---
+
 ## Install / use
 
 ### As a Cursor skill (local `~/.cursor` mirror)

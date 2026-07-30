@@ -1,0 +1,148 @@
+name: LLM-Code Correctness Gate
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  llm-code-gate:
+    name: Mechanical correctness gate
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        language: [python, go, typescript, rust]
+      fail-fast: false
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Detect language
+        id: detect
+        run: |
+          if find . -name '*.py' -not -path './.*' | grep -q .; then
+            echo "language=python" >> "$GITHUB_OUTPUT"
+          elif find . -name '*.go' -not -path './.*' | grep -q .; then
+            echo "language=go" >> "$GITHUB_OUTPUT"
+          elif find . -name '*.ts' -not -path './.*' | grep -q .; then
+            echo "language=typescript" >> "$GITHUB_OUTPUT"
+          elif find . -name '*.rs' -not -path './.*' | grep -q .; then
+            echo "language=rust" >> "$GITHUB_OUTPUT"
+          else
+            echo "language=unknown" >> "$GITHUB_OUTPUT"
+          fi
+      
+      - name: Skip if language mismatch
+        if: matrix.language != steps.detect.outputs.language
+        run: echo "Skipping ${{ matrix.language }} — project uses ${{ steps.detect.outputs.language }}"
+      
+      # Python setup
+      - name: Setup Python
+        if: matrix.language == 'python' && steps.detect.outputs.language == 'python'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install Python tools
+        if: matrix.language == 'python' && steps.detect.outputs.language == 'python'
+        run: |
+          pip install pyright ruff pytest
+          if [[ -f "requirements.txt" ]]; then pip install -r requirements.txt; fi
+          if [[ -f "pyproject.toml" ]]; then pip install -e .; fi
+      
+      - name: Run Python gate
+        if: matrix.language == 'python' && steps.detect.outputs.language == 'python'
+        run: |
+          echo "=== Layer 1: Structural checks ==="
+          test -f pyproject.toml || test -f requirements.txt || { echo "FAIL: No manifest"; exit 1; }
+          echo "PASS: Manifest exists"
+          
+          echo "=== Layer 2: Type check ==="
+          pyright --project specialists/form-check/templates/pyright_strict.json
+          
+          echo "=== Layer 3: Tests ==="
+          pytest -q --tb=short
+          
+          echo "=== Layer 4: Lint ==="
+          ruff check .
+      
+      # Go setup
+      - name: Setup Go
+        if: matrix.language == 'go' && steps.detect.outputs.language == 'go'
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      
+      - name: Run Go gate
+        if: matrix.language == 'go' && steps.detect.outputs.language == 'go'
+        run: |
+          echo "=== Layer 1: Structural checks ==="
+          test -f go.mod || { echo "FAIL: No go.mod"; exit 1; }
+          echo "PASS: Manifest exists"
+          
+          echo "=== Layer 2: Compile ==="
+          go vet ./...
+          
+          echo "=== Layer 3: Tests ==="
+          go test ./...
+          
+          echo "=== Layer 4: Lint ==="
+          if command -v golangci-lint &>/dev/null; then
+            golangci-lint run
+          else
+            echo "SKIP: golangci-lint not installed"
+          fi
+      
+      # TypeScript setup
+      - name: Setup Node
+        if: matrix.language == 'typescript' && steps.detect.outputs.language == 'typescript'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Run TypeScript gate
+        if: matrix.language == 'typescript' && steps.detect.outputs.language == 'typescript'
+        run: |
+          echo "=== Layer 1: Structural checks ==="
+          test -f package.json || { echo "FAIL: No package.json"; exit 1; }
+          echo "PASS: Manifest exists"
+          
+          echo "=== Layer 2: Type check ==="
+          npm ci
+          npx tsc --noEmit
+          
+          echo "=== Layer 3: Tests ==="
+          npm test
+          
+          echo "=== Layer 4: Lint ==="
+          if command -v biome &>/dev/null; then
+            biome check .
+          elif command -v eslint &>/dev/null; then
+            npx eslint .
+          else
+            echo "SKIP: No linter configured"
+          fi
+      
+      # Rust setup
+      - name: Setup Rust
+        if: matrix.language == 'rust' && steps.detect.outputs.language == 'rust'
+        uses: dtolnay/rust-action@stable
+      
+      - name: Run Rust gate
+        if: matrix.language == 'rust' && steps.detect.outputs.language == 'rust'
+        run: |
+          echo "=== Layer 1: Structural checks ==="
+          test -f Cargo.toml || { echo "FAIL: No Cargo.toml"; exit 1; }
+          echo "PASS: Manifest exists"
+          
+          echo "=== Layer 2: Compile ==="
+          cargo check
+          
+          echo "=== Layer 3: Tests ==="
+          cargo test
+          
+          echo "=== Layer 4: Lint ==="
+          cargo clippy --all-targets -- -D warnings
