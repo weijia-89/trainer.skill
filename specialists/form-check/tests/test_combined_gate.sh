@@ -30,6 +30,7 @@ python3 -c "print('hello')"
 EOF
 
 # Create matching test file
+mkdir -p tests
 cat > tests/test_run.sh <<'EOF'
 #!/bin/bash
 set -euo pipefail
