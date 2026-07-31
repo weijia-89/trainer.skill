@@ -80,17 +80,22 @@ When a session produces LLM-authored scripting or automation, trainer coaches a 
 
 **Executable files:**
 - [`specialists/form-check/tools/llm_code_gate.sh`](./specialists/form-check/tools/llm_code_gate.sh) — auto-detects language, runs all 4 layers
+- [`specialists/form-check/tools/generation_gate.sh`](./specialists/form-check/tools/generation_gate.sh) — validates bash scripts for generation-time safety (safety headers, env collisions, secret detection, tool checks, test quality)
 - [`specialists/form-check/templates/pre-commit-llm-gate`](./specialists/form-check/templates/pre-commit-llm-gate) — blocks commits until gate passes
+- [`specialists/form-check/templates/pre-commit-combined`](./specialists/form-check/templates/pre-commit-combined) — combined hook: generation gate for `.sh` files + LLM gate for LLM-generated files
 - [`specialists/form-check/templates/llm_code_gate_ci.yml`](./specialists/form-check/templates/llm_code_gate_ci.yml) — CI workflow for push/PR
 - [`specialists/form-check/templates/pyright_strict.json`](./specialists/form-check/templates/pyright_strict.json) — pyright strict config for Python
 
 **Quick start:**
 ```bash
-# One-command gate
+# One-command gate (language-agnostic)
 bash ~/Projects/trainer.skill/specialists/form-check/tools/llm_code_gate.sh
 
-# Pre-commit hook (fail-closed)
-cp ~/Projects/trainer.skill/specialists/form-check/templates/pre-commit-llm-gate .git/hooks/pre-commit
+# Bash script validation (generation gate)
+bash ~/Projects/trainer.skill/specialists/form-check/tools/generation_gate.sh my-script.sh
+
+# Pre-commit hook (fail-closed, combined)
+cp ~/Projects/trainer.skill/specialists/form-check/templates/pre-commit-combined .git/hooks/pre-commit
 chmod +x .git/hooks/pre-commit
 ```
 

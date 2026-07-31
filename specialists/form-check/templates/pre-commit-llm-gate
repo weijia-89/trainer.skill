@@ -11,6 +11,12 @@
 # This hook blocks commits if the mechanical correctness gate fails.
 # It is fail-closed: no commit until the gate passes.
 # It is language-agnostic: auto-detects language from staged files.
+#
+# LIMITATIONS:
+#   - Checks working tree, not just staged changes (partial staging: gate may
+#     see unstaged changes). For pure staged checks, run gate manually before
+#     commit or use --no-verify with documented justification.
+#   - Binary files are skipped for LLM-generated marker detection.
 
 set -euo pipefail
 
@@ -68,5 +74,6 @@ else
     echo "=== GATE FAILED — commit blocked ===" >&2
     echo "Fix the issues above, stage the fixes, and try again." >&2
     echo "To bypass (not recommended): git commit --no-verify" >&2
+    echo "$(date -Iseconds) BYPASS_HINT: git commit --no-verify used or suggested" >> .recovery/calibration.jsonl 2>/dev/null || true
     exit 1
 fi

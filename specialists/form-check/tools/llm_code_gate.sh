@@ -16,10 +16,14 @@
 
 set -euo pipefail
 
+# Trap unexpected errors to prevent silent failures
+trap 'fail "Unexpected error on line $LINENO (exit code: $?)" >&2; exit 1' ERR
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MAX_ITER="${MAX_ITER:-3}"
 STRICT="${STRICT:-0}"
-LANG="${LANG:-auto}"
+GATE_LANG="${GATE_LANG:-auto}"
+GATE_ARTIFACT="${GATE_ARTIFACT:-.llm-gate-passed}"
 
 # Colors for output (disable if not tty)
 if [[ -t 1 ]]; then
@@ -51,7 +55,7 @@ Options:
 Environment:
   MAX_ITER        Same as --max-iter
   STRICT          Same as --strict
-  LANG            Same as --lang
+  LANG            Same as --lang (environment variable: GATE_LANG)
 
 Layers (run in order):
   1. Structural/graph: manifest validation, declare-before-use
@@ -70,9 +74,27 @@ EOF
 # Parse arguments
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --max-iter) MAX_ITER="$2"; shift 2 ;;
+        --max-iter)
+            if [[ -z "${2:-}" ]] || ! [[ "$2" =~ ^[0-9]+$ ]]; then
+                fail "--max-iter requires a positive integer, got: ${2:-(empty)}"
+                usage >&2
+                exit 2
+            fi
+            MAX_ITER="$2"
+            shift 2
+            ;;
         --strict) STRICT=1; shift ;;
-        --lang) LANG="$2"; shift 2 ;;
+        --lang)
+            if [[ -z "${2:-}" ]]; then
+                fail "--lang requires an argument"
+                usage >&2
+                exit 2
+            fi
+            case "$2" in
+                python|go|typescript|rust|java|auto) GATE_LANG="$2"; shift 2 ;;
+                *) fail "Unsupported language: $2"; fail "Supported: python, go, typescript, rust, java, auto"; exit 2 ;;
+            esac
+            ;;
         --help) usage; exit 0 ;;
         *) fail "Unknown option: $1"; usage >&2; exit 2 ;;
     esac
@@ -86,13 +108,20 @@ detect_language() {
         return
     fi
 
-    # Count files by extension in the working tree
+    # Count files by extension in the working tree (search up to depth 3 for standard layouts)
     local py go ts rs java
-    py=$(find . -maxdepth 2 -name '*.py' -not -path './.*' 2>/dev/null | wc -l)
-    go=$(find . -maxdepth 2 -name '*.go' -not -path './.*' 2>/dev/null | wc -l)
-    ts=$(find . -maxdepth 2 -name '*.ts' -not -path './.*' 2>/dev/null | wc -l)
-    rs=$(find . -maxdepth 2 -name '*.rs' -not -path './.*' 2>/dev/null | wc -l)
-    java=$(find . -maxdepth 2 -name '*.java' -not -path './.*' 2>/dev/null | wc -l)
+    py=$(find . -maxdepth 3 -name '*.py' -not -path './.*' -not -path './__pycache__/*' 2>/dev/null | wc -l)
+    go=$(find . -maxdepth 3 -name '*.go' -not -path './.*' 2>/dev/null | wc -l)
+    ts=$(find . -maxdepth 3 -name '*.ts' -not -name '*.d.ts' -not -path './.*' -not -path './node_modules/*' 2>/dev/null | wc -l)
+    rs=$(find . -maxdepth 3 -name '*.rs' -not -path './.*' -not -path './target/*' 2>/dev/null | wc -l)
+    java=$(find . -maxdepth 3 -name '*.java' -not -path './.*' -not -path './build/*' 2>/dev/null | wc -l)
+
+    # Also check for manifest files as stronger signals
+    [[ -f "pyproject.toml" || -f "setup.py" || -f "requirements.txt" ]] && py=$((py + 10))
+    [[ -f "go.mod" ]] && go=$((go + 10))
+    [[ -f "package.json" ]] && ts=$((ts + 10))
+    [[ -f "Cargo.toml" ]] && rs=$((rs + 10))
+    [[ -f "pom.xml" || -f "build.gradle" ]] && java=$((java + 10))
 
     # Pick the dominant language
     local max="$py" winner="python"
@@ -103,6 +132,7 @@ detect_language() {
 
     if [[ "$max" -eq 0 ]]; then
         fail "No source files detected. Run from project root or specify --lang."
+        fail "Expected to find: *.py, *.go, *.ts, *.rs, or *.java files (or their manifest files)."
         exit 2
     fi
 
@@ -115,7 +145,7 @@ check_structural() {
     local fail_count=0
 
     # Check manifest exists
-    case "$LANG" in
+    case "$GATE_LANG" in
         python)
             if [[ ! -f "pyproject.toml" && ! -f "setup.py" && ! -f "setup.cfg" && ! -f "requirements.txt" ]]; then
                 warn "No Python manifest found (pyproject.toml/setup.py/requirements.txt)"
@@ -150,34 +180,21 @@ check_structural() {
 
     # Check for forward references (basic grep heuristic)
     # This is a coarse check; language-aware tools do better
-    if [[ "$LANG" == "python" ]]; then
+    if [[ "$GATE_LANG" == "python" ]]; then
         # Check for imports of modules that don't exist in the project
+        # Skip standard library modules (common ones)
+        local stdlib_modules="os sys pathlib json re collections itertools functools typing argparse logging datetime time math random string inspect hashlib base64 urllib itertools collections typing"
         local missing_imports
-        missing_imports=$(python3 -c "
-import ast, sys, os
-from pathlib import Path
-errors = []
-for path in Path('.').rglob('*.py'):
-    if '.venv' in str(path) or '__pycache__' in str(path):
-        continue
-    try:
-        tree = ast.parse(path.read_text())
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Import):
-                for alias in node.names:
-                    mod = alias.name.split('.')[0]
-                    if not Path(f'{mod}.py').exists() and not Path(mod).is_dir():
-                        errors.append(f'{path}: import {mod}')
-            elif isinstance(node, ast.ImportFrom):
-                if node.module:
-                    mod = node.module.split('.')[0]
-                    if not Path(f'{mod}.py').exists() and not Path(mod).is_dir():
-                        errors.append(f'{path}: from {mod}')
-    except SyntaxError:
-        errors.append(f'{path}: SYNTAX ERROR')
-for e in errors[:10]:
-    print(e)
-" 2>/dev/null || true)
+        
+        # Use external Python script to avoid inline python3 -c (safe-terminal Tier-1 #5)
+        local check_imports_script="$SCRIPT_DIR/check_python_imports.py"
+        if [[ -f "$check_imports_script" ]]; then
+            missing_imports=$(python3 "$check_imports_script" $stdlib_modules 2>/dev/null || true)
+        else
+            warn "check_python_imports.py not found; skipping import check"
+            missing_imports=""
+        fi
+        
         if [[ -n "$missing_imports" ]]; then
             warn "Potential missing imports detected:"
             echo "$missing_imports" | head -5 | sed 's/^/  /'
@@ -199,7 +216,7 @@ check_type_compile() {
     local strict_flag=""
     [[ "$STRICT" -eq 1 ]] && strict_flag="--strict"
 
-    case "$LANG" in
+    case "$GATE_LANG" in
         python)
             # Prefer pyright, fall back to mypy
             if command -v pyright &>/dev/null; then
@@ -221,6 +238,10 @@ check_type_compile() {
             fi
             ;;
         go)
+            if ! command -v go &>/dev/null; then
+                warn "Go not installed. Skipping compile check."
+                return 0
+            fi
             log "  Running go vet..."
             if ! go vet ./... 2>&1 | tail -20; then
                 fail "go vet failed"
@@ -228,6 +249,10 @@ check_type_compile() {
             fi
             ;;
         typescript)
+            if ! command -v npx &>/dev/null; then
+                warn "npx not installed. Skipping type check."
+                return 0
+            fi
             if [[ -f "tsconfig.json" ]]; then
                 log "  Running tsc --noEmit..."
                 if ! npx tsc --noEmit 2>&1 | tail -20; then
@@ -240,6 +265,10 @@ check_type_compile() {
             fi
             ;;
         rust)
+            if ! command -v cargo &>/dev/null; then
+                warn "Cargo not installed. Skipping compile check."
+                return 0
+            fi
             log "  Running cargo check..."
             if ! cargo check 2>&1 | tail -20; then
                 fail "cargo check failed"
@@ -274,7 +303,7 @@ check_type_compile() {
 check_tests() {
     log "Layer 3: Execution / tests"
 
-    case "$LANG" in
+    case "$GATE_LANG" in
         python)
             if [[ -f "pytest.ini" || -f "pyproject.toml" ]] && command -v pytest &>/dev/null; then
                 log "  Running pytest..."
@@ -341,7 +370,7 @@ check_tests() {
 check_lint() {
     log "Layer 4: Lint / formatting"
 
-    case "$LANG" in
+    case "$GATE_LANG" in
         python)
             if command -v ruff &>/dev/null; then
                 log "  Running ruff..."
@@ -411,11 +440,11 @@ check_lint() {
 # Main gate logic
 main() {
     log "Starting LLM-code correctness gate"
-    log "Max iterations: $MAX_ITER | Strict: $STRICT | Lang: $LANG"
+    log "Max iterations: $MAX_ITER | Strict: $STRICT | Lang: $GATE_LANG"
 
     # Detect language
-    LANG=$(detect_language "$LANG")
-    log "Detected language: $LANG"
+    GATE_LANG=$(detect_language "$GATE_LANG")
+    log "Detected language: $GATE_LANG"
 
     local iter=1
     local gate_passed=0
@@ -434,24 +463,30 @@ main() {
         if [[ "$gate_passed" -eq 1 ]]; then
             log "=== GATE PASSED on iteration $iter ==="
             log "All 4 layers passed. Code is mechanically correct."
+            # Write gate-pass artifact for audit trail (NP4-3)
+            cat > "$GATE_ARTIFACT" <<EOF
+# LLM-code gate passed
+# timestamp: $(date -Iseconds)
+# language: $GATE_LANG
+# iterations: $iter
+# strict: $STRICT
+EOF
             exit 0
         fi
 
-        if [[ "$iter" -lt "$MAX_ITER" ]]; then
-            warn "Gate failed on iteration $iter. Retrying after fix..."
-            # In a real scenario, the agent would fix issues here.
-            # This script exits and expects the caller to re-run after fixes.
-            fail "Gate failed. Fix the issues above and re-run."
-            exit 1
+        if [[ "$iter" -ge "$MAX_ITER" ]]; then
+            fail "=== GATE FAILED after $MAX_ITER iterations ==="
+            fail "The code did not pass mechanical correctness checks."
+            fail "Either fix the issues manually or escalate to human review."
+            exit 3
         fi
 
+        warn "Gate failed on iteration $iter. Retrying..."
+        # NOTE: Auto-repair is not yet implemented. Iterations will repeat the same checks.
+        # In a future version, the agent would fix issues here before re-checking.
+        
         iter=$((iter + 1))
     done
-
-    fail "=== GATE FAILED after $MAX_ITER iterations ==="
-    fail "The code did not pass mechanical correctness checks."
-    fail "Either fix the issues manually or escalate to human review."
-    exit 3
 }
 
 main "$@"

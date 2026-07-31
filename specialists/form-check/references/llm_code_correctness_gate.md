@@ -27,13 +27,13 @@ The gate is **environment-space, not prompt-space** (`PIRANESI-UU1`: prose instr
 - Dependency declared in manifest (requirements.txt, package.json, go.mod, Cargo.toml)
 - Declare-before-use: no forward references without declaration
 - Update-all-consumers-on-interface-change: when a function signature changes, all call sites updated
-- Precision: ~97% at ~47ms/file (`PIRANESI-CPW2`, `PIRANESI-CPW3`)
+- Precision: ~97% at ~47ms/file (`PIRANESI-CPW2` [T2-secondary], `PIRANESI-CPW3`)
 
 ### Layer 2 — Type / compile layer
 
 - Typed languages: compiler must pass with zero errors / warnings-as-errors
 - Python: mypy or pyright in **strict mode** (not lenient)
-- Type checker catches ~3% of LLM structural failures (`PIRANESI-CPW1`) — necessary but far from sufficient
+- Type checker catches ~3% of LLM structural failures (`PIRANESI-CPW1` [T2-secondary]) — illustrative, not primary evidence; necessary but far from sufficient
 
 ### Layer 3 — Execution / functional layer
 
@@ -64,6 +64,7 @@ The gate is **environment-space, not prompt-space** (`PIRANESI-UU1`: prose instr
 - **LM-2:** Compilation passing is necessary, not sufficient. A green compile is not a correctness signal (`PIRANESI-C02`).
 - **LM-3:** Do not generalize to app-scale / long-horizon code. All verified figures are short self-contained tasks.
 - **LM-4:** Do not claim the gate improves correctness. It improves compilation only (`PIRANESI-C01`, `PIRANESI-C02`).
+- **LM-5:** Monorepos with multiple languages: the gate auto-detects the dominant language only. Run the gate per-language or per-package for polyglot projects.
 
 ## Falsifiers (what would flip the verdict)
 
@@ -130,7 +131,7 @@ cp ~/Projects/trainer.skill/specialists/form-check/templates/pyright_strict.json
 pyright --project pyright.json
 ```
 
-This is the strict config recommended for LLM-generated Python. It catches ~3% of structural failures (`PIRANESI-CPW1`) — necessary but not sufficient. Pair with tests and structural checks.
+This is the strict config recommended for LLM-generated Python. It catches a small fraction of structural failures (`PIRANESI-CPW1` [T2-secondary]) — necessary but not sufficient. Pair with tests and structural checks.
 
 ### Dispatch rule
 
