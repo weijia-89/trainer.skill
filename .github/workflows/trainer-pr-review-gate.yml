@@ -52,9 +52,20 @@ jobs:
       - name: Generation gate
         run: |
           echo "=== Running generation gate on modified .sh files ==="
-          changed=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep '\.sh$' || true)
+          # Use base SHA for cross-fork compatibility (works when origin/base_ref doesn't)
+          base_sha="${{ github.event.pull_request.base.sha }}"
+          if [[ -z "$base_sha" ]]; then
+            # Fallback for non-PR triggers (if any)
+            base_sha="origin/${{ github.base_ref }}"
+          fi
+          changed=$(git diff --name-only "${base_sha}...HEAD" | grep '\.sh$' || true)
           if [[ -z "$changed" ]]; then
             echo "SKIP  no .sh files modified"
             exit 0
           fi
-          bash specialists/form-check/tools/generation_gate.sh --strict $changed
+          # Pass files safely using array to prevent word-splitting
+          file_args=()
+          while IFS= read -r f; do
+            [[ -n "$f" ]] && file_args+=("$f")
+          done <<< "$changed"
+          bash specialists/form-check/tools/generation_gate.sh --strict "${file_args[@]}"

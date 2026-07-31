@@ -172,22 +172,55 @@ for file in "${TARGET_FILES[@]}"; do
     fi
     
     # Check 4: Tool existence checks (warning)
-    # Only flag tools that are actually invoked (not in comments/strings)
+    # Dynamically extract tool names from common patterns + hardcoded list
     missing_checks=0
-    for cmd in python3 node npm cargo go javac mvn gradle npx; do
-        # Check if tool is invoked as a command (not in comment or variable)
+    
+    # Build combined list: hardcoded common tools + dynamically detected
+    detected_tools=()
+    # Detect tools invoked directly (command args or pipeline)
+    while IFS= read -r match; do
+        tool=$(echo "$match" | sed -E 's/^[[:space:]]*//' | awk '{print $1}')
+        # Skip bash builtins, comments, variable assignments, and common non-tool commands
+        if [[ -n "$tool" ]] && ! [[ "$tool" =~ ^(echo|printf|cat|sed|awk|grep|cut|sort|uniq|head|tail|basename|dirname|cd|pwd|exit|return|shift|trap|set|unset|export|local|if|then|elif|else|fi|for|while|do|done|case|esac|in|function|trap|source|\.|\[|\]\])$ ]]; then
+            detected_tools+=("$tool")
+        fi
+    done < <(grep -vE '^\s*#|^\s*$' "$file" | grep -oE '^[[:space:]]*[a-zA-Z0-9_.-]+' | sort -u || true)
+    
+    # Combine hardcoded and detected, remove duplicates
+    all_tools=(python3 node npm cargo go javac mvn gradle npx jq yq curl wget docker kubectl terraform ansible)
+    if [[ ${#detected_tools[@]} -gt 0 ]]; then
+        all_tools+=("${detected_tools[@]}")
+    fi
+    
+    # Check each unique tool
+    checked_tools=()
+    for cmd in "${all_tools[@]}"; do
+        # Skip if already checked (use loop instead of regex to avoid unbound variable issues)
+        already_checked=0
+        if [[ ${#checked_tools[@]} -gt 0 ]]; then
+            for checked in "${checked_tools[@]}"; do
+                if [[ "$checked" == "$cmd" ]]; then
+                    already_checked=1
+                    break
+                fi
+            done
+        fi
+        [[ "$already_checked" -eq 1 ]] && continue
+        checked_tools+=("$cmd")
+        
+        # Check if tool is invoked as a command (not in comment or variable assignment)
         has_tool=0
         has_check=0
-        if grep -vE '^\s*#' "$file" | grep -qE "\b$cmd\b"; then
+        if grep -vE '^\s*#|^\s*[A-Z_]+=' "$file" | grep -qE "\b$cmd\b"; then
             has_tool=1
         fi
-        if grep -qE "command\s+-v\s+$cmd\b" "$file"; then
+        if grep -qE "command\s+-v\s+$cmd\b|which\s+$cmd\b|type\s+-P\s+$cmd\b" "$file"; then
             has_check=1
         fi
         if [[ "$has_tool" -eq 1 && "$has_check" -eq 0 ]]; then
             # Check if there is graceful fallback text nearby
-            if ! grep -B3 -A3 "\b$cmd\b" "$file" | grep -qiE "(not installed|not found|skip|missing|warn)"; then
-                warn "  Tool '$cmd' used without 'command -v' check or fallback"
+            if ! grep -B3 -A3 "\b$cmd\b" "$file" | grep -qiE "(not installed|not found|skip|missing|warn|optional)"; then
+                warn "  Tool '$cmd' used without existence check or fallback"
                 missing_checks=$((missing_checks + 1))
             fi
         fi
@@ -307,6 +340,23 @@ for file in "${TARGET_FILES[@]}"; do
         CRITICAL=$((CRITICAL + 1))
     else
         log "  PASS: No cd and chains"
+    fi
+    
+    # Check 10: Additional safe-terminal rules (warnings)
+    # No eval or backtick command substitution
+    eval_usage=$(grep -nE '\beval\b|\`[^`]+\`' "$file" | grep -vE '^\s*#' || true)
+    if [[ -n "$eval_usage" ]]; then
+        warn "  safe-terminal: eval or backtick usage detected:"
+        echo "$eval_usage" | head -3 | sed 's/^/    /'
+        WARNINGS=$((WARNINGS + 1))
+    fi
+    
+    # No unquoted variables in rm/mv/cp
+    unquoted_danger=$(grep -nE 'rm\s+-rf?\s+\$|mv\s+\$|cp\s+-r\s+\$' "$file" | grep -vE '^\s*#' || true)
+    if [[ -n "$unquoted_danger" ]]; then
+        warn "  safe-terminal: unquoted variable in dangerous command:"
+        echo "$unquoted_danger" | head -3 | sed 's/^/    /'
+        WARNINGS=$((WARNINGS + 1))
     fi
     
     # Summary for this file

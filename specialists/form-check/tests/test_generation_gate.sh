@@ -232,6 +232,43 @@ else
 fi
 cd - >/dev/null
 
+# Test 15: Iteration logic test (llm_code_gate.sh)
+echo "Test 15: Iteration logic increments properly"
+cd "$TMPDIR"
+# Create a mock project that will fail layer 2 (type check)
+mkdir -p iter_test && cd iter_test
+
+# Create Python manifest
+cat > requirements.txt <<'EOF'
+pytest
+EOF
+
+# Create a Python file with syntax error
+cat > test_module.py <<'EOF'
+def add(x: int, y: int) -> int
+    return x + y
+EOF
+
+exit_code=0
+# Run with --max-iter 2 to test iteration - should fail but not with exit 2
+bash "$SCRIPT_DIR/../tools/llm_code_gate.sh" --max-iter 2 --lang python 2>/dev/null || exit_code=$?
+# Should fail with exit code 1 (gate failed) or 3 (max iter exceeded), not 2 (config error)
+if [[ "$exit_code" -eq 1 || "$exit_code" -eq 3 ]]; then
+    pass "Iteration logic works (exit code $exit_code)"
+else
+    fail "Iteration logic broken (exit code $exit_code, expected 1 or 3)"
+fi
+cd "$TMPDIR"
+
+# Test 16: Pre-commit hook syntax check
+echo "Test 16: Pre-commit hook syntax valid"
+HOOK="$SCRIPT_DIR/../templates/pre-commit-combined"
+if bash -n "$HOOK" 2>/dev/null; then
+    pass "Pre-commit hook syntax valid"
+else
+    fail "Pre-commit hook has syntax errors"
+fi
+
 echo ""
 echo "=== Results: $PASS passed, $FAIL failed ==="
 

@@ -17,7 +17,24 @@ BYPASS="${GENERATION_GATE_BYPASS:-0}"
 # Check if any staged files are relevant
 STAGED_FILES=$(git diff --cached --name-only)
 SH_FILES=$(echo "$STAGED_FILES" | grep '\.sh$' || true)
-LLM_FILES=$(echo "$STAGED_FILES" | tr '\n' '\0' | xargs -0 -I{} sh -c 'head -1 "$1" | grep -qi "llm-generated"' _ {} 2>/dev/null | grep -q . && echo "yes" || echo "no")
+
+# Detect LLM-generated files using multiple heuristics (not just first-line marker)
+LLM_FILES="no"
+if [[ -n "$STAGED_FILES" ]]; then
+    # Heuristic 1: First-line marker
+    marker_match=$(echo "$STAGED_FILES" | tr '\n' '\0' | xargs -0 -I{} sh -c 'head -1 "$1" 2>/dev/null | grep -qi "llm-generated"' _ {} 2>/dev/null | grep -c . || echo 0)
+    
+    # Heuristic 2: File in tmp/ or generated/ directories
+    dir_match=$(echo "$STAGED_FILES" | grep -cE '/(tmp|generated|gen|build|dist)/' || echo 0)
+    
+    # Heuristic 3: File extension patterns common for generated code
+    ext_match=$(echo "$STAGED_FILES" | grep -cE '\.(generated|gen)\.(py|js|ts|go|rs|java)$' || echo 0)
+    
+    # Heuristic 4: LLM_GATE_ALL env var forces all files through
+    if [[ "$marker_match" -gt 0 || "$dir_match" -gt 0 || "$ext_match" -gt 0 || "${LLM_GATE_ALL:-0}" -eq 1 ]]; then
+        LLM_FILES="yes"
+    fi
+fi
 
 # Skip both gates if no relevant files
 if [[ -z "$SH_FILES" && "$LLM_FILES" == "no" && "${LLM_GATE_ALL:-0}" -eq 0 ]]; then
