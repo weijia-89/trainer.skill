@@ -29,6 +29,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - **`scripts/test_reviewer_surface_tracker.py`** — 7 tests: novelty threshold pass/fail, empty-surface rejection (no div-by-zero), idempotent check, CLI arg parsing, manifest roundtrip.
 - **`specialists/cruft/`** — new specialist: tags session/scratchpad artifacts with the `.cruft.md` slug + a `# META:` purpose/date header (the staleness assessment made explicit); defines the deterministic cleanup convention and its iron law (no deletion unless the adversarial-review gate is GREEN AND a PR merges or the session closes).
 - **`scripts/prune_cruft.sh`** — deterministic `*.cruft.md` cleanup. Refuses deletion unless the review gate is GREEN (`.trainer/reviews-complete` sentinel OR `verify_trainer_codereview.sh` exits 0) or `--force-after-review` is passed; scans by suffix only; handles any filename safely (`-print0` + array); never prunes inside trainer.skill.
+- **`.github/PULL_REQUEST_TEMPLATE.md`** — PR body template enforcing Summary, Changes, Test plan, and Notes on every PR. Test plan is required even if the answer is "None"; no empty test plans allowed.
+- **`specialists/spotter/`** — new specialist for CI/CD failure diagnosis and fixing. Covers bash syntax, shellcheck, generation gate, verify script, workflow YAML, and missing permission failures. Includes `references/ci-fix-patterns.md` with signature-to-fix catalog and pre-flight checklist.
+- **`references/trainer-doc-update-gate.md`** — procedural gate requiring CHANGELOG.md, README.md, and user-facing docs updates in every trainer-involved PR. Enforces simple-english pragmatic mode, full deai skill (not scan-only), AI slop cleanup, and pre-commit verification (`bash -n`, `shellcheck`, `python3 -m json.tool`). Operator approval required before push.
+- **`references/templates/trainer-pr-comment-template.md`** — generic PR comment template for autonomous code review rounds. Includes Bug inventory, Trainer notes, remediation, Manual QA pointer, and Sign-off sections.
 
 ### Changed
 

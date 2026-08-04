@@ -1,9 +1,9 @@
 ---
 name: trainer
 description: |
-  Loaded first on every coding / prompt-engineering / agent-skill session, always on. The trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer coaches: it pushes back when user decisions have deleterious downstream consequences or veer from best practices without articulated reason. Routes to form-check / recovery / gymbuddy / safetybar / diet / pr / program / warmup / superset at the right moment. Triggers: code review, adversarial review, plan a new app, harden, refactor, recover from incident, pair-coding, training program, personal record, context priming, parallel agent dispatch, orchestrator handoff, gym-skill, gym-skills.
+  Loaded first on every coding / prompt-engineering / agent-skill session, always on. The trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer coaches: it pushes back when user decisions have deleterious downstream consequences or veer from best practices without articulated reason. Routes to form-check / recovery / gymbuddy / safetybar / diet / pr / program / warmup / superset / spotter at the right moment. Triggers: code review, adversarial review, plan a new app, harden, refactor, recover from incident, pair-coding, training program, personal record, context priming, parallel agent dispatch, orchestrator handoff, gym-skill, gym-skills, CI failure, check red, shellcheck failed, workflow error.
 type: project-skill
-version: 0.15.0
+version: 0.16.0
 authors: Wei Jia (2026-05-18)
 license: LicenseRef-IronLaw-NC-1.0
 required_tools: [file_read]
@@ -19,6 +19,7 @@ composes:
   - diet
   - pr
   - superset
+  - spotter
 ---
 
 # trainer: gym-skills entrypoint
@@ -109,7 +110,7 @@ Procedure, incidents, three-layer orch/meta/worker, status-check closeout: `~/Pr
 
 **Implementation babysitter:** when executing a merged ChatPRD plan, load `~/Projects/trainer.skill/references/trainer-implementation-babysitter.md` - trainer specialist gates every plan row before the next slice ships.
 
-## The 9 specialist gym-skills
+## The 10 specialist gym-skills
 
 | Skill | Role | When to invoke |
 |-------|------|----------------|
@@ -122,12 +123,13 @@ Procedure, incidents, three-layer orch/meta/worker, status-check closeout: `~/Pr
 | `diet` | incident response / production ops | production broken, alarms, post-mortem |
 | `pr` | milestone | retros, achievements |
 | `superset` | parallel dispatch | 2+ fresh-context agents on same repo; orch handoff under pressure |
+| `spotter` | CI/CD diagnosis | CI red, shellcheck failed, generation gate blocked, workflow error, verify script failed |
 
 ## Routing decision flow
 
-1. **Activity:** plan new code → `form-check plan-new-app`; **significant refactor/rewrite/canon patch** → `chatprd-opus-implementation-plan-gate.md` (mash + ChatPRD Opus 4.6 before code); **code review / review diff / PR review** → `trainer-codereview.md` + `trainer-autonomous-code-review.md` + `form-check code-review` (default loop: explore → trace → test → fix until clean; PR comment each round); **LLM-generated scripting / automation** → `form-check` mechanical correctness gate (`specialists/form-check/references/llm_code_correctness_gate.md`); post-incident → `recovery`; pair → `gymbuddy`; multi-week plan → `program`; workspace open → `warmup`; 2+ parallel agents same repo → `superset`; **skill / prompt / packet audit** → `phylax` (explicit invoke; load `~/Projects/phylax.skill/references/trainer-routing.md`); **context economy / token audit / alwaysApply budget** → `@tokenopt` (`~/Projects/tokenopt.skill/SKILL.md`; audit mode via `@tokenopt audit`); **NotebookLM notebook create/refresh** → `~/Projects/.cursor/skills/notebooklm-prep/SKILL.md`; research vs RAG-eval vs code-QA layer mix → `trainer-epistemic-layers.md` then route primary layer; exam-prep study guide → `study-guide-site.md` + `assessment-prep-pedagogy.md`.
-2. **Stakes:** vibe-safe / vibe-careful / vibe-dangerous (`form-check` Section 5). Vibe-dangerous → `safetybar`; post-incident plus dangerous → `recovery`; root SKILL.md file-size budget → `tests/context_budget/check_context_budget.py` (build-time linter, not runtime %); parallel dispatch at any tier → `superset` for isolation and prompts.
-3. **Evolve:** routing may change mid-session (review finds incident → `recovery`; context pressure → `superset` handoff).
+1. **Activity:** plan new code → `form-check plan-new-app`; **significant refactor/rewrite/canon patch** → `chatprd-opus-implementation-plan-gate.md` (mash + ChatPRD Opus 4.6 before code); **code review / review diff / PR review** → `trainer-codereview.md` + `trainer-autonomous-code-review.md` + `form-check code-review` (default loop: explore → trace → test → fix until clean; PR comment each round); **CI is red / check failed / workflow error** → `spotter` (diagnose locally first, never push-to-see); **LLM-generated scripting / automation** → `form-check` mechanical correctness gate (`specialists/form-check/references/llm_code_correctness_gate.md`); post-incident → `recovery`; pair → `gymbuddy`; multi-week plan → `program`; workspace open → `warmup`; 2+ parallel agents same repo → `superset`; **skill / prompt / packet audit** → `phylax` (explicit invoke; load `~/Projects/phylax.skill/references/trainer-routing.md`); **context economy / token audit / alwaysApply budget** → `@tokenopt` (`~/Projects/tokenopt.skill/SKILL.md`; audit mode via `@tokenopt audit`); **NotebookLM notebook create/refresh** → `~/Projects/.cursor/skills/notebooklm-prep/SKILL.md`; research vs RAG-eval vs code-QA layer mix → `trainer-epistemic-layers.md` then route primary layer; exam-prep study guide → `study-guide-site.md` + `assessment-prep-pedagogy.md`.
+2. **Stakes:** vibe-safe / vibe-careful / vibe-dangerous (`form-check` Section 5). Vibe-dangerous → `safetybar`; post-incident plus dangerous → `recovery`; root SKILL.md file-size budget → `tests/context_budget/check_context_budget.py` (build-time linter, not runtime %); CI failure at any tier → `spotter`; parallel dispatch at any tier → `superset` for isolation and prompts.
+3. **Evolve:** routing may change mid-session (review finds incident → `recovery`; context pressure → `superset` handoff; CI red → `spotter`).
 
 ## Load specialist leaf content before acting
 
@@ -179,8 +181,10 @@ All `references/*` paths below use canonical prefix `~/Projects/trainer.skill/re
 | Private-path leak scan (pre-commit, bundle, push) | `~/Projects/trainer.skill/references/trainer-runtime-compactness.md` § Private-path leak scan |
 | GitHub PR body test plans + Trainer notes on review comments | `~/Projects/trainer.skill/references/trainer-github-pr-commentary.md` |
 | Buds PR test plan split template (body vs comment) | `~/Projects/trainer.skill/references/templates/buds-pr-test-surfaces.md` |
+| Generic PR comment template (autonomous review rounds) | `~/Projects/trainer.skill/references/templates/trainer-pr-comment-template.md` |
 | Test data matrix (seeds/fixtures vs scenarios) | `~/Projects/trainer.skill/references/trainer-test-data.md` |
 | PR codereview gate (product repos) | `~/Projects/trainer.skill/references/trainer-codereview-gate.md` |
+| Doc update gate (R-6 extended) | `~/Projects/trainer.skill/references/trainer-doc-update-gate.md` |
 | Code review routing + verdicts | `~/Projects/trainer.skill/references/trainer-codereview.md` |
 | Code review loop (default) | `~/Projects/trainer.skill/references/trainer-autonomous-code-review.md` |
 | Export delta + contract-surface closure (obligation B) | `~/Projects/trainer.skill/references/trainer-contract-surfaces.md` |
@@ -192,5 +196,6 @@ All `references/*` paths below use canonical prefix `~/Projects/trainer.skill/re
 | Assessment-prep pedagogy | `~/Projects/trainer.skill/references/assessment-prep-pedagogy.md` |
 | Repo operations, security, branch protection | `README.md`, `SECURITY.md` |
 | **LLM-generated code correctness gate** | `~/Projects/trainer.skill/specialists/form-check/references/llm_code_correctness_gate.md` |
+| **CI/CD failure diagnosis and fixing** | `~/Projects/trainer.skill/specialists/spotter/SKILL.md` |
 
 Verify sync: `scripts/verify_trainer_sync.sh` (Invariant 12 code-review loop routing · Invariant 13 codereview anti-theater · Invariant 14 R-6 user-facing docs · Invariant 15 scenario self-pass · Invariant 16 committed-run reproducibility). Code review PRs: `scripts/trainer_pr_review_post.sh` + `scripts/verify_trainer_codereview.sh` + `scripts/trainer_pr_r6_validate.py`.

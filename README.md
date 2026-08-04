@@ -1,10 +1,10 @@
 # trainer
 
-An entrypoint and coaching skill for a 9-specialist agent toolkit. The trainer is text the agent reads at the start of every coding / prompt-engineering / agent-skill session. It points the agent to the right specialist for the work, asks the agent to read that specialist's leaf content before responding, and pushes back when the agent (or the user) tries to skip the routing.
+An entrypoint and coaching skill for a 10-specialist agent toolkit. The trainer is text the agent reads at the start of every coding / prompt-engineering / agent-skill session. It points the agent to the right specialist for the work, asks the agent to read that specialist's leaf content before responding, and pushes back when the agent (or the user) tries to skip the routing.
 
 > A trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer is a coach: the goal is moving the user toward better patterns, more skills, more experience.
 
-This repo distributes `trainer` together with the 9 specialist skill directories at `./specialists/`. Each specialist is independently usable. The trainer is the routing prose that connects them; it does not make the specialists work together at runtime, and it does not do the specialists' work itself.
+This repo distributes `trainer` together with the 10 specialist skill directories at `./specialists/`. Each specialist is independently usable. The trainer is the routing prose that connects them; it does not make the specialists work together at runtime, and it does not do the specialists' work itself.
 
 **Honest scope (per internal audit, adversarial review at v0.4.0, and Phase 11 Layer A ship):** as of v0.15.0 the trainer ships a **runnable Layer A falsifiability suite** in its own tree (`scripts/run.sh`, `scripts/harness_adapters/`, `tests/scenarios/harness/` with `pass_criteria.py` graders). The suite validates transcript-gradable behavior against a **named dated model** on a **named scenario set** under a **pass^k stability gate** and **reproducibility protocol** (`_repro.py`, Invariant 16). It is **not** a measured behavioral-delta claim: blind audit, Layer B calibration at scale, and Layer C mutation heat maps remain pending until operator runs them with `ANTHROPIC_API_KEY`.
 
@@ -12,7 +12,7 @@ This repo distributes `trainer` together with the 9 specialist skill directories
 
 ## Why this exists
 
-When you give an AI coding agent a library of specialist skills (`form-check`, `recovery`, `safetybar`, `program`, `warmup`, `gymbuddy`, `diet`, `pr`, `superset`), the bootstrap problem is real: which one to load, in what order, for what kind of work? The agent does not know unless something tells it. That bootstrap context lived nowhere in the codebase before this skill existed.
+When you give an AI coding agent a library of specialist skills (`form-check`, `recovery`, `safetybar`, `program`, `warmup`, `gymbuddy`, `diet`, `pr`, `superset`, `spotter`), the bootstrap problem is real: which one to load, in what order, for what kind of work? The agent does not know unless something tells it. That bootstrap context lived nowhere in the codebase before this skill existed.
 
 `trainer` is the entrypoint. Load it first; it routes to the right specialist; the specialist does the work; the trainer coaches the surrounding decisions. Loaded once per session, persistent throughout.
 
@@ -20,7 +20,7 @@ The decision to build a standalone bootstrap skill (rather than fold the routing
 
 ---
 
-## The 9 specialists (bundled at `./specialists/`)
+## The 10 specialists (bundled at `./specialists/`)
 
 | Skill | Role | When to load |
 |---|---|---|
@@ -33,6 +33,7 @@ The decision to build a standalone bootstrap skill (rather than fold the routing
 | [`diet`](./specialists/diet/) | context / token-budget management | Output volume needs trimming, tokens are the constraint |
 | [`pr`](./specialists/pr/) | personal-record celebration | Milestones, retros, achievements |
 | [`superset`](./specialists/superset/) | parallel-agent dispatch discipline (worktree isolation, prompt templates, falsifier checklist, batch aggregation, status-check and closeout doc hygiene) | Spawning 2+ fresh-context agents on the same repo; orchestrator-handoff when the coordination chat hits context-window pressure; status refresh or job closeout when each touched repo's CHANGELOG, README, and roadmap must match shipped work |
+| [`spotter`](./specialists/spotter/) | CI/CD failure diagnosis and fixing | CI is red, shellcheck failed, generation gate blocked, workflow YAML error, verify script failed, missing permission in Actions |
 
 Sibling-directory canonicals at `~/Projects/<name>.skill/` remain the editing home for each specialist. Run `scripts/bundle_specialists.sh` to refresh `./specialists/` for distribution.
 
@@ -40,8 +41,8 @@ Sibling-directory canonicals at `~/Projects/<name>.skill/` remain the editing ho
 
 ## How the routing decision works
 
-1. **What is the user doing right now?** Planning new code → `form-check plan-new-app`. **Code review / PR review / review diff** → `trainer-codereview.md` + `trainer-autonomous-code-review.md` + `form-check code-review` (loop until clean). Fixing after a bad ship → `recovery`. Pairing → `gymbuddy`. Multi-week plan → `program`. Just opened the workspace → `warmup`. Spawning 2+ parallel agents on the same repo → `superset`.
-2. **What is the stakes tier?** Vibe-safe / vibe-careful / vibe-dangerous, classified per `form-check` Section 5. Vibe-dangerous → also load `safetybar`. Vibe-dangerous AND post-incident → also load `recovery`. Token budget tight → load `diet`. Parallel-agent dispatch at any tier → load `superset`.
+1. **What is the user doing right now?** Planning new code → `form-check plan-new-app`. **Code review / PR review / review diff** → `trainer-codereview.md` + `trainer-autonomous-code-review.md` + `form-check code-review` (loop until clean). **CI is red / check failed** → `spotter`. Fixing after a bad ship → `recovery`. Pairing → `gymbuddy`. Multi-week plan → `program`. Just opened the workspace → `warmup`. Spawning 2+ parallel agents on the same repo → `superset`.
+2. **What is the stakes tier?** Vibe-safe / vibe-careful / vibe-dangerous, classified per `form-check` Section 5. Vibe-dangerous → also load `safetybar`. Vibe-dangerous AND post-incident → also load `recovery`. Token budget tight → load `diet`. CI failure → load `spotter`. Parallel-agent dispatch at any tier → load `superset`.
 3. **Adapt as the session evolves.** A planning session that uncovers an incident routes to `recovery` mid-session. A review that surfaces a runtime concern routes to `safetybar`. A multi-day push that hits IDE-slow or accumulated-context routes to `superset` for an orchestrator-handoff. Routing is not locked at start.
 
 Specialists compose. The trainer explains the order and what to watch for between handoffs.
@@ -145,6 +146,7 @@ trainer.skill/
 │   ├── trainer-codereview.md           # PR review routing + verdicts
 │   ├── trainer-autonomous-code-review.md  # default code review loop (explore until clean)
 │   ├── trainer-codereview-gate.md      # CI gate + POST/PATCH pipeline
+│   ├── trainer-doc-update-gate.md      # R-6 extended: CHANGELOG/README/docs update procedure
 │   ├── trainer-github-pr-commentary.md # PR body test plan + comment shape
 │   ├── trainer-runtime-compactness.md  # communication, rationalizations, decision template, coached-override shape
 │   ├── trainer-pre-action-gates.md     # mechanical three-facts gate, triggers, adversarial-review pass
@@ -189,6 +191,7 @@ trainer.skill/
     ├── gymbuddy/      # pairing
     ├── diet/          # token budget
     ├── pr/            # milestone retro
+    ├── spotter/       # CI/CD failure diagnosis and fixing (added v0.16.0)
     └── superset/      # parallel-agent dispatch + orchestrator handoff (added v0.7.0 as `ancillary`, renamed v0.7.1)
 ```
 
