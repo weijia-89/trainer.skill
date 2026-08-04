@@ -370,27 +370,6 @@ Update the **same** comment; do not leave a stale round-1 verdict at the top.
 
 ---
 
-## Mechanical posting rule (iron law)
-
-**When posting a trainer review comment via `gh pr comment`:**
-
-- **Always** write the markdown body to a temp file first, then post with `--body-file`.
-- **Never** use inline `--body` when the comment contains backticks — zsh interprets backtick content as command substitution, causing `zsh: command not found` errors to be injected into the PR comment verbatim.
-
-```bash
-# CORRECT
-cat > /tmp/trainer_comment.md << 'EOF'
-<!-- trainer-codereview-... -->
-...markdown body...
-EOF
-gh pr comment {pr} --body-file /tmp/trainer_comment.md
-
-# FORBIDDEN
-gh pr comment {pr} --body "... `bash scripts/foo.sh` ..."
-```
-
----
-
 ## Codereview integration
 
 - Agent prompt: `~/Projects/trainer.skill/prompts/trainer-codereview.txt`
