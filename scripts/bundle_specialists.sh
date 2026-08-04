@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# Bundle the 9 specialist gym-skills into trainer.skill/specialists/
+# Bundle the 10 specialist gym-skills into trainer.skill/specialists/
 # Excludes: .git, virtualenvs, caches, OS junk, generated test output, recovery state
 
 set -euo pipefail
 
-# Override SRC_ROOT to point at the directory that contains the nine
+# Override SRC_ROOT to point at the directory that contains the ten
 # sibling `<specialist>.skill/` directories. Defaults to "$HOME/Projects".
 SRC_ROOT="${SRC_ROOT:-$HOME/Projects}"
 # DST_ROOT defaults to the `specialists/` directory next to this script.
 DST_ROOT="${DST_ROOT:-$(cd "$(dirname "$0")/.." && pwd)/specialists}"
 
-SPECIALISTS=(form-check recovery gymbuddy safetybar diet pr program warmup superset)
+SPECIALISTS=(form-check recovery gymbuddy safetybar diet pr program warmup superset spotter)
 
 mkdir -p "$DST_ROOT"
 
