@@ -26,7 +26,7 @@ One short paragraph: what would have broken in production or in the next PR if w
 ### Round {N} remediation
 
 - Commit(s): `{sha}`  -  {one-line summary}
-- Verify: `{command}` → {pass|fail}
+- Verify: `{command}` - {pass|fail}
 
 ### Manual QA
 

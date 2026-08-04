@@ -50,15 +50,15 @@ CI failed, GitHub Actions broken, workflow error, check red, shellcheck failed, 
 
 ## Scope
 
-Diagnose and fix CI/CD failures for the trainer.skill ecosystem and downstream product repos (buds, toebeans, opacite). Covers GitHub Actions workflows, shell scripts, Python verification scripts, and pre-commit gates.
+Diagnose and fix CI/CD failures for the trainer.skill ecosystem and downstream product repos. Covers GitHub Actions workflows, shell scripts, Python verification scripts, and pre-commit gates.
 
 **Not for:** production incident response (use `diet`), code review (use `form-check`), deploy execution (use `pr`).
 
 ## How to invoke
 
-1. **CI is red on a PR:** Read the failing job log. Match the error to a pattern in `references/ci-fix-patterns.md`. Run the matching verification locally. Fix. Re-run locally until green. Push.
+1. **CI is red on a PR:** First check if `origin/main` (or target branch) is also red. If main is red, the failure is not caused by this PR. If main is green, read the failing job log. Match the error to a pattern in `references/ci-fix-patterns.md`. Run the matching verification locally. Fix. Re-run locally until green. Push.
 2. **Shell script rejected by generation gate:** Read `specialists/form-check/tools/generation_gate.sh --help`. Run with `--strict`. Fix every failure class. Re-run until exit 0.
-3. **Workflow YAML syntax error:** Run `python3 -c "import yaml; yaml.safe_load(open('.github/workflows/...'))"`. Fix the parse error. Validate structure against `references/ci-fix-patterns.md` § Workflow YAML.
+3. **Workflow YAML syntax error:** Run `python3 -c "import yaml, sys; f=open(sys.argv[1]); yaml.safe_load(f); f.close()" .github/workflows/...`. Fix the parse error. Validate structure against `references/ci-fix-patterns.md` § Workflow YAML.
 4. **verify_trainer_sync.sh failed:** Read the invariant that failed. Fix the source file, not the verify script. Re-run until PASS.
 
 ## Diagnosis flow
@@ -88,9 +88,11 @@ Use the table in `references/ci-fix-patterns.md`. Common classes:
 | Secret missing | `Error: Input required and not supplied: TOKEN` | Check `env:` and repository secrets |
 | Concurrency cancel | `cancelled` after `concurrency: group` | Check if another run triggered the cancel |
 
-### Step 3: Fix locally
+### Step 3: Fix locally with regression check
 
-Edit the file. Run the local verify command from the table. Do not push until the local command passes.
+Edit the file. Run the local verify command from the table. Then run the repo's full test suite or verify command to ensure the fix did not break anything else. Do not push until both the original failure and the full suite pass.
+
+**Iteration cap:** If you have gone through Steps 1-3 more than 3 times for the same failure, stop and escalate to the operator. You may be chasing a flaky test, an external dependency issue, or a failure mode outside this catalog.
 
 ### Step 4: Push and confirm
 
@@ -137,23 +139,36 @@ Push the fix. Wait for CI. If still red, return to Step 1 with the new log.
 
 ## Pre-flight checklist (before any push)
 
-Run these on every branch that will become a PR:
+Run these on every branch that will become a PR. Adapt commands to the repo's actual structure:
 
 ```bash
 # Bash syntax
 find scripts -name "*.sh" -exec bash -n {} \;
 
 # Shellcheck (if available)
-find scripts -name "*.sh" -exec shellcheck {} \;
+if command -v shellcheck &>/dev/null; then
+  find scripts -name "*.sh" -exec shellcheck {} \;
+fi
 
-# Generation gate on modified .sh files
-git diff --name-only origin/main | grep '\.sh$' | xargs -r bash specialists/form-check/tools/generation_gate.sh --strict
+# Generation gate on modified .sh files (if generation gate exists)
+changed=$(git diff --name-only origin/main 2>/dev/null | grep '\.sh$' || true)
+if [[ -n "$changed" ]] && [[ -f specialists/form-check/tools/generation_gate.sh ]]; then
+  file_args=()
+  while IFS= read -r f; do
+    [[ -n "$f" ]] && file_args+=("$f")
+  done <<< "$changed"
+  bash specialists/form-check/tools/generation_gate.sh --strict "${file_args[@]}"
+fi
 
-# verify_trainer_sync.sh
-bash scripts/verify_trainer_sync.sh
+# verify_trainer_sync.sh (trainer.skill only)
+if [[ -f scripts/verify_trainer_sync.sh ]]; then
+  bash scripts/verify_trainer_sync.sh
+fi
 
-# Context budget
-python3 tests/context_budget/check_context_budget.py
+# Context budget (trainer.skill only)
+if [[ -f tests/context_budget/check_context_budget.py ]]; then
+  python3 tests/context_budget/check_context_budget.py
+fi
 ```
 
 If any of these fail, fix before push. This is the spotter's core teaching: local verification is cheaper than CI roulette.

@@ -10,10 +10,9 @@
 ## Test plan
 
 <!-- Required even if "None". At minimum: syntax check, shellcheck, dry-run, or gate command. -->
-- [ ] `bash -n scripts/<script>.sh`
-- [ ] `shellcheck scripts/<script>.sh`
-- [ ] `bash scripts/verify_trainer_sync.sh`
-- [ ] `python3 tests/context_budget/check_context_budget.py`
+- [ ] `bash -n scripts/<script>.sh` (if repo has shell scripts)
+- [ ] `shellcheck scripts/<script>.sh` (if shellcheck is installed)
+- [ ] Repo verify command (e.g., `bash scripts/verify_trainer_sync.sh`, `pytest`, `npm test`)
 
 ## Notes
 

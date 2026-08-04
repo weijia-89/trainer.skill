@@ -43,12 +43,21 @@ Then load `~/Projects/deai.skill/SKILL.md` and run voice-prime, restructure, re-
 
 ### 6. Pre-commit verification
 
-Before staging:
+Before staging, run the repo's actual verify commands. Examples:
 
 ```bash
-bash -n scripts/run-tests.sh
-shellcheck scripts/run-tests.sh
-python3 -m json.tool results/schema.json
+# Bash syntax check (if repo has shell scripts)
+find scripts -name "*.sh" -exec bash -n {} \;
+
+# Shellcheck (if available)
+if command -v shellcheck &>/dev/null; then
+  find scripts -name "*.sh" -exec shellcheck {} \;
+fi
+
+# Repo-specific verification
+bash scripts/verify_trainer_sync.sh   # trainer.skill only
+pytest                                 # Python projects
+npm test                               # Node projects
 ```
 
 If any of these fail, fix before `git add`.

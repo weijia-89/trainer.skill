@@ -111,13 +111,23 @@ python3 -m json.tool results/schema.json > /dev/null
 
 ## GitHub Actions workflows
 
+### Secret leakage in CI logs
+
+**Root cause:** Environment variables, tokens, or keys printed in job output.
+
+**Fix:**
+1. Immediately rotate any exposed secret.
+2. Add `::add-mask::` for workflow-generated values.
+3. Audit `env:` and `with:` blocks for accidental exposure.
+4. Check if `set -x` or debug flags are enabled in scripts.
+
 ### `mapping values are not allowed here`
 
 **Root cause:** YAML indentation error. Tabs instead of spaces. Missing colon.
 
 **Fix:**
 ```bash
-python3 -c "import yaml; yaml.safe_load(open('.github/workflows/file.yml'))"
+python3 -c "import yaml, sys; f=open(sys.argv[1]); yaml.safe_load(f); f.close()" .github/workflows/file.yml
 ```
 
 ### `Resource not accessible by integration`
@@ -161,7 +171,7 @@ Read the invariant number and description printed by the script. Common ones:
 | Invariant | Failure | Fix |
 |---|---|---|
 | 1 | Canonical vs mirror divergence | `cp SKILL.md ~/.cursor/skills/trainer/SKILL.md` (or appropriate mirror path) |
-| 6 | Em-dash found in tracked Markdown | Replace `—` with ` - ` |
+| 6 | Em-dash found in tracked Markdown | Replace Unicode em-dash with " - " |
 | 11 | Context budget exceeded | Trim SKILL.md or bump budget.toml cap with justification |
 | 12 | Code-review loop routing wrong | Check `references/trainer-codereview.md` matches `verify_autonomous_code_review.py` |
 | 14 | R-6 docs gate missing | Add doc updates to PR |
