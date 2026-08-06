@@ -6,6 +6,24 @@ Load this file whenever the trainer routes **form-check code-review** (or SDK me
 
 ---
 
+## IRON LAW: Always use --body-file
+
+**NEVER** use `gh pr comment --body "..."` with inline content. Shell backticks in the body
+will be interpreted as command substitution, corrupting the PR body.
+
+**ALWAYS** use `--body-file`:
+
+```bash
+# Write body to a temp file, then pass it
+cat > /tmp/pr-body.md << 'EOF'
+# PR Title
+Body content here...
+EOF
+gh pr comment {pr} --body-file /tmp/pr-body.md
+```
+
+---
+
 ## When this applies
 
 - Any PR review for repos under trainer always-on policy (e.g. **buds**, **toebeans**).
@@ -349,27 +367,6 @@ Skill/script repos without a device QA gate (e.g. **opacite**): local automated 
 3. **Round 3 (optional):** Same — no boilerplate shell repeat.
 
 Update the **same** comment; do not leave a stale round-1 verdict at the top.
-
----
-
-## Mechanical posting rule (iron law)
-
-**When posting a trainer review comment via `gh pr comment`:**
-
-- **Always** write the markdown body to a temp file first, then post with `--body-file`.
-- **Never** use inline `--body` when the comment contains backticks — zsh interprets backtick content as command substitution, causing `zsh: command not found` errors to be injected into the PR comment verbatim.
-
-```bash
-# CORRECT
-cat > /tmp/trainer_comment.md << 'EOF'
-<!-- trainer-codereview-... -->
-...markdown body...
-EOF
-gh pr comment {pr} --body-file /tmp/trainer_comment.md
-
-# FORBIDDEN
-gh pr comment {pr} --body "... `bash scripts/foo.sh` ..."
-```
 
 ---
 
