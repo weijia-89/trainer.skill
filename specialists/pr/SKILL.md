@@ -246,12 +246,168 @@ After a PR merges to `main` and the code-review verification has passed:
 
 The point: cleanup is **deterministic and gated**, never a hand-wave. See `cruft` specialist for the slug + header convention.
 
+## §9, Writing the PR
+
+Every PR gets two artifacts: a **description** (the body) and a **code review comment** (the findings). Both follow fixed templates. Both get a Simple English and deAI pass before posting.
+
+```
+IRON LAW: NO PR POSTED WITHOUT TEST EVIDENCE YOU CAN POINT TO.
+```
+
+### 9.1 PR description template
+
+Every PR body follows this structure. Sections are mandatory unless noted.
+
+```markdown
+## Summary
+
+<One paragraph. BLUF: what this PR does and why. No jargon. A non-engineer should understand the intent.>
+
+## Changes
+
+- **<file_or_module>**: What changed and why. One bullet per logical change.
+- **<file_or_module>**: What changed and why.
+
+## Test plan
+
+The agent ran these tests and confirms all pass:
+
+- [x] `command` — what it checks, what the result was
+- [x] `command` — what it checks, what the result was
+
+**Coverage notes:** <What the tests cover. What they do not cover. Why the gaps are acceptable or what the remaining risks are.>
+
+## Notes
+
+- <Known limitations, false positives, or deferred work.>
+- <Hardware-gated or environment-gated items that remain untested.>
+```
+
+#### Test plan rules
+
+1. Check only the boxes for tests you actually ran. Do not check boxes for tests you plan to run.
+2. Each test line must include: the command, what it validates, and the result.
+3. The **Coverage notes** subsection is mandatory. State what the tests cover, what they do not cover, and your judgment on remaining risk. Do not just say "tests cover everything."
+4. Run as many tests as you can before writing the plan. Unit tests, linting, type checking, shellcheck, JSON validation, syntax checks — run them all.
+5. If a test fails, fix it before writing the plan. Do not document failing tests in the plan.
+
+#### Summary rules
+
+1. One paragraph, 3 to 5 sentences.
+2. Start with the verb: "Fixes...", "Adds...", "Refactors...", "Hardens...".
+3. Name the affected area: scripts, tests, schemas, CI, docs.
+4. State the outcome: what works now that did not before.
+5. No acronyms without expansion on first use. No internal skill names.
+
+#### Changes rules
+
+1. One bullet per file or logical unit.
+2. Format: `**path/to/file**: What changed and why.`
+3. Group related changes in one bullet. Do not split a single fix across multiple bullets.
+4. Include line numbers only when the change is non-obvious from the file name.
+5. Maximum 10 bullets. If you have more, group related changes.
+
+### 9.2 Code review comment template
+
+Every code review comment follows this structure.
+
+```markdown
+## Code Review
+
+<One line: how many checks, what they targeted.>
+
+| # | Severity | Finding | Fix |
+|---|----------|---------|-----|
+| 1 | P1 CRITICAL | What is wrong | What was done to fix it |
+| 2 | P2 MAJOR | What is wrong | What was done to fix it |
+| 3 | P3 MINOR | What is wrong | What was done to fix it |
+| 4 | P4 NIT | What is wrong | Why no change was needed |
+
+**Result:** <Count of findings by severity.>
+
+### Edge case verification
+
+- <What was tested and the result.>
+```
+
+#### Table rules
+
+1. Columns are mandatory: `#`, `Severity`, `Finding`, `Fix`. No other columns.
+2. Severity uses P1 CRITICAL, P2 MAJOR, P3 MINOR, P4 NIT.
+3. The Fix column states what was done. For accepted NITs, state why no change was needed.
+4. Sort by severity (P1 first, P4 last).
+5. Maximum 10 rows. If you have more, batch into multiple comments.
+
+#### Severity definitions
+
+| Level | Meaning | Action required |
+|-------|---------|----------------|
+| P1 CRITICAL | Security hole, data loss, silent corruption | Must fix before merge |
+| P2 MAJOR | Correctness bug, broken test, schema violation | Must fix before merge |
+| P3 MINOR | Missing validation, incomplete coverage, stale config | Fix or document why deferred |
+| P4 NIT | Style, naming, cosmetic, accepted risk | Document and move on |
+
+### 9.3 Writing quality gates
+
+Every PR description and code review comment passes these gates before posting.
+
+**Simple English (ASD-STE100 pragmatic mode):**
+
+1. No sentence over 25 words (descriptive) or 20 words (procedural).
+2. One topic per paragraph. Maximum 6 sentences per paragraph.
+3. Active voice. Passive only when the agent is unknown.
+4. No contractions.
+5. Conditions before commands: "If X, do Y." not "Do Y if X."
+6. Pick one verb for each concept and stick with it (check not verify/confirm/validate).
+7. No filler: "it is worth noting", "importantly", "simply", "just", "easily".
+
+**deAI pass (run deai skill before posting):**
+
+1. Voice prime: match the register of technical documentation, not marketing or academic.
+2. Scan for RLHF residue: em-dashes, tricolons, "not X but Y", synonym rotation, abstract hedging.
+3. Fix hierarchy: restructure > swap > cut. A swap that still reads AI is a failed fix.
+4. Read-aloud test: if a sentence drags or stumbles, revise the rhythm.
+
+**Factual accuracy:**
+
+1. Every claim in the test plan must match actual command output.
+2. Every file path referenced must exist.
+3. Every line number must be accurate within 5 lines.
+4. No fabricated test results. If you did not run a test, do not check the box.
+
+### 9.4 Agent reminders
+
+When writing a PR at any time:
+
+1. **You are the tester.** Run the tests yourself before writing the plan. Do not write "should pass" or "tests cover this." Run them and record the actual output.
+2. **You are the reviewer.** Run the code review yourself. Do not write "needs review." Review it, record findings, apply fixes.
+3. **You are the writer.** Write the PR body yourself. Do not write "TODO" or "WIP." Complete the template.
+4. **Coverage notes are mandatory.** Every test plan must state what the tests do not cover and your judgment on remaining risk.
+5. **No internal names.** Do not reference skill names, prompt numbers, or internal tooling in PR prose.
+6. **No Gate Evidence table.** The test plan already contains the evidence. A separate Gate Evidence table is redundant.
+7. **Fix column is mandatory.** Every review finding must state what was done to fix it or why no change was needed. "Accepted" alone is not enough.
+
+### 9.5 Test harness
+
+Validate PR artifacts before posting:
+
+```bash
+bash <trainer.skill root>/specialists/pr/test-pr-format.sh <pr-body-file> [review-comment-file]
+```
+
+Checks: section structure, checkbox presence, coverage notes, banned words, internal names, table format, severity values, fix column completeness.
+
+Exit codes: 0 = all pass, 1 = mandatory failures, 2 = usage error (missing arguments or file not found).
+
+The harness runs as a pre-post gate. Wire it into CI or run manually before posting any PR description or code review comment.
+
 ## Composition with other skills
 
-- **Before deploy:** `form-check` reviews the change; `recovery` runs the engagement.
-- **At deploy time:** pr (this skill).
+- **Before PR:** `form-check` reviews the change; `recovery` runs the engagement.
+- **Writing PR prose:** §9 of this skill. `deai` for voice quality, `simple-english` for clarity.
+- **At deploy time:** §1–§8 of this skill.
 - **After deploy, steady state:** `diet §1–2` for instrumentation and cadence.
-- **After deploy, incident:** `diet §3` for triage; this skill for the rollback mechanic; `safetybar §2.2` for the git-level recovery if needed.
+- **After deploy, incident:** `diet §3` for triage; §5 of this skill for rollback; `safetybar §2.2` for git-level recovery if needed.
 - **If a deploy exposed secrets:** `form-check/learner/token_handling_primer.md §5` for the leak-response runbook.
 
 ## Provenance
