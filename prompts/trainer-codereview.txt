@@ -22,6 +22,7 @@ GitHub shape: ~/Projects/trainer.skill/references/trainer-github-pr-commentary.m
    - PR comment via: bash scripts/trainer_pr_review_post.sh <PR_NUM> <VERDICT> <ROUND> <review.md>
    - review.md must include ### Bug inventory (every P0–P4 or explicit none), ### Trainer notes (Program notes, Your form, Next session).
    - Never ### Pedagogy.
+   - Output style (mandatory): never mention "multi-posture", "personas", "postures", "loop 1", "loop 2", "150 checks", "75 checks", "5 personas", or any review methodology — no description of how the review was conducted or how many checks were run. Output sections: Bug inventory + Trainer notes + Automated verification + Sign-off only; no "Methodology" or "Process" sections. Detail: trainer-github-pr-commentary.md § Review output style.
 5. **buds PR test plan:** At **PR open**, load `references/templates/buds-pr-test-surfaces.md` — full setup commands in **PR body**; scenario checkboxes; no fenced bash (`pr_body_validate.sh`). **Trainer comment:** Manual QA pointer to PR body by default (`flutter run` one-liner OK); add shell blocks only when testing needs them (new scenario, changed path, delta re-test) — not every round. **toebeans:** setup in PR body when lint allows; comment deltas same rule.
 6. PR comment must include ### Sign-off with automated vs manual checkboxes (trainer-github-pr-commentary.md). If CI automated test job is green on HEAD, check [x] automated with link to that run; leave manual [ ] for operator.
 

@@ -86,6 +86,22 @@ class TestReviewMethodologyDisclosure(unittest.TestCase):
         self.assertEqual(proc.returncode, 1, msg=proc.stdout)
 
 
+class TestTermDocParity(unittest.TestCase):
+    """Enforcement term list must not drift from the canonical rule text."""
+
+    def test_enforced_terms_present_in_both_canonical_surfaces(self) -> None:
+        from lib.trainer_codereview_contract import REVIEW_METHODOLOGY_TERMS
+
+        for rel in (
+            "references/trainer-github-pr-commentary.md",
+            "references/trainer-codereview.md",
+            "prompts/trainer-codereview.txt",
+        ):
+            text = (REPO_ROOT / rel).read_text(encoding="utf-8")
+            for term in REVIEW_METHODOLOGY_TERMS:
+                self.assertIn(term, text, msg=f"{rel} missing term {term!r}")
+
+
 class TestCliHarness(unittest.TestCase):
     def test_comment_validate_cli_round1_fails(self) -> None:
         proc = subprocess.run(

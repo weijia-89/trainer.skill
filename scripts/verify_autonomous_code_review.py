@@ -189,6 +189,11 @@ def verify_repo(repo_root: Path | None = None) -> list[str]:
         errors,
         COMMENTARY_REF.name,
     )
+    verify_output_style_rule(
+        prompt_path.read_text(encoding="utf-8"),
+        errors,
+        CODEREVIEW_PROMPT.name,
+    )
     verify_form_check_skill(form_check_path.read_text(encoding="utf-8"), errors)
     verify_codereview_prompt(prompt_path.read_text(encoding="utf-8"), errors)
     verify_workflow_router(router_path.read_text(encoding="utf-8"), errors)

@@ -80,6 +80,20 @@ class TestVerifyAutonomousCodeReviewFixtures(unittest.TestCase):
                 msg="\n".join(errors),
             )
 
+    def test_output_style_rule_missing_in_prompt_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._copy_minimal_tree(root)
+            prompt = root / "prompts" / "trainer-codereview.txt"
+            text = prompt.read_text()
+            text = text.replace(vacr.OUTPUT_STYLE_PARITY_MARKER, "never mention process")
+            prompt.write_text(text)
+            errors = vacr.verify_repo(root)
+            self.assertTrue(
+                any("trainer-codereview.txt" in e for e in errors),
+                msg="\n".join(errors),
+            )
+
     def _copy_minimal_tree(self, root: Path) -> None:
         for rel in (
             "SKILL.md",
