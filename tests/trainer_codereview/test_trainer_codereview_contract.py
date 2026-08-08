@@ -45,6 +45,63 @@ class TestRound3GoodPasses(unittest.TestCase):
         self.assertEqual(validate_pr_test_plan_body(body), [])
 
 
+class TestReviewMethodologyDisclosure(unittest.TestCase):
+    """Review output style rule: comments must not disclose review methodology."""
+
+    def test_disclosure_fixture_fails(self) -> None:
+        body = (FIXTURES / "methodology_disclosure_bad.md").read_text(encoding="utf-8")
+        errors = validate_review_comment(body, "trainer.skill")
+        joined = "\n".join(errors)
+        self.assertTrue(any("methodology" in e for e in errors), msg=joined)
+        self.assertIn("150 checks", joined)
+        self.assertIn("5 personas", joined)
+
+    def test_each_forbidden_term_rejected(self) -> None:
+        base = (FIXTURES / "round3_good.md").read_text(encoding="utf-8")
+        from lib.trainer_codereview_contract import REVIEW_METHODOLOGY_TERMS
+
+        for term in REVIEW_METHODOLOGY_TERMS:
+            with self.subTest(term=term):
+                body = base + f"\n- Note: reviewed using {term}\n"
+                errors = validate_review_comment(body, "trainer.skill")
+                self.assertTrue(any("methodology" in e for e in errors), msg=term)
+
+    def test_clean_comment_passes(self) -> None:
+        body = (FIXTURES / "round3_good.md").read_text(encoding="utf-8")
+        self.assertEqual(validate_review_comment(body, "trainer.skill"), [])
+
+    def test_cli_full_rejects_disclosure(self) -> None:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(REPO_ROOT / "scripts" / "trainer_review_comment_validate.py"),
+                "--repo",
+                "trainer.skill",
+                "--body-file",
+                str(FIXTURES / "methodology_disclosure_bad.md"),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(proc.returncode, 1, msg=proc.stdout)
+
+
+class TestTermDocParity(unittest.TestCase):
+    """Enforcement term list must not drift from the canonical rule text."""
+
+    def test_enforced_terms_present_in_both_canonical_surfaces(self) -> None:
+        from lib.trainer_codereview_contract import REVIEW_METHODOLOGY_TERMS
+
+        for rel in (
+            "references/trainer-github-pr-commentary.md",
+            "references/trainer-codereview.md",
+            "prompts/trainer-codereview.txt",
+        ):
+            text = (REPO_ROOT / rel).read_text(encoding="utf-8")
+            for term in REVIEW_METHODOLOGY_TERMS:
+                self.assertIn(term, text, msg=f"{rel} missing term {term!r}")
+
+
 class TestCliHarness(unittest.TestCase):
     def test_comment_validate_cli_round1_fails(self) -> None:
         proc = subprocess.run(

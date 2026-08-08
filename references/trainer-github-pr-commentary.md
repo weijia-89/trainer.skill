@@ -263,6 +263,13 @@ Copy and adapt; replace bracketed placeholders. **Always** lead with the **iOS S
 
 Post **one canonical comment** per PR (PATCH on remediate). Structure:
 
+### Review output style (mandatory)
+
+- NEVER mention "multi-posture", "personas", "postures", "loop 1", "loop 2", "150 checks", "75 checks", "5 personas", or any review process/methodology description
+- NEVER describe how the review was conducted, how many checks were run, or what postures were involved
+- Output must be: Bug inventory (findings + status) + Trainer notes + Automated verification + Sign-off only
+- Follow the standard template sections exactly; do not add "Methodology" or "Process" sections
+
 ```markdown
 <!-- trainer-codereview-{repo}-{branch} -->
 <!-- head={7-char-sha} verdict={APPROVE|REQUEST_CHANGES|BLOCK} round={1|2} -->

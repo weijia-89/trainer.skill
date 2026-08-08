@@ -15,12 +15,18 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SKILL = REPO_ROOT / "SKILL.md"
 AUTONOMOUS_REF = REPO_ROOT / "references" / "trainer-autonomous-code-review.md"
 CODEREVIEW_REF = REPO_ROOT / "references" / "trainer-codereview.md"
+COMMENTARY_REF = REPO_ROOT / "references" / "trainer-github-pr-commentary.md"
 FORM_CHECK_SKILL = REPO_ROOT / "specialists" / "form-check" / "SKILL.md"
 CODEREVIEW_PROMPT = REPO_ROOT / "prompts" / "trainer-codereview.txt"
 
 FORM_CHECK_SKILL_CANON = "~/Projects/trainer.skill/specialists/form-check/SKILL.md"
 ROUTER_REF = REPO_ROOT / "references" / "workflow-skill-router.md"
 
+# Review output style rule (mandatory): PR comments must never disclose review
+# methodology / posture / check counts. Guarded on both canonical surfaces so a
+# silent deletion in either file fails the contract gate.
+OUTPUT_STYLE_SECTION = "Review output style"
+OUTPUT_STYLE_PARITY_MARKER = 'never mention "multi-posture"'
 FORBIDDEN_OPERATOR_PHRASES = (
     "operator says autonomous code review",
     "operator says **autonomous code review**",
@@ -98,6 +104,22 @@ def verify_codereview_ref(text: str, errors: list[str]) -> None:
         _fail(errors, f"{CODEREVIEW_REF.name}: must reference default loop doc")
 
 
+def verify_output_style_rule(text: str, errors: list[str], source: str) -> None:
+    """Review output style rule must exist and stay in parity on both surfaces."""
+    if OUTPUT_STYLE_SECTION not in text:
+        _fail(
+            errors,
+            f"{source}: missing '{OUTPUT_STYLE_SECTION}' rule "
+            "(PR comments must not disclose review methodology)",
+        )
+    if OUTPUT_STYLE_PARITY_MARKER.lower() not in text.lower():
+        _fail(
+            errors,
+            f"{source}: missing parity marker {OUTPUT_STYLE_PARITY_MARKER!r} "
+            "(keep the forbidden-term list in sync with the canonical section)",
+        )
+
+
 def verify_form_check_skill(text: str, errors: list[str]) -> None:
     if 'name: form-check' not in text:
         _fail(errors, f"{FORM_CHECK_SKILL}: missing name: form-check frontmatter")
@@ -136,6 +158,7 @@ def verify_repo(repo_root: Path | None = None) -> list[str]:
     skill_path = root / "SKILL.md"
     autonomous_path = root / "references" / "trainer-autonomous-code-review.md"
     codereview_path = root / "references" / "trainer-codereview.md"
+    commentary_path = root / "references" / "trainer-github-pr-commentary.md"
     form_check_path = root / "specialists" / "form-check" / "SKILL.md"
     prompt_path = root / "prompts" / "trainer-codereview.txt"
     router_path = root / "references" / "workflow-skill-router.md"
@@ -144,6 +167,7 @@ def verify_repo(repo_root: Path | None = None) -> list[str]:
         skill_path,
         autonomous_path,
         codereview_path,
+        commentary_path,
         form_check_path,
         prompt_path,
         router_path,
@@ -155,6 +179,21 @@ def verify_repo(repo_root: Path | None = None) -> list[str]:
     verify_skill_md(skill_path.read_text(encoding="utf-8"), errors)
     verify_autonomous_ref(autonomous_path.read_text(encoding="utf-8"), errors)
     verify_codereview_ref(codereview_path.read_text(encoding="utf-8"), errors)
+    verify_output_style_rule(
+        codereview_path.read_text(encoding="utf-8"),
+        errors,
+        CODEREVIEW_REF.name,
+    )
+    verify_output_style_rule(
+        commentary_path.read_text(encoding="utf-8"),
+        errors,
+        COMMENTARY_REF.name,
+    )
+    verify_output_style_rule(
+        prompt_path.read_text(encoding="utf-8"),
+        errors,
+        CODEREVIEW_PROMPT.name,
+    )
     verify_form_check_skill(form_check_path.read_text(encoding="utf-8"), errors)
     verify_codereview_prompt(prompt_path.read_text(encoding="utf-8"), errors)
     verify_workflow_router(router_path.read_text(encoding="utf-8"), errors)

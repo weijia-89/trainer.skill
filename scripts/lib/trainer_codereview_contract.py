@@ -19,6 +19,21 @@ VERDICT_META = re.compile(r"verdict=(APPROVE|REQUEST_CHANGES|BLOCK)", re.I)
 AUTO_VERIFY_SECTION = re.compile(r"^###\s+Automated verification\b", re.M | re.I)
 TRAINER_NOTES = re.compile(r"^###\s+Trainer notes\b", re.M | re.I)
 FORBIDDEN_PEDAGOGY = re.compile(r"^###\s+Pedagogy\b", re.M | re.I)
+# Review output style rule (trainer-github-pr-commentary.md § Review output style):
+# PR comments must not disclose review methodology / posture / check counts.
+REVIEW_METHODOLOGY_TERMS = (
+    "multi-posture",
+    "personas",
+    "postures",
+    "loop 1",
+    "loop 2",
+    "150 checks",
+    "75 checks",
+    "5 personas",
+)
+FORBIDDEN_REVIEW_METHODOLOGY = [
+    re.compile(rf"\b{re.escape(term)}\b", re.I) for term in REVIEW_METHODOLOGY_TERMS
+]
 PLACEHOLDER_ROW = re.compile(r"\|\s*—\s*\|\s*—\s*\|")
 NO_DEFECTS_THEATER = re.compile(r"no defects in diff|no defects\b", re.I)
 CHECKED_BOX = re.compile(r"^- \[x\]", re.M | re.I)
@@ -181,6 +196,13 @@ def validate_review_comment(body: str, repo: str) -> list[str]:
     errors = validate_bug_inventory(body, repo)
     if FORBIDDEN_PEDAGOGY.search(body):
         errors.append("forbidden '### Pedagogy' heading; use '### Trainer notes'")
+    for term, rx in zip(REVIEW_METHODOLOGY_TERMS, FORBIDDEN_REVIEW_METHODOLOGY):
+        if rx.search(body):
+            errors.append(
+                "PR comment discloses review methodology or posture "
+                f"(forbidden term: {term!r}); see "
+                "trainer-github-pr-commentary.md § Review output style"
+            )
     if not TRAINER_NOTES.search(body):
         errors.append("missing '### Trainer notes' section")
     else:

@@ -46,6 +46,7 @@ Use ranked findings `### T{n} · P{0-4} · {rubric} · conf N%`. **buds:** fix o
    - Meta: `<!-- head={7-char-sha} verdict=… round={N} -->`
    - `### Bug inventory` (every P0–P4 row or explicit none) + `### Trainer notes` (**Program notes**, **Your form**, **Next session**)
    - Never `### Pedagogy` or `### Cool-down`
+   - **Review output style (mandatory):** never mention "multi-posture", "personas", "postures", "loop 1", "loop 2", "150 checks", "75 checks", "5 personas", or any review process/methodology description; never describe how the review was conducted, how many checks were run, or what postures were involved. Output must be Bug inventory (findings + status) + Trainer notes + Automated verification + Sign-off only. Follow the standard template sections exactly; do not add "Methodology" or "Process" sections. Detail: `trainer-github-pr-commentary.md` § Review output style.
 3. **Post / PATCH:** `<repo>/scripts/trainer_pr_review_post.sh` (copy from `trainer.skill/scripts/`).
 4. **Post-comment verify (after step 3):** Run automated commands from the PR test plan; **PATCH** the same comment with `### Automated verification` checked + `### Sign-off` automated `[x]`; check off PR body automated boxes. Detail: `trainer-github-pr-commentary.md` § Post-comment automated verify loop.
 
