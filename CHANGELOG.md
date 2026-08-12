@@ -15,6 +15,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 ### Added
 
 - **L2 reference file:** `references/frontend-eng.md` — frontend engagement reference for trainer.skill L2 acquisition (MINOR version bump 0.16.0 → 0.17.0). Captures 52 frontend gaps (42 upstream behaviors + 10 uncovered domains). Reference file structure, not specialist. Trainer SemVer MINOR bump: additive content, no routing change.
+- **`context.md`:** skill-level context doc regenerated for the L2 acquisition — contract, invariants, L2 decisions (D10–D13), non-goals, and eval location (`integration-artifacts/evals/L2/scenarios.md`, 9/9 behaviors evidenced). Additive documentation; no routing change.
 
 ### Added
 
