@@ -31,12 +31,13 @@ mkdir -p "$HOOKS_DIR"
 
 cat > "$HOOK_PATH" <<'HOOK'
 #!/usr/bin/env bash
-# pre-push: run verify_trainer_sync.sh before allowing a push. Blocks the
-# push if any invariant fails (version drift, em-dashes, private-path leaks).
+# pre-push: run verify_trainer_sync.sh and check_pr_merged before allowing a push. Blocks the
+# push if any invariant fails or the branch has a merged PR.
 # Bypass with --no-verify if absolutely necessary.
 set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-exec "$SCRIPT_DIR/scripts/verify_trainer_sync.sh"
+"$SCRIPT_DIR/scripts/verify_trainer_sync.sh"
+"$SCRIPT_DIR/scripts/check_pr_merged.sh"
 HOOK
 
 chmod +x "$HOOK_PATH"

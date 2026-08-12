@@ -14,6 +14,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ### Added
 
+- **L2 reference file:** `references/frontend-eng.md` — frontend engagement reference for trainer.skill L2 acquisition (MINOR version bump 0.16.0 → 0.17.0). Captures 52 frontend gaps (42 upstream behaviors + 10 uncovered domains). Reference file structure, not specialist. Trainer SemVer MINOR bump: additive content, no routing change.
+
+### Added
+
 - **`specialists/form-check/tools/generation_gate.sh`** — executable, validates new/modified bash scripts for generation-time safety. Checks: `set -euo pipefail` header, no env var collisions (LANG, LC_ALL, PATH, HOME), numeric arg validation, tool existence checks, test co-existence, shellcheck (if available), safe-terminal compliance (no heredocs outside usage/help, no `cd &&` chains). Spirit-over-letter: warns on missing tests/tool checks in default mode, fails in `--strict` mode. Bypass: `GENERATION_GATE_BYPASS=1` (logged to `.recovery/calibration.jsonl`).
 - **`specialists/form-check/tests/test_generation_gate.sh`** — 10 tests: help, bypass, missing header, LANG collision, clean script, heredoc outside usage (fail), heredoc in usage (pass), cd && chain (fail), SCRIPT_DIR pattern (pass), no test file warning-only.
 - **`specialists/form-check/templates/pre-commit-combined`** — merged pre-commit hook running both generation gate (for .sh files) and LLM-code gate (for LLM-generated files). Single hook, fail-closed, deduplicated from separate hooks.
