@@ -59,7 +59,7 @@ STRONG_AUTO = re.compile(
     re.M | re.I,
 )
 
-PR_TEST_PLAN = re.compile(r"^##\s+Test plan\b", re.M | re.I)
+PR_TEST_PLAN = re.compile(r"^##\s+Test plan\s*$", re.M | re.I)
 PR_AUTO_SECTION = re.compile(r"^###\s+Automated\b", re.M | re.I)
 
 # R-6 user-facing docs gate (operator prose must track code changes)
@@ -243,26 +243,30 @@ def validate_review_comment(body: str, repo: str) -> list[str]:
 
 def validate_pr_test_plan_body(body: str, *, require_checked: bool = True) -> list[str]:
     errors: list[str] = []
-    if not PR_TEST_PLAN.search(body):
+    test_plan_m = PR_TEST_PLAN.search(body)
+    if not test_plan_m:
         errors.append("PR body missing '## Test plan'")
-    if not PR_AUTO_SECTION.search(body):
-        errors.append("PR body missing '### Automated' under Test plan")
-    elif require_checked:
-        auto_m = PR_AUTO_SECTION.search(body)
-        assert auto_m is not None
-        rest = body[auto_m.end() :]
-        nxt = re.search(r"^###\s+", rest, re.M)
-        auto_slice = rest[: nxt.start()] if nxt else rest
-        if not CHECKED_BOX.search(auto_slice):
-            errors.append(
-                "PR body Test plan Automated section needs at least one '- [x]' "
-                "(trainer runs harness before APPROVE)"
-            )
-        else:
-            checked = [ln for ln in auto_slice.splitlines() if CHECKED_BOX.match(ln)]
-            if checked and not any(STRONG_AUTO.search(ln) for ln in checked):
+    else:
+        test_plan_rest = body[test_plan_m.end() :]
+        next_section = re.search(r"^##\s+", test_plan_rest, re.M)
+        test_plan = test_plan_rest[: next_section.start()] if next_section else test_plan_rest
+        auto_m = PR_AUTO_SECTION.search(test_plan)
+        if not auto_m:
+            errors.append("PR body missing '### Automated' under Test plan")
+        elif require_checked:
+            auto_rest = test_plan[auto_m.end() :]
+            next_subsection = re.search(r"^###\s+", auto_rest, re.M)
+            auto_slice = auto_rest[: next_subsection.start()] if next_subsection else auto_rest
+            if not CHECKED_BOX.search(auto_slice):
                 errors.append(
-                    "PR body Automated checks must include at least one real harness "
-                    "(verify_*/test_*), not grep/test -f only"
+                    "PR body Test plan Automated section needs at least one '- [x]' "
+                    "(trainer runs harness before APPROVE)"
                 )
+            else:
+                checked = [ln for ln in auto_slice.splitlines() if CHECKED_BOX.match(ln)]
+                if checked and not any(STRONG_AUTO.search(ln) for ln in checked):
+                    errors.append(
+                        "PR body Automated checks must include at least one real harness "
+                        "(verify_*/test_*), not grep/test -f only"
+                    )
     return errors
