@@ -249,13 +249,18 @@ def _markdown_section(
 ) -> str | None:
     """Return a real Markdown section, ignoring headings inside fenced code."""
     lines = body.splitlines(keepends=True)
-    in_fence = False
+    fence: tuple[str, int] | None = None
     start: int | None = None
     for index, line in enumerate(lines):
-        if MARKDOWN_FENCE.match(line):
-            in_fence = not in_fence
+        fence_match = MARKDOWN_FENCE.match(line)
+        if fence_match:
+            marker = fence_match.group(1)
+            if fence is None:
+                fence = (marker[0], len(marker))
+            elif marker[0] == fence[0] and len(marker) >= fence[1]:
+                fence = None
             continue
-        if in_fence:
+        if fence is not None:
             continue
         if start is None:
             if heading.match(line.rstrip("\r\n")):

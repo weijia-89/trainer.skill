@@ -158,6 +158,14 @@ class TestPrBodyContract(unittest.TestCase):
         self.assertTrue(errors)
         self.assertIn("under Test plan", errors[0])
 
+    def test_mixed_fence_spoof_fails(self) -> None:
+        body = (FIXTURES / "pr_body_mixed_fence_spoof.md").read_text(
+            encoding="utf-8"
+        )
+        errors = validate_pr_test_plan_body(body)
+        self.assertTrue(errors)
+        self.assertIn("under Test plan", errors[0])
+
     def test_weak_grep_only_checks_fail(self) -> None:
         body = (FIXTURES / "pr_body_weak_checks.md").read_text(encoding="utf-8")
         errors = validate_pr_test_plan_body(body)
