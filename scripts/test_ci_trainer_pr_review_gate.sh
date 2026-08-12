@@ -112,4 +112,9 @@ expect_fail "PR body unavailable rejected" \
   TRAINER_PR_BODY_FILE="$FIXTURE_DIR/missing-pr-body.md" \
   bash "$GATE" 99 805402b886b160d3acaf9130cba1363edb1a4d7e feat/style-lab-compose-alignment weijia-89/toebeans
 
+expect_fail "PR body fenced-heading spoof rejected" \
+  env TRAINER_PR_REVIEW_FIXTURE="$good" \
+  TRAINER_PR_BODY_FILE="$ROOT/tests/trainer_codereview/fixtures/pr_body_fake_headings_in_fence.md" \
+  bash "$GATE" 99 805402b886b160d3acaf9130cba1363edb1a4d7e feat/style-lab-compose-alignment weijia-89/toebeans
+
 echo "All ci-trainer-pr-review-gate self-tests passed."

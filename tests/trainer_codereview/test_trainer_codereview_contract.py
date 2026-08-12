@@ -142,6 +142,22 @@ class TestPrBodyContract(unittest.TestCase):
         self.assertTrue(errors)
         self.assertIn("under Test plan", errors[0])
 
+    def test_fake_headings_inside_code_fence_fail(self) -> None:
+        body = (FIXTURES / "pr_body_fake_headings_in_fence.md").read_text(
+            encoding="utf-8"
+        )
+        errors = validate_pr_test_plan_body(body)
+        self.assertTrue(errors)
+        self.assertIn("Test plan", errors[0])
+
+    def test_fake_automated_heading_inside_code_fence_fails(self) -> None:
+        body = (FIXTURES / "pr_body_automated_fake_in_fence.md").read_text(
+            encoding="utf-8"
+        )
+        errors = validate_pr_test_plan_body(body)
+        self.assertTrue(errors)
+        self.assertIn("under Test plan", errors[0])
+
     def test_weak_grep_only_checks_fail(self) -> None:
         body = (FIXTURES / "pr_body_weak_checks.md").read_text(encoding="utf-8")
         errors = validate_pr_test_plan_body(body)
@@ -214,6 +230,20 @@ class TestPrBodyContract(unittest.TestCase):
                 str(FIXTURES / "pr_body_no_checked.md"),
                 "--no-require-checked",
             ],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(proc.returncode, 0, msg=proc.stderr)
+        self.assertIn("PASS", proc.stdout)
+
+    def test_cli_stdin_good_body_pass_exit_0(self) -> None:
+        body = (FIXTURES / "pr_body_good.md").read_text(encoding="utf-8")
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(REPO_ROOT / "scripts" / "trainer_pr_body_validate.py"),
+            ],
+            input=body,
             capture_output=True,
             text=True,
         )
