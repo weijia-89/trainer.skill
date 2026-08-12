@@ -87,7 +87,11 @@ does not do the work. Specialists execute.
 
 ## Current coverage / open watch items
 
-- L2 implementation commit: `integration/L2-trainer` @ `1dc2085`
-  (`feat(frontend-eng): add L2 frontend engagement reference`). **Not yet merged to `main`.**
-- Open: Phase 11 (review postures), Phase 12 (PR `integration/L2-trainer` → `main`), then Gate I.
+- L2 implementation: commits `1dc2085` + `201b4c8` on `integration/L2-trainer`.
+- **Phase 10–12 COMPLETE:** `context.md` regenerated (this file); 3 review postures PASS;
+  PR **#34 OPEN** against `main` with the trainer review-comment gate posted
+  (APPROVE, validators PASS — both bug-inventory + R-6). Gate I (per-lane gap audit)
+  COMPLETE (verdict COMPLETE, conditional on merge).
+- **Forward obligation (on merge):** attach a 14-day watch window (owner Wei Jia; revert trigger
+  = remove `references/frontend-eng.md`) and close the lane's terminal disposition as *merged*.
 - L3 (palamedes+piranesi) remains operator-blocked on the Track-2 prose-scenario decision.
