@@ -23,6 +23,25 @@ jobs:
           timeout 60s bash scripts/verify_trainer_codereview.sh
           GITHUB_ACTIONS=true GITHUB_WORKSPACE="$GITHUB_WORKSPACE" bash scripts/verify_trainer_sync.sh
 
+      - name: Check reviewer comment format
+        run: |
+          set -euo pipefail
+          COMMENTS=$(gh api "repos/$GITHUB_REPOSITORY/issues/${{ github.event.number }}/comments" --paginate 2>/dev/null || echo "[]")
+          # Select the first comment bearing the trainer/sdk codereview marker.
+          MARKED=$(printf '%s' "$COMMENTS" | jq -r 'first(.[] | select((.body // "") | test("trainer-codereview-|sdk-codereview-")) | .body)')
+          if [[ -z "$MARKED" ]]; then
+            echo "SKIP  no trainer/sdk review comment posted yet; format check deferred to review gate"
+            exit 0
+          fi
+          # Require the sections the gate expects
+          grep -q '### Trainer notes' <<< "$MARKED"   || exit 1
+          grep -q '### Bug inventory' <<< "$MARKED"     || exit 1
+          grep -q '### Automated verification' <<< "$MARKED" || exit 1
+          grep -q 'verdict=APPROVE' <<< "$MARKED"      || exit 1
+          grep -q 'head=' <<< "$MARKED"               || exit 1
+          grep -q 'trainer-codereview-' <<< "$MARKED"   || exit 1
+          echo "Reviewer comment format OK"
+      
       - name: Trainer PR review comment gate
         env:
           GH_TOKEN: ${{ github.token }}
