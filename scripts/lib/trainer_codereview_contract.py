@@ -59,8 +59,11 @@ STRONG_AUTO = re.compile(
     re.M | re.I,
 )
 
-PR_TEST_PLAN = re.compile(r"^##\s+Test plan\b", re.M | re.I)
-PR_AUTO_SECTION = re.compile(r"^###\s+Automated\b", re.M | re.I)
+PR_TEST_PLAN = re.compile(r"^##[ \t]+Test plan[ \t]*$", re.I)
+PR_AUTO_SECTION = re.compile(r"^###[ \t]+Automated\b", re.I)
+PR_TOP_LEVEL_SECTION = re.compile(r"^##[ \t]+", re.I)
+PR_SUBSECTION = re.compile(r"^###[ \t]+", re.I)
+MARKDOWN_FENCE = re.compile(r"^\s*(`{3,}|~{3,})")
 
 # R-6 user-facing docs gate (operator prose must track code changes)
 R6_CODE_EXACT = frozenset({"SKILL.md", "mirrors/windsurf-trainer.md"})
@@ -241,28 +244,52 @@ def validate_review_comment(body: str, repo: str) -> list[str]:
     return errors
 
 
+def _markdown_section(
+    body: str, heading: re.Pattern[str], next_heading: re.Pattern[str]
+) -> str | None:
+    """Return a real Markdown section, ignoring headings inside fenced code."""
+    lines = body.splitlines(keepends=True)
+    fence: tuple[str, int] | None = None
+    start: int | None = None
+    for index, line in enumerate(lines):
+        fence_match = MARKDOWN_FENCE.match(line)
+        if fence_match:
+            marker = fence_match.group(1)
+            if fence is None:
+                fence = (marker[0], len(marker))
+            elif marker[0] == fence[0] and len(marker) >= fence[1]:
+                fence = None
+            continue
+        if fence is not None:
+            continue
+        if start is None:
+            if heading.match(line.rstrip("\r\n")):
+                start = index + 1
+        elif next_heading.match(line.rstrip("\r\n")):
+            return "".join(lines[start:index])
+    return "".join(lines[start:]) if start is not None else None
+
+
 def validate_pr_test_plan_body(body: str, *, require_checked: bool = True) -> list[str]:
     errors: list[str] = []
-    if not PR_TEST_PLAN.search(body):
+    test_plan = _markdown_section(body, PR_TEST_PLAN, PR_TOP_LEVEL_SECTION)
+    if test_plan is None:
         errors.append("PR body missing '## Test plan'")
-    if not PR_AUTO_SECTION.search(body):
-        errors.append("PR body missing '### Automated' under Test plan")
-    elif require_checked:
-        auto_m = PR_AUTO_SECTION.search(body)
-        assert auto_m is not None
-        rest = body[auto_m.end() :]
-        nxt = re.search(r"^###\s+", rest, re.M)
-        auto_slice = rest[: nxt.start()] if nxt else rest
-        if not CHECKED_BOX.search(auto_slice):
-            errors.append(
-                "PR body Test plan Automated section needs at least one '- [x]' "
-                "(trainer runs harness before APPROVE)"
-            )
-        else:
-            checked = [ln for ln in auto_slice.splitlines() if CHECKED_BOX.match(ln)]
-            if checked and not any(STRONG_AUTO.search(ln) for ln in checked):
+    else:
+        automated = _markdown_section(test_plan, PR_AUTO_SECTION, PR_SUBSECTION)
+        if automated is None:
+            errors.append("PR body missing '### Automated' under Test plan")
+        elif require_checked:
+            if not CHECKED_BOX.search(automated):
                 errors.append(
-                    "PR body Automated checks must include at least one real harness "
-                    "(verify_*/test_*), not grep/test -f only"
+                    "PR body Test plan Automated section needs at least one '- [x]' "
+                    "(trainer runs harness before APPROVE)"
                 )
+            else:
+                checked = [ln for ln in automated.splitlines() if CHECKED_BOX.match(ln)]
+                if checked and not any(STRONG_AUTO.search(ln) for ln in checked):
+                    errors.append(
+                        "PR body Automated checks must include at least one real harness "
+                        "(verify_*/test_*), not grep/test -f only"
+                    )
     return errors

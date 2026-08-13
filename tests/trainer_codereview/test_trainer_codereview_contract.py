@@ -119,6 +119,146 @@ class TestCliHarness(unittest.TestCase):
         self.assertEqual(proc.returncode, 1, msg=proc.stdout)
 
 
+class TestPrBodyContract(unittest.TestCase):
+    """PR body Test plan contract must be enforced like the review comment."""
+
+    def test_missing_test_plan_fails(self) -> None:
+        body = (FIXTURES / "pr_body_missing_test_plan.md").read_text(encoding="utf-8")
+        errors = validate_pr_test_plan_body(body)
+        self.assertTrue(errors)
+        self.assertIn("Test plan", errors[0])
+
+    def test_missing_automated_section_fails(self) -> None:
+        body = (FIXTURES / "pr_body_missing_automated.md").read_text(encoding="utf-8")
+        errors = validate_pr_test_plan_body(body)
+        self.assertTrue(errors)
+        self.assertIn("Automated", errors[0])
+
+    def test_automated_section_outside_test_plan_fails(self) -> None:
+        body = (FIXTURES / "pr_body_automated_outside_test_plan.md").read_text(
+            encoding="utf-8"
+        )
+        errors = validate_pr_test_plan_body(body)
+        self.assertTrue(errors)
+        self.assertIn("under Test plan", errors[0])
+
+    def test_fake_headings_inside_code_fence_fail(self) -> None:
+        body = (FIXTURES / "pr_body_fake_headings_in_fence.md").read_text(
+            encoding="utf-8"
+        )
+        errors = validate_pr_test_plan_body(body)
+        self.assertTrue(errors)
+        self.assertIn("Test plan", errors[0])
+
+    def test_fake_automated_heading_inside_code_fence_fails(self) -> None:
+        body = (FIXTURES / "pr_body_automated_fake_in_fence.md").read_text(
+            encoding="utf-8"
+        )
+        errors = validate_pr_test_plan_body(body)
+        self.assertTrue(errors)
+        self.assertIn("under Test plan", errors[0])
+
+    def test_mixed_fence_spoof_fails(self) -> None:
+        body = (FIXTURES / "pr_body_mixed_fence_spoof.md").read_text(
+            encoding="utf-8"
+        )
+        errors = validate_pr_test_plan_body(body)
+        self.assertTrue(errors)
+        self.assertIn("under Test plan", errors[0])
+
+    def test_weak_grep_only_checks_fail(self) -> None:
+        body = (FIXTURES / "pr_body_weak_checks.md").read_text(encoding="utf-8")
+        errors = validate_pr_test_plan_body(body)
+        joined = "\n".join(errors)
+        self.assertTrue(any("harness" in e for e in errors), msg=joined)
+        self.assertIn("grep/test -f", joined)
+
+    def test_no_checked_box_fails(self) -> None:
+        body = (FIXTURES / "pr_body_no_checked.md").read_text(encoding="utf-8")
+        errors = validate_pr_test_plan_body(body)
+        self.assertTrue(errors)
+        self.assertIn("- [x]", errors[0])
+
+    def test_good_body_with_require_checked_false_passes(self) -> None:
+        body = (FIXTURES / "pr_body_good.md").read_text(encoding="utf-8")
+        self.assertEqual(validate_pr_test_plan_body(body, require_checked=False), [])
+
+    def test_no_checked_body_with_require_checked_false_passes(self) -> None:
+        body = (FIXTURES / "pr_body_no_checked.md").read_text(encoding="utf-8")
+        self.assertEqual(validate_pr_test_plan_body(body, require_checked=False), [])
+
+    def test_cli_weak_checks_reject_exit_1(self) -> None:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(REPO_ROOT / "scripts" / "trainer_pr_body_validate.py"),
+                "--body-file",
+                str(FIXTURES / "pr_body_weak_checks.md"),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(proc.returncode, 1, msg=proc.stdout)
+        self.assertIn("FAIL", proc.stderr)
+
+    def test_cli_good_body_pass_exit_0(self) -> None:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(REPO_ROOT / "scripts" / "trainer_pr_body_validate.py"),
+                "--body-file",
+                str(FIXTURES / "pr_body_good.md"),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(proc.returncode, 0, msg=proc.stderr)
+        self.assertIn("PASS", proc.stdout)
+
+    def test_cli_missing_test_plan_reject_exit_1(self) -> None:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(REPO_ROOT / "scripts" / "trainer_pr_body_validate.py"),
+                "--body-file",
+                str(FIXTURES / "pr_body_missing_test_plan.md"),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(proc.returncode, 1, msg=proc.stdout)
+        self.assertIn("Test plan", proc.stderr)
+
+    def test_cli_no_require_checked_pass_exit_0(self) -> None:
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(REPO_ROOT / "scripts" / "trainer_pr_body_validate.py"),
+                "--body-file",
+                str(FIXTURES / "pr_body_no_checked.md"),
+                "--no-require-checked",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(proc.returncode, 0, msg=proc.stderr)
+        self.assertIn("PASS", proc.stdout)
+
+    def test_cli_stdin_good_body_pass_exit_0(self) -> None:
+        body = (FIXTURES / "pr_body_good.md").read_text(encoding="utf-8")
+        proc = subprocess.run(
+            [
+                sys.executable,
+                str(REPO_ROOT / "scripts" / "trainer_pr_body_validate.py"),
+            ],
+            input=body,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(proc.returncode, 0, msg=proc.stderr)
+        self.assertIn("PASS", proc.stdout)
+
+
 class TestR6UserFacingDocs(unittest.TestCase):
     def test_code_without_docs_fails(self) -> None:
         files = (FIXTURES / "r6_files_code_no_docs.txt").read_text().splitlines()

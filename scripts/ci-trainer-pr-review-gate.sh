@@ -140,15 +140,23 @@ contract_path = os.path.join(gate_dir, "lib", "trainer_codereview_contract.py")
 
 if verdict.upper() == "APPROVE":
     pr_body_path = os.environ.get("TRAINER_PR_BODY_FILE", "")
-    if pr_body_path and os.path.isfile(pr_body_path) and os.path.isfile(contract_path):
-        spec2 = importlib.util.spec_from_file_location("trainer_contract", contract_path)
-        if spec2 and spec2.loader:
-            mod2 = importlib.util.module_from_spec(spec2)
-            spec2.loader.exec_module(mod2)
-            pr_body = open(pr_body_path, encoding="utf-8").read()
-            for err in mod2.validate_pr_test_plan_body(pr_body, require_checked=True):
-                print(f"FAIL  PR #{pr}: PR body: {err}")
-                sys.exit(1)
+    if not pr_body_path or not os.path.isfile(pr_body_path):
+        print(f"FAIL  PR #{pr}: PR body unavailable; cannot verify Test plan")
+        sys.exit(1)
+    if not os.path.isfile(contract_path):
+        print(f"FAIL  PR #{pr}: missing PR body contract: {contract_path}")
+        sys.exit(1)
+    spec2 = importlib.util.spec_from_file_location("trainer_contract", contract_path)
+    if spec2 is None or spec2.loader is None:
+        print(f"FAIL  PR #{pr}: cannot load PR body contract: {contract_path}")
+        sys.exit(1)
+    mod2 = importlib.util.module_from_spec(spec2)
+    spec2.loader.exec_module(mod2)
+    with open(pr_body_path, encoding="utf-8") as body_file:
+        pr_body = body_file.read()
+    for err in mod2.validate_pr_test_plan_body(pr_body, require_checked=True):
+        print(f"FAIL  PR #{pr}: PR body: {err}")
+        sys.exit(1)
 
     changed_files: list[str] = []
     files_fixture = os.environ.get("TRAINER_PR_REVIEW_FILES_FIXTURE", "")
