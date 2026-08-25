@@ -663,7 +663,7 @@ After merge-back or when winding down a superset batch before laptop export:
 1. **Push** any agent branches still `[ahead]` of origin (`git -C <worktree> push -u origin <branch>`).
 2. **Prune** stale worktrees: `git -C <project> worktree prune` (removes missing/prunable entries like `/private/tmp/*`).
 3. **Optional remove** merged sandboxes: `git -C <project> worktree remove <project>/.worktrees/<task-slug>` for branches already on GitHub.
-4. **Export note:** laptop migration rsync excludes `.worktrees/` (`rsync-stale-junk-excludes.txt`); branches must be pushed first. Policy: [`EXPORT_POLICY.md`](../scripts/laptop-migration/docs/EXPORT_POLICY.md) § Worktrees.
+4. **Export note:** laptop migration rsync excludes `.worktrees/` (`rsync-stale-junk-excludes.txt`); branches must be pushed first. Policy: [`EXPORT_POLICY.md`](https://github.com/weijia-89/laptop-migration/blob/main/docs/EXPORT_POLICY.md) § Worktrees.
 
 ## Race-condition reference
 

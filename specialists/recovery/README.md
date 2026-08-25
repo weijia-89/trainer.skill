@@ -1,6 +1,6 @@
 # recovery, vibe-coded → shippable; the conditioning back to form
 
-End-to-end "vibe-coded to shippable" engagement skill. Composes [`form-check.skill`](../form-check.skill) with a deAI sweep under a single DAG workflow.
+End-to-end "vibe-coded to shippable" engagement skill. Composes [`form-check.skill`](../form-check) with a deAI sweep under a single DAG workflow.
 
 ## What this is (and isn't)
 

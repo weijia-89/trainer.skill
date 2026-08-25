@@ -4,6 +4,11 @@ All notable changes to the `trainer` skill will be documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adheres to [Semantic Versioning](https://semver.org/) with the rules below.
 
+## 2026-08-25
+
+- fix(references): close unclosed markdown template fence in trainer-github-pr-commentary.md (mid-file instruction swallow)
+- fix(specialists/recovery): correct broken form-check.skill link to ../form-check
+- fix(specialists/superset): repoint laptop-migration EXPORT_POLICY.md ref to source repo
 ## SemVer rules for this skill
 
 - **MAJOR**: routing decision flow changes; the specialist gym-skills list gains or loses entries; teaching-responsibility tier semantics change.
