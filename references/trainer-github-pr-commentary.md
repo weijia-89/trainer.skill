@@ -145,6 +145,7 @@ Then **in-app** steps under **Manual QA** in the trainer comment (navigation, ex
 
 ### Manual — test data matrix (required when scenarios need pre-seeded state)
 
+```markdown
 | Scenario | State needed | Data source |
 |----------|--------------|-------------|
 | A: … | … | demo id / fixture / create steps below |
@@ -270,7 +271,7 @@ Post **one canonical comment** per PR (PATCH on remediate). Structure:
 - Output must be: Bug inventory (findings + status) + Trainer notes + Automated verification + Sign-off only
 - Follow the standard template sections exactly; do not add "Methodology" or "Process" sections
 
-```markdown
+````markdown
 <!-- trainer-codereview-{repo}-{branch} -->
 <!-- head={7-char-sha} verdict={APPROVE|REQUEST_CHANGES|BLOCK} round={1|2} -->
 
@@ -355,7 +356,7 @@ Skill/script repos without a device QA gate (e.g. **opacite**): local automated 
 ---
 
 *Trainer routes form-check for findings; this comment adds teaching + links hands-on QA.*
-```
+````
 
 ### Trainer notes rules
 
