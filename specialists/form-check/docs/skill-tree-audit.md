@@ -10,7 +10,7 @@ audits itself across five postures (SWE / AI / QA / Cyber / DevOps).
 |---|---|
 | `tools/scan_skill_tree.py` | Structural scanner (S1–S19, C1–C9, Q1–Q6, D1–D8). Deterministic, unicode-normalized, fence-stateful, waiver-aware. |
 | `tools/gate_skill_tree.sh` | Mechanical gate. Structural scan + bash/python compile + harness compile + fence balance + secret quick-scan. Exit non-zero = RED = refuse to distribute. |
-| `scripts/build_manus_bundles.sh` | Atomic, lock-guarded, self-verifying Manus import-bundle builder. |
+| `../../scripts/build_manus_bundles.sh` | Atomic, lock-guarded, self-verifying Manus import-bundle builder. |
 | `waivers.json` | Waiver list: `{id, path_prefix, rationale}`. |
 | `tests/test_skill_tree_scan.py`, `tests/test_skill_tree_integration.sh` | Zero-dependency regression + hermetic integration tests (auto-discovered by `tests/run_all.sh`). |
 
@@ -40,7 +40,7 @@ bash tests/run_all.sh
 - **Cyber (C1–C9):** hardcoded secrets, credential egress/beacon, look-alike
   domains, over-broad glob, secrets in context, symlink escape, world-writable,
   `.env*`/id_ files, prompt-injection (prose via `INJECT_RE` + second-opinion
-  `scan_prompt_injection.sh`; code via `INJECT_RE`).
+  `tools/scan_prompt_injection.sh`; code via `INJECT_RE`).
 - **QA (Q1–Q6):** no tests, shell sanity, py compile, harness compile, gitignore
   drift, unpinned upstream SHAs.
 - **DevOps (D1–D8):** bash `set -euo pipefail`, lock guard, atomic staging,
@@ -62,5 +62,5 @@ Waiver-less P0–P3 => gate RED.
 
 - Missing/empty `SKILL_TREE_ROOT` => scanner exits non-zero (never a silent pass).
 - Gate crashes => RED (never judges stale findings).
-- `build_manus_bundles.sh` refuses to run unless `gate_skill_tree.sh` is GREEN.
+- `../../scripts/build_manus_bundles.sh` refuses to run unless `tools/gate_skill_tree.sh` is GREEN.
 - Any symlink in source => bundle build refused (zip follows symlinks).

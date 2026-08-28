@@ -1,7 +1,7 @@
 # Skill-tree posture checklists
 
 The 5-posture standing audit. Use these when reviewing changes to skill tooling,
-or as the rubric `scan_skill_tree.py` enforces. Severity bands: P0 (blocker) →
+or as the rubric `tools/scan_skill_tree.py` enforces. Severity bands: P0 (blocker) →
 P3 (watch). Green == 0 open P0–P3 after waivers.
 
 ## SWE posture (S)
