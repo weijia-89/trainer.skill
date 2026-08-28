@@ -29,3 +29,7 @@ build/
 # Local skill state (calibration logs are per-project, not per-skill)
 .code-fixer/
 .agent/
+
+# Standing skill-tree audit: local scan output (regenerated on demand)
+findings-skill-tree.json
+form-check-local/
