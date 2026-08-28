@@ -125,7 +125,7 @@ def test_secret_planted_caught():
 
 def test_waivers_ids_known():
     import json as _j
-    wv = _j.load(open(TOOLS.parent / "WAIVERS.json"))["waivers"]
+    wv = _j.load(open(TOOLS.parent / "waivers.json"))["waivers"]
     known = {"S1","S2","S3","S4","S5","S8","S11","S12","S13","A8","A12",
              "C1","C2","C5","C6","C7","C8","C9","C11","FENCE"}
     bad = [w["id"] for w in wv if w["id"] not in known]
@@ -150,7 +150,7 @@ def test_gate_red_on_malformed_waivers():
     with tempfile.TemporaryDirectory() as d:
         d = Path(d)
         audit = d / "audit"; audit.mkdir()
-        (audit / "WAIVERS.json").write_text("{ not json")
+        (audit / "waivers.json").write_text("{ not json")
         s = d / "ok"; s.mkdir()
         (s / "SKILL.md").write_text("---\nname: ok\ndescription: x\n---\n")
         out = d / "f.json"

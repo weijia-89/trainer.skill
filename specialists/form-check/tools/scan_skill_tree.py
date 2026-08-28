@@ -294,7 +294,7 @@ total_desc_bytes = sum(len(frontmatter(p.read_text(errors='ignore')).split('desc
 add("A12", "P4", "(tree)", "(aggregate)", 0, f"context budget: ~{len(skills)} skills advertised; description payload ≈{total_desc_bytes//1024}KB (~{total_desc_bytes//4//1024}Ktok) loaded every session", "cat */SKILL.md | wc -c")
 
 OUT.parent.mkdir(parents=True, exist_ok=True)
-OUT.write_text(json.dumps(findings, indent=1))
+OUT.write_text(json.dumps(findings, indent=1, ensure_ascii=False), encoding="utf-8")
 sev_order = {"P0":0,"P1":1,"P2":2,"P3":3,"P4":4}
 for f in sorted(findings, key=lambda x: sev_order[x["sev"]]):
     print(f'{f["sev"]}\t{f["id"]}\t{f["skill"]}\t{f["path"]}:{f["line"]}\t{f["finding"][:150]}')

@@ -24,7 +24,7 @@ if ! SKILL_TREE_ROOT="$ROOT" SKILL_TREE_OUT="${SKILL_TREE_OUT:-$AUDIT/findings-s
   FAIL=1
 else
   FINDINGS="${SKILL_TREE_OUT:-$AUDIT/findings-skill-tree.json}"
-  if ! python3 "$AUDIT/tools/gate_subs.py" waivers "$FINDINGS" "$AUDIT/WAIVERS.json"; then FAIL=1; fi
+  if ! python3 "$AUDIT/tools/gate_subs.py" waivers "$FINDINGS" "$AUDIT/waivers.json"; then FAIL=1; fi
 fi
 
 echo "== gate: bash syntax =="
@@ -39,7 +39,7 @@ echo "== gate: harness compile (the audit tooling itself) =="
 if ! python3 "$AUDIT/tools/gate_subs.py" compile "$AUDIT/tools"; then FAIL=1; fi
 
 echo "== gate: fences (stateful, fixture-validated, waiver-aware) =="
-if ! python3 "$AUDIT/tools/gate_subs.py" fence "$ROOT" "$AUDIT/WAIVERS.json"; then FAIL=1; fi
+if ! python3 "$AUDIT/tools/gate_subs.py" fence "$ROOT" "$AUDIT/waivers.json"; then FAIL=1; fi
 
 echo "== gate: secrets quick-scan =="
 if grep -rqE --exclude-dir=.git 'gh[posu]_[A-Za-z0-9]{20,}|BEGIN [A-Z ]*PRIVATE KEY' "$ROOT" --include='*.py' --include='*.sh' --include='*.js' --include='*.cjs' --include='*.mjs' 2>/dev/null; then echo "  SECRET-LIKE MATCH IN CODE"; FAIL=1; else echo "  clean"; fi
