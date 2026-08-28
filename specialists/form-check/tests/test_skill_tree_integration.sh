@@ -4,8 +4,13 @@
 # Uses a SMALL SYNTHETIC skills tree (not the 52M real one) so the suite is
 # fast and hermetic; it exercises pipeline logic (gate, atomicity, guards,
 # scoped delete), not the content of the real skills.
-set -uo pipefail
-TOOLS="${1:-$(cd "$(dirname "$0")/../tools" && pwd)}"
+set -euo pipefail
+# Tool presence guards (generation gate requires command -v for each external tool).
+for t in bash mkdir ls diff rm find zip unzip python3; do
+  command -v "$t" >/dev/null 2>&1 || { echo "missing required tool: $t" >&2; exit 1; }
+done
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TOOLS="${1:-$SCRIPT_DIR/../tools}"
 WORK="${2:-$(mktemp -d)}"
 trap 'rm -rf "$WORK"' EXIT
 SRC="$WORK/src"; DIST="$WORK/dist"; LOCK="$WORK/lock"
@@ -39,8 +44,7 @@ pub_before=$(ls "$DIST"/*.zip 2>/dev/null | wc -l | tr -d ' ')
 echo "  [int] atomic build: zip fault -> rc=3, published set intact, staging gone"
 printf '#!/bin/bash\nfor a in "$@"; do case "$a" in *c*) exit 3;; esac; done\nexec /usr/bin/zip "$@"\n' > "$WORK/shimzip"
 chmod +x "$WORK/shimzip"; mkdir -p "$WORK/shimdir"; cp "$WORK/shimzip" "$WORK/shimdir/zip"
-PATH="$WORK/shimdir:$PATH" bash "$TOOLS/../../../scripts/build_manus_bundles.sh" >/dev/null 2>&1
-fr=$?
+env PATH="$WORK/shimdir:$PATH" bash "$TOOLS/../../../scripts/build_manus_bundles.sh" >/dev/null 2>&1 || fr=$?
 pub=$(ls "$DIST"/*.zip 2>/dev/null | wc -l | tr -d ' ')
 if [ "$fr" -ne 3 ]; then echo "    FAIL: expected rc=3 got $fr"; RC=1; fi
 if [ "$pub" -ne "$expect" ]; then echo "    FAIL: published set changed under fault pub=$pub expect=$expect"; RC=1; fi
@@ -58,7 +62,7 @@ if ! diff -q "$WORK/a.txt" "$WORK/b.txt" >/dev/null; then echo "    FAIL: non-id
 
 echo "  [int] min-count guard: tiny SRC (1 skill < SYNC_MIN_DIRS=2) -> refuse (rc=1)"
 tiny="$WORK/tiny"; mkdir -p "$tiny/onlyone"; mk_skill "$tiny/onlyone"
-SYNC_SRC="$tiny" bash "$TOOLS/../../../scripts/build_manus_bundles.sh" >/dev/null 2>&1; trc=$?
+SYNC_SRC="$tiny" bash "$TOOLS/../../../scripts/build_manus_bundles.sh" >/dev/null 2>&1 || trc=$?
 if [ "$trc" -ne 1 ]; then echo "    FAIL: min-count guard did not abort rc=$trc"; RC=1; fi
 
 echo "  [int] destructive delete scoped: operator zip in DIST survives + build GREEN"
@@ -72,7 +76,7 @@ rm -f "$DIST/operator-kept.zip"
 echo "  [int] gate enforced before build: break a skill -> build refuses"
 mkdir -p "$SRC/broken_skill"
 printf -- 'no frontmatter here\n' > "$SRC/broken_skill/SKILL.md"
-bash "$TOOLS/../../../scripts/build_manus_bundles.sh" >/dev/null 2>&1; grc=$?
+bash "$TOOLS/../../../scripts/build_manus_bundles.sh" >/dev/null 2>&1 || grc=$?
 if [ "$grc" -ne 1 ]; then echo "    FAIL: build proceeded with RED gate rc=$grc"; RC=1; fi
 rm -rf "$SRC/broken_skill"
 

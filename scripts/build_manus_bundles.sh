@@ -12,6 +12,11 @@
 # (SYNC_SRC / SYNC_DIST / SYNC_LOCK / SYNC_MIN_DIRS) for hermetic tests.
 set -euo pipefail
 
+# Tool presence guards (generation gate requires command -v for each external tool).
+for t in bash find zip unzip mv rm ls mkdir python3; do
+  command -v "$t" >/dev/null 2>&1 || { echo "missing required tool: $t" >&2; exit 1; }
+done
+
 SRC="${SYNC_SRC:-$HOME/.config/opencode/skills}"
 DIST="${SYNC_DIST:-$HOME/Projects/skill-dist/manus}"
 LOCK="${SYNC_LOCK:-/tmp/opencode/build_manus_bundles.lock}"
@@ -23,7 +28,7 @@ MIN_DIRS="${SYNC_MIN_DIRS:-50}"
 # Fail-closed: never publish a tree the gate has not certified.
 if [ "${SYNC_SKIP_GATE:-0}" != "1" ]; then
   echo "[pre] gate: gate_skill_tree.sh"
-  if ! bash "$(dirname "$0")/../specialists/form-check/tools/gate_skill_tree.sh" >/dev/null 2>&1; then
+  if ! GATE_ROOT="$SRC" bash "$(dirname "$0")/../specialists/form-check/tools/gate_skill_tree.sh" >/dev/null 2>&1; then
     echo "FATAL: gate_skill_tree.sh is RED — refusing to build bundles (run it to see findings)" >&2
     exit 1
   fi
@@ -63,7 +68,7 @@ if [ -n "$(find "$SRC" -type l -print -quit 2>/dev/null)" ]; then
 fi
 for d in "$SRC"/*/; do
   n=$(basename "$d")
-  (cd "$d" && zip -qr "$STAGE/$n.zip" . -x '.git/*' -x '.git/' -x '.DS_Store' -x 'node_modules/*')
+  ( cd "$d" || exit 1; zip -qr "$STAGE/$n.zip" . -x '.git/*' -x '.git/' -x '.DS_Store' -x 'node_modules/*' )
 done
 
 stage_zips=$(find "$STAGE" -maxdepth 1 -name '*.zip' | wc -l | tr -d ' ')
@@ -73,7 +78,7 @@ if [ "$stage_zips" -ne "$src_dirs" ]; then
 fi
 
 echo "[2/3] Manus import bundle fidelity spot-check"
-# NOTE: no `grep -q` here -- under pipefail it SIGPIPEs the producer (exit 141)
+# NOTE: no grep -q here -- under pipefail it SIGPIPEs the producer (exit 141)
 # and flips the condition false on large archives. Consume the stream instead.
 # Verify EVERY bundle is non-empty, and that each skill which has a nested
 # subdirectory in $SRC kept that subtree in its zip (no hardcoding of a single

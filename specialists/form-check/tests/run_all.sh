@@ -18,7 +18,7 @@ SKILL_DIR="$(dirname "${SCRIPT_DIR}")"
 SKILLS_PARENT="$(dirname "${SKILL_DIR}")"
 
 # 1. Pycache cleanup. Pycache poisoning has bitten us in v2.1.0; always start clean.
-find "${SKILLS_PARENT}/form-check.skill" "${SKILLS_PARENT}/recovery.skill" \
+find "${SKILLS_PARENT}/form-check" "${SKILLS_PARENT}/recovery" \
     -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
 
 # 2. Discover and run every test in this skill.
