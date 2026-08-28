@@ -2,29 +2,75 @@
 # gate_subs.py — sub-checks invoked by gate_skill_tree.sh (kept as a real .py so
 # the generation gate's shell-tool scanner does not flag the embedded logic).
 # Usage: python3 gate_subs.py <waivers|compile|fence> [args...]
+#
+# The CLI entrypoint is guarded by ``__main__`` so the pure helpers below are
+# importable and unit-testable without executing the dispatch at import time.
 import json, sys, fnmatch, pathlib, py_compile, tempfile, os
 from pathlib import Path
 
-
-def cmd_waivers(args):
-    findings = json.load(open(args[0]))
-    waivers = json.load(open(args[1]))["waivers"]
-
-    def waived(f):
-        for w in waivers:
-            if f["id"] == w["id"] and fnmatch.fnmatch(f["path"], w["path_prefix"] + "*"):
-                return True
-        return False
-
-    open_f = [f for f in findings if f["sev"] in ("P0", "P1", "P2", "P3") and not waived(f)]
-    print(f"open P0-P3 after waivers: {len(open_f)}")
-    for f in open_f[:15]:
-        print("  OPEN:", f["sev"], f["id"], f["path"], "-", f["finding"][:90])
-    sys.exit(1 if open_f else 0)
+FENCE_OPEN = chr(96) * 3
+MAX_FENCE_TICKS = 40
 
 
-def cmd_compile(args):
-    root = pathlib.Path(args[0])
+def waived_finding(finding, waivers):
+    """True if a P0-P3 finding matches a waiver (id + path_prefix glob)."""
+    fpath = finding.get("path", "")
+    for w in waivers:
+        if finding.get("id") == w.get("id") and fnmatch.fnmatch(fpath, w.get("path_prefix", "") + "*"):
+            return True
+    return False
+
+
+def open_findings(findings, waivers):
+    """P0-P3 findings with no matching waiver (these block the gate)."""
+    out = []
+    for f in findings:
+        if f.get("sev") in ("P0", "P1", "P2", "P3") and not waived_finding(f, waivers):
+            out.append(f)
+    return out
+
+
+def fence_balanced(text):
+    """Stateful code-fence balance per CommonMark opening/closing rules.
+
+    A fence line is backticks (3..MAX_FENCE_TICKS) optionally followed by an
+    info string. A line carrying an info string is always an *opener* (this is
+    what lets nested fences with differing tick counts be detected). A bare
+    backticks line (no info string) is a *closer* when its tick count is >= the
+    top of the open-fence stack, otherwise it is text inside a fence. Returns
+    True only when every opener is closed.
+    """
+    stack = []
+    for line in text.splitlines():
+        s = line.lstrip()
+        if not s.startswith(FENCE_OPEN):
+            continue
+        st = s.rstrip()
+        ticks = len(st) - len(st.lstrip(chr(96)))
+        if ticks < 3 or ticks > MAX_FENCE_TICKS:
+            continue
+        has_info = len(st) > ticks
+        if has_info:
+            stack.append(ticks)
+        elif not stack:
+            stack.append(ticks)
+        elif ticks >= stack[-1]:
+            stack.pop()
+        # else: bare backticks with ticks < top of stack -> text, ignore
+    return not stack
+
+
+def fence_waived(rel, waivers):
+    """True if a relative path is waived under the FENCE waiver id."""
+    return any(
+        w.get("id") == "FENCE" and fnmatch.fnmatch(rel, w.get("path_prefix", "") + "*")
+        for w in waivers
+    )
+
+
+def compile_python(root):
+    """Compile every .py under root (excluding node_modules). Returns (n, bad)."""
+    root = pathlib.Path(root)
     tmp = tempfile.mkdtemp()
     bad = 0
     n = 0
@@ -34,9 +80,23 @@ def cmd_compile(args):
         n += 1
         try:
             py_compile.compile(str(p), doraise=True, cfile=os.path.join(tmp, "c.pyc"))
-        except Exception as e:
+        except Exception:
             bad += 1
-            print("  PY FAIL:", p.relative_to(root))
+    return n, bad
+
+
+def cmd_waivers(args):
+    findings = json.load(open(args[0]))
+    waivers = json.load(open(args[1])).get("waivers", [])
+    open_f = open_findings(findings, waivers)
+    print(f"open P0-P3 after waivers: {len(open_f)}")
+    for f in open_f[:15]:
+        print("  OPEN:", f["sev"], f["id"], f["path"], "-", f["finding"][:90])
+    sys.exit(1 if open_f else 0)
+
+
+def cmd_compile(args):
+    n, bad = compile_python(args[0])
     print(f"  checked={n} failures={bad}")
     sys.exit(1 if bad else 0)
 
@@ -48,38 +108,15 @@ def cmd_fence(args):
         waivers = json.load(open(wv)).get("waivers", [])
     except Exception:
         waivers = []
-
-    def waived(rel):
-        return any(
-            w["id"] == "FENCE" and fnmatch.fnmatch(rel, w["path_prefix"] + "*")
-            for w in waivers
-        )
-
-    B = chr(96)
-
-    def balanced(text):
-        opener = None
-        for line in text.splitlines():
-            s = line.lstrip()
-            if not s.startswith(B * 3):
-                continue
-            st = s.rstrip()
-            ticks = len(st) - len(st.lstrip(B))
-            if opener is None:
-                opener = ticks
-            elif ticks >= opener and st == B * ticks and ticks <= 40:
-                opener = None
-        return opener is None
-
     raw = []
     for p in root.rglob("*.md"):
         try:
             t = p.read_text(errors="ignore")
         except Exception:
             continue
-        if not balanced(t):
+        if not fence_balanced(t):
             rel = str(p.relative_to(root))
-            if not waived(rel):
+            if not fence_waived(rel, waivers):
                 raw.append(rel)
     print(f"  unclosed-fence files (unwaived)={len(raw)}")
     for b in raw:
@@ -88,4 +125,15 @@ def cmd_fence(args):
 
 
 DISPATCH = {"waivers": cmd_waivers, "compile": cmd_compile, "fence": cmd_fence}
-DISPATCH[sys.argv[1]](sys.argv[2:])
+
+
+def main(argv):
+    if len(argv) < 2 or argv[1] not in DISPATCH:
+        sys.stderr.write("usage: gate_subs.py <waivers|compile|fence> [args...]\n")
+        return 2
+    DISPATCH[argv[1]](argv[2:])
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))
