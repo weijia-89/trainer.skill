@@ -10,6 +10,21 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 Downstream skills (e.g. `code-fixer.skill`) pin a `composes.version` range. PATCH-level upstream changes are auto-compatible; MINOR triggers a recommended bump; MAJOR breaks the constraint.
 
+## [3.2.0], 2026-08-28, Standing skill-tree audit tooling
+
+MINOR (new capability; no breaking changes to existing checklists/rubrics).
+
+- **New standing audit tooling** for the skill tree itself (5-posture SWE/AI/QA/Cyber/DevOps scan, fail-closed gate, and Manus-bundle builder). Born from a 44-finding audit of the audit harness; the harness now audits itself.
+  - `tools/scan_skill_tree.py` — zero-dependency structural scanner (S1–S19 SWE, C1–C9 Cyber, Q1–Q6 QA, D1–D8 DevOps). Deterministic, unicode-normalized, fence-stateful, waiver-aware, fail-closed on missing root.
+  - `tools/gate_skill_tree.sh` — mechanical gate (structural scan + bash/python compile + harness compile + fence balance + secret quick-scan). Exit non-zero = RED = refuse to distribute.
+  - `scripts/build_manus_bundles.sh` — atomic, lock-guarded, self-verifying Manus import-bundle builder (symlink refusal, fidelity spot-check, scoped delete, no Claude-mirror coupling).
+  - `waivers.json` — schema-aligned waiver list (id + path_prefix + rationale); 13 waivers carried from the audit.
+  - `tests/test_skill_tree_scan.py`, `tests/test_skill_tree_integration.sh` — zero-dependency regression + hermetic integration tests (auto-discovered by `tests/run_all.sh`).
+  - `docs/skill-tree-audit.md`, `docs/skill-tree-posture-checklists.md` — operating docs + the 5-posture checklists.
+- **Prompt-injection (C9) coverage**: prose `.md` scanned by `scan_skill_tree.py` (comprehensive `INJECT_RE`) AND cross-checked via this skill's canonical `scan_prompt_injection.sh` (second opinion, deduped) — recall preserved, no single-source regressions.
+- **`checklists/codebase_scan.md`** extended with secret/egress/sensitive-file items pointing at the new scanner.
+- All 13 existing form-check tests still pass; new tests added (scanner GREEN, integration GREEN).
+
 ## [3.1.0], 2026-05-16, Phase 9 token trim
 
 MINOR (no breaking changes; compression only).

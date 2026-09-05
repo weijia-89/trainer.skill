@@ -106,8 +106,21 @@ def should_skip(ref: str, citing: Path) -> bool:
     return False
 
 
+def normalize_ref(ref: str) -> str:
+    """The skill tree is deployed as `form-check` / `recovery` (no `.skill`
+    suffix), but historical docs reference `form-check.skill` / `recovery.skill`.
+    Strip a trailing `.skill` from the first path component so the checker
+    resolves against the real on-disk layout instead of failing on naming drift.
+    """
+    head, sep, tail = ref.partition("/")
+    if head.endswith(".skill"):
+        head = head[: -len(".skill")]
+    return head + sep + tail
+
+
 def resolve(ref: str, citing: Path) -> bool:
     """Return True if any candidate path exists."""
+    ref = normalize_ref(ref)
     candidates = [(citing.parent / ref).resolve()]
     for root in SKILLS:
         candidates.append((root / ref).resolve())

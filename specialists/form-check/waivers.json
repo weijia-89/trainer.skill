@@ -1,0 +1,225 @@
+{
+ "_comment": "Waived findings accepted with evidence during 2026-08-25 audit loops. Gate ignores P2 matches here.",
+ "waivers": [
+  {
+   "id": "C2",
+   "path_prefix": "brainstorming/scripts/server.cjs",
+   "reason": "beacon constant hard-disabled L112; string constants dead"
+  },
+  {
+   "id": "C5",
+   "path_prefix": "brainstorming/scripts/server.cjs",
+   "reason": "exec() requires operator-set BRAINSTORM_OPEN_CMD + --open flag"
+  },
+  {
+   "id": "C5",
+   "path_prefix": "deai/deai-corpus.py",
+   "reason": "os.system self-invocation, operator CLI args; hardening advisory P4"
+  },
+  {
+   "id": "C5",
+   "path_prefix": "scholia/literature/cs-ai-textbook-canon/study_guide/daily/notes.js",
+   "reason": "RegExp.exec x3, not process spawn"
+  },
+  {
+   "id": "C5",
+   "path_prefix": "writing-skills/render-graphs.js",
+   "reason": "audited graphviz renderer"
+  },
+  {
+   "id": "C2",
+   "path_prefix": "deai/deai-scan.py",
+   "reason": "AI-tell wordlist contains word 'beacon'"
+  },
+  {
+   "id": "C2",
+   "path_prefix": "harcompress/har_to_pdf.py",
+   "reason": "request-category classifier strings"
+  },
+  {
+   "id": "C2",
+   "path_prefix": "deai/check/watermark_proxy.py",
+   "reason": "norvig.com citation in comments"
+  },
+  {
+   "id": "S4",
+   "path_prefix": "gnhf/SKILL.md",
+   "reason": "../../README.md = source-repo layout artifact of flat install"
+  },
+  {
+   "id": "S4",
+   "path_prefix": "piranesi/SKILL.md",
+   "reason": "upstream stale ref chatprd-attach-packs.md (missing upstream too); flagged for upstream PR"
+  },
+  {
+   "id": "S4",
+   "path_prefix": "simple-english/README.md",
+   "reason": ".github excluded by install design"
+  },
+  {
+   "id": "S4",
+   "path_prefix": "trainer/specialists/superset/SKILL.md",
+   "reason": "cross-repo ref unmet even in fresh clone; upstream bug flagged"
+  },
+  {
+   "id": "S4",
+   "path_prefix": "trainer/specialists/recovery/README.md",
+   "reason": "upstream naming drift form-check.skill vs form-check/"
+  },
+  {
+   "id": "S4",
+   "path_prefix": "writing-skills/anthropic-best-practices.md",
+   "reason": "refs Anthropic repo siblings not shipped"
+  },
+  {
+   "id": "S4",
+   "path_prefix": "domain-modeling/CONTEXT-FORMAT.md",
+   "reason": "illustrative example paths"
+  },
+  {
+   "id": "S4",
+   "path_prefix": "trainer/specialists/form-check/templates/README_archetypes/monorepo.md",
+   "reason": "template placeholders apps/*/README.md"
+  },
+  {
+   "id": "S4",
+   "path_prefix": "scholia/literature",
+   "reason": "foreign-machine absolute paths baked into corpus exports"
+  },
+  {
+   "id": "S4",
+   "path_prefix": "deai/research/deai-tic-voice-craft-canon/piranesi_exports/stage1_chatprd_filled.md",
+   "reason": "export-bundle relative path artifact"
+  },
+  {
+   "id": "C2",
+   "path_prefix": "scholia/literature/cs-ai-textbook-canon/study_guide/daily/notes.js",
+   "reason": "same-origin /api/note fetch, hostname-gated localhost only"
+  },
+  {
+   "id": "C2",
+   "path_prefix": "trainer/specialists/form-check/tests/pressure_scenarios/hallucination_floor/confident_wrong_api/pass_criteria.py",
+   "reason": "eval-rubric regex naming hallucinated APIs as fail-conditions"
+  },
+  {
+   "id": "C2",
+   "path_prefix": "trainer/specialists/form-check/tests/pressure_scenarios/manual_audit/prep_trial.sh",
+   "reason": "echo'd manual-trial instructions for human operator"
+  },
+  {
+   "id": "C2",
+   "path_prefix": "trainer/specialists/form-check/tests/pressure_scenarios/vibe_dangerous_classification/secrets_near_staging/pass_criteria.py",
+   "reason": "rubric wordlist (sentry/segment as danger signals)"
+  },
+  {
+   "id": "C2",
+   "path_prefix": "wizard/template.sh",
+   "reason": "opens vendor dashboards in human browser via open_url; audited CLEAN"
+  },
+   {
+    "id": "FENCE",
+    "path_prefix": "triage/OUT-OF-SCOPE.md",
+    "reason": "upstream triage doc; unclosed fence is illustrative of an .out-of-scope file block"
+   },
+   {
+    "id": "FENCE",
+    "path_prefix": "deai/slackbot-aicheck-prompt.md",
+    "reason": "prompt template; fence shows a literal code block for the model"
+   },
+   {
+    "id": "FENCE",
+    "path_prefix": "requesting-code-review/code-reviewer.md",
+    "reason": "reviewer rubric doc; intentional illustrative fence"
+   },
+   {
+    "id": "FENCE",
+    "path_prefix": "trainer/references/trainer-github-pr-commentary.md",
+    "reason": "PR-commentary template; illustrative fence"
+   },
+   {
+    "id": "FENCE",
+    "path_prefix": "trainer/specialists/form-check/templates/CLAUDE.md_scaffold.md",
+    "reason": "scaffold template; file exists to show fence syntax"
+   },
+   {
+    "id": "FENCE",
+    "path_prefix": "trainer/specialists/form-check/templates/ARCHITECTURE.md_template.md",
+    "reason": "template; shows fence syntax"
+   },
+   {
+    "id": "FENCE",
+    "path_prefix": "trainer/specialists/form-check/templates/README_archetypes/cli.md",
+    "reason": "archetype template; shows fence syntax"
+   },
+   {
+    "id": "FENCE",
+    "path_prefix": "trainer/specialists/form-check/templates/README_archetypes/monorepo.md",
+    "reason": "archetype template; shows fence syntax"
+   },
+   {
+    "id": "FENCE",
+    "path_prefix": "trainer/specialists/form-check/templates/README_archetypes/library.md",
+    "reason": "archetype template; shows fence syntax"
+   },
+   {
+    "id": "FENCE",
+    "path_prefix": "trainer/specialists/form-check/templates/README_archetypes/service.md",
+    "reason": "archetype template; shows fence syntax"
+   },
+   {
+    "id": "FENCE",
+    "path_prefix": "vibe-check/references/PROMPT_GEMINI_DEEP_RESEARCH_v2.md",
+    "reason": "prompt file; literal fence is part of the prompt"
+   },
+   {
+    "id": "FENCE",
+    "path_prefix": "vibe-check/references/PROMPT_CALIBRATION_AGENT.md",
+    "reason": "prompt file; literal fence is part of the prompt"
+   },
+   {
+    "id": "FENCE",
+    "path_prefix": "scholia/prompts/r01-corpus-session-banter-kickoff.md",
+    "reason": "ingested prompt corpus; literal fence is part of the prompt"
+   },
+  {
+   "id": "C2",
+   "path_prefix": "vibe-check/",
+   "reason": "opt-in local JSONL telemetry via VIBE_CHECK_TELEMETRY_DIR; no network"
+  },
+   {
+    "id": "C2",
+    "path_prefix": "mashit/",
+    "reason": "doi.org regex string literals for markdown link generation"
+   },
+   {
+    "id": "C9",
+    "path_prefix": "trainer/specialists/form-check/tests",
+    "reason": "form-check's own prompt-injection DETECTION test corpus; strings are fixtures/expectations, not agent instructions"
+   },
+   {
+    "id": "C9",
+    "path_prefix": "scholia/literature",
+    "reason": "ingested academic book text; 'jailbreak' is a topic word, not an agent instruction"
+   },
+   {
+    "id": "C9",
+    "path_prefix": "trainer/specialists/form-check/agent-runtime/prompt_injection.md",
+    "reason": "form-check's own prompt-injection reference documentation; describes the threat, not an agent instruction"
+   },
+   {
+    "id": "C11",
+    "path_prefix": "trainer/scripts/trainer_manual_test_block.sh",
+    "reason": "trainer's manual-test-block harness; 'git pull --ff-only origin {branch}' has a {branch} placeholder, operator-run, not model-auto-executed"
+   },
+   {
+    "id": "C11",
+    "path_prefix": "git-guardrails-claude-code/scripts/block-dangerous-git.sh",
+    "reason": "'git push' is a DANGEROUS_PATTERNS entry the guardrail BLOCKS; not executed"
+   },
+   {
+    "id": "C11",
+    "path_prefix": "trainer/scripts/install_hooks.sh",
+    "reason": "'git push' appears only inside an echo instruction; script installs a pre-push hook, never executes push"
+   }
+  ]
+ }

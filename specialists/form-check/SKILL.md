@@ -3,8 +3,8 @@ name: form-check
 description: |
   Use when planning a new app, reviewing a code change, hardening before launch, or adversarially reviewing existing code. Symptoms: AI invents APIs or package names, large diff without tests, irreversible operations suggested, secrets near staging, deletion paths, prompt injection in input, "is this ready to ship," tier-classification needed.
 type: project-skill
-version: 3.1.0
-authors: Wei Jia (1.0, 2026-04); rewrite 2026-05-14; v3 evidence-base audit + Iron Law layering 2026-05-16; v3.1 Phase 9 token trim 2026-05-16
+version: 3.2.0
+authors: Wei Jia (1.0, 2026-04); rewrite 2026-05-14; v3 evidence-base audit + Iron Law layering 2026-05-16; v3.1 Phase 9 token trim 2026-05-16; v3.2 standing skill-tree audit tooling 2026-08-28
 license: MIT
 required_tools: [file_read, grep]
 recommended_tools: [shell, git, web_search]

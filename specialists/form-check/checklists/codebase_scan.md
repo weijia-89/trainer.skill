@@ -61,8 +61,13 @@ Three quick scans:
 - [ ] **Auth / authz code**, `grep -RE 'auth|require_user|@login_required|isAuthenticated|hasPermission'`. Note the patterns; auth is the highest-leverage area for both bugs and security issues.
 - [ ] **Destructive operations**, `grep -RE 'delete|DROP|TRUNCATE|rm -rf|os\.remove|shutil\.rmtree'`. Know where these are before any incident.
 - [ ] **External calls**, `grep -RE 'fetch|axios|requests\.|http\.|urlopen'`. Each external call is a failure mode you can't unit-test.
+- [ ] **Secrets / credentials**, `grep -RE 'gh[op]?_<token>|sk-<token>|AKIA<id>|BEGIN ... PRIVATE KEY|Bearer |api[_-]?key|password|token'`. Any literal credential is a leak waiting to happen; flag and rotate, never commit.
+- [ ] **Outbound egress**, `grep -RE 'https?://|ftps?://'` and review each host. Unpinned/unexpected destinations are exfil or supply-chain risk; an egress allowlist beats an allowlist-of-none.
+- [ ] **Sensitive / dotfiles**, `find . -name '.env*' -o -name 'id_*' -o -name '*secret*'`. These must never ride along into a published bundle or a prompt context.
 
 For each found pattern: note the file, line, and a one-phrase description. This becomes your reference map for *any future intervention* in this codebase.
+
+> **Standing skill-tree audit.** The skill tree itself is a codebase. `form-check/tools/scan_skill_tree.py` automates the four scans above (plus SWE/QA/DevOps postures) as a zero-dependency, waiver-aware, fail-closed scanner; `tools/gate_skill_tree.sh` turns its output into a distribute/refuse decision. Run `tests/run_all.sh` after any change to skill tooling. See `docs/skill-tree-audit.md`.
 
 ## §5, The test-coverage scan
 

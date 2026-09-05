@@ -30,7 +30,7 @@ Walk this once per engagement to ensure you're not drifting into common ways the
 
 **Failure mode**: API reference docstrings are *required* to be uniform-shape for tooling to extract them. The deAI rules are for *prose*, not for API reference.
 
-**Defense**: Per-archetype overlay (`templates/deai_rules.md`). API-reference overlay drops conversational hedges and allows uniform docstring shape. Skill self-test respects archetype.
+**Defense**: Per-archetype overlay (`recovery/templates/deai_rules.md`). API-reference overlay drops conversational hedges and allows uniform docstring shape. Skill self-test respects archetype.
 
 ## A4. Treating tier numbers as fixed truth pre-calibration
 
@@ -54,7 +54,7 @@ Walk this once per engagement to ensure you're not drifting into common ways the
 
 **Failure mode**: Different docs serve different consumers and conventions. Conversational SECURITY is alarming; academic README is dry.
 
-**Defense**: Per-archetype voice (`templates/doc_voice.md`).
+**Defense**: Per-archetype voice (`recovery/templates/doc_voice.md`).
 
 ## A7. Walking every checklist on every change
 
