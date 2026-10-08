@@ -3,7 +3,7 @@ name: recovery
 description: |
   Use when running a multi-day quality engagement on a whole project, vibe-coded to shippable, hardening before launch, end-to-end review with scorecard. Symptoms: project that "needs hardening," launch-ready check, full engagement vs single PR review.
 type: project-skill
-version: 3.0.0
+version: 3.0.1
 authors: Wei Jia (1.0, 2026-04); rewrite 2026-05-14; v3 Iron Law layering + composes-pin to form-check@>=3 2026-05-16
 license: MIT
 required_tools: [file_read, grep]
@@ -15,8 +15,8 @@ composes:
     pinned_components:
       - rubrics/confidence_score.md@3.0.0
       - rubrics/vibe_safety_map.md@2.0.0
-      - checklists/INDEX.md@2.0.0
-      - references/notes.md@3.0.0
+      - checklists/INDEX.md@2.1.0
+      - references/notes.md@3.1.0
 ---
 
 # recovery, vibe-coded → shippable; the conditioning back to form
@@ -198,7 +198,7 @@ If the engagement should abort (user signal, scope mismatch, security concerns, 
 
 - Not a feature-implementation tool. Reviews, scores, hardens, doc-passes, deAI-sweeps. Does not write feature code.
 - Not a substitute for security audit on vibe-dangerous surfaces.
-- Not for projects without form-check context (host must have `form-check@>=2.0.0,<3.0.0` available).
+- Not for projects without form-check context (host must have `form-check@>=3.0.0,<4.0.0` available).
 
 ## Section 11, Mini-runbook
 

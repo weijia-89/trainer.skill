@@ -10,6 +10,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 Downstream skills (e.g. `code-fixer.skill`) pin a `composes.version` range. PATCH-level upstream changes are auto-compatible; MINOR triggers a recommended bump; MAJOR breaks the constraint.
 
+## [3.3.0], 2026-10-08, Code-shape checklist
+
+MINOR (new checklist; no change to rubrics or weights).
+
+- **New `checklists/code_shape.md`**: error-path handling, assertions vs validation, bounded loops, function size, control-flow shape, naming, single-copy state. Items 1 and 2 carry empirical evidence; items 3 to 7 are labeled expert-opinion and never block a merge.
+- Routed from `checklists/INDEX.md`; cross-referenced from `checklists/bug_class_audit.md`. `checklists/INDEX.md` bumped to 2.1.0 and `references/notes.md` to 3.1.0 (content changed); `recovery` 3.0.1 pins the new versions.
+- Citations added: `YUAN-2014`, `CASALNUOVO-2015`, `ELEMAM-2001`, `POWER-OF-TEN-2006`, `TIGER-STYLE`, `PYTHON-ASSERT-DOCS`.
+- **Gate fixes** (skill-tree gate was RED on 40 deliberate symlinks into `~/Projects` plus one vendored unclosed fence):
+  - `waivers.json`: 41 waivers added with `"exact": true`, so a waiver for `writing` no longer covers `writing-skills/` or `writing-plans/`. `tools/gate_subs.py` honors `exact`; absent means the old prefix glob.
+  - `tools/scan_skill_tree.py` S12: link targets are now compared by whole path components against the resolved root. Before, `"/skills-evil"` counted as inside `"/skills"`, and any root reached through a symlink (macOS `/var`) flagged every in-tree link.
+- **Waiver hardening** in `tools/gate_subs.py`: optional `target_prefix` pins where a symlink must point (set to `~/Projects/` on the 40 S12 waivers, so a retargeted link is reported again); a non-boolean `exact` or non-string `target_prefix` fails the gate instead of silently widening a waiver; waivers that match no finding print a warning (not a failure). `waivers.json` `_comment` updated.
+- `README.md` tree lists `codebase_scan.md`. `code_shape.md` item 1 warns against logging secrets and gains a Cross-references section.
+- **New tests**: `tests/test_checklist_index.py` (every checklist routed from INDEX, valid versions); exact-waiver cases in `tests/test_gate_subs.py`; S12 containment cases in `tests/test_skill_tree_scan.py`. Each was mutation-checked: the old behavior makes it fail.
+
 ## [3.2.0], 2026-08-28, Standing skill-tree audit tooling
 
 MINOR (new capability; no breaking changes to existing checklists/rubrics).

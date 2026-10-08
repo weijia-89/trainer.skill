@@ -10,6 +10,9 @@ _ZW = dict.fromkeys(map(ord, "\u200b\u200c\u200d\u2060\u2061\u2062\u2063\u2064\u
 def norm_text(s):
     return unicodedata.normalize("NFKC", s.translate(_ZW))
 ROOT = Path(os.path.expanduser(os.environ.get("SKILL_TREE_ROOT", "~/.config/opencode/skills")))
+# Resolved once: link targets are compared by whole path components, so a root reached
+# through a symlink (macOS /var) is not a false escape and "skills-evil" is not "skills".
+ROOT_REAL = os.path.realpath(ROOT)
 OUT = Path(os.path.expanduser(os.environ.get("SKILL_TREE_OUT", str(Path(__file__).resolve().parent / "findings-skill-tree.json"))))
 if not ROOT.is_dir():
     print(f"ERROR: LOOP1_ROOT is not a directory: {ROOT}", file=sys.stderr)
@@ -181,7 +184,7 @@ for p in walk():
         tgt = os.readlink(p)
         if not os.path.exists(p):
             add("S12", "P2", rel.parts[0], rel, 0, f"dangling symlink -> {tgt}", f"readlink {p}")
-        elif not os.path.realpath(p).startswith(str(ROOT)):
+        elif os.path.commonpath([os.path.realpath(p), ROOT_REAL]) != ROOT_REAL:
             add("S12", "P2", rel.parts[0], rel, 0, f"symlink escapes skills tree -> {os.path.realpath(p)}", f"realpath {p}")
     if p.is_file() and ".git" not in p.parts:
         mode = p.stat().st_mode

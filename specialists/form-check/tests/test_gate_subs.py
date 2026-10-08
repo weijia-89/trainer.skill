@@ -91,6 +91,59 @@ def test_waived_finding_nonmatching_id():
     check("waivers: nonmatching id not waived", gate_subs.waived_finding(f, w) is False)
 
 
+def test_waived_finding_exact_does_not_match_siblings():
+    w = [{"id": "S12", "path_prefix": "writing", "exact": True}]
+    own = {"id": "S12", "sev": "P2", "path": "writing"}
+    sib = {"id": "S12", "sev": "P2", "path": "writing-skills"}
+    check("waivers: exact matches its own path", gate_subs.waived_finding(own, w) is True)
+    check("waivers: exact does not match a longer sibling", gate_subs.waived_finding(sib, w) is False)
+    loose = [{"id": "S12", "path_prefix": "writing"}]
+    check("waivers: without exact, prefix still matches sibling", gate_subs.waived_finding(sib, loose) is True)
+
+
+def test_fence_waived_exact():
+    w = [{"id": "FENCE", "path_prefix": "a/doc.md", "exact": True}]
+    check("fence: exact path waived", gate_subs.fence_waived("a/doc.md", w) is True)
+    check("fence: exact does not waive longer path", gate_subs.fence_waived("a/doc.md.bak", w) is False)
+
+
+def test_target_prefix_pins_link_target():
+    w = [{"id": "S12", "path_prefix": "s/link.md", "exact": True, "target_prefix": "/home/me/Projects/"}]
+    ok = {"id": "S12", "sev": "P2", "path": "s/link.md", "finding": "symlink escapes skills tree -> /home/me/Projects/x"}
+    moved = dict(ok, finding="symlink escapes skills tree -> /etc/hosts")
+    bare = dict(ok, finding="no arrow here")
+    check("target_prefix: matching target waived", gate_subs.waived_finding(ok, w) is True)
+    check("target_prefix: retargeted link not waived", gate_subs.waived_finding(moved, w) is False)
+    check("target_prefix: finding without target not waived", gate_subs.waived_finding(bare, w) is False)
+    home = os.path.expanduser("~/Projects/")
+    w2 = [dict(w[0], target_prefix="~/Projects/")]
+    f2 = dict(ok, finding=f"symlink escapes skills tree -> {home}y")
+    check("target_prefix: ~ expands", gate_subs.waived_finding(f2, w2) is True)
+
+
+def test_waiver_errors_fail_closed():
+    check("waiver_errors: string exact rejected", len(gate_subs.waiver_errors([{"id": "A", "exact": "true"}])) == 1)
+    check("waiver_errors: bool exact accepted", gate_subs.waiver_errors([{"id": "A", "exact": True}]) == [])
+    check("waiver_errors: non-string target rejected", len(gate_subs.waiver_errors([{"id": "A", "target_prefix": 5}])) == 1)
+    with tempfile.TemporaryDirectory() as d:
+        f = _findings_file(d, [{"id": "C1", "sev": "P2", "path": "a.md", "finding": "x"}])
+        w = _waivers_file(d, [{"id": "C1", "path_prefix": "a.md", "exact": "true"}])
+        r = _run(["waivers", str(f), str(w)])
+        check("cli waivers: mistyped exact -> rc=1", r.returncode == 1 and "BAD WAIVER" in r.stdout, r.stdout)
+
+
+def test_stale_waivers_warn_only():
+    findings = [{"id": "C1", "sev": "P2", "path": "a.md", "finding": "x"}]
+    waivers = [{"id": "C1", "path_prefix": "a.md"}, {"id": "C9", "path_prefix": "gone.md"}]
+    stale = gate_subs.stale_waivers(findings, waivers)
+    check("stale: only the unmatched waiver listed", [w["id"] for w in stale] == ["C9"])
+    with tempfile.TemporaryDirectory() as d:
+        f = _findings_file(d, findings)
+        w = _waivers_file(d, waivers)
+        r = _run(["waivers", str(f), str(w)])
+        check("cli waivers: stale warns but rc=0", r.returncode == 0 and "WARN: 1 waiver" in r.stdout, r.stdout)
+
+
 def test_open_findings_excludes_p4():
     waivers = []
     findings = [
@@ -274,6 +327,11 @@ def main():
     test_waived_finding_path_glob_prefix()
     test_waived_finding_nonmatching_path()
     test_waived_finding_nonmatching_id()
+    test_waived_finding_exact_does_not_match_siblings()
+    test_fence_waived_exact()
+    test_target_prefix_pins_link_target()
+    test_waiver_errors_fail_closed()
+    test_stale_waivers_warn_only()
     test_open_findings_excludes_p4()
     test_open_findings_empty_waivers_keeps_all_p0_p3()
     test_open_findings_empty_findings()

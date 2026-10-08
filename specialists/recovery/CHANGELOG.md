@@ -8,6 +8,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - **MINOR**: new phase added; new adversarial question; new launch-ready DoD section; new template.
 - **PATCH**: citation, typo, doc-voice tweak, prompt-text refinement.
 
+## [3.0.1], 2026-10-08, Pin refresh
+
+PATCH: doc and pin fixes only.
+
+- Pinned `checklists/INDEX.md@2.1.0` and `references/notes.md@3.1.0` (form-check 3.3.0 changed both).
+- Fixed stale `form-check@>=2.0.0,<3.0.0` text in SKILL.md and README.md to match the real pin `>=3.0.0,<4.0.0`.
+
 ## [3.0.0], 2026-05-16, Iron Law layering + composes-pin bump to form-check@>=3
 
 MAJOR because composes pin to form-check changed from `>=2.0.0,<3.0.0` to `>=3.0.0,<4.0.0`.

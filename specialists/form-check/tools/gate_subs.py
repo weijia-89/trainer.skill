@@ -12,13 +12,47 @@ FENCE_OPEN = chr(96) * 3
 MAX_FENCE_TICKS = 40
 
 
+def _path_matches(path, w):
+    """path_prefix glob match; "exact": true requires the whole path to equal it."""
+    prefix = w.get("path_prefix", "")
+    if w.get("exact") is True:
+        return path == prefix
+    return fnmatch.fnmatch(path, prefix + "*")
+
+
+def _target_matches(finding, w):
+    """Optional "target_prefix": text after "-> " in the finding must start with it (~ expands)."""
+    want = w.get("target_prefix")
+    if want is None:
+        return True
+    _, arrow, got = finding.get("finding", "").partition("-> ")
+    return bool(arrow) and got.startswith(os.path.expanduser(want))
+
+
+def _waiver_hits(finding, w):
+    return (finding.get("id") == w.get("id") and _path_matches(finding.get("path", ""), w)
+            and _target_matches(finding, w))
+
+
 def waived_finding(finding, waivers):
-    """True if a P0-P3 finding matches a waiver (id + path_prefix glob)."""
-    fpath = finding.get("path", "")
-    for w in waivers:
-        if finding.get("id") == w.get("id") and fnmatch.fnmatch(fpath, w.get("path_prefix", "") + "*"):
-            return True
-    return False
+    """True if a P0-P3 finding matches a waiver (id + path match + optional link target)."""
+    return any(_waiver_hits(finding, w) for w in waivers)
+
+
+def waiver_errors(waivers):
+    """Malformed waiver fields. A mistyped flag must fail closed, not silently widen a waiver."""
+    bad = []
+    for i, w in enumerate(waivers):
+        if "exact" in w and not isinstance(w["exact"], bool):
+            bad.append(f"waiver {i} ({w.get('id')}): exact must be true or false, got {w['exact']!r}")
+        if "target_prefix" in w and not isinstance(w["target_prefix"], str):
+            bad.append(f"waiver {i} ({w.get('id')}): target_prefix must be a string")
+    return bad
+
+
+def stale_waivers(findings, waivers):
+    """Waivers that match no finding at all (the thing they excused is gone)."""
+    return [w for w in waivers if not any(_waiver_hits(f, w) for f in findings)]
 
 
 def open_findings(findings, waivers):
@@ -62,10 +96,7 @@ def fence_balanced(text):
 
 def fence_waived(rel, waivers):
     """True if a relative path is waived under the FENCE waiver id."""
-    return any(
-        w.get("id") == "FENCE" and fnmatch.fnmatch(rel, w.get("path_prefix", "") + "*")
-        for w in waivers
-    )
+    return any(w.get("id") == "FENCE" and _path_matches(rel, w) for w in waivers)
 
 
 def compile_python(root):
@@ -88,6 +119,16 @@ def compile_python(root):
 def cmd_waivers(args):
     findings = json.load(open(args[0]))
     waivers = json.load(open(args[1])).get("waivers", [])
+    errors = waiver_errors(waivers)
+    for e in errors:
+        print("  BAD WAIVER:", e)
+    if errors:
+        sys.exit(1)
+    stale = stale_waivers(findings, waivers)
+    if stale:
+        print(f"  WARN: {len(stale)} waiver(s) match no finding (safe to delete):")
+        for w in stale[:10]:
+            print("   ", w.get("id"), w.get("path_prefix"))
     open_f = open_findings(findings, waivers)
     print(f"open P0-P3 after waivers: {len(open_f)}")
     for f in open_f[:15]:

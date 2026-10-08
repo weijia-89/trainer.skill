@@ -5,7 +5,7 @@ End-to-end "vibe-coded to shippable" engagement skill. Composes [`form-check.ski
 ## What this is (and isn't)
 
 - **Is**: an opinionated workflow that takes a project from "needs hardening" to shippable. Discovers, reviews, scores, doc-passes, voice-cleans, declares launch-ready (or escalates a gap report).
-- **Is**: a composition skill, pins `form-check@>=2.0.0,<3.0.0` and adds workflow on top.
+- **Is**: a composition skill, pins `form-check@>=3.0.0,<4.0.0` and adds workflow on top.
 - **Is not**: a code generator. Does not write feature code.
 - **Is not**: a substitute for security audit on vibe-dangerous surfaces.
 
@@ -35,7 +35,7 @@ Each phase emits one artifact and one verdict row to `.recovery/state.jsonl`.
 ## Layout
 
 ```
-SKILL.md                        # ≤200 lines; pinned to form-check@>=2.0.0,<3.0.0
+SKILL.md                        # ≤200 lines; pinned to form-check@>=3.0.0,<4.0.0
 references/notes.md             # extends form-check's references
 rubrics/code_fixer_confidence.md    # composes form-check rubric + 2 engagement-specific
 checklists/launch_ready.md      # DoD per archetype

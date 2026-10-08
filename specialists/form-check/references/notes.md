@@ -1,6 +1,6 @@
 ---
 name: references
-version: 3.0.0
+version: 3.1.0
 parent_skill: form-check
 last_audited: 2026-05-16
 audit_methodology: palamedes/skill/references/replication-and-validity.md + source-grading.md
@@ -76,6 +76,7 @@ The test suite (`tests/test_citations.py`) verifies tags are not orphans against
 - `STRIDE-WIKI`, STRIDE model (Garg & Kohnfelder, 1999).
 - `LINDDUN`, LINDDUN privacy threat modeling framework.
 - `LINDDUN-NIST`, NIST Privacy Framework: LINDDUN.
+- `PYTHON-ASSERT-DOCS` `[T1-verified]`, Python Language Reference, "The assert statement." https://docs.python.org/3/reference/simple_stmts.html#the-assert-statement (verified 2026-10-08). "The current code generator emits no code for an assert statement when optimization is requested at compile time."
 
 ## CS fundamentals
 
@@ -94,6 +95,9 @@ The test suite (`tests/test_citations.py`) verifies tags are not orphans against
 - `COHEN-2010` `[T1-replicated]`, Cohen et al., "Modern Code Review: A Case Study at Google."
 - `PETROVIC-2018` `[T1-verified]`, Petrović & Ivanković, "State of Mutation Testing at Google," ICSE-SEIP 2018. Real-world evidence that mutation testing catches real bugs at module level when applied with arid-mutant filtering.
 - `BELLER-2016` `[T1-replicated]`, Beller et al., "Analyzing the State of Static Analysis: A Large-Scale Evaluation in Open Source Software." Strong evidence lightweight static analysis catches bugs in practice.
+- `YUAN-2014` `[T1-verified]`, Yuan et al., "Simple Testing Can Prevent Most Critical Failures: An Analysis of Production Failures in Distributed Data-intensive Systems," USENIX OSDI 2014. https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-yuan.pdf (verified 2026-10-08). 198 failures in Cassandra, HBase, HDFS, Hadoop MapReduce, Redis. "almost all (92%) of the catastrophic system failures are the result of incorrect handling of non-fatal errors explicitly signaled in software." Single study, five systems; do not generalize the rate.
+- `CASALNUOVO-2015` `[T1-verified]`, Casalnuovo, Devanbu et al., "Assert Use in GitHub Projects," ICSE 2015. https://doi.org/10.1109/icse.2015.88 (abstract verified 2026-10-08; full text not read). C and C++ projects: "functions with asserts do have significantly fewer defects." Correlation, not a threshold.
+- `ELEMAM-2001` `[T1-contested]`, El Emam et al., "The confounding effect of class size on the validity of object-oriented metrics," IEEE TSE 27(7). https://doi.org/10.1109/32.935855 (abstract verified 2026-10-08). Class size, not function length; disputed in a 2003 TSE comment. Cited only to note that no function-length study was found.
 - `KITCHENHAM-EFFECT-SIZE` `[T1-replicated]`, Kampenes, Dybå, Hannay, Sjøberg, "A systematic review of effect size in software engineering experiments." Methodological foundation: demand effect size, not just significance.
 
 ## Pedagogy / cognitive science
@@ -160,6 +164,8 @@ The test suite (`tests/test_citations.py`) verifies tags are not orphans against
 ## Operating practice
 
 - `12FACTOR` `[T2-secondary]`, The Twelve-Factor App.
+- `POWER-OF-TEN-2006` `[normative]`, Holzmann, "The Power of 10: Rules for Developing Safety-Critical Code," IEEE Computer 2006 (NASA Jet Propulsion Laboratory). https://web.eecs.umich.edu/~imarkov/10rules.pdf (verified 2026-10-08). Rule 4: about 60 lines per function. Rule 5: "assertion density should average to minimally two assertions per function"; on failure "an explicit recovery action must be taken." Expert practice, no controlled study.
+- `TIGER-STYLE` `[normative]`, TigerBeetle, TIGER_STYLE.md. https://github.com/tigerbeetle/tigerbeetle/blob/main/docs/TIGER_STYLE.md (raw file verified 2026-10-08). 70-line function limit; "the only correct way to handle corrupt code is to crash." Expert practice; many rules are Zig and database specific.
 - `GUARDRAILS-GG` `[T2-vendor, COI:GitGuardian]`, GitGuardian, "Automated Guardrails for Vibe Coding."
 
 ## Posture summary

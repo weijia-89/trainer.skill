@@ -40,6 +40,8 @@ rubrics/
 checklists/
   INDEX.md                     # decision tree
   bug_class_audit.md           # CWE Top-25 + AI-PR shapes
+  codebase_scan.md             # whole-codebase orientation scan
+  code_shape.md                # error paths, assertions vs validation, bounds, function size
   owasp_llm_top10.md           # OWASP LLM (2025)
   owasp_api_top10.md           # OWASP API (2023)
   owasp_web_top10.md           # OWASP Web (2025)

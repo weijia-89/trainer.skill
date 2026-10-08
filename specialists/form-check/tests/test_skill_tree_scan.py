@@ -451,6 +451,29 @@ def test_protocol_relative_url():
               any("//evil.example.net" in x["finding"] for x in c2))
 
 
+def test_s12_symlink_containment():
+    # In-tree link: not an escape, even when the root path itself passes through a symlink
+    # (macOS /var -> /private/var). Sibling-prefix and absolute targets: escapes.
+    with tempfile.TemporaryDirectory() as d:
+        d = Path(d)
+        root = d / "skills"; root.mkdir()
+        evil = d / "skills-evil"; evil.mkdir(); (evil / "x.md").write_text("x")
+        s = root / "s"; s.mkdir()
+        (s / "SKILL.md").write_text("---\nname: s\ndescription: x\n---\n")
+        os.symlink("SKILL.md", s / "inside.md")
+        os.symlink(str(evil / "x.md"), s / "sibling.md")
+        os.symlink("/etc/hosts", s / "etc.md")
+        out = d / "f.json"; f = run_scan(root, out)
+        hit = {x["path"] for x in f if x["id"] == "S12"}
+        check("S12: in-tree link not flagged", "s/inside.md" not in hit, str(hit))
+        check("S12: sibling-prefix dir flagged", "s/sibling.md" in hit, str(hit))
+        check("S12: absolute escape flagged", "s/etc.md" in hit, str(hit))
+        # Resolved root isolates the prefix bug: "skills-evil" must not count as inside "skills".
+        hit2 = {x["path"] for x in run_scan(root.resolve(), d / "g.json") if x["id"] == "S12"}
+        check("S12: resolved root, sibling-prefix flagged", "s/sibling.md" in hit2, str(hit2))
+        check("S12: resolved root, in-tree not flagged", "s/inside.md" not in hit2, str(hit2))
+
+
 def main():
     print("== test_scanner ==")
     test_deterministic(); test_masker_red_green()
@@ -467,6 +490,7 @@ def main():
     test_injection_code_line_correct()
     test_s13_env_dotfile(); test_egress_ftp_flagged()
     test_reverse_shell_detected(); test_protocol_relative_url()
+    test_s12_symlink_containment()
     if FAILS:
         print(f"\nFAILURES: {FAILS}")
         sys.exit(1)
