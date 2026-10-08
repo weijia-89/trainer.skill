@@ -109,6 +109,10 @@ Severity:
 - **P1**: should-fix-before-launch.
 - **P2**: nice-to-have / refactor.
 
+## Related
+
+`code_shape.md` covers design-time bounds (loops, queues, retries) and error-path handling, which item 24 above only treats as a security risk.
+
 ## Lens selection
 
 Don't walk every category on every change. Use `INDEX.md` decision tree to select applicable lenses by surface. Walking every CWE on a CSS change = noise; walking the relevant 5 = signal.

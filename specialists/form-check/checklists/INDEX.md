@@ -1,6 +1,6 @@
 ---
 name: checklists_index
-version: 2.0.0
+version: 2.1.0
 parent_skill: form-check
 status: decision tree
 ---
@@ -18,6 +18,8 @@ What are you doing?
 │   ├─ → codebase_scan.md             (cross-cutting comprehension protocol, run FIRST for unfamiliar code)
 │   ├─ → bug_class_audit.md           (CWE Top-25 + AI-PR shapes + LLM-specific bug classes)
 │   ├─ → smell_catalog.md             (month-3 failure modes per archetype)
+│   ├─ Reviewing program code (not prose or throwaway scripts)?
+│   │   └─ → code_shape.md            (error paths, assertions vs validation, bounds, function size)
 │   ├─ Touches LLM / agent?
 │   │   ├─ → owasp_llm_top10.md
 │   │   ├─ → references/llm_code_correctness_gate.md  (mechanical gate for LLM-generated code)

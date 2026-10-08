@@ -1,5 +1,5 @@
 {
- "_comment": "Waived findings accepted with evidence during 2026-08-25 audit loops. Gate ignores P2 matches here.",
+ "_comment": "Waived findings, each accepted with evidence. The gate ignores a P0-P3 finding when a waiver matches its id and path (glob prefix, or the whole path when exact is true). Optional target_prefix also pins where a symlink points. S12 entries are specific to this operator's machine (links into ~/Projects).",
  "waivers": [
   {
    "id": "C2",
@@ -48,11 +48,6 @@
   },
   {
    "id": "S4",
-   "path_prefix": "piranesi/SKILL.md",
-   "reason": "upstream stale ref chatprd-attach-packs.md (missing upstream too); flagged for upstream PR"
-  },
-  {
-   "id": "S4",
    "path_prefix": "simple-english/README.md",
    "reason": ".github excluded by install design"
   },
@@ -87,11 +82,6 @@
    "reason": "foreign-machine absolute paths baked into corpus exports"
   },
   {
-   "id": "S4",
-   "path_prefix": "deai/research/deai-tic-voice-craft-canon/piranesi_exports/stage1_chatprd_filled.md",
-   "reason": "export-bundle relative path artifact"
-  },
-  {
    "id": "C2",
    "path_prefix": "scholia/literature/cs-ai-textbook-canon/study_guide/daily/notes.js",
    "reason": "same-origin /api/note fetch, hostname-gated localhost only"
@@ -116,110 +106,381 @@
    "path_prefix": "wizard/template.sh",
    "reason": "opens vendor dashboards in human browser via open_url; audited CLEAN"
   },
-   {
-    "id": "FENCE",
-    "path_prefix": "triage/OUT-OF-SCOPE.md",
-    "reason": "upstream triage doc; unclosed fence is illustrative of an .out-of-scope file block"
-   },
-   {
-    "id": "FENCE",
-    "path_prefix": "deai/slackbot-aicheck-prompt.md",
-    "reason": "prompt template; fence shows a literal code block for the model"
-   },
-   {
-    "id": "FENCE",
-    "path_prefix": "requesting-code-review/code-reviewer.md",
-    "reason": "reviewer rubric doc; intentional illustrative fence"
-   },
-   {
-    "id": "FENCE",
-    "path_prefix": "trainer/references/trainer-github-pr-commentary.md",
-    "reason": "PR-commentary template; illustrative fence"
-   },
-   {
-    "id": "FENCE",
-    "path_prefix": "trainer/specialists/form-check/templates/CLAUDE.md_scaffold.md",
-    "reason": "scaffold template; file exists to show fence syntax"
-   },
-   {
-    "id": "FENCE",
-    "path_prefix": "trainer/specialists/form-check/templates/ARCHITECTURE.md_template.md",
-    "reason": "template; shows fence syntax"
-   },
-   {
-    "id": "FENCE",
-    "path_prefix": "trainer/specialists/form-check/templates/README_archetypes/cli.md",
-    "reason": "archetype template; shows fence syntax"
-   },
-   {
-    "id": "FENCE",
-    "path_prefix": "trainer/specialists/form-check/templates/README_archetypes/monorepo.md",
-    "reason": "archetype template; shows fence syntax"
-   },
-   {
-    "id": "FENCE",
-    "path_prefix": "trainer/specialists/form-check/templates/README_archetypes/library.md",
-    "reason": "archetype template; shows fence syntax"
-   },
-   {
-    "id": "FENCE",
-    "path_prefix": "trainer/specialists/form-check/templates/README_archetypes/service.md",
-    "reason": "archetype template; shows fence syntax"
-   },
-   {
-    "id": "FENCE",
-    "path_prefix": "vibe-check/references/PROMPT_GEMINI_DEEP_RESEARCH_v2.md",
-    "reason": "prompt file; literal fence is part of the prompt"
-   },
-   {
-    "id": "FENCE",
-    "path_prefix": "vibe-check/references/PROMPT_CALIBRATION_AGENT.md",
-    "reason": "prompt file; literal fence is part of the prompt"
-   },
-   {
-    "id": "FENCE",
-    "path_prefix": "scholia/prompts/r01-corpus-session-banter-kickoff.md",
-    "reason": "ingested prompt corpus; literal fence is part of the prompt"
-   },
+  {
+   "id": "FENCE",
+   "path_prefix": "triage/OUT-OF-SCOPE.md",
+   "reason": "upstream triage doc; unclosed fence is illustrative of an .out-of-scope file block"
+  },
+  {
+   "id": "FENCE",
+   "path_prefix": "deai/slackbot-aicheck-prompt.md",
+   "reason": "prompt template; fence shows a literal code block for the model"
+  },
+  {
+   "id": "FENCE",
+   "path_prefix": "requesting-code-review/code-reviewer.md",
+   "reason": "reviewer rubric doc; intentional illustrative fence"
+  },
+  {
+   "id": "FENCE",
+   "path_prefix": "trainer/references/trainer-github-pr-commentary.md",
+   "reason": "PR-commentary template; illustrative fence"
+  },
+  {
+   "id": "FENCE",
+   "path_prefix": "trainer/specialists/form-check/templates/CLAUDE.md_scaffold.md",
+   "reason": "scaffold template; file exists to show fence syntax"
+  },
+  {
+   "id": "FENCE",
+   "path_prefix": "trainer/specialists/form-check/templates/ARCHITECTURE.md_template.md",
+   "reason": "template; shows fence syntax"
+  },
+  {
+   "id": "FENCE",
+   "path_prefix": "trainer/specialists/form-check/templates/README_archetypes/cli.md",
+   "reason": "archetype template; shows fence syntax"
+  },
+  {
+   "id": "FENCE",
+   "path_prefix": "trainer/specialists/form-check/templates/README_archetypes/monorepo.md",
+   "reason": "archetype template; shows fence syntax"
+  },
+  {
+   "id": "FENCE",
+   "path_prefix": "trainer/specialists/form-check/templates/README_archetypes/library.md",
+   "reason": "archetype template; shows fence syntax"
+  },
+  {
+   "id": "FENCE",
+   "path_prefix": "trainer/specialists/form-check/templates/README_archetypes/service.md",
+   "reason": "archetype template; shows fence syntax"
+  },
+  {
+   "id": "FENCE",
+   "path_prefix": "scholia/prompts/r01-corpus-session-banter-kickoff.md",
+   "reason": "ingested prompt corpus; literal fence is part of the prompt"
+  },
   {
    "id": "C2",
-   "path_prefix": "vibe-check/",
-   "reason": "opt-in local JSONL telemetry via VIBE_CHECK_TELEMETRY_DIR; no network"
+   "path_prefix": "mashit/",
+   "reason": "doi.org regex string literals for markdown link generation"
   },
-   {
-    "id": "C2",
-    "path_prefix": "mashit/",
-    "reason": "doi.org regex string literals for markdown link generation"
-   },
-   {
-    "id": "C9",
-    "path_prefix": "trainer/specialists/form-check/tests",
-    "reason": "form-check's own prompt-injection DETECTION test corpus; strings are fixtures/expectations, not agent instructions"
-   },
-   {
-    "id": "C9",
-    "path_prefix": "scholia/literature",
-    "reason": "ingested academic book text; 'jailbreak' is a topic word, not an agent instruction"
-   },
-   {
-    "id": "C9",
-    "path_prefix": "trainer/specialists/form-check/agent-runtime/prompt_injection.md",
-    "reason": "form-check's own prompt-injection reference documentation; describes the threat, not an agent instruction"
-   },
-   {
-    "id": "C11",
-    "path_prefix": "trainer/scripts/trainer_manual_test_block.sh",
-    "reason": "trainer's manual-test-block harness; 'git pull --ff-only origin {branch}' has a {branch} placeholder, operator-run, not model-auto-executed"
-   },
-   {
-    "id": "C11",
-    "path_prefix": "git-guardrails-claude-code/scripts/block-dangerous-git.sh",
-    "reason": "'git push' is a DANGEROUS_PATTERNS entry the guardrail BLOCKS; not executed"
-   },
-   {
-    "id": "C11",
-    "path_prefix": "trainer/scripts/install_hooks.sh",
-    "reason": "'git push' appears only inside an echo instruction; script installs a pre-push hook, never executes push"
-   }
-  ]
- }
+  {
+   "id": "C9",
+   "path_prefix": "trainer/specialists/form-check/tests",
+   "reason": "form-check's own prompt-injection DETECTION test corpus; strings are fixtures/expectations, not agent instructions"
+  },
+  {
+   "id": "C9",
+   "path_prefix": "scholia/literature",
+   "reason": "ingested academic book text; 'jailbreak' is a topic word, not an agent instruction"
+  },
+  {
+   "id": "C9",
+   "path_prefix": "trainer/specialists/form-check/agent-runtime/prompt_injection.md",
+   "reason": "form-check's own prompt-injection reference documentation; describes the threat, not an agent instruction"
+  },
+  {
+   "id": "C11",
+   "path_prefix": "trainer/scripts/trainer_manual_test_block.sh",
+   "reason": "trainer's manual-test-block harness; 'git pull --ff-only origin {branch}' has a {branch} placeholder, operator-run, not model-auto-executed"
+  },
+  {
+   "id": "C11",
+   "path_prefix": "git-guardrails-claude-code/scripts/block-dangerous-git.sh",
+   "reason": "'git push' is a DANGEROUS_PATTERNS entry the guardrail BLOCKS; not executed"
+  },
+  {
+   "id": "C11",
+   "path_prefix": "trainer/scripts/install_hooks.sh",
+   "reason": "'git push' appears only inside an echo instruction; script installs a pre-push hook, never executes push"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "api-and-interface-design",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "ask-matt",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "break-check",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "code-review",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "codebase-design",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "crosstalk",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "deai",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "diagnosing-bugs",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "domain-modeling",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "financial-planner",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "grilling",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "handoff",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "i-have-adhd",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "impeccable",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "implement",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "improve-codebase-architecture",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "mashit",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "palamedes",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "patch",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "phylax",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "piranesi",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "playwrighter",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "ponytail",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "rename-refs",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "retro",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "scholia",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "security-audit",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "setup-matt-pocock-skills",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "simple-english",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "skill-ingest",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "tdd",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "teach",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "to-tickets",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "trainer",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "triage",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "wait-what",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "wayfinder",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "wintermute",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "wizard",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "S12",
+   "path_prefix": "writing",
+   "exact": true,
+   "reason": "operator-linked dev tree: symlink into ~/Projects is deliberate (see ~/Projects/AGENTS.md)",
+   "target_prefix": "~/Projects/"
+  },
+  {
+   "id": "FENCE",
+   "path_prefix": "writing-skills/anthropic-best-practices.md",
+   "exact": true,
+   "reason": "vendored upstream doc; nested ```` fence around an unclosed example is upstream content"
+  }
+ ]
+}
