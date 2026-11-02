@@ -4,6 +4,15 @@ All notable changes to the `trainer` skill will be documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adheres to [Semantic Versioning](https://semver.org/) with the rules below.
 
+## 2026-11-01
+
+- feat(specialists): add `logbook` - a per-project, append-only work ledger backed by a zero-install standard-library CLI at `specialists/logbook/scripts/logbook.py`. A work slice carries proof and an outcome. The record always names the next slice.
+- test(specialists): add `tests/logbook/test_logbook.py` - 22 unit tests. They cover the ledger lifecycle plus the safety cases (a torn tail, duplicate sets, concurrent writers).
+- feat(router): route work that spans sessions to `logbook`, so a resumed session reads the record instead of guessing. The Activity clause and the specialist table row carry the route.
+- feat(gate): add `.github/workflows/logbook-tests.yml` so the 22 logbook unit tests run on every pull request and on pushes to main.
+- docs: add the logbook row to the README specialist table. The routing prose and the repository layout tree point at it.
+- **Version 0.17.0 → 1.0.0 (MAJOR).** The specialist gym-skills list gains an entry, which the SemVer rules in this file classify as a MAJOR change.
+
 ## 2026-08-25
 
 - fix(references): close unclosed markdown template fence in trainer-github-pr-commentary.md (mid-file instruction swallow)
