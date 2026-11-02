@@ -97,6 +97,12 @@ class TestInit(LogbookBase):
         self.assertEqual(code, EXIT_ALREADY, msg=out)
         self.assertEqual(self.ledger_lines(), before)
 
+    def test_init_resumes_when_a_previous_run_left_an_empty_ledger_folder(self) -> None:
+        (self.root / ".workledger").mkdir()
+        code, out, _ = self.capture("init", "--objective", "resume after a crash")
+        self.assertEqual(code, EXIT_OK, msg=out)
+        self.assertEqual(self.events()[0]["kind"], "goal_registered")
+
     def test_init_refuses_a_non_git_directory_without_force(self) -> None:
         plain = Path(self._tmp.name) / "plain"
         plain.mkdir()

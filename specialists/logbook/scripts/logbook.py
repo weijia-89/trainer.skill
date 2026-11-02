@@ -207,7 +207,10 @@ def write_state(root: Path, events: list[dict]) -> None:
     lines.extend(
         ["", "## Outcome tally", f"- logged: {tally['logged']}, missed: {tally['missed']}, pr: {tally['pr']}"]
     )
-    state_path(root).write_text("\n".join(lines) + "\n", encoding="utf-8")
+    target = state_path(root)
+    temp = target.with_name(target.name + ".tmp")
+    temp.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    os.replace(temp, target)
 
 
 def normalize_evidence(root: Path, raw: str) -> str:
@@ -236,12 +239,14 @@ def cmd_init(args) -> int:
     if not root.is_dir():
         print("refused: target directory does not exist", file=sys.stderr)
         return EXIT_REFUSED
+    directory = ledger_dir(root)
     try:
-        os.mkdir(ledger_dir(root))
+        os.mkdir(directory)
     except FileExistsError:
-        print("refused: this project already has a logbook", file=sys.stderr)
-        return EXIT_ALREADY
-    (ledger_dir(root) / GITIGNORE_NAME).write_text("*\n", encoding="utf-8")
+        pass
+    except OSError as error:
+        print(f"refused: cannot create {directory}: {error}", file=sys.stderr)
+        return EXIT_REFUSED
     body = {
         "ts": now(),
         "kind": "goal_registered",
@@ -250,6 +255,16 @@ def cmd_init(args) -> int:
         "non_goals": args.non_goal or [],
     }
     with Locked(root):
+        loaded = read_events_or_fail(root)
+        if loaded is None:
+            return EXIT_TORN
+        events, _ = loaded
+        if events:
+            print("refused: this project already has a logbook", file=sys.stderr)
+            return EXIT_ALREADY
+        gitignore = directory / GITIGNORE_NAME
+        if not gitignore.exists():
+            gitignore.write_text("*\n", encoding="utf-8")
         event = append_event(root, body)
         write_state(root, [event])
     print(f"logbook opened at {ledger_dir(root)}")
@@ -390,11 +405,10 @@ def cmd_status(args) -> int:
     if missing is not None:
         return missing
     with Locked(root):
-        try:
-            events, torn = read_events(root)
-        except ValueError as error:
-            print(f"{TORN_MARKER}: {error}", file=sys.stderr)
+        loaded = read_events_or_fail(root)
+        if loaded is None:
             return EXIT_TORN
+        events, torn = loaded
         if torn:
             print(
                 f"{TORN_MARKER}: the last record is incomplete; not trusting the log",
@@ -417,11 +431,10 @@ def cmd_verify(args) -> int:
     if missing is not None:
         return missing
     with Locked(root):
-        try:
-            events, torn = read_events(root)
-        except ValueError as error:
-            print(f"{TORN_MARKER}: {error}", file=sys.stderr)
+        loaded = read_events_or_fail(root)
+        if loaded is None:
             return EXIT_TORN
+        events, torn = loaded
         if torn:
             print(
                 f"{TORN_MARKER}: the last record is incomplete; not trusting the log",
