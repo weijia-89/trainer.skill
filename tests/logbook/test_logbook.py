@@ -286,6 +286,17 @@ class TestTornTail(LogbookBase):
             json.loads(line)
         self.assertEqual(len(self.slice_events()), 1)
 
+    def test_a_corrupt_record_stops_the_write_with_a_clean_error(self) -> None:
+        self.init()
+        with self.ledger_path().open("a") as handle:
+            handle.write("{not json at all}\n")
+        code, out, err = self.capture(
+            "record", "slice", "--what", "after corruption", "--scope", "one file"
+        )
+        self.assertEqual(code, EXIT_TORN, msg=out)
+        self.assertIn("checkpoint-tail-unknown", err)
+        self.assertNotIn("Traceback", err)
+
 
 class TestConcurrency(LogbookBase):
     def _spawn(self, command: list[str]) -> subprocess.Popen:

@@ -119,6 +119,15 @@ def read_events(root: Path) -> tuple[list[dict], bool]:
     return events, torn
 
 
+def read_events_or_fail(root: Path) -> tuple[list[dict], bool] | None:
+    """Read the ledger. Returns None (after reporting) when a record is corrupt."""
+    try:
+        return read_events(root)
+    except ValueError as error:
+        print(f"{TORN_MARKER}: {error}", file=sys.stderr)
+        return None
+
+
 def repair_tail(root: Path) -> bool:
     """Drop an incomplete final record. Call only while holding the lock."""
     path = ledger_path(root)
@@ -273,7 +282,10 @@ def cmd_record_slice(args) -> int:
         return EXIT_DUPLICATE
     with Locked(root):
         repair_tail(root)
-        events, _ = read_events(root)
+        loaded = read_events_or_fail(root)
+        if loaded is None:
+            return EXIT_TORN
+        events, _ = loaded
         goal = latest_goal(events)
         if goal is None:
             print("no logbook here: run init first", file=sys.stderr)
@@ -305,9 +317,15 @@ def cmd_record_outcome(args) -> int:
     missing = require_logbook(root)
     if missing is not None:
         return missing
+    if args.id and args.latest:
+        print("refused: name one set with --id, or ask for --latest, not both", file=sys.stderr)
+        return EXIT_DUPLICATE
     with Locked(root):
         repair_tail(root)
-        events, _ = read_events(root)
+        loaded = read_events_or_fail(root)
+        if loaded is None:
+            return EXIT_TORN
+        events, _ = loaded
         slices = [e for e in events if e.get("kind") == "slice"]
         if not slices:
             print("refused: no sets logged yet", file=sys.stderr)
@@ -350,7 +368,10 @@ def cmd_record_next(args) -> int:
         return EXIT_TOO_LONG
     with Locked(root):
         repair_tail(root)
-        events, _ = read_events(root)
+        loaded = read_events_or_fail(root)
+        if loaded is None:
+            return EXIT_TORN
+        events, _ = loaded
         goal = latest_goal(events)
         if goal is None:
             print("no logbook here: run init first", file=sys.stderr)

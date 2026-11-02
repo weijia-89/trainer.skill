@@ -93,3 +93,4 @@ $LB verify
 - Never edit or delete `ledger.jsonl`. The log is append-only, and only the tool repairs it.
 - The `.workledger/` folder ignores itself (`.gitignore` holds `*`), so notes stay on this machine. If a team wants the run history in git, that takes a deliberate choice, not a default.
 - A file lock enforces one writer at a time, so two agents in the same project cannot interleave records. When a race logs the same set twice, one write wins and the other gets refused.
+- The lock needs a POSIX filesystem (macOS or Linux). The CLI does not run on Windows.
