@@ -8,7 +8,8 @@ root_skill_max_est_tokens = 5500
 max_section_est_tokens = 900
 
 # Recorded at v0.16.0 + spotter specialist; validated by check_context_budget.py
+# Updated at v0.17.0: spec-loop route clause added to the Activity router (operator-approved).
 current_lines = 201
-current_est_tokens = 4544
+current_est_tokens = 4591
 target_lines = 180
 target_est_tokens = 4500
