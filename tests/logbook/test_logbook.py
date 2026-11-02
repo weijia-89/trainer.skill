@@ -47,13 +47,16 @@ class LogbookBase(unittest.TestCase):
         self.cli = load_cli()
 
     def run_cli(self, *args: str) -> int:
-        return self.cli.main(["--project", str(self.root), *args])
-
-    def capture(self, *args: str) -> tuple[int, str, str]:
         out, err = io.StringIO(), io.StringIO()
         with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
-            code = self.run_cli(*args)
-        return code, out.getvalue(), err.getvalue()
+            code = self.cli.main(["--project", str(self.root), *args])
+        self.last_out = out.getvalue()
+        self.last_err = err.getvalue()
+        return code
+
+    def capture(self, *args: str) -> tuple[int, str, str]:
+        code = self.run_cli(*args)
+        return code, self.last_out, self.last_err
 
     def init(self) -> int:
         return self.run_cli("init", "--objective", "ship the thing")
@@ -165,6 +168,18 @@ class TestRecord(LogbookBase):
             "record", "outcome", "--outcome", "logged", "--id", "0123456789abcdef"
         )
         self.assertEqual(code, EXIT_DUPLICATE, msg=out)
+
+    def test_naming_both_a_slice_id_and_latest_is_refused(self) -> None:
+        self.init()
+        self.run_cli("record", "slice", "--what", "one set", "--scope", "light")
+        slice_id = self.slice_events()[0]["id"]
+        code, out, _ = self.capture(
+            "record", "outcome", "--outcome", "logged", "--id", slice_id, "--latest"
+        )
+        self.assertEqual(code, EXIT_DUPLICATE, msg=out)
+        self.assertEqual(
+            [e for e in self.events() if e["kind"] == "outcome"], []
+        )
 
     def test_record_next_appears_in_the_state_page(self) -> None:
         self.init()
