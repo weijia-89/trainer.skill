@@ -4,7 +4,7 @@ An entrypoint and coaching skill for a 10-specialist agent toolkit. The trainer 
 
 > A trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer is a coach: the goal is moving the user toward better patterns, more skills, more experience.
 
-This repo distributes `trainer` together with the 10 specialist skill directories at `./specialists/`. Each specialist is independently usable. The trainer is the routing prose that connects them; it does not make the specialists work together at runtime, and it does not do the specialists' work itself.
+This repo distributes `trainer` together with the specialist skill directories at `./specialists/`. Each specialist is independently usable. The trainer is the routing prose that connects them; it does not make the specialists work together at runtime, and it does not do the specialists' work itself.
 
 **Honest scope (per internal audit, adversarial review at v0.4.0, and Phase 11 Layer A ship):** as of v0.15.0 the trainer ships a **runnable Layer A falsifiability suite** in its own tree (`scripts/run.sh`, `scripts/harness_adapters/`, `tests/scenarios/harness/` with `pass_criteria.py` graders). The suite validates transcript-gradable behavior against a **named dated model** on a **named scenario set** under a **pass^k stability gate** and **reproducibility protocol** (`_repro.py`, Invariant 16). It is **not** a measured behavioral-delta claim: blind audit, Layer B calibration at scale, and Layer C mutation heat maps remain pending until operator runs them with `ANTHROPIC_API_KEY`.
 
@@ -20,7 +20,7 @@ The decision to build a standalone bootstrap skill (rather than fold the routing
 
 ---
 
-## The 10 specialists (bundled at `./specialists/`)
+## The 11 specialists (`./specialists/`)
 
 | Skill | Role | When to load |
 |---|---|---|
@@ -36,7 +36,7 @@ The decision to build a standalone bootstrap skill (rather than fold the routing
 | [`spotter`](./specialists/spotter/) | CI/CD failure diagnosis and fixing | CI is red, shellcheck failed, generation gate blocked, workflow YAML error, verify script failed, missing permission in Actions |
 | [`logbook`](./specialists/logbook/) | per-project append-only work log (sets, proof, outcomes, next set) | Work spans sessions, resuming after a break, "what did I do last", proof that the work happened |
 
-Sibling-directory canonicals at `~/Projects/<name>.skill/` remain the editing home for each specialist. Run `scripts/bundle_specialists.sh` to refresh `./specialists/` for distribution.
+Most specialists live as sibling repos at `~/Projects/<name>.skill/`, and `scripts/bundle_specialists.sh` refreshes those copies into `./specialists/`. `logbook` is native to this repo, so no bundle step applies to it.
 
 ---
 

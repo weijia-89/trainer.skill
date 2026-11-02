@@ -261,6 +261,17 @@ class TestVerify(LogbookBase):
         self.assertEqual(code, EXIT_VERIFY_FAILED, msg=out)
         self.assertIn("EV_UNVERIFIED", out)
 
+    def test_verify_rejects_a_directory_as_proof(self) -> None:
+        self.init()
+        (self.root / "proofdir").mkdir()
+        self.run_cli(
+            "record", "slice", "--what", "wrote proof", "--scope", "one file",
+            "--evidence", "proofdir",
+        )
+        code, out, _ = self.capture("verify")
+        self.assertEqual(code, EXIT_VERIFY_FAILED, msg=out)
+        self.assertIn("EV_MISSING", out)
+
 
 class TestTornTail(LogbookBase):
     def _tear_tail(self) -> None:

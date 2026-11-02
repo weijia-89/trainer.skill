@@ -438,10 +438,11 @@ def cmd_verify(args) -> int:
         if "evidence" in event:
             raw = event["evidence"]
             path = Path(raw) if Path(raw).is_absolute() else root / raw
-            if path.exists():
+            if path.is_file():
                 print(f"EV_OK         {label} | evidence={raw}")
                 continue
-            print(f"EV_MISSING    {label} | evidence={raw}")
+            note = "" if not path.exists() else " (not a file)"
+            print(f"EV_MISSING    {label} | evidence={raw}{note}")
             failures += 1
         else:
             reason = event.get("evidence_reason", "no reason recorded")

@@ -1,8 +1,8 @@
 # trainer.skill ROADMAP
 
-**Current version:** v0.15.1 (2026-07-01)
-**Status:** active development. Trainer routing logic plus nine specialist
-gym-family skills bundled under `specialists/`.
+**Current version:** v1.0.0 (2026-11-01)
+**Status:** active development. Trainer routing logic plus eleven specialist
+gym-family skills under `specialists/`.
 
 ## Shipped in v0.14.0
 
