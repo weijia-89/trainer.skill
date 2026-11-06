@@ -4,7 +4,7 @@ An entrypoint and coaching skill for a 10-specialist agent toolkit. The trainer 
 
 > A trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer is a coach: the goal is moving the user toward better patterns, more skills, more experience.
 
-This repo distributes `trainer` together with the 10 specialist skill directories at `./specialists/`. Each specialist is independently usable. The trainer is the routing prose that connects them; it does not make the specialists work together at runtime, and it does not do the specialists' work itself.
+This repo distributes `trainer` together with the specialist skill directories at `./specialists/`. Each specialist is independently usable. The trainer is the routing prose that connects them; it does not make the specialists work together at runtime, and it does not do the specialists' work itself.
 
 **Honest scope (per internal audit, adversarial review at v0.4.0, and Phase 11 Layer A ship):** as of v0.15.0 the trainer ships a **runnable Layer A falsifiability suite** in its own tree (`scripts/run.sh`, `scripts/harness_adapters/`, `tests/scenarios/harness/` with `pass_criteria.py` graders). The suite validates transcript-gradable behavior against a **named dated model** on a **named scenario set** under a **pass^k stability gate** and **reproducibility protocol** (`_repro.py`, Invariant 16). It is **not** a measured behavioral-delta claim: blind audit, Layer B calibration at scale, and Layer C mutation heat maps remain pending until operator runs them with `ANTHROPIC_API_KEY`.
 
@@ -12,7 +12,7 @@ This repo distributes `trainer` together with the 10 specialist skill directorie
 
 ## Why this exists
 
-When you give an AI coding agent a library of specialist skills (`form-check`, `recovery`, `safetybar`, `program`, `warmup`, `gymbuddy`, `diet`, `pr`, `superset`, `spotter`), the bootstrap problem is real: which one to load, in what order, for what kind of work? The agent does not know unless something tells it. That bootstrap context lived nowhere in the codebase before this skill existed.
+When you give an AI coding agent a library of specialist skills (`form-check`, `recovery`, `safetybar`, `program`, `warmup`, `gymbuddy`, `diet`, `pr`, `superset`, `spotter`, `logbook`), the bootstrap problem is real: which one to load, in what order, for what kind of work? The agent does not know unless something tells it. That bootstrap context lived nowhere in the codebase before this skill existed.
 
 `trainer` is the entrypoint. Load it first; it routes to the right specialist; the specialist does the work; the trainer coaches the surrounding decisions. Loaded once per session, persistent throughout.
 
@@ -20,7 +20,7 @@ The decision to build a standalone bootstrap skill (rather than fold the routing
 
 ---
 
-## The 10 specialists (bundled at `./specialists/`)
+## The 11 specialists (`./specialists/`)
 
 | Skill | Role | When to load |
 |---|---|---|
@@ -34,14 +34,15 @@ The decision to build a standalone bootstrap skill (rather than fold the routing
 | [`pr`](./specialists/pr/) | personal-record celebration | Milestones, retros, achievements |
 | [`superset`](./specialists/superset/) | parallel-agent dispatch discipline (worktree isolation, prompt templates, falsifier checklist, batch aggregation, status-check and closeout doc hygiene) | Spawning 2+ fresh-context agents on the same repo; orchestrator-handoff when the coordination chat hits context-window pressure; status refresh or job closeout when each touched repo's CHANGELOG, README, and roadmap must match shipped work |
 | [`spotter`](./specialists/spotter/) | CI/CD failure diagnosis and fixing | CI is red, shellcheck failed, generation gate blocked, workflow YAML error, verify script failed, missing permission in Actions |
+| [`logbook`](./specialists/logbook/) | per-project append-only work log (sets, proof, outcomes, next set) | Work spans sessions, resuming after a break, "what did I do last", proof that the work happened |
 
-Sibling-directory canonicals at `~/Projects/<name>.skill/` remain the editing home for each specialist. Run `scripts/bundle_specialists.sh` to refresh `./specialists/` for distribution.
+Most specialists live as sibling repos at `~/Projects/<name>.skill/`, and `scripts/bundle_specialists.sh` refreshes those copies into `./specialists/`. `logbook` is native to this repo, so no bundle step applies to it.
 
 ---
 
 ## How the routing decision works
 
-1. **What is the user doing right now?** Planning new code → `form-check plan-new-app`. **Code review / PR review / review diff** → `trainer-codereview.md` + `trainer-autonomous-code-review.md` + `form-check code-review` (loop until clean). **CI is red / check failed** → `spotter`. Fixing after a bad ship → `recovery`. Pairing → `gymbuddy`. Multi-week plan → `program`. Just opened the workspace → `warmup`. Spawning 2+ parallel agents on the same repo → `superset`.
+1. **What is the user doing right now?** Planning new code → `form-check plan-new-app`. **Code review / PR review / review diff** → `trainer-codereview.md` + `trainer-autonomous-code-review.md` + `form-check code-review` (loop until clean). **CI is red / check failed** → `spotter`. Fixing after a bad ship → `recovery`. Pairing → `gymbuddy`. Multi-week plan → `program`. Just opened the workspace → `warmup`. Spawning 2+ parallel agents on the same repo → `superset`. Resuming work after a break, or needing proof of what was done → `logbook`.
 2. **What is the stakes tier?** Vibe-safe / vibe-careful / vibe-dangerous, classified per `form-check` Section 5. Vibe-dangerous → also load `safetybar`. Vibe-dangerous AND post-incident → also load `recovery`. Token budget tight → load `diet`. CI failure → load `spotter`. Parallel-agent dispatch at any tier → load `superset`.
 3. **Adapt as the session evolves.** A planning session that uncovers an incident routes to `recovery` mid-session. A review that surfaces a runtime concern routes to `safetybar`. A multi-day push that hits IDE-slow or accumulated-context routes to `superset` for an orchestrator-handoff. Routing is not locked at start.
 
@@ -192,7 +193,8 @@ trainer.skill/
     ├── diet/          # token budget
     ├── pr/            # milestone retro
     ├── spotter/       # CI/CD failure diagnosis and fixing (added v0.16.0)
-    └── superset/      # parallel-agent dispatch + orchestrator handoff (added v0.7.0 as `ancillary`, renamed v0.7.1)
+    ├── superset/      # parallel-agent dispatch + orchestrator handoff (added v0.7.0 as `ancillary`, renamed v0.7.1)
+    └── logbook/       # per-project append-only work ledger (added v1.0.0)
 ```
 
 ---
