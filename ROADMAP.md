@@ -56,9 +56,9 @@ their behavior claims. Phase 11 is building that evidence layer.
 
 ## Open questions
 
-- Should the nine gym standalones get their own GitHub mirrors, or stay
-  bundle-only? Currently the standalones at `$HOME/Projects/<name>.skill/`
-  are local-only git repos.
+- Should the gym standalones (eight sibling repos today) get their own GitHub
+  mirrors, or stay bundle-only? Currently the standalones at
+  `$HOME/Projects/<name>.skill/` are local-only git repos.
 - Whether to gate `git push` on `verify_trainer_sync.sh` by default
   (currently opt-in via `scripts/install_hooks.sh`).
 - Mechanical CHANGELOG drift check in CI when `SKILL.md` or `scripts/` change without `CHANGELOG.md` update.

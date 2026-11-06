@@ -2,7 +2,7 @@
 
 ## Scope
 
-This repository distributes the `trainer` entrypoint skill and nine bundled specialist skills as Markdown documentation. Nothing here runs as a service, opens network ports, or processes user data at runtime. Agents and humans read these files locally in an IDE or skill directory.
+This repository distributes the `trainer` entrypoint skill and eleven specialist skills (plus a `cruft` toolkit directory) as Markdown documentation and a small standard-library Python CLI. Nothing here runs as a service, opens network ports, or processes user data at runtime. Agents and humans read these files locally in an IDE or skill directory.
 
 ## What we cover
 
@@ -20,7 +20,9 @@ This repository distributes the `trainer` entrypoint skill and nine bundled spec
 
 | Version | Status | Notes |
 | ------- | ------ | ----- |
-| 0.15.x | supported | Current line; Phase 11 Layer A driver + Invariants 15–16; see `CHANGELOG.md` |
+| 1.0.x | supported | Adds the `logbook` specialist and the eleven-specialist routing table; lands with PR #40, so `main` is still 0.17.x until that merges; see `CHANGELOG.md` |
+| 0.16.x - 0.17.x | supported | `spotter` specialist and the L2 frontend reference; current line on `main` until PR #40 merges |
+| 0.15.x | supported | Phase 11 Layer A driver + Invariants 15–16; see `CHANGELOG.md` |
 | 0.14.x | supported | Code-review loop + Invariants 12–14 (R-6 user-facing docs) |
 | 0.13.x | supported | Epistemic layers routing |
 | 0.10.x | security-only | Critical doc or script fixes at maintainer discretion |
@@ -55,4 +57,4 @@ Skill Markdown often lands in agent context. Do not commit live credentials to t
 
 See `docs/BRANCH_PROTECTION.md` and `scripts/apply_branch_protection.sh`. Force-push and branch deletion on `main` are blocked for normal pushes once protection is applied; repo admins can bypass unless `enforce_admins` is enabled (see policy table in the branch-protection doc).
 
-Owner: repo maintainers. Last reviewed: 2026-06-28.
+Owner: repo maintainers. Last reviewed: 2026-11-06.

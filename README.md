@@ -1,6 +1,6 @@
 # trainer
 
-An entrypoint and coaching skill for a 10-specialist agent toolkit. The trainer is text the agent reads at the start of every coding / prompt-engineering / agent-skill session. It points the agent to the right specialist for the work, asks the agent to read that specialist's leaf content before responding, and pushes back when the agent (or the user) tries to skip the routing.
+An entrypoint and coaching skill for an 11-specialist agent toolkit. The trainer is text the agent reads at the start of every coding / prompt-engineering / agent-skill session. It points the agent to the right specialist for the work, asks the agent to read that specialist's leaf content before responding, and pushes back when the agent (or the user) tries to skip the routing.
 
 > A trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer is a coach: the goal is moving the user toward better patterns, more skills, more experience.
 
@@ -30,7 +30,7 @@ The decision to build a standalone bootstrap skill (rather than fold the routing
 | [`safetybar`](./specialists/safetybar/) | agent-runtime guardrails (allow-list, ledger, rollback) | Agent runtime needs hard guardrails; vibe-dangerous changes |
 | [`recovery`](./specialists/recovery/) | post-incident protocol | After a bad ship, incident, regression, audit-block |
 | [`gymbuddy`](./specialists/gymbuddy/) | the pairing peer | Co-coding, pair-on-vibe-dangerous, walkthroughs |
-| [`diet`](./specialists/diet/) | context / token-budget management | Output volume needs trimming, tokens are the constraint |
+| [`diet`](./specialists/diet/) | incident response and production ops (instrumentation, the four golden signals, 30-minute triage, blameless post-mortem) | Production is broken, an alarm fired, users report errors, a post-mortem is due |
 | [`pr`](./specialists/pr/) | personal-record celebration | Milestones, retros, achievements |
 | [`superset`](./specialists/superset/) | parallel-agent dispatch discipline (worktree isolation, prompt templates, falsifier checklist, batch aggregation, status-check and closeout doc hygiene) | Spawning 2+ fresh-context agents on the same repo; orchestrator-handoff when the coordination chat hits context-window pressure; status refresh or job closeout when each touched repo's CHANGELOG, README, and roadmap must match shipped work |
 | [`spotter`](./specialists/spotter/) | CI/CD failure diagnosis and fixing | CI is red, shellcheck failed, generation gate blocked, workflow YAML error, verify script failed, missing permission in Actions |
@@ -43,8 +43,10 @@ Most specialists live as sibling repos at `~/Projects/<name>.skill/`, and `scrip
 ## How the routing decision works
 
 1. **What is the user doing right now?** Planning new code → `form-check plan-new-app`. **Code review / PR review / review diff** → `trainer-codereview.md` + `trainer-autonomous-code-review.md` + `form-check code-review` (loop until clean). **CI is red / check failed** → `spotter`. Fixing after a bad ship → `recovery`. Pairing → `gymbuddy`. Multi-week plan → `program`. Just opened the workspace → `warmup`. Spawning 2+ parallel agents on the same repo → `superset`. Resuming work after a break, or needing proof of what was done → `logbook`.
-2. **What is the stakes tier?** Vibe-safe / vibe-careful / vibe-dangerous, classified per `form-check` Section 5. Vibe-dangerous → also load `safetybar`. Vibe-dangerous AND post-incident → also load `recovery`. Token budget tight → load `diet`. CI failure → load `spotter`. Parallel-agent dispatch at any tier → load `superset`.
+2. **What is the stakes tier?** Vibe-safe / vibe-careful / vibe-dangerous, classified per `form-check` Section 5. Vibe-dangerous → also load `safetybar`. Vibe-dangerous AND post-incident → also load `recovery`. CI failure → load `spotter`. Parallel-agent dispatch at any tier → load `superset`.
 3. **Adapt as the session evolves.** A planning session that uncovers an incident routes to `recovery` mid-session. A review that surfaces a runtime concern routes to `safetybar`. A multi-day push that hits IDE-slow or accumulated-context routes to `superset` for an orchestrator-handoff. Routing is not locked at start.
+
+**When the context or token budget is the constraint**, the lever is the loaded surface, not a specialist: root `SKILL.md` stays a router, depth lives in `references/` files that load on demand, and `tests/context_budget/check_context_budget.py` checks the budget (warn-only at 220 lines for root `SKILL.md`). Generated tool output should stay proportional to what changed, not to the size of the record; `logbook verify` is built that way.
 
 Specialists compose. The trainer explains the order and what to watch for between handoffs.
 

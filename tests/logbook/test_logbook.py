@@ -228,6 +228,29 @@ class TestState(LogbookBase):
         self.assertIn("Next set on the bar", state)
         self.assertIn("not set", state)
 
+    def test_state_page_clips_long_fields_while_the_ledger_keeps_them(self) -> None:
+        self.init()
+        long_what = "w" * 200
+        long_scope = "s" * 200
+        self.run_cli(
+            "record", "slice", "--what", long_what, "--scope", long_scope,
+            "--evidence", "long-evidence-" + "e" * 100 + ".txt",
+        )
+        state = (self.root / ".workledger" / "ACTIVE_STATE.md").read_text()
+        rows = [line for line in state.splitlines() if " | scope: " in line]
+        self.assertEqual(len(rows), 1, msg=state)
+        self.assertLess(len(rows[0]), 220, msg=rows[0])
+        event = self.slice_events()[0]
+        self.assertEqual(event["what"], long_what)
+        self.assertEqual(event["scope"], long_scope)
+        self.assertIn("e" * 100, event["evidence"])
+
+    def test_state_page_clips_a_long_objective(self) -> None:
+        self.run_cli("init", "--objective", "o" * 300)
+        state = (self.root / ".workledger" / "ACTIVE_STATE.md").read_text()
+        objective_line = state.split("## Objective", 1)[1].splitlines()[1]
+        self.assertLess(len(objective_line), 160, msg=objective_line)
+
 
 class TestVerify(LogbookBase):
     def test_verify_on_an_empty_logbook_exits_two(self) -> None:
@@ -266,6 +289,52 @@ class TestVerify(LogbookBase):
         code, out, _ = self.capture("verify")
         self.assertEqual(code, EXIT_VERIFY_FAILED, msg=out)
         self.assertIn("EV_UNVERIFIED", out)
+
+    def test_verify_default_output_stays_compact_on_a_clean_log(self) -> None:
+        self.init()
+        for index in range(3):
+            (self.root / f"out-{index}.txt").write_text("proof\n")
+            self.run_cli(
+                "record", "slice", "--what", f"wrote proof {index}", "--scope", "one file",
+                "--evidence", f"out-{index}.txt",
+            )
+        code, out, _ = self.capture("verify")
+        self.assertEqual(code, EXIT_OK, msg=out)
+        printed = [line for line in out.splitlines() if line.strip()]
+        self.assertEqual(len(printed), 1, msg=out)
+        self.assertIn("3", out)
+
+    def test_verify_all_lists_every_set(self) -> None:
+        self.init()
+        for index in range(3):
+            (self.root / f"out-{index}.txt").write_text("proof\n")
+            self.run_cli(
+                "record", "slice", "--what", f"wrote proof {index}", "--scope", "one file",
+                "--evidence", f"out-{index}.txt",
+            )
+        code, out, _ = self.capture("verify", "--all")
+        self.assertEqual(code, EXIT_OK, msg=out)
+        for index in range(3):
+            self.assertIn(f"wrote proof {index}", out)
+
+    def test_verify_default_output_lists_only_the_failures(self) -> None:
+        self.init()
+        for index in range(2):
+            (self.root / f"out-{index}.txt").write_text("proof\n")
+            self.run_cli(
+                "record", "slice", "--what", f"wrote proof {index}", "--scope", "one file",
+                "--evidence", f"out-{index}.txt",
+            )
+        self.run_cli(
+            "record", "slice", "--what", "wrote nothing", "--scope", "one file",
+            "--evidence", "gone.txt",
+        )
+        code, out, _ = self.capture("verify")
+        self.assertEqual(code, EXIT_VERIFY_FAILED, msg=out)
+        self.assertIn("EV_MISSING", out)
+        self.assertIn("wrote nothing", out)
+        self.assertNotIn("wrote proof 0", out)
+        self.assertNotIn("wrote proof 1", out)
 
     def test_verify_rejects_a_directory_as_proof(self) -> None:
         self.init()
