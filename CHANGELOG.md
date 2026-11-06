@@ -6,7 +6,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ## 2026-11-06
 
-**PR [#40](https://github.com/weijia-89/trainer.skill/pull/40)** - new `logbook` specialist, plus a token-cost pass on the output it produces.
+**PR [#40](https://github.com/weijia-89/trainer.skill/pull/40)** (merged) and **PR [#41](https://github.com/weijia-89/trainer.skill/pull/41)** - the new `logbook` specialist, plus a token-cost pass on the output it produces and a refresh of the supporting docs.
 
 - feat(specialists): add `logbook` - a per-project, append-only work ledger backed by a zero-install standard-library CLI at `specialists/logbook/scripts/logbook.py`. A work slice carries proof and an outcome. The record always names the next slice.
 - feat(router): route work that spans sessions to `logbook`, so a resumed session reads the record instead of guessing. The Activity clause, the specialist table row, and the `composes` list carry the route.
