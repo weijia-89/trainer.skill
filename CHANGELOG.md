@@ -6,21 +6,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ## 2026-11-06
 
-- feat(logbook): cut the token cost of the tool's own output. `verify` now lists only the sets without proof and prints one summary line on a clean log (631 estimated tokens for 20 clean sets before, 16 after, and it no longer grows with the log). `--all` prints every row, which is the only mode that scales with the log.
-- feat(logbook): cap every field shown in the generated `ACTIVE_STATE.md` (objective 120, what 60, scope 32, proof 48, next 72 characters). The ledger keeps the full text; the projection stops growing with the length of your notes.
-- docs(logbook): add `specialists/logbook/README.md` (what it does, when to load, how it works, output cost) - every other specialist directory carried a README, this one did not.
-- fix(docs): the root `README.md` described `diet` as context and token-budget management in both the specialist table and the routing steps. `diet` is incident response and production ops, as its own README, its own frontmatter, and the `SKILL.md` table all said. Both claims are corrected, and the real context-budget mechanism (root `SKILL.md` as router, on-demand `references/`, `check_context_budget.py`) now has its own paragraph.
-- docs: refresh stale specialist counts and version facts in `README.md`, `ROADMAP.md`, `SECURITY.md`, `context.md`, and `references/trainer-runtime-compactness.md`. The SECURITY support table gains the 1.0.x line, which was missing.
-- docs(context): record the v1.0.0 `logbook` decisions (D14-D17), close the L2 item that still said PR #34 was open, and list the two deferred `.sh` fixes that the generation gate blocks.
-- test(logbook): 31 unit tests, up from 24. New coverage: compact verify output, `--all`, failure-only listing in the default mode, and the state-page field caps.
-
-## 2026-11-01
+**PR [#40](https://github.com/weijia-89/trainer.skill/pull/40)** - new `logbook` specialist, plus a token-cost pass on the output it produces.
 
 - feat(specialists): add `logbook` - a per-project, append-only work ledger backed by a zero-install standard-library CLI at `specialists/logbook/scripts/logbook.py`. A work slice carries proof and an outcome. The record always names the next slice.
-- test(specialists): add `tests/logbook/test_logbook.py` - 24 unit tests. They cover the ledger lifecycle plus the safety cases (a torn tail, duplicate sets, concurrent writers).
-- feat(router): route work that spans sessions to `logbook`, so a resumed session reads the record instead of guessing. The Activity clause and the specialist table row carry the route.
-- feat(gate): add `.github/workflows/logbook-tests.yml` so the 24 logbook unit tests run on every pull request and on pushes to main.
-- docs: add the logbook row to the README specialist table, refresh the specialist counts, and note that `logbook` is native to this repo rather than a bundled sibling copy. The ROADMAP version and status lines now match v1.0.0.
+- feat(router): route work that spans sessions to `logbook`, so a resumed session reads the record instead of guessing. The Activity clause, the specialist table row, and the `composes` list carry the route.
+- feat(gate): add `.github/workflows/logbook-tests.yml` so the logbook suite runs on every pull request and on pushes to `main`.
+- feat(logbook): cut the token cost of the tool's own output. `verify` lists only the sets without proof and prints one summary line on a clean log (631 estimated tokens for 20 clean sets before, 16 after, and it no longer grows with the log). `--all` prints every row, which is the only mode that scales with the log.
+- feat(logbook): cap every field shown in the generated `ACTIVE_STATE.md` (objective 120, what 60, scope 32, proof 48, next 72 characters). The ledger keeps the full text; the projection stops growing with the length of your notes.
+- test(logbook): add `tests/logbook/test_logbook.py` - 31 unit tests. They cover the ledger lifecycle plus the safety cases: a torn tail, duplicate sets, outcome binding, concurrent writers, an interrupted init, compact verify output, and the state-page field caps.
+- fix(docs): the root `README.md` described `diet` as context and token-budget management in both the specialist table and the routing steps. `diet` is incident response and production ops, as its own README, its own frontmatter, and the `SKILL.md` table all said. Both claims are corrected, and the real context-budget mechanism (root `SKILL.md` as router, on-demand `references/`, `check_context_budget.py`) now has its own paragraph.
+- docs: add `specialists/logbook/README.md`, and refresh stale specialist counts and version facts in `README.md`, `ROADMAP.md`, `SECURITY.md`, `context.md`, and `references/trainer-runtime-compactness.md`. The SECURITY support table gains the 1.0.x line, which was missing.
+- docs(context): record the v1.0.0 `logbook` decisions (D14-D17), close the L2 item that still said PR #34 was open, and list the two deferred `.sh` fixes that the generation gate blocks.
 - **Version 0.17.0 → 1.0.0 (MAJOR).** The specialist gym-skills list gains an entry, which the SemVer rules in this file classify as a MAJOR change.
 
 ## 2026-08-25

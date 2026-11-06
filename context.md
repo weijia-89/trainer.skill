@@ -96,8 +96,17 @@ does not do the work. Specialists execute.
 | Structure decision | Specialist + CLI, and a routing row; **not** a reference file (D14) |
 | Versioning | MAJOR bump 0.17.0 → 1.0.0 (the gym-skills list gains an entry) (D15) |
 | Tooling | `specialists/logbook/scripts/logbook.py`, Python standard library only, no network (D16) |
-| Tests | `tests/logbook/test_logbook.py`, 31 unit tests, wired to ci via `.github/workflows/logbook-tests.yml` (D17) |
+| Tests | `tests/logbook/test_logbook.py`, 31 unit tests, wired to CI via `.github/workflows/logbook-tests.yml` (D17) |
 | Evidence | PR **#40** (`feat/logbook-specialist`), review comment round 1 on head `fd8589a` |
+
+### Decisions (v1.0.0)
+
+| ID | Decision | Date |
+|---|---|---|
+| D14 | Structure: specialist + CLI + routing row; not a reference file (a ledger needs a tool, not prose) | 2026-11-01 |
+| D15 | Versioning: MAJOR 0.17.0 → 1.0.0 (the gym-skills list gains an entry) | 2026-11-01 |
+| D16 | Tooling: standard-library Python only; no installs, no network, no dependency | 2026-11-01 |
+| D17 | Tests live in their own workflow (`.github/workflows/logbook-tests.yml`) because the generation-gate job runs strict mode on every changed `.sh` file | 2026-11-01 |
 
 ### What the logbook does
 

@@ -20,8 +20,8 @@ This repository distributes the `trainer` entrypoint skill and eleven specialist
 
 | Version | Status | Notes |
 | ------- | ------ | ----- |
-| 1.0.x | supported | Current line; adds the `logbook` specialist and the eleven-specialist routing table; see `CHANGELOG.md` |
-| 0.16.x - 0.17.x | supported | `spotter` specialist and the L2 frontend reference |
+| 1.0.x | supported | Adds the `logbook` specialist and the eleven-specialist routing table; lands with PR #40, so `main` is still 0.17.x until that merges; see `CHANGELOG.md` |
+| 0.16.x - 0.17.x | supported | `spotter` specialist and the L2 frontend reference; current line on `main` until PR #40 merges |
 | 0.15.x | supported | Phase 11 Layer A driver + Invariants 15–16; see `CHANGELOG.md` |
 | 0.14.x | supported | Code-review loop + Invariants 12–14 (R-6 user-facing docs) |
 | 0.13.x | supported | Epistemic layers routing |
