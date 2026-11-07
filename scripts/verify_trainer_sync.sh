@@ -19,6 +19,11 @@
 
 set -euo pipefail
 
+# The suite needs python3 (context budget, invariants, logbook tests) and mkdir
+# (cursor mirror refresh). Fail loudly when missing rather than mid-invariant.
+command -v python3 &>/dev/null || { echo "FAIL  python3 is required but not installed"; exit 1; }
+command -v mkdir &>/dev/null || { echo "FAIL  mkdir is required but not installed"; exit 1; }
+
 # Portable tracked-file list (macOS default bash 3.2 lacks mapfile).
 collect_tracked_files() {
   local repo_root="$1" self_basename="$2"
@@ -341,10 +346,13 @@ else
 fi
 
 # Invariant 4: SKILL.md + IDE triggers agree on version string (not references/ tree; see header 2b)
-CANONICAL_VERSION=$(grep -m1 '^version:' "$CANONICAL" | awk '{print $2}')
-CURSOR_SKILL_VERSION=$(grep -m1 '^version:' "$CURSOR_SKILL" | awk '{print $2}')
-CURSOR_VERSION=$(grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' "$CURSOR" | head -1 | tr -d 'v')
-WINDSURF_VERSION=$(grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' "$WINDSURF_MIRROR" | head -1 | tr -d 'v')
+# Each grep runs `|| true`: when a stamp is absent grep exits 1, and under
+# pipefail that aborts the whole script before the mismatch checks below can
+# report a proper FAIL line. An empty variable fails those checks loudly.
+CANONICAL_VERSION=$(grep -m1 '^version:' "$CANONICAL" | awk '{print $2}' || true)
+CURSOR_SKILL_VERSION=$(grep -m1 '^version:' "$CURSOR_SKILL" | awk '{print $2}' || true)
+CURSOR_VERSION=$(grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' "$CURSOR" | head -1 | tr -d 'v' || true)
+WINDSURF_VERSION=$(grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' "$WINDSURF_MIRROR" | head -1 | tr -d 'v' || true)
 
 if [[ "$CANONICAL_VERSION" != "$CURSOR_SKILL_VERSION" ]]; then
   echo "FAIL  version mismatch canonical=$CANONICAL_VERSION cursor_skill=$CURSOR_SKILL_VERSION"
@@ -526,6 +534,25 @@ if [[ -f "$INVARIANT_1B_TEST" ]]; then
   fi
 else
   echo "WARN  skipping invariant 1b fixture (missing $INVARIANT_1B_TEST)"
+fi
+
+# Invariant 17: logbook specialist suite (31 unit tests; this run replaces the
+# standalone logbook-tests workflow, which was deleted when the suite moved in).
+LOGBOOK_TEST="$REPO_ROOT/tests/logbook/test_logbook.py"
+if [[ -f "$LOGBOOK_TEST" ]]; then
+  set +e
+  LB_OUT=$(python3 "$LOGBOOK_TEST" 2>&1)
+  LB_EXIT=$?
+  set -e
+  if [[ $LB_EXIT -ne 0 ]]; then
+    echo "FAIL  logbook suite exited $LB_EXIT:"
+    printf '%s\n' "$LB_OUT" | sed 's/^/        /'
+    FAIL=1
+  else
+    echo "PASS  logbook suite ($(printf '%s\n' "$LB_OUT" | tail -1))"
+  fi
+else
+  echo "WARN  skipping logbook suite (missing $LOGBOOK_TEST)"
 fi
 
 # Invariant 12: code review loop routes to form-check code-review (not theater)

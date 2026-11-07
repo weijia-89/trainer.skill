@@ -4,6 +4,19 @@ All notable changes to the `trainer` skill will be documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adheres to [Semantic Versioning](https://semver.org/) with the rules below.
 
+## 2026-11-07
+
+**PR [#42](https://github.com/weijia-89/trainer.skill/pull/42)** - the generation gate passes its own strict mode, which unblocks the three shell-script chores the earlier waves had to defer.
+
+- fix(gate): tool detection and the existence check now look only at code that runs (comments and heredoc bodies stripped, with a quote-state walk so a `<<` inside a string cannot swallow the code after it; invocations required in command position). Variable assignments, array elements, filenames, function definitions, and tool names quoted in strings stopped registering as "tools": `verify_trainer_sync.sh` under strict fell from 47 warnings to zero, and the gate itself fell from 32 warnings to zero while still catching every real offender in before/after comparisons.
+- fix(gate): the SCRIPT_DIR idiom (`$(cd ... && pwd)`) is recognized instead of flagged as a critical; `bundle_specialists.sh` starts passing again.
+- fix(gate): the check reads its own warnings first no more - the gate passes `--strict` on itself and is shellcheck-clean.
+- fix(scripts): `verify_trainer_sync.sh` version-stamp greps carry `|| true`, so a missing stamp prints a proper FAIL line instead of a silent abort (the deferred P3).
+- fix(scripts): `bundle_specialists.sh` gains an `rsync` guard and an honest header (ten wired array names; logbook and cruft are native and out of the array).
+- feat(verify): the logbook suite (31 tests) now runs as Invariant 17 inside `verify_trainer_sync.sh`; the standalone `.github/workflows/logbook-tests.yml` is deleted, so the tests run once in the verify job instead of twice.
+- test: add smoke suites for both scripts (`tests/test_bundle_specialists.sh`, `tests/test_verify_trainer_sync.sh`).
+- docs(context): the durable record had been claiming the 1.0.0 wave was open; it now records both squash SHAs (0da6f93, 59b386e) as merged.
+
 ## 2026-11-06
 
 **PR [#40](https://github.com/weijia-89/trainer.skill/pull/40)** (merged) and **PR [#41](https://github.com/weijia-89/trainer.skill/pull/41)** - the new `logbook` specialist, plus a token-cost pass on the output it produces and a refresh of the supporting docs.
