@@ -92,7 +92,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 **PR [#30](https://github.com/weijia-89/trainer.skill/pull/30)** - PR writing templates and test harness.
 
-- **`specialists/pr/SKILL.md`** - expanded (+162 lines): PR writing templates and the session-close cleanup variant (superset of the request-cap R4c webfetch-cache cleanup for `.cruft.md` scratchpads).
+- **`specialists/pr/SKILL.md`** - expanded (162 changed lines): PR writing templates and the session-close cleanup variant (superset of the request-cap R4c webfetch-cache cleanup for `.cruft.md` scratchpads).
 
 ## 2026-08-04
 
