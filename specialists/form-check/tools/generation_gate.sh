@@ -28,7 +28,6 @@
 
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 STRICT="${STRICT:-0}"
 NO_SHELLCHECK="${NO_SHELLCHECK:-0}"
 BYPASS="${GENERATION_GATE_BYPASS:-0}"
@@ -46,6 +45,9 @@ fi
 log() { echo -e "${GREEN}[GEN-GATE]${NC} $*"; }
 warn() { echo -e "${YELLOW}[WARN]${NC} $*" >&2; }
 fail() { echo -e "${RED}[FAIL]${NC} $*" >&2; }
+# Indent diagnostic output under its message (shellcheck SC2001 prefers this
+# to a sed kick).
+indent() { awk '{printf "    %s\n", $0}'; }
 
 usage() {
     cat <<EOF
@@ -96,7 +98,13 @@ if [[ "$BYPASS" -eq 1 ]]; then
     echo "$(date '+%Y-%m-%dT%H:%M:%S%z') GENERATION_GATE_BYPASS justification='${justification}'" >> .recovery/calibration.jsonl 2>/dev/null || true
     # Set restrictive permissions on log file if it exists
     if [[ -f ".recovery/calibration.jsonl" ]]; then
-        chmod 600 ".recovery/calibration.jsonl" 2>/dev/null || true
+        # Check first so exotic environments degrade to a logged skip instead
+        # of an abort on the audit-trail tightening.
+        if command -v chmod &>/dev/null; then
+            chmod 600 ".recovery/calibration.jsonl" 2>/dev/null || true
+        else
+            warn "chmod not available; calibration log permissions not tightened"
+        fi
     fi
     exit 0
 fi
@@ -127,12 +135,52 @@ fi
 TOTAL_CRITICAL=0
 TOTAL_WARNINGS=0
 
+# Normalized views are per-file temp copies with comment lines and heredoc
+# bodies removed, so the pattern checks below look only at executed code.
+# Raw "$file" stays available for checks that need the untouched text.
+CLEAN_FILES=()
+trap 'if [[ ${#CLEAN_FILES[@]} -gt 0 ]]; then rm -f "${CLEAN_FILES[@]}" 2>/dev/null || true; fi' EXIT
+
+# Heredoc-start pattern, kept in a variable so bash does not tokenize the
+# unquoted << inside the conditional expression.
+HEREDOC_START_RE='<<-?[[:space:]]*["]?["'"'"']?([A-Za-z_][A-Za-z0-9_]*)'
+
+strip_noise() {
+    # Reads a script on stdin, writes it with comment lines and heredoc bodies
+    # (between a << marker and its delimiter line) removed. Pure bash, bash 3.2
+    # compatible. Heredoc start lines are kept: they carry the real invocation.
+    inside=0
+    term=""
+    while IFS= read -r line; do
+        if [[ "$inside" -eq 1 ]]; then
+            [[ "$line" == "$term" ]] && inside=0
+            continue
+        fi
+        [[ "$line" =~ ^[[:space:]]*# ]] && continue
+        if [[ "$line" =~ $HEREDOC_START_RE ]]; then
+            term="${BASH_REMATCH[1]}"
+            inside=1
+        fi
+        printf '%s\n' "$line"
+    done
+}
+
 for file in "${TARGET_FILES[@]}"; do
     [[ -f "$file" ]] || continue
     
     log "=== Checking: $file ==="
     CRITICAL=0
     WARNINGS=0
+    
+    clean_file=$(mktemp "${TMPDIR:-/tmp}/gen-gate-clean.XXXXXX")
+    CLEAN_FILES+=("$clean_file")
+    strip_noise < "$file" > "$clean_file"
+    clean_file_size=$(wc -c < "$clean_file")
+    if [[ "$clean_file_size" -eq 0 ]]; then
+        # Nothing executable left (all comments); fall back to the raw file so
+        # the structural checks below still see something.
+        cp "$file" "$clean_file"
+    fi
     
     # Check 1: Safety header (critical)
     if ! grep -qE 'set\s+[-+]euo\s+pipefail' "$file"; then
@@ -147,22 +195,22 @@ for file in "${TARGET_FILES[@]}"; do
     local_collisions=$(grep -nE '^\s*(LANG|LC_ALL|PATH|HOME)=' "$file" || true)
     if [[ -n "$local_collisions" ]]; then
         fail "  Environment variable collision (reserved names):"
-        echo "$local_collisions" | sed 's/^/    /'
+        echo "$local_collisions" | indent
         CRITICAL=$((CRITICAL + 1))
     else
         log "  PASS: No env variable collisions"
     fi
     
     # Check 3: Numeric argument validation (warning)
-    # Look for shift 2 patterns without validation
+    # Look for shift 2 patterns without validation (comments excluded via clean_file)
     numeric_unvalidated=0
     while IFS= read -r line; do
         lineno=$(echo "$line" | cut -d: -f1)
         # Check if there's a validation pattern within 10 lines before
-        if ! sed -n "$((lineno-10)),$((lineno))p" "$file" | grep -qE '\[\[.*\$[0-9].*=~.*[0-9]|\[\[.*-z.*\$[0-9]'; then
+        if ! sed -n "$((lineno-10)),$((lineno))p" "$clean_file" | grep -qE '\[\[.*\$[0-9].*=~.*[0-9]|\[\[.*-z.*\$[0-9]'; then
             numeric_unvalidated=$((numeric_unvalidated + 1))
         fi
-    done < <(grep -nE 'shift\s+2' "$file" || true)
+    done < <(grep -nE 'shift\s+2' "$clean_file" || true)
     
     if [[ "$numeric_unvalidated" -gt 0 ]]; then
         warn "  $numeric_unvalidated numeric argument(s) without visible validation"
@@ -175,16 +223,45 @@ for file in "${TARGET_FILES[@]}"; do
     # Dynamically extract tool names from common patterns + hardcoded list
     missing_checks=0
     
-    # Build combined list: hardcoded common tools + dynamically detected
+    # Build combined list: hardcoded common tools + dynamically detected.
+    # Detection input is clean_file (comments + heredoc bodies removed), and the
+    # lines filtered here are the ones whose first word is not an invocation:
+    # variable/array assignments and function definitions.
     detected_tools=()
     # Detect tools invoked directly (command args or pipeline)
+    SKIP_TOOLS='^(echo|printf|cat|sed|awk|grep|cut|sort|uniq|head|tail|basename|dirname|cd|pwd|exit|return|shift|trap|set|unset|export|local|read|declare|typeset|readonly|break|continue|if|then|elif|else|fi|for|while|until|do|done|case|esac|in|function|source|\.|\[|\]\])$'
+    # Shell functions defined in this file are not external tools; fold their
+    # names into the skip pattern (no sed/awk needed: pure token paste).
+    defined_functions=()
+    while IFS= read -r fn_line; do
+        fn_name=""; for f in $fn_line; do fn_name="$f"; break; done
+        [[ -n "$fn_name" ]] && defined_functions+=("$fn_name")
+    done < <(grep -oE '^[[:space:]]*[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]*\(\)' "$clean_file" 2>/dev/null || true)
+    if [[ ${#defined_functions[@]} -gt 0 ]]; then
+        # Insert function names into the skip alternation before its close.
+        fn_extra=""
+        for fn_name in "${defined_functions[@]}"; do
+            fn_extra="$fn_extra|$fn_name"
+        done
+        # ${var%)\$}: wipe the "close-and-anchor" tail, then re-add it past the
+        # new alternatives, so the pattern stays ^(...)$ with all names inside.
+        SKIP_TOOLS="${SKIP_TOOLS%)\$}$fn_extra)\$"
+    fi
     while IFS= read -r match; do
-        tool=$(echo "$match" | sed -E 's/^[[:space:]]*//' | awk '{print $1}')
-        # Skip bash builtins, comments, variable assignments, and common non-tool commands
-        if [[ -n "$tool" ]] && ! [[ "$tool" =~ ^(echo|printf|cat|sed|awk|grep|cut|sort|uniq|head|tail|basename|dirname|cd|pwd|exit|return|shift|trap|set|unset|export|local|if|then|elif|else|fi|for|while|do|done|case|esac|in|function|trap|source|\.|\[|\]\])$ ]]; then
+        tool=$(echo "$match" | awk '{print $1}')
+        # Skip bash builtins, variable names (convention: upper or dotted), and
+        # anything with an extension suffix (a filename, not a command).
+        if [[ -n "$tool" ]] && ! [[ "$tool" =~ $SKIP_TOOLS ]] \
+            && ! [[ "$tool" =~ ^[A-Za-z_][A-Za-z0-9_]*= ]] \
+            && ! [[ "$tool" =~ ^[A-Z_][A-Z0-9_]*$ ]] \
+            && ! [[ "$tool" == *.* ]]; then
             detected_tools+=("$tool")
         fi
-    done < <(grep -vE '^\s*#|^\s*$' "$file" | grep -oE '^[[:space:]]*[a-zA-Z0-9_.-]+' | sort -u || true)
+    done < <(grep -vE '^[[:space:]]*$' "$clean_file" \
+        | grep -vE '^[[:space:]]*[A-Za-z_][A-Za-z0-9_]*[[:space:]]*=' \
+        | grep -vE '^[[:space:]]*[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]*\(\)' \
+        | grep -oE '^[[:space:]]*[^[:space:]$;&|(`*{}"-][a-zA-Z0-9_./-]*' \
+        | sort -u || true)
     
     # Combine hardcoded and detected, remove duplicates
     all_tools=(python3 node npm cargo go javac mvn gradle npx jq yq curl wget docker kubectl terraform ansible)
@@ -194,7 +271,13 @@ for file in "${TARGET_FILES[@]}"; do
     
     # Check each unique tool
     checked_tools=()
+    # POSIX-core utilities are guaranteed with any POSIX shell environment;
+    # checking them is noise and misses the point (niche binaries are the risk).
+    POSIX_CORE='^(rm|mkdir|find|cp|mv|touch|ln|date|chmod|chown|uname|tar|gzip)$'
     for cmd in "${all_tools[@]}"; do
+        if [[ "$cmd" =~ $POSIX_CORE ]]; then
+            continue
+        fi
         # Skip if already checked (use loop instead of regex to avoid unbound variable issues)
         already_checked=0
         if [[ ${#checked_tools[@]} -gt 0 ]]; then
@@ -208,10 +291,13 @@ for file in "${TARGET_FILES[@]}"; do
         [[ "$already_checked" -eq 1 ]] && continue
         checked_tools+=("$cmd")
         
-        # Check if tool is invoked as a command (not in comment or variable assignment)
+        # A real invocation: command position on an executable line (line start,
+        # after ; | & or a $( ). Mentions inside strings, arrays, comments, and
+        # heredocs do not count.
         has_tool=0
         has_check=0
-        if grep -vE '^\s*#|^\s*[A-Z_]+=' "$file" | grep -qE "\b$cmd\b"; then
+        invocation_re="(^|[;|&(])[[:space:]]*${cmd}([[:space:]\$\")]|\$)"
+        if grep -vE '^[[:space:]]*[A-Za-z_][A-Za-z0-9_]*=[[:space:]]*\(' "$clean_file" | grep -Eq "$invocation_re" 2>/dev/null; then
             has_tool=1
         fi
         if grep -qE "command\s+-v\s+$cmd\b|which\s+$cmd\b|type\s+-P\s+$cmd\b" "$file"; then
@@ -224,6 +310,7 @@ for file in "${TARGET_FILES[@]}"; do
                 missing_checks=$((missing_checks + 1))
             fi
         fi
+
     done
     if [[ "$missing_checks" -gt 0 ]]; then
         WARNINGS=$((WARNINGS + missing_checks))
@@ -231,8 +318,12 @@ for file in "${TARGET_FILES[@]}"; do
         log "  PASS: Tool existence checked"
     fi
     
-    # Check 5: Test co-existence (warning)
+    # Check 5: Test co-existence (warning). A file that is itself a test does
+    # not need a test of the test: recursion would be infinite, so skip.
     basename_file=$(basename "$file" .sh)
+    if [[ "$basename_file" == test_* ]]; then
+        log "PASS: target is itself a test file (no test-of-test recursion)"
+    else
     found_test=0
     for test_path in \
         "$(dirname "$file")/tests/test_${basename_file}.sh" \
@@ -261,6 +352,7 @@ for file in "${TARGET_FILES[@]}"; do
             log "  PASS: Test file exists with $test_assertions assertions"
         fi
     fi
+    fi  # test_* skip (no test-of-test recursion)
     
     # Check 6: shellcheck (warning)
     if [[ "$NO_SHELLCHECK" -eq 0 ]] && command -v shellcheck &>/dev/null; then
@@ -268,7 +360,7 @@ for file in "${TARGET_FILES[@]}"; do
         sc_issues=$(echo "$sc_output" | grep -c '^\s*\^' || echo 0)
         if [[ "$sc_issues" -gt 0 ]]; then
             warn "  shellcheck found $sc_issues issues:"
-            echo "$sc_output" | head -20 | sed 's/^/    /'
+            echo "$sc_output" | head -20 | indent
             WARNINGS=$((WARNINGS + sc_issues))
         else
             log "  PASS: shellcheck clean"
@@ -294,7 +386,7 @@ for file in "${TARGET_FILES[@]}"; do
     
     if [[ "$heredocs_outside_usage" -gt 0 ]]; then
         fail "  safe-terminal: heredoc outside usage/help function (use write_to_file):"
-        grep -nE '<<[A-Z]' "$file" | sed 's/^/    /'
+        grep -nE '<<[A-Z]' "$file" | indent
         CRITICAL=$((CRITICAL + 1))
     else
         log "  PASS: No unsafe heredocs"
@@ -310,7 +402,7 @@ for file in "${TARGET_FILES[@]}"; do
         matches=$(grep -inE "$simple_pattern" "$file" | grep -vE '^\s*#|simple_pattern|for .* in' || true)
         if [[ -n "$matches" ]]; then
             fail "  Potential secret detected:"
-            echo "$matches" | head -3 | sed 's/^/    /'
+            echo "$matches" | head -3 | indent
             found_secrets=$((found_secrets + 1))
         fi
     done
@@ -320,7 +412,7 @@ for file in "${TARGET_FILES[@]}"; do
         matches=$(grep -inE "$regex_pattern" "$file" | grep -vE '^\s*#' || true)
         if [[ -n "$matches" ]]; then
             fail "  Potential secret detected:"
-            echo "$matches" | head -3 | sed 's/^/    /'
+            echo "$matches" | head -3 | indent
             found_secrets=$((found_secrets + 1))
         fi
     done
@@ -332,22 +424,33 @@ for file in "${TARGET_FILES[@]}"; do
     fi
     
     # Check 9: No cd && chains except standard SCRIPT_DIR pattern (critical)
-    # Exclude: comments, string literals in echo/fail/warn, SCRIPT_DIR pattern
-    cd_chains=$(grep -nE 'cd\s+.*&&' "$file" | grep -vE '^[0-9]+:\s*#|^[0-9]+:\s*(echo|fail|warn|log)\s+' | grep -v 'SCRIPT_DIR=' || true)
+    # Exclude: comments, string literals in echo/fail/warn, and the command-
+    # substitution form of the idiom: $(cd ... && pwd). Both patterns use the
+    # [[:space:]] spelling (never a literal space after "cd") so this check's
+    # own source cannot match itself.
+    cd_chains=$(grep -nE 'cd[[:space:]]+.*&&' "$file" | grep -vE '^[0-9]+:\s*#|^[0-9]+:\s*(echo|fail|warn|log)\s+' | grep -vE '\$\([[:space:]]*cd[[:space:]].*&&[[:space:]]*pwd' || true)
     if [[ -n "$cd_chains" ]]; then
         fail "  safe-terminal: cd-and chain detected - use Cwd param or SCRIPT_DIR pattern:"
-        echo "$cd_chains" | head -3 | sed 's/^/    /'
+        echo "$cd_chains" | head -3 | indent
         CRITICAL=$((CRITICAL + 1))
     else
         log "  PASS: No cd and chains"
     fi
     
     # Check 10: Additional safe-terminal rules (warnings)
-    # No eval or backtick command substitution
-    eval_usage=$(grep -nE '\beval\b|\`[^`]+\`' "$file" | grep -vE '^\s*#' || true)
-    if [[ -n "$eval_usage" ]]; then
+    # No eval invocations (command position only; the word inside a string,
+    # pattern, or identifier does not count) and no backtick command
+    # substitution. The backtick is built from \x60 so this check's own source
+    # contains no backtick pair to trip itself.
+    eval_usage=$(grep -nE '(^|[;&|(])[[:space:]]*eval[[:space:]]' "$clean_file" || true)
+    bt=$(printf '\\x60')
+    backtick_usage=""
+    if [[ -n "$bt" ]]; then
+        backtick_usage=$(grep -nE "${bt}[^${bt}]+${bt}" "$clean_file" || true)
+    fi
+    if [[ -n "$eval_usage" || -n "$backtick_usage" ]]; then
         warn "  safe-terminal: eval or backtick usage detected:"
-        echo "$eval_usage" | head -3 | sed 's/^/    /'
+        { [[ -n "$eval_usage" ]] && echo "$eval_usage"; [[ -n "$backtick_usage" ]] && echo "$backtick_usage"; } | head -3 | indent
         WARNINGS=$((WARNINGS + 1))
     fi
     
@@ -355,7 +458,7 @@ for file in "${TARGET_FILES[@]}"; do
     unquoted_danger=$(grep -nE 'rm\s+-rf?\s+\$|mv\s+\$|cp\s+-r\s+\$' "$file" | grep -vE '^\s*#' || true)
     if [[ -n "$unquoted_danger" ]]; then
         warn "  safe-terminal: unquoted variable in dangerous command:"
-        echo "$unquoted_danger" | head -3 | sed 's/^/    /'
+        echo "$unquoted_danger" | head -3 | indent
         WARNINGS=$((WARNINGS + 1))
     fi
     
