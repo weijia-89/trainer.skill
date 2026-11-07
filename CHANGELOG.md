@@ -17,6 +17,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - test: add smoke suites for both scripts (`tests/test_bundle_specialists.sh`, `tests/test_verify_trainer_sync.sh`).
 - docs(context): the durable record had been claiming the 1.0.0 wave was open; it now records both squash SHAs (0da6f93, 59b386e) as merged.
 
+**PR [#43](https://github.com/weijia-89/trainer.skill/pull/43)** - CHANGELOG restructure: the `[Unreleased]` grab-bag is gone. Every wave from #23 through #39 now sits in a dated section with its PR link. #32, #35, #37, and #38 gained their first entries.
+
 ## 2026-11-06
 
 **PR [#40](https://github.com/weijia-89/trainer.skill/pull/40)** (merged) and **PR [#41](https://github.com/weijia-89/trainer.skill/pull/41)** - the new `logbook` specialist, plus a token-cost pass on the output it produces and a refresh of the supporting docs.
