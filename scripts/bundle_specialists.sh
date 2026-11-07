@@ -1,11 +1,19 @@
 #!/usr/bin/env bash
-# Bundle the 10 specialist gym-skills into trainer.skill/specialists/
+# Bundle the wired specialist bundle-array members into trainer.skill/specialists/
+# SPECIALISTS lists the ten sibling-synced names ("form-check recovery gymbuddy
+# safetybar diet pr program warmup superset spotter"); gymbuddy and spotter have a
+# slot in the array but no sibling repo on disk today, so they skip. logbook and
+# cruft are native to this repo and stay out of the array.
 # Excludes: .git, virtualenvs, caches, OS junk, generated test output, recovery state
 
 set -euo pipefail
 
-# Override SRC_ROOT to point at the directory that contains the ten
-# sibling `<specialist>.skill/` directories. Defaults to "$HOME/Projects".
+command -v rsync &>/dev/null || { echo "[FAIL] rsync is required but not installed"; exit 1; }
+command -v find &>/dev/null || { echo "[FAIL] find is required but not installed"; exit 1; }
+command -v rm &>/dev/null || { echo "[FAIL] rm is required but not installed"; exit 1; }
+
+# Override SRC_ROOT to point at the directory that contains the sibling
+# `<specialist>.skill/` directories. Defaults to "$HOME/Projects".
 SRC_ROOT="${SRC_ROOT:-$HOME/Projects}"
 # DST_ROOT defaults to the `specialists/` directory next to this script.
 DST_ROOT="${DST_ROOT:-$(cd "$(dirname "$0")/.." && pwd)/specialists}"
