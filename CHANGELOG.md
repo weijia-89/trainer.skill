@@ -8,7 +8,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 **PR [#42](https://github.com/weijia-89/trainer.skill/pull/42)** - the generation gate passes its own strict mode, which unblocks the three shell-script chores the earlier waves had to defer.
 
-- fix(gate): tool detection and the existence check now look only at code that runs (comments and heredoc bodies stripped; invocations required in command position). Variable assignments, array elements, filenames, function definitions, and tool names quoted in strings stopped registering as "tools": `verify_trainer_sync.sh` under strict fell from 47 warnings to 3 real ones, and the gate itself fell from 32 warnings to zero.
+- fix(gate): tool detection and the existence check now look only at code that runs (comments and heredoc bodies stripped, with a quote-state walk so a `<<` inside a string cannot swallow the code after it; invocations required in command position). Variable assignments, array elements, filenames, function definitions, and tool names quoted in strings stopped registering as "tools": `verify_trainer_sync.sh` under strict fell from 47 warnings to zero, and the gate itself fell from 32 warnings to zero while still catching every real offender in before/after comparisons.
 - fix(gate): the SCRIPT_DIR idiom (`$(cd ... && pwd)`) is recognized instead of flagged as a critical; `bundle_specialists.sh` starts passing again.
 - fix(gate): the check reads its own warnings first no more - the gate passes `--strict` on itself and is shellcheck-clean.
 - fix(scripts): `verify_trainer_sync.sh` version-stamp greps carry `|| true`, so a missing stamp prints a proper FAIL line instead of a silent abort (the deferred P3).

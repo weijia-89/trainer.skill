@@ -143,23 +143,55 @@ trap 'if [[ ${#CLEAN_FILES[@]} -gt 0 ]]; then rm -f "${CLEAN_FILES[@]}" 2>/dev/n
 
 # Heredoc-start pattern, kept in a variable so bash does not tokenize the
 # unquoted << inside the conditional expression.
-HEREDOC_START_RE='<<-?[[:space:]]*["]?["'"'"']?([A-Za-z_][A-Za-z0-9_]*)'
+HEREDOC_START_RE='<<-?[[:space:]]*['"'"'"]?([A-Za-z_][A-Za-z0-9_]*)['"'"'"]?[^'"'"'"]*$'
+# The delimiter may be closing-quoted and followed by shell operators
+# (`<<'PY' || FAIL=1`), while a tail quote inside a string case never reaches
+# this regex because the quote-walk in strip_noise already rejected it.
 
 strip_noise() {
     # Reads a script on stdin, writes it with comment lines and heredoc bodies
     # (between a << marker and its delimiter line) removed. Pure bash, bash 3.2
     # compatible. Heredoc start lines are kept: they carry the real invocation.
+    # The first << is only a heredoc start when no quote is open there, so a
+    # string like "a << files" cannot trigger the strip.
     inside=0
     term=""
     while IFS= read -r line; do
         if [[ "$inside" -eq 1 ]]; then
-            [[ "$line" == "$term" ]] && inside=0
+            # shellcheck disable=SC2250
+            if [[ "$line" == "$term" ]]; then inside=0; fi
             continue
         fi
-        [[ "$line" =~ ^[[:space:]]*# ]] && continue
-        if [[ "$line" =~ $HEREDOC_START_RE ]]; then
-            term="${BASH_REMATCH[1]}"
-            inside=1
+        # shellcheck disable=SC2250
+        if [[ "$line" =~ ^[[:space:]#]*# ]]; then continue; fi
+        in_single=0
+        in_double=0
+        unquoted_at=""
+        len=${#line}
+        for (( pos=0; pos<len-1; pos++ )); do
+            # shellcheck disable=SC2250
+            ch="${line:$pos:1}"
+            if [[ "$in_single" -eq 1 ]]; then
+                # shellcheck disable=SC2250
+                if [[ "$ch" == \' ]]; then in_single=0; fi
+            elif [[ "$in_double" -eq 1 ]]; then
+                # shellcheck disable=SC2250
+                if [[ "$ch" == '"' ]]; then in_double=0; fi
+            else
+                # shellcheck disable=SC2250
+                if [[ "$ch" == \' ]]; then in_single=1
+                elif [[ "$ch" == '"' ]]; then in_double=1
+                elif [[ "$ch" == '<' && "${line:$((pos+1)):1}" == '<' ]]; then
+                    unquoted_at="$pos"
+                    break
+                fi
+            fi
+        done
+        if [[ -n "$unquoted_at" ]]; then
+            if [[ "${line:$unquoted_at}" =~ $HEREDOC_START_RE ]]; then
+                term="${BASH_REMATCH[1]}"
+                inside=1
+            fi
         fi
         printf '%s\n' "$line"
     done
@@ -357,7 +389,7 @@ for file in "${TARGET_FILES[@]}"; do
     # Check 6: shellcheck (warning)
     if [[ "$NO_SHELLCHECK" -eq 0 ]] && command -v shellcheck &>/dev/null; then
         sc_output=$(shellcheck "$file" 2>/dev/null || true)
-        sc_issues=$(echo "$sc_output" | grep -c '^\s*\^' || echo 0)
+        sc_issues=$(echo "$sc_output" | { grep -c '^\s*\^' || true; })
         if [[ "$sc_issues" -gt 0 ]]; then
             warn "  shellcheck found $sc_issues issues:"
             echo "$sc_output" | head -20 | indent
