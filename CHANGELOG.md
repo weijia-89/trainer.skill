@@ -17,6 +17,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - test: add smoke suites for both scripts (`tests/test_bundle_specialists.sh`, `tests/test_verify_trainer_sync.sh`).
 - docs(context): the durable record had been claiming the 1.0.0 wave was open; it now records both squash SHAs (0da6f93, 59b386e) as merged.
 
+**PR [#43](https://github.com/weijia-89/trainer.skill/pull/43)** - CHANGELOG restructure: the `[Unreleased]` grab-bag is gone. Every wave from #23 through #39 now sits in a dated section with its PR link. #32, #35, #37, and #38 gained their first entries.
+
 ## 2026-11-06
 
 **PR [#40](https://github.com/weijia-89/trainer.skill/pull/40)** (merged) and **PR [#41](https://github.com/weijia-89/trainer.skill/pull/41)** - the new `logbook` specialist, plus a token-cost pass on the output it produces and a refresh of the supporting docs.
@@ -32,85 +34,139 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - docs(context): record the v1.0.0 `logbook` decisions (D14-D17), close the L2 item that still said PR #34 was open, and list the two deferred `.sh` fixes that the generation gate blocks.
 - **Version 0.17.0 → 1.0.0 (MAJOR).** The specialist gym-skills list gains an entry, which the SemVer rules in this file classify as a MAJOR change.
 
+## 2026-11-01
+
+**PR [#39](https://github.com/weijia-89/trainer.skill/pull/39)** - routing for multi-step spec-driven builds.
+
+- feat(router): hand multi-step builds from a written spec, and resumable audited agent work, to `spec-loop` (`~/Projects/spec-loop.skill/SKILL.md`, gate `scripts/check-loop.sh`). Context-budget snapshot updated 4544 to 4591 est tokens. Additive routing clause; no specialist list change.
+
+## 2026-10-08
+
+**PR [#38](https://github.com/weijia-89/trainer.skill/pull/38)** - form-check skill-tree and waiver hardening.
+
+- feat(form-check): code_shape checklist, skill-tree gate fixes, waiver hardening. (This wave never had a CHANGELOG entry; recorded from the merge commit.)
+
+## 2026-09-05
+
+**PR [#37](https://github.com/weijia-89/trainer.skill/pull/37)** - standing skill-tree audit tooling.
+
+- feat(form-check): standing skill-tree audit tooling. (This wave never had a CHANGELOG entry; recorded from the merge commit.)
+
 ## 2026-08-25
 
 - fix(references): close unclosed markdown template fence in trainer-github-pr-commentary.md (mid-file instruction swallow)
 - fix(specialists/recovery): correct broken form-check.skill link to ../form-check
 - fix(specialists/superset): repoint laptop-migration EXPORT_POLICY.md ref to source repo
+## 2026-08-13
+
+**PR [#34](https://github.com/weijia-89/trainer.skill/pull/34)** - L2 frontend engagement reference.
+
+- **L2 reference file:** `references/frontend-eng.md` - frontend engagement reference for trainer.skill L2 acquisition (MINOR version bump 0.16.0 → 0.17.0). Captures 52 frontend gaps (42 upstream behaviors + 10 uncovered domains). Reference file structure, not specialist. Trainer SemVer MINOR bump: additive content, no routing change.
+- **`context.md`:** skill-level context doc regenerated for the L2 acquisition - contract, invariants, L2 decisions (D10-D13), non-goals, and eval location (`integration-artifacts/evals/L2/scenarios.md`, 9/9 behaviors evidenced). Additive documentation; no routing change.
+
+**PR [#35](https://github.com/weijia-89/trainer.skill/pull/35)** - PR body review gate test coverage.
+
+- test: cover the PR body review gate (contract and fixtures). (This wave never had a CHANGELOG entry; recorded from the merge commit.)
+
+## 2026-08-12
+
+**PR [#32](https://github.com/weijia-89/trainer.skill/pull/32)** and **PR [#33](https://github.com/weijia-89/trainer.skill/pull/33)** - post-push guard and CI hardening.
+
+- feat: add a post-push guard that blocks pushes on merged PRs. (This wave never had a CHANGELOG entry; recorded from the merge commit.)
+- fix(ci): enforce reviewer-comment format and harden the PR template. `.github/workflows/trainer-pr-review-gate.yml` pins `actions/checkout` to a commit SHA (`11bd71901bbe5b1630ceea73d27597364c9af683`) and gains a `concurrency` group to prevent redundant concurrent jobs.
+
+## 2026-08-08
+
+**PR [#31](https://github.com/weijia-89/trainer.skill/pull/31)** - methodology disclosure suppressed in PR review comments.
+
+- **`scripts/lib/trainer_codereview_contract.py`** - mechanical enforcement of the review output style rule: `FORBIDDEN_REVIEW_METHODOLOGY` rejects PR comments that disclose review methodology, posture, or check counts ("multi-posture", "personas", "postures", "loop 1", "loop 2", "150 checks", "75 checks", "5 personas"). Wired into `validate_review_comment`, so it applies to every repo the trainer gate validates.
+- **`tests/trainer_codereview/fixtures/methodology_disclosure_bad.md`** + contract unit tests - negative fixture and per-term coverage for the review output style enforcement.
+- **`scripts/verify_autonomous_code_review.py`** - output style rule presence + parity guard: both `trainer-codereview.md` and `trainer-github-pr-commentary.md` must carry the `Review output style` rule and the parity marker, so silent deletion or drift in either surface fails the contract gate (Invariant 12). Guard unit tests added in `tests/trainer_routing/`. Guard extended to `prompts/trainer-codereview.txt` so spawned review agents carry the rule.
+- **`prompts/trainer-codereview.txt`** - step 4 (Post GitHub) now mandates the review output style rule: never disclose review methodology, posture, or check counts; output sections limited to Bug inventory + Trainer notes + Automated verification + Sign-off.
+- **`scripts/trainer_pr_review_gate_rerun.sh`** - gate re-run now detects the actual workflow/job names instead of hardcoding `ci` / "Trainer PR review comment gate": on trainer.skill it finds workflow "Trainer PR review gate" (job `codereview-contract`); product repos keep the legacy names. Env overrides `TRAINER_GATE_RERUN_WORKFLOW` / `TRAINER_GATE_RERUN_JOB` for exotic installs. Previously the re-run was a silent no-op on trainer.skill (no workflow named `ci`).
+- **`tests/trainer_codereview/test_trainer_codereview_contract.py`** - term-doc parity test: every `REVIEW_METHODOLOGY_TERMS` entry must exist in both canonical reference surfaces and the agent prompt, so enforcement cannot drift from the documented rule.
+- **`references/trainer-github-pr-commentary.md`** - new mandatory `### Review output style` rule before the PR comment template: PR comments must never mention "multi-posture", "personas", "postures", "loop 1", "loop 2", "150 checks", "75 checks", "5 personas", or any review process/methodology description; never describe how the review was conducted or how many checks were run. Output limited to Bug inventory + Trainer notes + Automated verification + Sign-off. Rule sits outside the copy-paste template fence so it is not posted as a comment section.
+- **`references/trainer-codereview.md`** - GitHub surfaces bullet mirrors the review output style rule and cross-references `trainer-github-pr-commentary.md` § Review output style.
+
+## 2026-08-06
+
+**PR [#30](https://github.com/weijia-89/trainer.skill/pull/30)** - PR writing templates and test harness.
+
+- **`specialists/pr/SKILL.md`** - expanded (162 changed lines): PR writing templates and the session-close cleanup variant (superset of the request-cap R4c webfetch-cache cleanup for `.cruft.md` scratchpads).
+
+## 2026-08-04
+
+**PR [#29](https://github.com/weijia-89/trainer.skill/pull/29)** - spotter specialist, PR template, doc update gate, comment template.
+
+- **`specialists/spotter/`** - new specialist for CI/CD failure diagnosis and fixing. Covers bash syntax, shellcheck, generation gate, verify script, workflow YAML, and missing permission failures. Includes `references/ci-fix-patterns.md` with signature-to-fix catalog and pre-flight checklist.
+- **`references/trainer-doc-update-gate.md`** - procedural gate requiring CHANGELOG.md, README.md, and user-facing docs updates in every trainer-involved PR. Enforces simple-english pragmatic mode, full deai skill (not scan-only), AI slop cleanup, and pre-commit verification (`bash -n`, `shellcheck`, `python3 -m json.tool`). Operator approval required before push.
+- **`references/templates/trainer-pr-comment-template.md`** - generic PR comment template for autonomous code review rounds. Includes Bug inventory, Trainer notes, remediation, Manual QA pointer, and Sign-off sections.
+- **`.github/PULL_REQUEST_TEMPLATE.md`** - PR body template enforcing Summary, Changes, Test plan, and Notes on every PR. Test plan is required even if the answer is "None"; no empty test plans allowed.
+
+## 2026-07-31
+
+**PR [#28](https://github.com/weijia-89/trainer.skill/pull/28)** - generation guards + LLM-code correctness gate (5-posture review).
+
+- **`specialists/form-check/tools/generation_gate.sh`** - executable, validates new/modified bash scripts for generation-time safety. Checks: `set -euo pipefail` header, no env var collisions (LANG, LC_ALL, PATH, HOME), numeric arg validation, tool existence checks, test co-existence, shellcheck (if available), safe-terminal compliance (no heredocs outside usage/help, no `cd &&` chains). Spirit-over-letter: warns on missing tests/tool checks in default mode, fails in `--strict` mode. Bypass: `GENERATION_GATE_BYPASS=1` (logged to `.recovery/calibration.jsonl`).
+- **`specialists/form-check/tests/test_generation_gate.sh`** - 10 tests: help, bypass, missing header, LANG collision, clean script, heredoc outside usage (fail), heredoc in usage (pass), cd && chain (fail), SCRIPT_DIR pattern (pass), no test file warning-only.
+- **`specialists/form-check/templates/pre-commit-combined`** - merged pre-commit hook running both generation gate (for .sh files) and LLM-code gate (for LLM-generated files). Single hook, fail-closed, deduplicated from separate hooks.
+- **`.github/workflows/trainer-pr-review-gate.yml`** - added parallel `generation-gate` job. Runs on PRs modifying `.sh` files. Installs shellcheck, runs generation gate with `--strict`.
+- **`specialists/form-check/templates/Makefile.llm-gate`** - Makefile targets for `make gate`, `make gate-strict`, `make gate-python`, etc. Convenience wrapper around `llm_code_gate.sh`.
+- **Fixed - `specialists/form-check/tools/llm_code_gate.sh`**: broken iteration logic (`iter` never incremented because `exit 1` preceded it); extracted inline `python3 -c` to external `check_python_imports.py` (safe-terminal Tier-1 #5 compliance); added `--lang` validation (rejects unsupported languages with clear error).
+- **Fixed - `specialists/form-check/tools/generation_gate.sh`**: replaced `mapfile -t` with portable `while IFS= read -r` loop for bash 3.2 (macOS default); added secret detection (AWS keys, tokens, passwords) with self-flagging protection; added test quality check (minimum 3 assertions); added bypass justification requirement (`GENERATION_GATE_JUSTIFICATION`); added emergency disable (`GENERATION_GATE_EMERGENCY_DISABLE=1`); set restrictive log permissions (`chmod 600` on `.recovery/calibration.jsonl`); fixed quote-escaping bugs in secret pattern matching.
+- **Fixed - `specialists/form-check/templates/pre-commit-combined`**: command injection via filename; `$SH_FILES` now passed as properly quoted array instead of word-split string.
+- **Fixed - `specialists/form-check/templates/Makefile.llm-gate`**: auto-discovers gate script via `command -v` instead of hardcoded `$(HOME)/Projects/trainer.skill/...` path.
+
+## 2026-07-30
+
+**PR [#27](https://github.com/weijia-89/trainer.skill/pull/27)** - LLM-code correctness gate from Piranesi S4 research.
+
+- **`specialists/form-check/tools/llm_code_gate.sh`** - executable, language-agnostic gate runner. Auto-detects language from file extensions. Runs 4 layers: structural/graph, type/compile, execution/tests, lint/format. Supports `--max-iter N` (default 3), `--strict`, `--lang`. Exit codes: 0=pass, 1=fail, 2=config error, 3=max iterations exceeded. Tamper-isolated: runs in subshell, does not modify source files.
+- **`specialists/form-check/templates/pre-commit-llm-gate`** - Git pre-commit hook template. Copies to `.git/hooks/pre-commit` to block commits until gate passes. Fail-closed by design. Supports `LLM_GATE_ALL=1` to gate every commit, or auto-detects files marked `# llm-generated`.
+- **`specialists/form-check/templates/llm_code_gate_ci.yml`** - GitHub Actions CI workflow template. Runs the 4-layer gate on push and PR. Matrix strategy for python/go/typescript/rust. Fails the build if any layer fails.
+- **`specialists/form-check/templates/pyright_strict.json`** - pyright strict configuration for LLM-generated Python. Enables all strict checks including `reportMissingImports`, `reportMissingTypeStubs`, `reportUntypedFunctionDecorator`, `reportUnknownParameterType`. This is the config referenced by A-3 in the S4 canon.
+- **`specialists/form-check/references/llm_code_correctness_gate.md`** - language-agnostic mechanical gate for LLM-generated code, integrating Piranesi S4 research (0729-trainer-language-enforcement). Four-layer gate: structural/graph checks, type/compile layer, execution/functional layer, runtime schema validation. Gate-ON default with human-approved skip as exception. Domain-conditional language guidance (web→TypeScript, ML→type-checked Python, servers→Go, perf→Rust) without language mandate. See R-7 below.
+- **`specialists/form-check/templates/structural_semantic_trigger.md`** - structural-vs-semantic decision axis for when the gate applies. Structural tasks (decidable from bytes: format, presence, count, schema) get the heavy gate; semantic tasks (requires meaning: quality, similarity, architectural fit) get light gate or human review. Worked example included.
+- **`specialists/form-check/references/notes.md`** - added 15 PIRANESI citation tags bridging Piranesi S4 claim IDs to trainer citation hygiene. Tiers: T1-verified for arXiv papers (2601.12146, 2512.18131, 2606.21619, 2607.08981-class), T2-secondary for incident trackers and single-author drafts.
+- **`specialists/form-check/checklists/INDEX.md`** - decision tree now routes LLM/agent touches to `references/llm_code_correctness_gate.md` and `templates/structural_semantic_trigger.md` alongside existing `owasp_llm_top10.md`.
+- **`specialists/form-check/checklists/bug_class_audit.md`** - § B (AI-PR-specific bug shapes) extended with 7 LLM-specific bug classes: plausible-completion trap (26.2% base-pass/extension-fail), reward-hacking (30.4% of SWE tasks), skill-instruction droppability (117 violations/day), type-checker bypass (97% evasion rate), circular self-validation, schema failure at boundary (10-20%), cross-file/config incoherence.
+- **`specialists/form-check/checklists/preflight_10q.md`** - Q7 (LLM contract) now includes: "If LLM-generated code: is there a mechanical correctness gate?"
+- **`specialists/form-check/multi-language/go.md`** - added anti-fixation clause: "This file is tooling guidance, not a mandate. Trainer does not enforce any single language."
+- **`specialists/form-check/multi-language/rust.md`** - added identical anti-fixation clause.
+- **`specialists/form-check/rubrics/confidence_score.md`** - Component 2 (Test verification, weight 20): full credit now requires "mechanical correctness gate passed for LLM-generated code"; half credit for "gate skipped without justification". Component 4 (Bug-class coverage, weight 12): full credit now requires "LLM-specific bug classes for LLM-generated code".
+- **`specialists/form-check/rubrics/stack_decision.md`** - reconciled with anti-fixation: Go is "common but not mandated" for CLIs; Python strict-type checking (mypy/pyright) is mandatory for LLM-generated Python.
+
+### R-7 (LLM-code correctness gate integration)
+
+Research question: should trainer enforce/coach strongly-typed languages (Go, Rust, Java, C#) over Python for LLM-generated scripting to reduce silent-bug surface? Piranesi S1→S4 extended pipeline investigated. Verdict: **reject typed-language mandate**; adopt language-agnostic mechanical gate. Evidence: type checkers catch only ~3% of LLM structural failures (arXiv 2607.08981-class); typed languages raise LLM compile-error rate, not lower it (arXiv 2512.18131); dominant failure class is semantic/functional and language-agnostic; token cost premium ~1.45-1.77x vs Python. The gate fixes compilation (necessary) but not semantics (not sufficient). All findings documented in `llm_code_correctness_gate.md` with 4 falsifiers (what would flip the verdict).
+
+## 2026-07-21
+
+**PR [#26](https://github.com/weijia-89/trainer.skill/pull/26)** - prune_cruft path fix.
+
+- **`scripts/prune_cruft.sh`** - corrected `TRAINER_ROOT` path resolution: `dirname(BASH_SOURCE)/../..` overshot to `/Users/dubs/Projects` (prefix of every sibling repo), so the self-guard refused to prune cruft in any repo other than `trainer.skill`. Now resolves `SCRIPT_DIR` to an absolute path and steps up one level (one level, not two) to get the correct `trainer.skill` root. Found during session-close use on the toren repo.
+
+## 2026-07-20
+
+**PR [#23](https://github.com/weijia-89/trainer.skill/pull/23)**, **PR [#24](https://github.com/weijia-89/trainer.skill/pull/24)**, and two direct pushes - cruft specialist, path scrub, review-loop novelty gate.
+
+- **`specialists/cruft/`** - new specialist: tags session/scratchpad artifacts with the `.cruft.md` slug + a `# META:` purpose/date header (the staleness assessment made explicit); defines the deterministic cleanup convention and its iron law (no deletion unless the adversarial-review gate is GREEN AND a PR merges or the session closes).
+- **`scripts/prune_cruft.sh`** - deterministic `*.cruft.md` cleanup. Refuses deletion unless the review gate is GREEN (`.trainer/reviews-complete` sentinel OR `verify_trainer_codereview.sh` exits 0) or `--force-after-review` is passed; scans by suffix only; handles any filename safely (`-print0` + array); never prunes inside trainer.skill.
+- **`specialists/pr/SKILL.md`** - composed the new `cruft` specialist; added **§8 Post-merge cruft cleanup**: after a PR merges and the review gate is GREEN, writes `.trainer/reviews-complete` then runs `prune_cruft.sh --apply`.
+- **`scripts/reviewer_surface_tracker.py`** - per-pass surface manifest tracker for the autonomous code-review loop; gates each pass on novelty (≥50% previously-unseen surface) so the stop condition is not reachable by re-trace. Stdlib only, read-only under `--check`. (Direct push, no PR.)
+- **`scripts/test_reviewer_surface_tracker.py`** - 7 tests: novelty threshold pass/fail, empty-surface rejection (no div-by-zero), idempotent check, CLI arg parsing, manifest roundtrip. (Direct push, no PR.)
+- **`references/trainer-autonomous-code-review.md`** - Review loop now requires the surface tracker `--record`/`--check` each pass; stop condition redefined to terminate only on `unexplored == 0` OR two consecutive passes each satisfying novelty ≥ 50% + zero findings + all verify exit 0; Forbidden list extended to bar passes that skip `--check` and STOP claims without tracker evidence. (Direct push, no PR.)
+- **`references/operator-path-output.md`** - scrubbed the operator's real private project name from all example paths; replaced with the neutral placeholder `~/Projects/<project>/`. The private-path leak scanner (`verify_trainer_sync.sh` CI repo-only checks) flags real private project layouts in tracked files, so a public reference doc must not embed the real path. Verified: `GITHUB_ACTIONS=true ... verify_trainer_sync.sh` now returns `VERDICT: PASS`. (PR #24.)
+
+### R-6
+
+- Autonomous code-review loop logic violation closed: spec previously trusted self-reported exploration with no mechanical novelty gate; the tracker enforces ≥50% new exploration per pass before a STOP can be claimed. (Direct push, no PR.)
+
 ## SemVer rules for this skill
 
 - **MAJOR**: routing decision flow changes; the specialist gym-skills list gains or loses entries; teaching-responsibility tier semantics change.
 - **MINOR**: new sync target added; a specialist gym-skill's invocation pattern is updated; new section added without changing existing semantics.
 - **PATCH**: typo fix; clarification without semantic change; sync-mechanic improvement.
-
-## [Unreleased]
-
-### Added
-
-- **Routing (SKILL.md Activity router):** added one clause routing multi-step builds from a written spec, and resumable audited agent work, to `spec-loop` (`~/Projects/spec-loop.skill/SKILL.md`, gate `scripts/check-loop.sh`); context-budget snapshot updated 4544 to 4591 est tokens. Additive routing clause; no specialist list change.
-- **L2 reference file:** `references/frontend-eng.md` — frontend engagement reference for trainer.skill L2 acquisition (MINOR version bump 0.16.0 → 0.17.0). Captures 52 frontend gaps (42 upstream behaviors + 10 uncovered domains). Reference file structure, not specialist. Trainer SemVer MINOR bump: additive content, no routing change.
-- **`context.md`:** skill-level context doc regenerated for the L2 acquisition — contract, invariants, L2 decisions (D10–D13), non-goals, and eval location (`integration-artifacts/evals/L2/scenarios.md`, 9/9 behaviors evidenced). Additive documentation; no routing change.
-
-### Added
-
-- **`specialists/form-check/tools/generation_gate.sh`** — executable, validates new/modified bash scripts for generation-time safety. Checks: `set -euo pipefail` header, no env var collisions (LANG, LC_ALL, PATH, HOME), numeric arg validation, tool existence checks, test co-existence, shellcheck (if available), safe-terminal compliance (no heredocs outside usage/help, no `cd &&` chains). Spirit-over-letter: warns on missing tests/tool checks in default mode, fails in `--strict` mode. Bypass: `GENERATION_GATE_BYPASS=1` (logged to `.recovery/calibration.jsonl`).
-- **`specialists/form-check/tests/test_generation_gate.sh`** — 10 tests: help, bypass, missing header, LANG collision, clean script, heredoc outside usage (fail), heredoc in usage (pass), cd && chain (fail), SCRIPT_DIR pattern (pass), no test file warning-only.
-- **`specialists/form-check/templates/pre-commit-combined`** — merged pre-commit hook running both generation gate (for .sh files) and LLM-code gate (for LLM-generated files). Single hook, fail-closed, deduplicated from separate hooks.
-- **`.github/workflows/trainer-pr-review-gate.yml`** — added parallel `generation-gate` job. Runs on PRs modifying `.sh` files. Installs shellcheck, runs generation gate with `--strict`.
-- **`specialists/form-check/tools/llm_code_gate.sh`** — executable, language-agnostic gate runner. Auto-detects language from file extensions. Runs 4 layers: structural/graph, type/compile, execution/tests, lint/format. Supports `--max-iter N` (default 3), `--strict`, `--lang`. Exit codes: 0=pass, 1=fail, 2=config error, 3=max iterations exceeded. Tamper-isolated: runs in subshell, does not modify source files.
-- **`specialists/form-check/templates/pre-commit-llm-gate`** — Git pre-commit hook template. Copies to `.git/hooks/pre-commit` to block commits until gate passes. Fail-closed by design. Supports `LLM_GATE_ALL=1` to gate every commit, or auto-detects files marked `# llm-generated`.
-- **`specialists/form-check/templates/llm_code_gate_ci.yml`** — GitHub Actions CI workflow template. Runs the 4-layer gate on push and PR. Matrix strategy for python/go/typescript/rust. Fails the build if any layer fails.
-- **`specialists/form-check/templates/pyright_strict.json`** — pyright strict configuration for LLM-generated Python. Enables all strict checks including `reportMissingImports`, `reportMissingTypeStubs`, `reportUntypedFunctionDecorator`, `reportUnknownParameterType`. This is the config referenced by A-3 in the S4 canon.
-- **`specialists/form-check/templates/Makefile.llm-gate`** — Makefile targets for `make gate`, `make gate-strict`, `make gate-python`, etc. Convenience wrapper around `llm_code_gate.sh`.
-- **`specialists/form-check/references/llm_code_correctness_gate.md`** — language-agnostic mechanical gate for LLM-generated code, integrating Piranesi S4 research (0729-trainer-language-enforcement). Four-layer gate: structural/graph checks, type/compile layer, execution/functional layer, runtime schema validation. Gate-ON default with human-approved skip as exception. Domain-conditional language guidance (web→TypeScript, ML→type-checked Python, servers→Go, perf→Rust) without language mandate. See R-7 below.
-- **`specialists/form-check/templates/structural_semantic_trigger.md`** — structural-vs-semantic decision axis for when the gate applies. Structural tasks (decidable from bytes: format, presence, count, schema) get the heavy gate; semantic tasks (requires meaning: quality, similarity, architectural fit) get light gate or human review. Worked example included.
-- **`scripts/reviewer_surface_tracker.py`** — per-pass surface manifest tracker for the autonomous code-review loop; gates each pass on novelty (≥50% previously-unseen surface) so the stop condition is not reachable by re-trace. Stdlib only, read-only under `--check`.
-- **`scripts/test_reviewer_surface_tracker.py`** — 7 tests: novelty threshold pass/fail, empty-surface rejection (no div-by-zero), idempotent check, CLI arg parsing, manifest roundtrip.
-- **`specialists/cruft/`** — new specialist: tags session/scratchpad artifacts with the `.cruft.md` slug + a `# META:` purpose/date header (the staleness assessment made explicit); defines the deterministic cleanup convention and its iron law (no deletion unless the adversarial-review gate is GREEN AND a PR merges or the session closes).
-- **`scripts/prune_cruft.sh`** — deterministic `*.cruft.md` cleanup. Refuses deletion unless the review gate is GREEN (`.trainer/reviews-complete` sentinel OR `verify_trainer_codereview.sh` exits 0) or `--force-after-review` is passed; scans by suffix only; handles any filename safely (`-print0` + array); never prunes inside trainer.skill.
-- **`.github/PULL_REQUEST_TEMPLATE.md`** — PR body template enforcing Summary, Changes, Test plan, and Notes on every PR. Test plan is required even if the answer is "None"; no empty test plans allowed.
-- **`specialists/spotter/`** — new specialist for CI/CD failure diagnosis and fixing. Covers bash syntax, shellcheck, generation gate, verify script, workflow YAML, and missing permission failures. Includes `references/ci-fix-patterns.md` with signature-to-fix catalog and pre-flight checklist.
-- **`references/trainer-doc-update-gate.md`** — procedural gate requiring CHANGELOG.md, README.md, and user-facing docs updates in every trainer-involved PR. Enforces simple-english pragmatic mode, full deai skill (not scan-only), AI slop cleanup, and pre-commit verification (`bash -n`, `shellcheck`, `python3 -m json.tool`). Operator approval required before push.
-- **`references/templates/trainer-pr-comment-template.md`** — generic PR comment template for autonomous code review rounds. Includes Bug inventory, Trainer notes, remediation, Manual QA pointer, and Sign-off sections.
-- **`scripts/lib/trainer_codereview_contract.py`** — mechanical enforcement of the review output style rule: `FORBIDDEN_REVIEW_METHODOLOGY` rejects PR comments that disclose review methodology, posture, or check counts ("multi-posture", "personas", "postures", "loop 1", "loop 2", "150 checks", "75 checks", "5 personas"). Wired into `validate_review_comment`, so it applies to every repo the trainer gate validates.
-- **`tests/trainer_codereview/fixtures/methodology_disclosure_bad.md`** + contract unit tests — negative fixture and per-term coverage for the review output style enforcement.
-- **`scripts/verify_autonomous_code_review.py`** — output style rule presence + parity guard: both `trainer-codereview.md` and `trainer-github-pr-commentary.md` must carry the `Review output style` rule and the parity marker, so silent deletion or drift in either surface fails the contract gate (Invariant 12). Guard unit tests added in `tests/trainer_routing/`. Guard extended to `prompts/trainer-codereview.txt` so spawned review agents carry the rule.
-- **`prompts/trainer-codereview.txt`** — step 4 (Post GitHub) now mandates the review output style rule: never disclose review methodology, posture, or check counts; output sections limited to Bug inventory + Trainer notes + Automated verification + Sign-off.
-- **`scripts/trainer_pr_review_gate_rerun.sh`** — gate re-run now detects the actual workflow/job names instead of hardcoding `ci` / "Trainer PR review comment gate": on trainer.skill it finds workflow "Trainer PR review gate" (job `codereview-contract`); product repos keep the legacy names. Env overrides `TRAINER_GATE_RERUN_WORKFLOW` / `TRAINER_GATE_RERUN_JOB` for exotic installs. Previously the re-run was a silent no-op on trainer.skill (no workflow named `ci`).
-- **`tests/trainer_codereview/test_trainer_codereview_contract.py`** — term-doc parity test: every `REVIEW_METHODOLOGY_TERMS` entry must exist in both canonical reference surfaces and the agent prompt, so enforcement cannot drift from the documented rule.
-
-### Changed
-
-- **`references/trainer-github-pr-commentary.md`** — new mandatory `### Review output style` rule before the PR comment template: PR comments must never mention "multi-posture", "personas", "postures", "loop 1", "loop 2", "150 checks", "75 checks", "5 personas", or any review process/methodology description; never describe how the review was conducted or how many checks were run. Output limited to Bug inventory + Trainer notes + Automated verification + Sign-off. Rule sits outside the copy-paste template fence so it is not posted as a comment section.
-- **`references/trainer-codereview.md`** — GitHub surfaces bullet mirrors the review output style rule and cross-references `trainer-github-pr-commentary.md` § Review output style.
-- **`specialists/form-check/references/notes.md`** — added 15 PIRANESI citation tags bridging Piranesi S4 claim IDs to trainer citation hygiene. Tiers: T1-verified for arXiv papers (2601.12146, 2512.18131, 2606.21619, 2607.08981-class), T2-secondary for incident trackers and single-author drafts.
-- **`specialists/form-check/checklists/INDEX.md`** — decision tree now routes LLM/agent touches to `references/llm_code_correctness_gate.md` and `templates/structural_semantic_trigger.md` alongside existing `owasp_llm_top10.md`.
-- **`specialists/form-check/checklists/bug_class_audit.md`** — § B (AI-PR-specific bug shapes) extended with 7 LLM-specific bug classes: plausible-completion trap (26.2% base-pass/extension-fail), reward-hacking (30.4% of SWE tasks), skill-instruction droppability (117 violations/day), type-checker bypass (97% evasion rate), circular self-validation, schema failure at boundary (10–20%), cross-file/config incoherence.
-- **`specialists/form-check/checklists/preflight_10q.md`** — Q7 (LLM contract) now includes: "If LLM-generated code: is there a mechanical correctness gate?"
-- **`specialists/form-check/multi-language/go.md`** — added anti-fixation clause: "This file is tooling guidance, not a mandate. Trainer does not enforce any single language."
-- **`specialists/form-check/multi-language/rust.md`** — added identical anti-fixation clause.
-- **`specialists/form-check/rubrics/confidence_score.md`** — Component 2 (Test verification, weight 20): full credit now requires "mechanical correctness gate passed for LLM-generated code"; half credit for "gate skipped without justification". Component 4 (Bug-class coverage, weight 12): full credit now requires "LLM-specific bug classes for LLM-generated code".
-- **`specialists/form-check/rubrics/stack_decision.md`** — reconciled with anti-fixation: Go is "common but not mandated" for CLIs; Python strict-type checking (mypy/pyright) is mandatory for LLM-generated Python.
-- **`references/trainer-autonomous-code-review.md`** — Review loop now requires the surface tracker `--record`/`--check` each pass; stop condition redefined to terminate only on `unexplored == 0` OR two consecutive passes each satisfying novelty ≥ 50% + zero findings + all verify exit 0; Forbidden list extended to bar passes that skip `--check` and STOP claims without tracker evidence.
-- **`specialists/pr/SKILL.md`** — composed the new `cruft` specialist; added **§8 Post-merge cruft cleanup**: after a PR merges and the review gate is GREEN, writes `.trainer/reviews-complete` then runs `prune_cruft.sh --apply`; documents the session-close variant (superset of the request-cap R4c webfetch-cache cleanup for `.cruft.md` scratchpads).
-
-### R-7 (LLM-code correctness gate integration)
-
-Research question: should trainer enforce/coach strongly-typed languages (Go, Rust, Java, C#) over Python for LLM-generated scripting to reduce silent-bug surface? Piranesi S1→S4 extended pipeline investigated. Verdict: **reject typed-language mandate**; adopt language-agnostic mechanical gate. Evidence: type checkers catch only ~3% of LLM structural failures (arXiv 2607.08981-class); typed languages raise LLM compile-error rate, not lower it (arXiv 2512.18131); dominant failure class is semantic/functional and language-agnostic; token cost premium ~1.45–1.77x vs Python. The gate fixes compilation (necessary) but not semantics (not sufficient). All findings documented in `llm_code_correctness_gate.md` with 4 falsifiers (what would flip the verdict).
-
-### R-6
-
-- Autonomous code-review loop logic violation closed: spec previously trusted self-reported exploration with no mechanical novelty gate; the tracker enforces ≥50% new exploration per pass before a STOP can be claimed.
-
-### Fixed
-
-- **`specialists/form-check/tools/llm_code_gate.sh`** — fixed broken iteration logic (`iter` never incremented because `exit 1` preceded it); extracted inline `python3 -c` to external `check_python_imports.py` (safe-terminal Tier-1 #5 compliance); added `--lang` validation (rejects unsupported languages with clear error).
-- **`specialists/form-check/tools/generation_gate.sh`** — replaced `mapfile -t` with portable `while IFS= read -r` loop for bash 3.2 (macOS default); added secret detection (AWS keys, tokens, passwords) with self-flagging protection; added test quality check (minimum 3 assertions); added bypass justification requirement (`GENERATION_GATE_JUSTIFICATION`); added emergency disable (`GENERATION_GATE_EMERGENCY_DISABLE=1`); set restrictive log permissions (`chmod 600` on `.recovery/calibration.jsonl`); fixed quote-escaping bugs in secret pattern matching.
-- **`specialists/form-check/templates/pre-commit-combined`** — fixed command injection via filename: `$SH_FILES` now passed as properly quoted array instead of word-split string.
-- **`specialists/form-check/templates/Makefile.llm-gate`** — auto-discovers gate script via `command -v` instead of hardcoded `$(HOME)/Projects/trainer.skill/...` path.
-- **`.github/workflows/trainer-pr-review-gate.yml`** — pinned `actions/checkout` to commit SHA (`11bd71901bbe5b1630ceea73d27597364c9af683`); added `concurrency` group to prevent redundant concurrent jobs; added parallel `generation-gate` job with shellcheck installation.
-- **`references/operator-path-output.md`** — scrubbed the operator's real private project name from all example paths; replaced with the neutral placeholder `~/Projects/<project>/`. The private-path leak scanner (`verify_trainer_sync.sh` CI repo-only checks) flags real private project layouts in tracked files, so a public reference doc must not embed the real path. Verified: `GITHUB_ACTIONS=true ... verify_trainer_sync.sh` now returns `VERDICT: PASS`. (Separate from the cruft-specialist PR; kept focused per single-concern branch discipline.)
-- **`scripts/prune_cruft.sh`** — corrected `TRAINER_ROOT` path resolution: `dirname(BASH_SOURCE)/../..` overshot to `/Users/dubs/Projects` (prefix of every sibling repo), so the self-guard refused to prune cruft in any repo other than `trainer.skill`. Now resolves `SCRIPT_DIR` to an absolute path and steps up one level (one level, not two) to get the correct `trainer.skill` root. Found during session-close use on the toren repo.
 
 ## [0.15.1] — 2026-07-01
 
