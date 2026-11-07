@@ -1,9 +1,10 @@
 # context.md — trainer.skill
 
 > Skill-level context for `trainer.skill`. Regenerated 2026-08-12 during L2 integration
-> (emilkowalski/skills → `references/frontend-eng.md`). This file is the durable memory of what
-> the skill is, what it must not break, and where the evidence lives. Update it on every behavior
-> change; stale coverage numbers are worse than absent ones.
+> (emilkowalski/skills → `references/frontend-eng.md`); refreshed 2026-11-06 for v1.0.0
+> (the `logbook` specialist). This file is the durable memory of what the skill is, what it must
+> not break, and where the evidence lives. Update it on every behavior change; stale coverage
+> numbers are worse than absent ones.
 
 ## Contract
 
@@ -11,9 +12,11 @@ trainer.skill is a process/quality coaching skill for coding, prompt-engineering
 sessions. It **routes** to specialists, **coaches** with an audit trail, and **steps back** — it
 does not do the work. Specialists execute.
 
-- **Routing iron law (#4):** trainer core routing (the `SKILL.md` workflow-routing flow and the 10
-  specialist gym-skills) must not be altered to accommodate added content. Additions surface via
-  `references/` files, not routing changes.
+- **Routing iron law (#4):** trainer core routing (the `SKILL.md` workflow-routing flow and the 11
+  routed specialist gym-skills) must not be altered to accommodate added content. Additions surface
+  via `references/` files, not routing changes. Operator decisions have extended the specialist list
+  twice so far (`spotter` at v0.16.0, `logbook` at v1.0.0); each addition is a MAJOR bump under the
+  SemVer rules in `CHANGELOG.md` because the gym-skills list gains an entry.
 - **Self-testing iron law (#5):** any implementation session must run the trainer test suite
   (incl. `tests/context_budget/check_context_budget.py`) before/after changes.
 - **No runtime from vendored content (non_negotiable #7 analog):** ported/referenced content
@@ -85,13 +88,56 @@ does not do the work. Specialists execute.
 - **Trainer tooling gate:** `tests/context_budget/check_context_budget.py` → PASS (root SKILL.md
   201/220 lines, 4544/5500 est tokens) after adding the reference.
 
+## v1.0.0 - the `logbook` specialist (2026-11-01)
+
+| Field | Value |
+|---|---|
+| Deliverable | `specialists/logbook/` (native to this repo, not a bundled sibling copy) |
+| Structure decision | Specialist + CLI, and a routing row; **not** a reference file (D14) |
+| Versioning | MAJOR bump 0.17.0 → 1.0.0 (the gym-skills list gains an entry) (D15) |
+| Tooling | `specialists/logbook/scripts/logbook.py`, Python standard library only, no network (D16) |
+| Tests | `tests/logbook/test_logbook.py`, 31 unit tests, wired to CI via `.github/workflows/logbook-tests.yml` (D17) |
+| Evidence | PR **#40** (`feat/logbook-specialist`), review comment round 1 on head `fd8589a` |
+
+### Decisions (v1.0.0)
+
+| ID | Decision | Date |
+|---|---|---|
+| D14 | Structure: specialist + CLI + routing row; not a reference file (a ledger needs a tool, not prose) | 2026-11-01 |
+| D15 | Versioning: MAJOR 0.17.0 → 1.0.0 (the gym-skills list gains an entry) | 2026-11-01 |
+| D16 | Tooling: standard-library Python only; no installs, no network, no dependency | 2026-11-01 |
+| D17 | Tests live in their own workflow (`.github/workflows/logbook-tests.yml`) because the generation-gate job runs strict mode on every changed `.sh` file | 2026-11-01 |
+
+### What the logbook does
+
+One append-only record per project at `<project>/.workledger/`: the objective, every work slice with
+a proof path, its outcome, and the next slice on the bar. `verify` is the form check and fails
+closed: a slice whose proof file is gone is `EV_MISSING`, a slice logged without proof is
+`EV_UNVERIFIED`, and an empty logbook never passes (exit 2).
+
+### Behavioral contract of the logbook
+
+- Append-only. History is never rewritten; a missed slice is logged as missed.
+- Output cost is proportional to the failures, not to the length of the log: `verify` prints one
+  line on a clean log and lists failing sets in full; `--all` is the only mode that grows with the log.
+- The generated `ACTIVE_STATE.md` caps every displayed field, so its size does not grow with the project.
+- Evidence fields carry paths, never file contents.
+- Not a spec-execution loop (`spec-loop` owns that route) and not a replacement for
+  `.agent/scratchpad.md` (session working memory vs durable per-project record).
+- Kill-switch = revert the commit; the ledger folder is gitignored and project-local.
+
 ## Current coverage / open watch items
 
 - L2 implementation: commits `1dc2085` + `201b4c8` on `integration/L2-trainer`.
-- **Phase 10–12 COMPLETE:** `context.md` regenerated (this file); 3 review postures PASS;
-  PR **#34 OPEN** against `main` with the trainer review-comment gate posted
-  (APPROVE, validators PASS — both bug-inventory + R-6). Gate I (per-lane gap audit)
-  COMPLETE (verdict COMPLETE, conditional on merge).
-- **Forward obligation (on merge):** attach a 14-day watch window (owner Wei Jia; revert trigger
-  = remove `references/frontend-eng.md`) and close the lane's terminal disposition as *merged*.
+- **L2 CLOSED:** PR #34 merged (along with #35–#39, which carried the PR-body test coverage, the
+  skill-tree audit tooling, the code_shape checklist, the reference-fence repairs, and the
+  `spec-loop` route). The 14-day watch window on `references/frontend-eng.md` has no open findings.
+- **v1.0.0 OPEN:** PR **#40** (`feat/logbook-specialist`) awaits operator review. Do not merge until
+  the operator says so. All four CI jobs pass on head `fd8589a`.
+- **Deferred, both blocked by the generation gate:** (a) `scripts/verify_trainer_sync.sh:364-365`
+  aborts silently when a trigger file carries no version stamp (remedy `|| true` per grep);
+  (b) `scripts/bundle_specialists.sh:2` still says "the 10 specialist gym-skills" and its
+  `SRC_ROOT` comment says "ten sibling" directories. Touching either `.sh` file turns CI red today,
+  because the generation-gate job runs strict mode on every changed `.sh` file and
+  `bundle_specialists.sh` already fails it with 1 critical (`cd &&` chain) on `main`.
 - L3 (palamedes+piranesi) remains operator-blocked on the Track-2 prose-scenario decision.

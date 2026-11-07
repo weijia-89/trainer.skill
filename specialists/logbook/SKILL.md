@@ -69,11 +69,23 @@ $LB record outcome --outcome logged --id <slice id>
 # 5. name the next set
 $LB record next --what "wire the tokenizer into the CLI"
 
-# 6. form check
+# 6. form check (lists only the sets without proof)
 $LB verify
+
+# the full list, when you need to read every row
+$LB verify --all
 ```
 
 `--project PATH` points the command at a specific project; without it, the CLI uses the nearest git root above the working directory.
+
+## Output cost
+
+Output stays proportional to the failures, not to the length of the log:
+
+- `verify` on a clean log prints one line, and lists every failing set in full. `--all` lists every row, and it is the only mode that grows with the log.
+- `status` prints three lines: the objective, the count of sets, and the next set on the bar.
+- `ACTIVE_STATE.md` caps each field (objective 120, what 60, scope 32, proof 48, next 72 characters) and shows the last ten sets. The ledger keeps the full text; the projection is a summary, because a session reads it far more often than it writes.
+- Nothing prints the whole ledger. Read `ledger.jsonl` directly when you need all of it.
 
 ## Failure modes
 

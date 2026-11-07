@@ -114,7 +114,7 @@ Public mirror files must pass `scripts/verify_trainer_sync.sh` invariant 8 (empi
 
 ## Bundling note
 
-Nine specialists ship under `./specialists/<name>/`. Sibling `~/Projects/<name>.skill/` dirs remain canonical for iteration. Refresh bundle via `scripts/bundle_specialists.sh`. See `README.md`.
+Eleven routed specialists ship under `./specialists/<name>/`, plus a `cruft` toolkit directory that no routing row points at. Most have a sibling repo at `~/Projects/<name>.skill/` that stays canonical for iteration; `scripts/bundle_specialists.sh` refreshes those copies, and its array lists ten names. `gymbuddy` and `spotter` are bundle array members with no sibling on disk today, and `logbook` is native to this repo, so no bundle step applies to it. See `README.md`.
 
 ## Sync targets
 
