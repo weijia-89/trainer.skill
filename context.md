@@ -132,8 +132,12 @@ closed: a slice whose proof file is gone is `EV_MISSING`, a slice logged without
 - **L2 CLOSED:** PR #34 merged (along with #35–#39, which carried the PR-body test coverage, the
   skill-tree audit tooling, the code_shape checklist, the reference-fence repairs, and the
   `spec-loop` route). The 14-day watch window on `references/frontend-eng.md` has no open findings.
-- **v1.0.0 OPEN:** PR **#40** (`feat/logbook-specialist`) awaits operator review. Do not merge until
-  the operator says so. All four CI jobs pass on head `fd8589a`.
+- **v1.0.0 CLOSED (merged):** the `logbook` specialist shipped via squash PRs
+  **#40** (`0da6f93`, 2026-11-06) and **#41** (`59b386e`, 2026-11-07, output-cost
+  and docs waves). Follow-ups for this repo now live in its own PR lane; the
+  two shell-script fixes below had their generation-gate blocker cleared in the
+  gate's precision pass (also 2026-11-07): the tool-existence check now looks
+  at command positions only, and the SCRIPT_DIR idiom is recognized.
 - **Deferred, both blocked by the generation gate:** (a) `scripts/verify_trainer_sync.sh:364-365`
   aborts silently when a trigger file carries no version stamp (remedy `|| true` per grep);
   (b) `scripts/bundle_specialists.sh:2` still says "the 10 specialist gym-skills" and its
