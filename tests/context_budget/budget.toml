@@ -10,7 +10,8 @@ max_section_est_tokens = 900
 # Recorded at v0.16.0 + spotter specialist; validated by check_context_budget.py
 # Updated at v0.17.0: spec-loop route clause added to the Activity router (operator-approved).
 # Updated at v1.0.0: logbook route clause and specialist table row added.
-current_lines = 203
-current_est_tokens = 4690
+# Updated 2026-11-08: root SKILL.md token diet (perf/root-skill-token-diet); snapshot tracks measured values.
+current_lines = 192
+current_est_tokens = 4468
 target_lines = 180
 target_est_tokens = 4500
