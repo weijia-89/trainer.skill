@@ -16,25 +16,46 @@ say "=== Phase 11 synthesis gates (offline) ==="
 # 0.4 post-placement
 say "--- Gate 0.4 post-placement ---"
 if bash -n scripts/*.sh 2>/dev/null; then pass "bash -n scripts/*.sh"; else fail "bash -n scripts/*.sh"; fi
-if python3 -c "
+if python3 - <<'PY'
 import ast, pathlib
 for p in [
     'scripts/calibration_analyze.py','scripts/mutation_test_skill.py','scripts/phase11_report.py',
     'tests/scenarios/harness/_repro.py','tests/scenarios/harness/_grading.py',
-    'scripts/harness_adapters/anthropic_opus.py',
+    'scripts/harness_adapters/anthropic_opus.py','scripts/harness_adapters/openai_compatible.py',
+    'scripts/harness_adapters/_common.py',
 ]:
     ast.parse(pathlib.Path(p).read_text())
 print('python parses')
-"; then pass "python ast parse"; else fail "python ast parse"; fi
+PY
+then pass "python ast parse"; else fail "python ast parse"; fi
 if python3 tests/scenarios/harness/_repro.py >/dev/null 2>&1; then pass "_repro.py"; else fail "_repro.py"; fi
 if echo '{"skill_files":[],"user_message":"hi","seed":1}' | PHASE11_OFFLINE=1 python3 scripts/harness_adapters/anthropic_opus.py \
-  | python3 -c 'import json,sys; d=json.load(sys.stdin); assert "stub" in d["response_transcript"]; print("adapter ok")' 2>/dev/null; then
+  | python3 -c 'from json import load; from sys import stdin; d = load(stdin); assert "stub" in d["response_transcript"]; print("adapter ok")' 2>/dev/null; then
   pass "adapter offline stub"
 else
   fail "adapter offline stub"
 fi
-grep -q 'with_floor' tests/scenarios/harness/_grading.py && pass "with_floor present" || fail "with_floor missing"
-grep -q '_SENTENCE_BREAK' tests/scenarios/harness/_grading.py && pass "_SENTENCE_BREAK present" || fail "_SENTENCE_BREAK missing"
+if echo '{"skill_files":[],"user_message":"hi","seed":1}' | PHASE11_OFFLINE=1 python3 scripts/harness_adapters/openai_compatible.py \
+  | python3 -c 'from json import load; from sys import stdin; d = load(stdin); assert "stub" in d["response_transcript"]; print("adapter ok")' 2>/dev/null; then
+  pass "openai adapter offline stub"
+else
+  fail "openai adapter offline stub"
+fi
+if python3 tests/harness_adapters/test_openai_compatible.py >/dev/null 2>&1; then
+  pass "openai adapter unit tests"
+else
+  fail "openai adapter unit tests"
+fi
+if grep -q 'with_floor' tests/scenarios/harness/_grading.py; then
+  pass "with_floor present"
+else
+  fail "with_floor missing"
+fi
+if grep -q '_SENTENCE_BREAK' tests/scenarios/harness/_grading.py; then
+  pass "_SENTENCE_BREAK present"
+else
+  fail "_SENTENCE_BREAK missing"
+fi
 
 # Gate 1 — T1.1 with_floor
 say "--- Gate 1 WP-1 ---"
@@ -101,9 +122,21 @@ if bash scripts/verify_phase11_isolation.sh >/dev/null 2>&1; then pass "isolatio
 
 # Gate 4 prose grep targets (honest-scope)
 say "--- Gate 4 WP-4 ---"
-grep -q "falsifiability" README.md && pass "README falsifiability" || fail "README falsifiability"
-grep -q "measured behavioral-delta" README.md && pass "README not delta claim" || fail "README delta disclaimer"
-test -f references/trainer-implementation-babysitter.md && pass "babysitter ref exists" || fail "babysitter ref"
+if grep -q "falsifiability" README.md; then
+  pass "README falsifiability"
+else
+  fail "README falsifiability"
+fi
+if grep -q "measured behavioral-delta" README.md; then
+  pass "README not delta claim"
+else
+  fail "README delta disclaimer"
+fi
+if [[ -f references/trainer-implementation-babysitter.md ]]; then
+  pass "babysitter ref exists"
+else
+  fail "babysitter ref"
+fi
 
 # Gate 5 WP-5 integration (offline)
 say "--- Gate 5 WP-5 ---"
