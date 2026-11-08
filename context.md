@@ -126,6 +126,16 @@ closed: a slice whose proof file is gone is `EV_MISSING`, a slice logged without
   `.agent/scratchpad.md` (session working memory vs durable per-project record).
 - Kill-switch = revert the commit; the ledger folder is gitignored and project-local.
 
+## 2026-11-08 - model-agnostic Phase 11 adapter (PR #45)
+
+| Field | Value |
+|---|---|
+| Decision | Phase 11 live runs must be model agnostic; the operator retired the Anthropic-only requirement (2026-11-08) |
+| Deliverable | `scripts/harness_adapters/openai_compatible.py`: any OpenAI-compatible endpoint, stdlib urllib, no provider SDK, no new dependency (D18) |
+| Shared guard | Preamble, untrusted-data wrapper, prompt builder, and offline stub live in `scripts/harness_adapters/_common.py`; both adapters import them, so the injection guard has one source of truth (D19) |
+| Gates | `verify_phase11_synthesis_gates.sh` is strict-clean (8 pre-existing warnings fixed); adapter unit tests 7/7; offline smoke clean; production tree byte-identical |
+| Live runs | Operator-driven via `OPENAI_BASE_URL`, a dated `OPENAI_MODEL`, and `OPENAI_API_KEY`; the key never enters the repo or chat |
+
 ## Current coverage / open watch items
 
 - L2 implementation: commits `1dc2085` + `201b4c8` on `integration/L2-trainer`.
