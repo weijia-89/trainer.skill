@@ -126,6 +126,14 @@ closed: a slice whose proof file is gone is `EV_MISSING`, a slice logged without
   `.agent/scratchpad.md` (session working memory vs durable per-project record).
 - Kill-switch = revert the commit; the ledger folder is gitignored and project-local.
 
+## 2026-11-08 - root SKILL.md token diet (PR #44)
+
+| Field | Value |
+|---|---|
+| Change | Prose-only compression of root `SKILL.md`; routing, trigger tokens, Iron Laws, Red Flags, and the reference map stay intact |
+| Measured | 4690 to 4468 est tokens; 203 to 192 lines (`check_context_budget.py`); `budget.toml` snapshot updated to the measured values |
+| Verification | Local and CI sync verify PASS; deai 23 to 21 signals, no new hits; added-line em-dash zero; QA verdict APPROVE (trigger tokens set-identical, 23 of 23) |
+
 ## Current coverage / open watch items
 
 - L2 implementation: commits `1dc2085` + `201b4c8` on `integration/L2-trainer`.
