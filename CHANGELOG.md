@@ -4,6 +4,13 @@ All notable changes to the `trainer` skill will be documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adheres to [Semantic Versioning](https://semver.org/) with the rules below.
 
+## 2026-11-08
+
+**PR [#44](https://github.com/weijia-89/trainer.skill/pull/44)** - the root `SKILL.md` loses 222 estimated always-on tokens (4690 to 4468) and 11 lines (203 to 192) with zero routing changes.
+
+- perf(skill): prose-only compression in the frontmatter description, self-testing iron law, coaching stance, plan-first gate, integrations stance, and the Activity router line. Every route target, trigger token, Iron Law, Red Flags entry, specialist table row, and reference-map row is unchanged.
+- perf(context): `tests/context_budget/budget.toml` snapshot updated to the measured 192 lines / 4468 est tokens, with a dated comment.
+
 ## 2026-11-07
 
 **PR [#42](https://github.com/weijia-89/trainer.skill/pull/42)** - the generation gate passes its own strict mode, which unblocks the three shell-script chores the earlier waves had to defer.
