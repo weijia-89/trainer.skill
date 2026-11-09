@@ -6,6 +6,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ## 2026-11-08
 
+**PR [#45](https://github.com/weijia-89/trainer.skill/pull/45)** - the Phase 11 blind audit goes model agnostic: a second adapter runs the scenario suite against any OpenAI-compatible endpoint.
+
+- feat(harness): add `scripts/harness_adapters/openai_compatible.py` - same stdin/stdout contract as the Anthropic adapter, live call via stdlib urllib (no provider SDK, no new dependency), env `OPENAI_BASE_URL` / `OPENAI_MODEL` (dated snapshot enforced) / `OPENAI_API_KEY`, and the shared `PHASE11_OFFLINE` stub so offline gates stay provider-blind.
+- refactor(harness): extract the shared preamble, untrusted-data wrapper, skill-file prompt builder, and offline stub into `scripts/harness_adapters/_common.py`. Both adapters import them, so the prompt-injection guard has one source of truth. `anthropic_opus.py` keeps its behavior.
+- test(harness): add `tests/harness_adapters/test_openai_compatible.py` (7 unit tests: offline stub parity, missing-key and undated-snapshot fail-closed, request-body shape) and the per-script smoke `tests/test_verify_phase11_synthesis_gates.py`.
+- chore(gates): `verify_phase11_synthesis_gates.sh` gains OpenAI adapter coverage and loses its 8 pre-existing strict-gate warnings (heredoc instead of `-c`, `[[ -f ]]`, if/else), so the CI generation gate passes on it. It is the first script in `scripts/` that is strict-clean.
+
 **PR [#44](https://github.com/weijia-89/trainer.skill/pull/44)** - the root `SKILL.md` loses 222 estimated always-on tokens (4690 to 4468) and 11 lines (203 to 192) with zero routing changes.
 
 - perf(skill): prose-only compression in the frontmatter description, self-testing iron law, coaching stance, plan-first gate, integrations stance, and the Activity router line. Every route target, trigger token, Iron Law, Red Flags entry, specialist table row, and reference-map row is unchanged.
