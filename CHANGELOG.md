@@ -13,6 +13,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - test(harness): add `tests/harness_adapters/test_openai_compatible.py` (7 unit tests: offline stub parity, missing-key and undated-snapshot fail-closed, request-body shape) and the per-script smoke `tests/test_verify_phase11_synthesis_gates.py`.
 - chore(gates): `verify_phase11_synthesis_gates.sh` gains OpenAI adapter coverage and loses its 8 pre-existing strict-gate warnings (heredoc instead of `-c`, `[[ -f ]]`, if/else), so the CI generation gate passes on it. It is the first script in `scripts/` that is strict-clean.
 
+**Docs sweep for [#45](https://github.com/weijia-89/trainer.skill/pull/45)** (this PR) - the documentation wave that was stranded when #45 merged with branch deletion.
+
+- docs(readme): the honest-scope paragraph names both live-audit provider paths; the repository tree lists both adapters plus `_common.py`.
+- docs(roadmap): adapter-wave section under Phase 11; the blind-audit and cross-model rows name both provider paths with honest cost framing.
+- docs(context): the operator decision and D18/D19 recorded; `references/trainer-implementation-babysitter.md` drops the Anthropic-only requirement.
+
 ## 2026-11-07
 
 **PR [#42](https://github.com/weijia-89/trainer.skill/pull/42)** - the generation gate passes its own strict mode, which unblocks the three shell-script chores the earlier waves had to defer.
