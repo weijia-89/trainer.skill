@@ -4,6 +4,15 @@ All notable changes to the `trainer` skill will be documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adheres to [Semantic Versioning](https://semver.org/) with the rules below.
 
+## 2026-11-09
+
+**PR [#48](https://github.com/weijia-89/trainer.skill/pull/48)** - the three dead reference pointers become real files, and the Phase 11 adapter tests enter CI.
+
+- docs(references): create `chatprd-opus-implementation-plan-gate.md`, `chatprd-plan-adversarial-template.md`, and `trainer-phase-implementation-gate.md`. All three were named as specs in `SKILL.md` routing rows but had no file at any commit (QA-2 finding, 2026-11-07). Content stays close to what `SKILL.md` and the babysitter reference already claim. No routing change, no token-budget change.
+- ci(verify): `verify_trainer_sync.sh` runs the OpenAI adapter unit suite (`tests/harness_adapters/test_openai_compatible.py`) in both its blocks. Runtime stays well inside the CI script timeout (full verify measures ~9s).
+- ci(workflow): the loose offline smoke in `python-package-conda.yml` becomes the assertive gate smoke `python3 tests/test_verify_phase11_synthesis_gates.py`, which asserts `VERDICT: PASS (offline synthesis gates)`. The smoke is a separate workflow step on purpose: the gate's Gate 5 calls `verify_trainer_sync.sh`, so wiring the smoke into that script would recurse forever.
+- fix(gates): `verify_phase11_synthesis_gates.sh` NOTE line is model agnostic, naming both provider paths instead of Anthropic-only.
+
 ## 2026-11-08
 
 **PR [#45](https://github.com/weijia-89/trainer.skill/pull/45)** - the Phase 11 blind audit goes model agnostic: a second adapter runs the scenario suite against any OpenAI-compatible endpoint.
