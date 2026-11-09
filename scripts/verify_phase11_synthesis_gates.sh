@@ -153,4 +153,4 @@ if [[ "$FAIL" -ne 0 ]]; then
 fi
 say ""
 say "VERDICT: PASS (offline synthesis gates)"
-say "NOTE: live blind audit waived unless operator sets ANTHROPIC_MODEL + ANTHROPIC_API_KEY"
+say "NOTE: live blind audit waived unless the operator sets a dated model snapshot + key (ANTHROPIC_MODEL + ANTHROPIC_API_KEY, or OPENAI_BASE_URL + OPENAI_MODEL + OPENAI_API_KEY)"
