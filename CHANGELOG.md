@@ -13,6 +13,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - ci(workflow): the loose offline smoke in `python-package-conda.yml` becomes the assertive gate smoke `python3 tests/test_verify_phase11_synthesis_gates.py`, which asserts `VERDICT: PASS (offline synthesis gates)`. The smoke is a separate workflow step on purpose: the gate's Gate 5 calls `verify_trainer_sync.sh`, so wiring the smoke into that script would recurse forever.
 - fix(gates): `verify_phase11_synthesis_gates.sh` NOTE line is model agnostic, naming both provider paths instead of Anthropic-only.
 
+**Docs sweep for the reference-pointer wave** (this PR #49) - ROADMAP and context close out the merged #48 wave, and the roadmap records decisions already made out-of-band.
+
+- docs(roadmap): the 2026-11-09 pointer wave section under Phase 11; the gym-standalones open question becomes the recorded bundle-only decision (operator, 2026-11-08); both Phase 11 live-run paths record the operator's skip decision (2026-11-09).
+- docs(context): a PR #48 entry with D20 (created files over dropped rows) and D21 (the CI placement constraint that keeps the gate smoke out of `verify_trainer_sync.sh`).
+
 ## 2026-11-08
 
 **PR [#45](https://github.com/weijia-89/trainer.skill/pull/45)** - the Phase 11 blind audit goes model agnostic: a second adapter runs the scenario suite against any OpenAI-compatible endpoint.
