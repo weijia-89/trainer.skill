@@ -139,6 +139,28 @@ if [[ "${GITHUB_ACTIONS:-}" == "true" ]]; then
     echo "WARN  skipping context budget unit tests (missing $CONTEXT_BUDGET_TESTS)"
   fi
 
+  # PR adapter tests: Phase 11 openai_compatible adapter unit suite.
+  # The synthesis-gate smoke (tests/test_verify_phase11_synthesis_gates.py) is
+  # intentionally NOT here: the gate's Gate 5 calls this script, so running the
+  # smoke from here creates infinite recursion. The smoke runs as its own CI
+  # workflow step instead.
+  AT="$REPO_ROOT/tests/harness_adapters/test_openai_compatible.py"
+  if [[ -f "$AT" ]]; then
+    set +e
+    ATT_OUT=$(python3 "$AT" 2>&1)
+    ATT_EXIT=$?
+    set -e
+    if [[ $ATT_EXIT -ne 0 ]]; then
+      echo "FAIL  adapter unit tests exited $ATT_EXIT:"
+      printf '%s\n' "$ATT_OUT" | sed 's/^/        /'
+      FAIL=1
+    else
+      echo "PASS  adapter unit tests"
+    fi
+  else
+    echo "WARN  skipping adapter unit tests (missing $AT)"
+  fi
+
   # sdk-review F2: temp-dir fixture guards Invariant 1b rsync + per-file diff loop (local mirror N/A in CI)
   INVARIANT_1B_TEST="$REPO_ROOT/tests/trainer_sync/test_invariant_1b_references_mirror.sh"
   if [[ -f "$INVARIANT_1B_TEST" ]]; then
@@ -516,6 +538,28 @@ if [[ -f "$CONTEXT_BUDGET_TESTS" ]]; then
   fi
 else
   echo "WARN  skipping context budget unit tests (missing $CONTEXT_BUDGET_TESTS)"
+fi
+
+# PR adapter tests: Phase 11 openai_compatible adapter unit suite.
+# The synthesis-gate smoke (tests/test_verify_phase11_synthesis_gates.py) is
+# intentionally NOT here: the gate's Gate 5 calls this script, so running the
+# smoke from here creates infinite recursion. The smoke runs as its own CI
+# workflow step instead.
+AT="$REPO_ROOT/tests/harness_adapters/test_openai_compatible.py"
+if [[ -f "$AT" ]]; then
+  set +e
+  ATT_OUT=$(python3 "$AT" 2>&1)
+  ATT_EXIT=$?
+  set -e
+  if [[ $ATT_EXIT -ne 0 ]]; then
+    echo "FAIL  adapter unit tests exited $ATT_EXIT:"
+    printf '%s\n' "$ATT_OUT" | sed 's/^/        /'
+    FAIL=1
+  else
+    echo "PASS  adapter unit tests"
+  fi
+else
+  echo "WARN  skipping adapter unit tests (missing $AT)"
 fi
 
 # sdk-review F2: temp-dir fixture guards Invariant 1b rsync + per-file diff loop
