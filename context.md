@@ -144,6 +144,15 @@ closed: a slice whose proof file is gone is `EV_MISSING`, a slice logged without
 | Measured | 4690 to 4468 est tokens; 203 to 192 lines (`check_context_budget.py`); `budget.toml` snapshot updated to the measured values |
 | Verification | Local and CI sync verify PASS; deai 23 to 21 signals, no new hits; added-line em-dash zero; QA verdict APPROVE (trigger tokens set-identical, 23 of 23) |
 
+## 2026-11-09 - dead pointers realized + adapter tests in CI (PR #48)
+
+| Field | Value |
+|---|---|
+| Decision D20 | Dead pointers that SKILL.md names get created files, not dropped rows; content stays grounded in existing prose (operator, 2026-11-09) |
+| Deliverable | `references/chatprd-opus-implementation-plan-gate.md`, `references/chatprd-plan-adversarial-template.md`, `references/trainer-phase-implementation-gate.md` created and mirrored |
+| Decision D21 | CI wiring topology: the OpenAI adapter unit suite runs inside `verify_trainer_sync.sh` (both blocks); the synthesis-gate smoke runs as its own workflow step and must NEVER run inside the script - the gate's Gate 5 calls that script, so the placement recurses infinitely (the first wiring attempt hung full verify and later failed the smoke at its 300s subprocess timeout) |
+| Verification | Adapter unit tests 7/7; gate smoke PASS ~11s after the fix; full verify ~9s (inside the CI 30s script timeout); strict generation gate + shellcheck clean on both edited scripts |
+
 ## Current coverage / open watch items
 
 - L2 implementation: commits `1dc2085` + `201b4c8` on `integration/L2-trainer`.
