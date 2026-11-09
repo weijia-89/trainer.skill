@@ -47,10 +47,24 @@ their behavior claims. Phase 11 is building that evidence layer.
 - Adapter unit tests (`tests/harness_adapters/test_openai_compatible.py`) and the per-script smoke test (`tests/test_verify_phase11_synthesis_gates.py`).
 - `verify_phase11_synthesis_gates.sh` carries OpenAI adapter coverage. It is the first strict-clean script in `scripts/` (8 pre-existing strict-gate warnings fixed).
 
+### Done in the reference-pointer + CI wiring wave (2026-11-09)
+
+- The three dead reference pointers become real files (QA-2 finding closed):
+  `references/chatprd-opus-implementation-plan-gate.md`,
+  `references/chatprd-plan-adversarial-template.md`,
+  `references/trainer-phase-implementation-gate.md`. Content stays grounded in
+  what `SKILL.md` and the babysitter reference already claim; no routing change.
+- The OpenAI adapter unit suite runs inside `verify_trainer_sync.sh` (both
+  blocks); the synthesis-gate smoke runs as its own CI workflow step.
+  Placement constraint recorded in `context.md`: the gate's Gate 5 calls
+  `verify_trainer_sync.sh`, so the smoke can never live inside that script
+  without infinite recursion (the first wiring attempt hit exactly this).
+
 ### Deferred / operator-opt-in
 
 - **Blind audit cycle.** Run the 3 trainer scenarios against a live dated model: Anthropic (`ANTHROPIC_MODEL` + `ANTHROPIC_API_KEY`) or any OpenAI-compatible endpoint (`OPENAI_BASE_URL` + `OPENAI_MODEL` + `OPENAI_API_KEY`). Indicative cost for an Opus-class run stays ~$3-5 per full k-repeat; other providers price lower. **Waived for offline synthesis close-out** - falsifiers remain in the `verify_phase11_synthesis_gates.sh` NOTE.
 - **Cross-model run.** Same scenarios against a second provider for pass-rate delta. The OpenAI-compatible adapter makes cross-vendor runs possible. Harness-parity confound: keep load-bearing comparisons to like adapters.
+- **Operator decision (2026-11-09): both live-run paths stay skipped.** The offline gates remain the shipped evidence layer. Skipped does not mean closed: the env contract stays valid if the operator reopens either later.
 - ~~**Combined report driver for trainer-side scenarios.**~~ Shipped v0.15.0: `scripts/phase11_report.py`.
 
 ## Out of scope
@@ -62,9 +76,6 @@ their behavior claims. Phase 11 is building that evidence layer.
 
 ## Open questions
 
-- Should the gym standalones (eight sibling repos today) get their own GitHub
-  mirrors, or stay bundle-only? Currently the standalones at
-  `$HOME/Projects/<name>.skill/` are local-only git repos.
 - Whether to gate `git push` on `verify_trainer_sync.sh` by default
   (currently opt-in via `scripts/install_hooks.sh`).
 - Mechanical CHANGELOG drift check in CI when `SKILL.md` or `scripts/` change without `CHANGELOG.md` update.
