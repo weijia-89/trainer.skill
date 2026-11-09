@@ -40,11 +40,17 @@ their behavior claims. Phase 11 is building that evidence layer.
 - Implementation babysitter ref for ChatPRD plan-row execution.
 - Layer C mutation heat map run (offline) — no load-bearing section drops at trainer N.
 
+### Done in the model-agnostic adapter wave (2026-11-08)
+
+- `scripts/harness_adapters/openai_compatible.py`: any OpenAI-compatible endpoint via stdlib urllib. No provider SDK, no new dependency. Dated-snapshot and missing-key fail-closed come from the shared `_repro` protocol.
+- `scripts/harness_adapters/_common.py`: shared preamble, untrusted-data wrapper, skill-file prompt builder, and offline stub. `anthropic_opus.py` imports them now; its behavior stays the same.
+- Adapter unit tests (`tests/harness_adapters/test_openai_compatible.py`) and the per-script smoke test (`tests/test_verify_phase11_synthesis_gates.py`).
+- `verify_phase11_synthesis_gates.sh` carries OpenAI adapter coverage. It is the first strict-clean script in `scripts/` (8 pre-existing strict-gate warnings fixed).
+
 ### Deferred / operator-opt-in
 
-- **Blind audit cycle.** Run the 3 trainer scenarios against a live dated Opus call (`ANTHROPIC_MODEL` + `ANTHROPIC_API_KEY`). Indicative cost ~$3-5 per full k-repeat run; **waived for offline synthesis close-out** — falsifiers remain in `verify_phase11_synthesis_gates.sh` NOTE.
-- **Cross-model run.** Same scenarios against a second vendor for
-  pass-rate delta. Harness-parity confound: compare like adapters only.
+- **Blind audit cycle.** Run the 3 trainer scenarios against a live dated model: Anthropic (`ANTHROPIC_MODEL` + `ANTHROPIC_API_KEY`) or any OpenAI-compatible endpoint (`OPENAI_BASE_URL` + `OPENAI_MODEL` + `OPENAI_API_KEY`). Indicative cost for an Opus-class run stays ~$3-5 per full k-repeat; other providers price lower. **Waived for offline synthesis close-out** - falsifiers remain in the `verify_phase11_synthesis_gates.sh` NOTE.
+- **Cross-model run.** Same scenarios against a second provider for pass-rate delta. The OpenAI-compatible adapter makes cross-vendor runs possible. Harness-parity confound: keep load-bearing comparisons to like adapters.
 - ~~**Combined report driver for trainer-side scenarios.**~~ Shipped v0.15.0: `scripts/phase11_report.py`.
 
 ## Out of scope

@@ -6,7 +6,7 @@ An entrypoint and coaching skill for an 11-specialist agent toolkit. The trainer
 
 This repo distributes `trainer` together with the specialist skill directories at `./specialists/`. Each specialist is independently usable. The trainer is the routing prose that connects them; it does not make the specialists work together at runtime, and it does not do the specialists' work itself.
 
-**Honest scope (per internal audit, adversarial review at v0.4.0, and Phase 11 Layer A ship):** as of v0.15.0 the trainer ships a **runnable Layer A falsifiability suite** in its own tree (`scripts/run.sh`, `scripts/harness_adapters/`, `tests/scenarios/harness/` with `pass_criteria.py` graders). The suite validates transcript-gradable behavior against a **named dated model** on a **named scenario set** under a **pass^k stability gate** and **reproducibility protocol** (`_repro.py`, Invariant 16). It is **not** a measured behavioral-delta claim: blind audit, Layer B calibration at scale, and Layer C mutation heat maps remain pending until operator runs them with `ANTHROPIC_API_KEY`.
+**Honest scope (per internal audit, adversarial review at v0.4.0, and Phase 11 Layer A ship):** as of v0.15.0 the trainer ships a **runnable Layer A falsifiability suite** in its own tree (`scripts/run.sh`, `scripts/harness_adapters/`, `tests/scenarios/harness/` with `pass_criteria.py` graders). The suite validates transcript-gradable behavior against a **named dated model** on a **named scenario set** under a **pass^k stability gate** and **reproducibility protocol** (`_repro.py`, Invariant 16). It is **not** a measured behavioral-delta claim: blind audit, Layer B calibration at scale, and Layer C mutation heat maps stay pending until the operator runs a live audit. A live audit takes a dated Anthropic snapshot or any OpenAI-compatible endpoint (`OPENAI_BASE_URL`, `OPENAI_MODEL`, `OPENAI_API_KEY`).
 
 ---
 
@@ -158,7 +158,7 @@ trainer.skill/
 │   ├── apply_branch_protection.sh      # idempotent protection PUT (DRY_RUN=1 default)
 │   ├── bundle_specialists.sh           # refreshes ./specialists/ from sibling-dir canonicals
 │   ├── calibration_analyze.py          # Phase 11 Layer B (honest-empty at trainer N)
-│   ├── harness_adapters/anthropic_opus.py  # Phase 11 live/offline adapter
+│   ├── harness_adapters/                  # Phase 11 adapters (anthropic_opus, openai_compatible) + shared _common
 │   ├── mutation_test_skill.py          # Phase 11 Layer C mutation heat map
 │   ├── phase11_report.py               # Phase 11 combined report driver
 │   ├── run.sh                          # Phase 11 scenario driver (--k pass-rate)

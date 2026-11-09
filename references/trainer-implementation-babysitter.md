@@ -39,7 +39,7 @@ Before marking any plan row **done**:
 bash /Users/dubs/Projects/trainer.skill/scripts/verify_phase11_synthesis_gates.sh
 ```
 
-Live blind audit (`run.sh --k 3` without `--offline`) is **operator-opt-in** — requires dated `ANTHROPIC_MODEL` + `ANTHROPIC_API_KEY`. Offline gates satisfy WP-0..WP-5 mechanical completion.
+Live blind audit (`run.sh --k 3` without `--offline`) is **operator-opt-in**. It needs a dated model snapshot and a key: Anthropic (`ANTHROPIC_MODEL` + `ANTHROPIC_API_KEY`) or any OpenAI-compatible endpoint (`OPENAI_BASE_URL` + `OPENAI_MODEL` + `OPENAI_API_KEY`). Offline gates satisfy WP-0..WP-5 mechanical completion.
 
 ---
 
