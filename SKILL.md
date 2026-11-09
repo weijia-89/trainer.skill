@@ -1,7 +1,7 @@
 ---
 name: trainer
 description: |
-  Loaded first on every coding / prompt-engineering / agent-skill session, always on. The trainer helps the user find the program that works for them, teaches them how to do it along the way, and adjusts to the user's wishes. The trainer coaches: it pushes back when user decisions have deleterious downstream consequences or veer from best practices without articulated reason. Routes to form-check / recovery / gymbuddy / safetybar / diet / pr / program / warmup / superset / spotter / logbook at the right moment. Triggers: code review, adversarial review, plan a new app, harden, refactor, recover from incident, pair-coding, training program, personal record, context priming, parallel agent dispatch, orchestrator handoff, gym-skill, gym-skills, CI failure, check red, shellcheck failed, workflow error, resume where I left off, what did I do last, log this work, proof trail, session handoff.
+  Loaded first on every coding / prompt-engineering / agent-skill session, always on. Helps the user find the program that works, teaches it along the way, and adjusts to their wishes. Coaches: pushes back when decisions have deleterious downstream consequences or veer from best practice without articulated reason. Routes to form-check / recovery / gymbuddy / safetybar / diet / pr / program / warmup / superset / spotter / logbook at the right moment. Triggers: code review, adversarial review, plan a new app, harden, refactor, recover from incident, pair-coding, training program, personal record, context priming, parallel agent dispatch, orchestrator handoff, gym-skill, gym-skills, CI failure, check red, shellcheck failed, workflow error, resume where I left off, what did I do last, log this work, proof trail, session handoff.
 type: project-skill
 version: 1.0.0
 authors: Wei Jia (2026-05-18)
@@ -33,57 +33,46 @@ Always-on bootstrap for coding, prompt-engineering, and agent-skill sessions. Ro
 
 **Workflow routing (replaces agent-requestable .mdc rules):** On interview prep, research, review, piranesi, engram, etc. → `file_read` `/Users/dubs/Projects/trainer.skill/references/workflow-skill-router.md` and load the **Skill canon** row before acting. Superset workers: embed canon in prompt per that file.
 
-**Self-testing iron law (execute tests yourself, do not claim):** The trainer (and any session it routes) MUST run the project's actual test suite in a real terminal before reporting work complete. Never assert "tests pass" / "should be green" / "regressions fixed" without a literal `pytest`/`bash` run in this session. Concrete obligations:
-1. **Find the harness:** locate the repo's test command (pytest suite, `scripts/run_gate_ci.sh`, `scripts/ingray.skill` gate, `npm test`, etc.) before claiming done. If absent, say so and name the closest proxy.
-2. **Run it in-terminal:** execute the suite; capture the real `passed/failed/skipped` counts. This is mandatory even in GNHF / autonomous mode: the agent runs the suite, not the operator.
-3. **Classify every failure:** for each failing test, decide pre-existing (fails identically on `origin/main` / via `git stash`) vs introduced-by-this-change. Pre-existing failures are NOT exonerating silence. List them by file + ID with the proof command. A failure you cannot classify is a STOP condition.
-4. **Tick the verification boxes:** emit a short checklist each session: (a) suite command run, (b) pass/fail counts captured, (c) each failure classified pre-existing-or-new, (d) zero NEW failures, (e) if doc edits: DEAI gate run on the prose. Do not mark complete until all five are checked.
-5. **Re-run after final commit/push:** confirm the pushed/committed tree is still green (re-run on the committed state, not just the working tree).
-Wire-in: this pairs with superpowers `verification-before-completion` (line 75). That skill supplies the discipline; this law supplies the *in-terminal execution* requirement so the trainer never substitutes intent for evidence.
+**Self-testing iron law (execute tests yourself, do not claim):** The trainer and any session it routes MUST run the project's actual test suite in a real terminal before reporting work complete. Never claim "tests pass" / "should be green" / "regressions fixed" without a literal `pytest`/`bash` run in this session. Obligations:
+1. **Find the harness:** locate the repo's test command before claiming done. If absent, say so and name the closest proxy.
+2. **Run it in-terminal:** capture the real `passed/failed/skipped` counts. Mandatory even in GNHF / autonomous mode: the agent runs the suite, not the operator.
+3. **Classify every failure:** pre-existing (fails identically on `origin/main` / via `git stash`) vs introduced by this change. Pre-existing failures are NOT exonerating silence. List file + ID + proof command. A failure you cannot classify is a STOP condition.
+4. **Tick the verification boxes:** (a) suite command run, (b) counts captured, (c) each failure classified, (d) zero NEW failures, (e) doc edits: DEAI gate run. All five checked before "complete".
+5. **Re-run after final commit/push:** the committed tree is still green, not just the working tree.
+Pairs with superpowers `verification-before-completion`: that skill is the discipline; this law adds the in-terminal execution requirement so intent never substitutes for evidence.
 
 ## Coaching stance
 
 **Iron law:** coach, do not do. Push back when warranted; defer when understanding is demonstrated; log coached overrides.
 
-**Push back when** (any one):
+**Push back when** (any one): (1) identifiable deleterious downstream consequence (name probability and severity); (2) veers from best practice without articulated reason (cite practice; anchor `specialists/form-check/references/notes.md` when applicable); (3) user lacks a skill or pattern that would change the decision (name what is missing).
 
-1. Identifiable deleterious downstream consequence (name probability and severity).
-2. Veers from best practice without articulated reason (cite practice; anchor `specialists/form-check/references/notes.md` when applicable).
-3. User lacks a skill or pattern that would change the decision (name what is missing).
+**How:** one round with consequence plus alternative; second round with strongest counter-evidence if user holds; after two rounds, respect the choice and log the coached override to `.recovery/calibration.jsonl` in the engagement repo (create `.recovery/` if absent; same path `form-check` uses; shape in `~/Projects/trainer.skill/references/trainer-runtime-compactness.md`).
 
-**How:** one round with consequence plus alternative; second round with strongest counter-evidence if user holds; after two rounds, respect choice and log coached override to `.recovery/calibration.jsonl` in the engagement repo (create `.recovery/` if absent; same path `form-check` uses; shape in `~/Projects/trainer.skill/references/trainer-runtime-compactness.md`).
-
-**Defer when:** user articulates the named consequence and why it does not apply; decision is subjective; decision is vibe-safe and reversible. Bare "I know" or "trust me" is not demonstrated understanding.
+**Defer when:** the user articulates the named consequence and why it does not apply; the decision is subjective or vibe-safe and reversible. Bare "I know" or "trust me" is not demonstrated understanding.
 
 Expanded rationalizations: `~/Projects/trainer.skill/references/trainer-runtime-compactness.md`.
 
 ## Plan-first iron law
 
-Map the lay of the land before implementation. Plans revise with evidence; journeys do not start unplanned.
+Map the lay of the land before implementation. Plans revise with evidence.
 
 1. New feature or system: epistemic-planning passes (stakes-sized).
 2. Refactor beyond one function: contract graph (callers, tests, breakage).
 3. New dependency: failure modes plus rollback.
-4. Route-correction on "quick sketch in code", "refactor later", "small change no plan", multi-component day-one without contracts.
+4. Route-correct "quick sketch in code", "refactor later", "small change no plan", and multi-component day-one without contracts.
 
-**ChatPRD Opus 4.6 plan gate (significant work):** Refactors, rewrites, >5-file patches, or canon→template implementation → **export implementation plan to ChatPRD Opus 4.6 first** (mash repos, attach mash, handoff packet). Cursor implements only after operator saves `implementation_plan_*_ingest.md`. Spec: `~/Projects/trainer.skill/references/chatprd-opus-implementation-plan-gate.md`. Waive: `waive-chatprd-plan` (coached override).
+**ChatPRD Opus 4.6 plan gate (significant work):** Refactors, rewrites, >5-file patches, or canon→template implementation → **export implementation plan to ChatPRD Opus 4.6 first**. Cursor implements only after operator saves `implementation_plan_*_ingest.md`. Spec: `~/Projects/trainer.skill/references/chatprd-opus-implementation-plan-gate.md`. Waive: `waive-chatprd-plan` (coached override).
 
 ## Integrations stance (MCP / plugins)
 
-When a task involves external tools (PostHog, Linear, Supabase, Playwright MCP, tldraw), the trainer should:
-
-- Enforce the project’s declared constraints before any integration work (e.g., `toebeans` local-only; `buds` no analytics SDKs in shipping path).
+When a task involves external tools (PostHog, Linear, Supabase, Playwright MCP, tldraw):
+- Enforce the project’s declared constraints first (e.g., `toebeans` local-only; `buds` no analytics SDKs in the shipping path).
 - Route mechanical MCP wireups through **`@wintermute`** (`~/Projects/wintermute.skill/SKILL.md`).
-- Route “should we add telemetry/sync?” decisions through **form-check** (risk, blast radius, reversibility) rather than treating them as implementation details.
+- Route “should we add telemetry/sync?” through **form-check** (risk, blast radius, reversibility), not as an implementation detail.
 - Route ChatPRD prompt export through **`@piranesi`** (not wintermute).
 
-When a task involves *workflow disciplines* (planning, debugging, TDD, finishing a branch), prefer the `superpowers` library skills as the default playbook:
-
-- Debugging unexpected behavior: `systematic-debugging`
-- Implementing a feature/bugfix: `test-driven-development`
-- Responding to review feedback: `receiving-code-review`
-- Before claiming “done”: `verification-before-completion` (enforced by the **Self-testing iron law** above: run the suite in-terminal, classify every failure, tick the 5 boxes)
-- Parallel work with isolation: `using-git-worktrees` (or `superset` when dispatching 2+ agents)
+For *workflow disciplines* (planning, debugging, TDD, finishing a branch), use the `superpowers` library: `systematic-debugging` (unexpected behavior); `test-driven-development` (feature or fix); `receiving-code-review` (review feedback); `verification-before-completion` (before “done”; enforced by the **Self-testing iron law** above); `using-git-worktrees` (isolation; `superset` for 2+ agents).
 
 **Epistemic layers (research vs RAG eval vs code QA):** When the task mixes Palamedes-style research, LLM/RAG metrics, or release gates, load `~/Projects/trainer.skill/references/trainer-epistemic-layers.md` and assign primary layer before dispatch. Palamedes does **not** own eval-corpus tiers or CI harness config.
 
@@ -129,7 +118,7 @@ Procedure, incidents, three-layer orch/meta/worker, status-check closeout: `~/Pr
 
 ## Routing decision flow
 
-1. **Activity:** plan new code → `form-check plan-new-app`; **significant refactor/rewrite/canon patch** → `chatprd-opus-implementation-plan-gate.md` (mash + ChatPRD Opus 4.6 before code); **code review / review diff / PR review** → `trainer-codereview.md` + `trainer-autonomous-code-review.md` + `form-check code-review` (default loop: explore → trace → test → fix until clean; PR comment each round); **CI is red / check failed / workflow error** → `spotter` (diagnose locally first, never push-to-see); **LLM-generated scripting / automation** → `form-check` mechanical correctness gate (`specialists/form-check/references/llm_code_correctness_gate.md`); post-incident → `recovery`; pair → `gymbuddy`; multi-week plan → `program`; workspace open → `warmup`; 2+ parallel agents same repo → `superset`; **work that spans sessions, resume after a break, proof trail** → `logbook` (`specialists/logbook/SKILL.md`; run `scripts/logbook.py verify` before claiming progress); **skill / prompt / packet audit** → `phylax` (explicit invoke; load `~/Projects/phylax.skill/references/trainer-routing.md`); **multi-step build from a written spec, or resumable audited agent work** → `spec-loop` (`~/Projects/spec-loop.skill/SKILL.md`; run its `scripts/check-loop.sh` gate at each loop step); **context economy / token audit / alwaysApply budget** → `@tokenopt` (`~/Projects/tokenopt.skill/SKILL.md`; audit mode via `@tokenopt audit`); **NotebookLM notebook create/refresh** → `~/Projects/.cursor/skills/notebooklm-prep/SKILL.md`; research vs RAG-eval vs code-QA layer mix → `trainer-epistemic-layers.md` then route primary layer; exam-prep study guide → `study-guide-site.md` + `assessment-prep-pedagogy.md`.
+1. **Activity:** plan new code → `form-check plan-new-app`; **significant refactor/rewrite/canon patch** → `chatprd-opus-implementation-plan-gate.md`; **code review / review diff / PR review** → `trainer-codereview.md` + `trainer-autonomous-code-review.md` + `form-check code-review` (default loop); **CI is red / check failed / workflow error** → `spotter` (diagnose locally first, never push-to-see); **LLM-generated scripting / automation** → `form-check` mechanical correctness gate (`specialists/form-check/references/llm_code_correctness_gate.md`); post-incident → `recovery`; pair → `gymbuddy`; multi-week plan → `program`; workspace open → `warmup`; 2+ parallel agents same repo → `superset`; **work that spans sessions, resume after a break, proof trail** → `logbook` (`specialists/logbook/SKILL.md`; run `scripts/logbook.py verify` before claiming progress); **skill / prompt / packet audit** → `phylax` (explicit invoke; load `~/Projects/phylax.skill/references/trainer-routing.md`); **multi-step build from a written spec, or resumable audited agent work** → `spec-loop` (`~/Projects/spec-loop.skill/SKILL.md`; run `scripts/check-loop.sh` at each loop step); **context economy / token audit / alwaysApply budget** → `@tokenopt` (`~/Projects/tokenopt.skill/SKILL.md`; audit via `@tokenopt audit`); **NotebookLM notebook create/refresh** → `~/Projects/.cursor/skills/notebooklm-prep/SKILL.md`; research vs RAG-eval vs code-QA mix → `trainer-epistemic-layers.md`, then route the primary layer; exam-prep study guide → `study-guide-site.md` + `assessment-prep-pedagogy.md`.
 2. **Stakes:** vibe-safe / vibe-careful / vibe-dangerous (`form-check` Section 5). Vibe-dangerous → `safetybar`; post-incident plus dangerous → `recovery`; root SKILL.md file-size budget → `tests/context_budget/check_context_budget.py` (build-time linter, not runtime %); CI failure at any tier → `spotter`; parallel dispatch at any tier → `superset` for isolation and prompts.
 3. **Evolve:** routing may change mid-session (review finds incident → `recovery`; context pressure → `superset` handoff; CI red → `spotter`).
 

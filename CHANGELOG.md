@@ -13,6 +13,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 - test(harness): add `tests/harness_adapters/test_openai_compatible.py` (7 unit tests: offline stub parity, missing-key and undated-snapshot fail-closed, request-body shape) and the per-script smoke `tests/test_verify_phase11_synthesis_gates.py`.
 - chore(gates): `verify_phase11_synthesis_gates.sh` gains OpenAI adapter coverage and loses its 8 pre-existing strict-gate warnings (heredoc instead of `-c`, `[[ -f ]]`, if/else), so the CI generation gate passes on it. It is the first script in `scripts/` that is strict-clean.
 
+**PR [#44](https://github.com/weijia-89/trainer.skill/pull/44)** - the root `SKILL.md` loses 222 estimated always-on tokens (4690 to 4468) and 11 lines (203 to 192) with zero routing changes.
+
+- perf(skill): prose-only compression in the frontmatter description, self-testing iron law, coaching stance, plan-first gate, integrations stance, and the Activity router line. Every route target, trigger token, Iron Law, Red Flags entry, specialist table row, and reference-map row is unchanged.
+- perf(context): `tests/context_budget/budget.toml` snapshot updated to the measured 192 lines / 4468 est tokens, with a dated comment.
+
 ## 2026-11-07
 
 **PR [#42](https://github.com/weijia-89/trainer.skill/pull/42)** - the generation gate passes its own strict mode, which unblocks the three shell-script chores the earlier waves had to defer.
