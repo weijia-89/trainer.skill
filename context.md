@@ -171,14 +171,12 @@ closed: a slice whose proof file is gone is `EV_MISSING`, a slice logged without
   `spec-loop` route). The 14-day watch window on `references/frontend-eng.md` has no open findings.
 - **v1.0.0 CLOSED (merged):** the `logbook` specialist shipped via squash PRs
   **#40** (`0da6f93`, 2026-11-06) and **#41** (`59b386e`, 2026-11-07, output-cost
-  and docs waves). Follow-ups for this repo now live in its own PR lane; the
-  two shell-script fixes below had their generation-gate blocker cleared in the
-  gate's precision pass (also 2026-11-07): the tool-existence check now looks
-  at command positions only, and the SCRIPT_DIR idiom is recognized.
-- **Deferred, both blocked by the generation gate:** (a) `scripts/verify_trainer_sync.sh:364-365`
-  aborts silently when a trigger file carries no version stamp (remedy `|| true` per grep);
-  (b) `scripts/bundle_specialists.sh:2` still says "the 10 specialist gym-skills" and its
-  `SRC_ROOT` comment says "ten sibling" directories. Touching either `.sh` file turns CI red today,
-  because the generation-gate job runs strict mode on every changed `.sh` file and
-  `bundle_specialists.sh` already fails it with 1 critical (`cd &&` chain) on `main`.
+  and docs waves). Follow-ups for this repo now live in its own PR lane.
+- **Watch item retired (2026-11-10):** the two generation-gate-deferred `.sh`
+  fixes shipped in PR #42 (2026-11-07) alongside the gate's precision pass.
+  `scripts/verify_trainer_sync.sh` version-stamp greps run `|| true`, so a
+  missing stamp prints a proper FAIL instead of a silent abort (lines 371-377),
+  and `scripts/bundle_specialists.sh` carries the honest header (logbook and
+  cruft native, out of the bundle array). Touching either script no longer
+  turns CI red; the gate passes both in strict mode.
 - L3 (palamedes+piranesi) remains operator-blocked on the Track-2 prose-scenario decision.
