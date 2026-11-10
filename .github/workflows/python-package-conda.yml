@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Syntax-check shell scripts
         run: |
@@ -19,6 +21,11 @@ jobs:
           else
             echo "No scripts/*.sh to check; skipping bash -n"
           fi
+
+      - name: Check CHANGELOG drift
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: bash scripts/check_changelog_drift.sh
 
       - name: Verify trainer sync
         run: timeout 30s ./scripts/verify_trainer_sync.sh
