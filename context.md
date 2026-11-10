@@ -153,6 +153,16 @@ closed: a slice whose proof file is gone is `EV_MISSING`, a slice logged without
 | Decision D21 | CI wiring topology: the OpenAI adapter unit suite runs inside `verify_trainer_sync.sh` (both blocks); the synthesis-gate smoke runs as its own workflow step and must NEVER run inside the script - the gate's Gate 5 calls that script, so the placement recurses infinitely (the first wiring attempt hung full verify and later failed the smoke at its 300s subprocess timeout) |
 | Verification | Adapter unit tests 7/7; gate smoke PASS ~11s after the fix; full verify ~9s (inside the CI 30s script timeout); strict generation gate + shellcheck clean on both edited scripts |
 
+## 2026-11-09 - CHANGELOG drift CI wave (PR #50)
+
+| Field | Value |
+|---|---|
+| Deliverable | `scripts/check_changelog_drift.sh` + `tests/test_check_changelog_drift.sh`, wired as a separate `Check CHANGELOG drift` step in `.github/workflows/python-package-conda.yml` |
+| Rule | A diff that changes `SKILL.md`, `scripts/`, or `tests/` must also change `CHANGELOG.md`; docs-only diffs are exempt (R-6) and may still update it |
+| Decision D22 | Base resolution fails closed: the CI-supplied `BASE_SHA` must resolve to a commit. GitHub sends an all-zero `before` SHA for a new branch push; the script treats that as unset instead of failing on it. An unresolvable base is FAIL, never silent pass. Local fallback: `merge-base origin/main HEAD`, then `origin/main` |
+| Placement | Outside `verify_trainer_sync.sh` per D21; step order in the workflow is `bash -n`, then the drift check, then the verify job. PR #50 also moved that checkout to `fetch-depth: 0`, which pulls the base commit for the diff |
+| Verification | Temp-dir git fixtures cover the triggering paths and the docs-only exemption. Another fixture covers the pass case where `CHANGELOG.md` ships with the triggering work. The check is its own CI step |
+
 ## Current coverage / open watch items
 
 - L2 implementation: commits `1dc2085` + `201b4c8` on `integration/L2-trainer`.

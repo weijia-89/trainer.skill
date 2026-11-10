@@ -10,6 +10,23 @@ gym-family skills under `specialists/`.
 - `trainer_pr_review_post.sh` PATCH-only canonical comment; strips duplicate HTML markers; deletes stray duplicates.
 - User-facing docs gate (R-6): PRs that change operator prose run the full **deai** skill before merge.
 
+## Done in the CHANGELOG drift CI wave (2026-11-09/PR #50)
+
+- `scripts/check_changelog_drift.sh` with `tests/test_check_changelog_drift.sh`:
+  when a diff touches `SKILL.md`, `scripts/`, or `tests/`, it must also touch
+  `CHANGELOG.md`; otherwise CI fails with an operator-plain message that names
+  the rule and lists every triggering path.
+- Docs-only diffs are exempt (R-6) and may still update `CHANGELOG.md`.
+- CI wiring: a separate `Check CHANGELOG drift` step in
+  `.github/workflows/python-package-conda.yml`, after `bash -n` and before
+  `verify_trainer_sync.sh` (D21 placement constraint, recorded in `context.md`).
+  PR #50 also moved this workflow's checkout to `fetch-depth: 0`, which
+  fetches full history so the base commit resolves.
+- Base resolution fails closed: the step passes the PR base SHA (or the push
+  `before` SHA) as `BASE_SHA`; an all-zero `before` SHA on a new branch counts
+  as unset; an unresolvable base is a FAIL, never a silent pass. Local
+  fallback: `git merge-base origin/main HEAD`, else `origin/main`.
+
 ## Phase 11 (empirical validation infrastructure)
 
 The trainer routing logic and the gym specialists need evidence behind
@@ -78,4 +95,3 @@ their behavior claims. Phase 11 is building that evidence layer.
 
 - Whether to gate `git push` on `verify_trainer_sync.sh` by default
   (currently opt-in via `scripts/install_hooks.sh`).
-- Mechanical CHANGELOG drift check in CI when `SKILL.md` or `scripts/` change without `CHANGELOG.md` update.
