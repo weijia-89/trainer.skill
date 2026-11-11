@@ -678,3 +678,28 @@ fi
 
 echo ""
 echo "VERDICT: PASS"
+
+# Operator notice (decision 2026-11-10): the pre-push gate stays opt-in, so this
+# harness reports its status on every local run instead of relying on memory.
+# Unreachable in CI mode (that branch exits above), which keeps CI logs clean.
+hooks_path="$(git -C "$REPO_ROOT" config --get core.hooksPath || true)"
+if [[ -n "$hooks_path" && "$hooks_path" != /* ]]; then
+  hooks_path="$REPO_ROOT/$hooks_path"
+fi
+hook_installed=0
+if [[ -n "$hooks_path" ]]; then
+  if [[ -f "$hooks_path/pre-push" ]]; then
+    hook_installed=1
+  fi
+else
+  if [[ -f "$REPO_ROOT/.git/hooks/pre-push" ]]; then
+    hook_installed=1
+  fi
+fi
+if [[ "$hook_installed" -eq 0 ]]; then
+  echo ""
+  echo "NOTE  The opt-in pre-push gate is NOT installed in this clone."
+  echo "      Pushes run no local verify; problems surface later in CI."
+  echo "      Install it once per clone:  scripts/install_hooks.sh"
+  echo "      Remove with:                scripts/install_hooks.sh --uninstall"
+fi
