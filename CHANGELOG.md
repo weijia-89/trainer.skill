@@ -6,7 +6,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and adhe
 
 ## 2026-11-10
 
-**PR (pending)** - the pre-push gate stays opt-in, and the skill now says so on every run.
+**PR [#53](https://github.com/weijia-89/trainer.skill/pull/53)** - the pre-push gate stays opt-in, and the skill now says so on every run.
 
 - operator decision (2026-11-10): the `git push` gate on `verify_trainer_sync.sh` stays opt-in (`scripts/install_hooks.sh`), but the skill must surface the option and flag when the gate is not installed.
 - feat(verify): `verify_trainer_sync.sh` prints a hook-status notice after its local `VERDICT: PASS` when the pre-push hook is absent. The notice names the missing gate and states that pushes run no local verify until CI; install and uninstall commands follow. It checks `core.hooksPath` overrides (relative paths resolved against the repo root) and `.git/hooks/pre-push`. The CI branch exits before the notice, so CI logs stay clean.
