@@ -93,5 +93,8 @@ their behavior claims. Phase 11 is building that evidence layer.
 
 ## Open questions
 
-- Whether to gate `git push` on `verify_trainer_sync.sh` by default
-  (currently opt-in via `scripts/install_hooks.sh`).
+- Resolved 2026-11-10 (operator decision): the `git push` gate on
+  `verify_trainer_sync.sh` stays **opt-in** via `scripts/install_hooks.sh`.
+  Instead of a default install, every local verify run reports the gate's
+  status, so a clone without the hook says so explicitly (shipped with the
+  push-gate decision wave, 2026-11-10).

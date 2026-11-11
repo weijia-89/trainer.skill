@@ -163,6 +163,15 @@ closed: a slice whose proof file is gone is `EV_MISSING`, a slice logged without
 | Placement | Outside `verify_trainer_sync.sh` per D21; step order in the workflow is `bash -n`, then the drift check, then the verify job. PR #50 also moved that checkout to `fetch-depth: 0`, which pulls the base commit for the diff |
 | Verification | Temp-dir git fixtures cover the triggering paths and the docs-only exemption. Another fixture covers the pass case where `CHANGELOG.md` ships with the triggering work. The check is its own CI step |
 
+## 2026-11-10 - pre-push gate decision + status notice
+
+| Field | Value |
+|---|---|
+| Decision D23 | The pre-push gate stays opt-in (operator, 2026-11-10). The skill surfaces the gate's status mechanically instead: `verify_trainer_sync.sh` - which iron law #5 forces to run in every implementation session - prints the notice, so the notification fires every run instead of relying on remembered prose |
+| Deliverable | End-of-run hook-status notice in `scripts/verify_trainer_sync.sh`. The notice names the missing gate and states that pushes run no local verify until CI; install and uninstall commands follow |
+| Robustness | Checks both `core.hooksPath` overrides (relative paths resolved against the repo root) and `.git/hooks/pre-push`; the notice block sits after the local `VERDICT: PASS`, and the CI branch exits before it, so CI logs stay clean |
+| Verification | `tests/test_verify_trainer_sync.sh` gains structural checks (note present; both hook locations checked). The smoke suite and a full local verify both PASS with the note visible; no version bump (no specialist list or routing change) |
+
 ## Current coverage / open watch items
 
 - L2 implementation: commits `1dc2085` + `201b4c8` on `integration/L2-trainer`.

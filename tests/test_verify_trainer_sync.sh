@@ -57,6 +57,19 @@ else
   bad "logbook workflow should stay deleted"
 fi
 
+# 6. The opt-in pre-push gate surfaces its absence on every local run
+#    (operator decision 2026-11-10: gate stays opt-in; the harness reports it).
+if grep -q 'pre-push gate is NOT installed' "$VERIFY" && grep -q 'install_hooks.sh' "$VERIFY"; then
+  ok "pre-push gate status note present"
+else
+  bad "pre-push gate status note missing"
+fi
+if grep -qE 'core\.hooksPath' "$VERIFY" && grep -q '\.git/hooks/pre-push' "$VERIFY"; then
+  ok "hook status checks both core.hooksPath and .git/hooks/pre-push"
+else
+  bad "hook status check incomplete"
+fi
+
 if [[ "$fails" -eq 0 ]]; then
   echo "OK test_verify_trainer_sync"
 else
